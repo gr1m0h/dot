@@ -1,1 +1,5 @@
 # dotfiles
+
+## Supported OS
+
+* MacOS
