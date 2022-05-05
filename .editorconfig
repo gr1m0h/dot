@@ -1,0 +1,17 @@
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+insert_final_newline = ture
+
+[*.md]
+trim_trailing_whitespace = true
+
+[*.yml, *.yaml, *.toml]
+indent_style = space
+
+[*.go]
+indent_style = tab
+indent_size = 4
