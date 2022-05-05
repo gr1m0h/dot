@@ -24,7 +24,12 @@ vim.g.noundofile = true
 
 vim.opt.shortmess:append({ I = true })
 
+-- use program
 vim.g.python3_host_prog = '$HOME/.asdf/shims/python3'
+vim.g.ruby_host_prog = '$HOME/.asdf/shims/ruby'
 
+-- keybindings
 vim.api.nvim_set_keymap('n', 'pi', ':PackerInstall<Return>', { noremap = true })
 vim.api.nvim_set_keymap('n', 'ps', ':PackerSync<Return>', { noremap = true })
+
+vim.api.nvim_set_keymap('n', 'ch', ':checkhealth<Return>', { noremap = true })
