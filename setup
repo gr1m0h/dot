@@ -1,0 +1,29 @@
+#!/bin/sh
+
+set -e
+
+
+cat <<EOS
+#####################################
+# pre settings
+#####################################
+EOS
+
+echo "# make workspace"
+mkdir ~/Documents/workspace
+
+echo "# cd root"
+cd $HOME
+
+cat <<EOS
+#####################################
+# brew
+#####################################
+EOS
+
+echo "# install if homebrew is not installed"
+if ! ( type "brew" > /dev/null 2>&1 ); then
+	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+fi
+
+
