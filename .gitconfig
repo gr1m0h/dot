@@ -1,0 +1,15 @@
+[user]
+	name = grimoh
+	email = dev@grimoh.net
+[core]
+	editor = nvim -c \"set fenc=utf-8\"
+	diff = auto
+	status = auto
+	branch = auto
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	ui = true
+[ghq]
+	root = /Users/d4rj3311n6/Documents/workspace
