@@ -11,5 +11,9 @@
 	status = auto
 	branch = auto
 	ui = true
+[alias]
+	graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+[pull]
+	rebase = false
 [ghq]
 	root = /Users/d4rj3311n6/Documents/workspace
