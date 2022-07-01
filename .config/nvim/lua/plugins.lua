@@ -1,9 +1,24 @@
-vim.cmd[[packadd packer.nvim]]
+local install_path = vim.fn.stdpath "data" .. "/site/pack/packer/start/packer.nvim"
+if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+  vim.fn.system { "git", "clone", "https://github.com/wbthomason/packer.nvim", install_path }
+  vim.api.nvim_command "packadd packer.nvim"
+end
 
-require'packer'.startup(function()
+require('packer').startup{
+function()
 	-- package manager
 	use 'wbthomason/packer.nvim'
+	-----------------------------
+	--
+	-- Utils
+	--
 	-------------------------------
+  -- All the lua functions I don't want to write twice
+  use {
+    'nvim-lua/plenary.nvim',
+    module = 'plenary',
+  }
+	-----------------------------
 	--
 	-- Notify
 	--
@@ -103,6 +118,12 @@ require'packer'.startup(function()
 		run = './install.sh',
 		after = 'nvim-cmp',
 	}
+	--------------------
+  -- Neovim can be used as a language server to inject LSP diagnostics, code actions, etc. via Lua
+  -- use {
+  --   'jose-elias-alvarez/null-ls.nvim',
+  --   after = 'plenary',
+  -- }
 	-------------------------------
 	--
 	-- Language Server Protocol(LSP)
@@ -111,7 +132,14 @@ require'packer'.startup(function()
 	-- quickstart configurations for the neovim LSP client
 	use {
 		'neovim/nvim-lspconfig',
-		after = { 'cmp-nvim-lsp' },
+		after = { 'cmp-nvim-lsp','nvim-lsp-installer' },
+		cmd = { "LspInfo", "LspLog" },
+	}
+	-- seamlessly manage LSP servers with :LspInstall
+	use {
+		'williamboman/nvim-lsp-installer',
+		cmd = { "LspInstallInfo", "LspInstall*" },
+		event = { "BufRead" },
 	}
 	-------------------------------
 	--
@@ -271,4 +299,5 @@ require'packer'.startup(function()
 			require('config.csv-tools')
 		end,
 	}
-end)
+end,
+}
