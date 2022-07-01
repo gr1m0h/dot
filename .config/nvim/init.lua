@@ -1,4 +1,4 @@
-require'plugins'
+require('plugins')
 
 -- config
 vim.o.encoding = 'utf-8'
