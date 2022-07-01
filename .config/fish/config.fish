@@ -38,10 +38,16 @@ function fish_right_prompt
 end
 
 # alias
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias c="clear"
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias c='clear'
 
 # asdf
-source /usr/local/opt/asdf/libexec/asdf.fish
+source /opt/homebrew/opt/asdf/libexec/asdf.fish
+
+# kubectl
+alias k='kubectl'
+
+# rm alias
+alias rm='rubbish chuckout'
