@@ -1,7 +1,7 @@
-local install_path = vim.fn.stdpath "data" .. "/site/pack/packer/start/packer.nvim"
+local install_path = vim.fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-  vim.fn.system { "git", "clone", "https://github.com/wbthomason/packer.nvim", install_path }
-  vim.api.nvim_command "packadd packer.nvim"
+  vim.fn.system { 'git', 'clone', 'https://github.com/wbthomason/packer.nvim', install_path }
+  vim.api.nvim_command 'packadd packer.nvim'
 end
 
 require('packer').startup{
@@ -132,14 +132,23 @@ function()
 	-- quickstart configurations for the neovim LSP client
 	use {
 		'neovim/nvim-lspconfig',
-		after = { 'cmp-nvim-lsp','nvim-lsp-installer' },
-		cmd = { "LspInfo", "LspLog" },
+		after = { 'cmp-nvim-lsp', 'nvim-lsp-installer' },
+		cmd = { 'LspInfo', 'LspLog' },
+		config = function()
+			require('config.nvim-lspconfig')
+		end,
 	}
 	-- seamlessly manage LSP servers with :LspInstall
 	use {
 		'williamboman/nvim-lsp-installer',
-		cmd = { "LspInstallInfo", "LspInstall*" },
-		event = { "BufRead" },
+		cmd = { 'LspInstallInfo', 'LspInstall*' },
+		event = { 'BufRead' },
+    -- config = function()
+    --     require('nvim-lsp-installer').setup{}
+    --   end,
+		-- config = function()
+		-- 	require('config.nvim-lsp-installer')
+		-- end,
 	}
 	-------------------------------
 	--
@@ -210,7 +219,7 @@ function()
 	-- autopairs
 	use {
 		'windwp/nvim-autopairs',
-		event = "VimEnter",
+		event = 'VimEnter',
 		config = function()
 			require('config.nvim-autopairs')
 		end,
@@ -271,7 +280,7 @@ function()
 		after = 'copilot.vim',
 		config = function()
 			vim.schedule(function()
-				require("copilot")
+				require('copilot')
 			end)
 		end,
 	}
