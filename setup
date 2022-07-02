@@ -3,7 +3,11 @@
 set -e
 
 echo "# make workspace"
-mkdir ~/Documents/workspace
+mkdir -p ~/Documents/workspace
+
+echo "# always show hidden files/directories in the Finder app"
+defaults write com.apple.finder AppleShowAllFiles TRUE
+killall Finder
 
 echo "# install command line tools for xcode"
 if [ ! -d /Library/Developer/CommandLineTools ]; then
