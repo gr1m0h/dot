@@ -17,12 +17,12 @@ fi
 echo "# cd root"
 cd $HOME
 
-echo "# install if homebrew is not installed"
+echo "# install if Homebrew is not installed"
 if ! ( type "brew" > /dev/null 2>&1 ); then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-echo "# "
+echo "# install Homebrew packages"
 brew bundle
 
 echo "# install if fisher is not installed"
@@ -49,6 +49,11 @@ asdf plugin add terraform
 
 echo "# install the asdf plugin version"
 asdf install
+
+echo "# install packer(neovim package management plugin) if not installed"
+if ! ( ! -d ~/.local/share/nvim/site/pack/packer/opt/packer.nvim ); then
+  git clone https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/opt/packer.nvim
+fi
 
 echo "# run neovim"
 nvim
