@@ -2,28 +2,75 @@
 
 set -e
 
-
-cat <<EOS
-#####################################
-# pre settings
-#####################################
-EOS
-
 echo "# make workspace"
 mkdir ~/Documents/workspace
+
+echo "# install command line tools for xcode"
+if [ ! -d /Library/Developer/CommandLineTools ]; then
+	xcode-select --install
+fi
 
 echo "# cd root"
 cd $HOME
 
-cat <<EOS
-#####################################
-# brew
-#####################################
-EOS
-
 echo "# install if homebrew is not installed"
 if ! ( type "brew" > /dev/null 2>&1 ); then
 	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
+echo "# install packages"
+PACKAGES=(
+  asdf
+  colima
+  docker
+  fish
+  gnupg
+  mas
+  wget
+)
 
+brew install "${PACKAGES[@]}" || :
+
+echo "# install apps"
+APPS=(
+  discord
+  google-drive
+	slack
+	vivaldi
+  vlc
+	homebrew/cask-drivers/yubico-yubikey-manager
+  wezterm
+  zoom
+	zsa-wally
+)
+
+brew install --cask "${APPS[@]}" || :
+
+echo "# install if fisher is not installed"
+if ! ( type "fisher" > /dev/null 2>&1 ); then
+	curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs https://git.io/fisher
+fi
+
+echo "# install fisher plugins(fish-ghq, dracula, fish-kubectl-cpmpletions, done, fzf, z)"
+fish -C "fisher install decors/fish-ghq;and fisher install dracula/fish;and fisher install evanlucas/fish-kubectl-completions;and fisher install franciscolourenco/done;and fisher install jethrokuan/fzf;and fisher install jethrokuan/z;"
+
+echo "# add asdf plugins"
+asdf plugin add 1password-cli
+asdf plugin add fzf
+asdf plugin add ghq
+asdf plugin add golang
+asdf plugin add jq
+asdf plugin add kubectl
+asdf plugin add neovim
+asdf plugin add nodejs
+asdf plugin add python
+asdf plugin add ruby
+asdf plugin add rubbish https://github.com/grimoh/asdf-rubbish.git
+asdf plugin add terraform
+
+echo "# install the asdf plugin version"
+asdf install
+
+echo "# run neovim"
+nvim
