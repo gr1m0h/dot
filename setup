@@ -15,37 +15,11 @@ cd $HOME
 
 echo "# install if homebrew is not installed"
 if ! ( type "brew" > /dev/null 2>&1 ); then
-	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-  eval "$(/opt/homebrew/bin/brew shellenv)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-echo "# install packages"
-PACKAGES=(
-  asdf
-  colima
-  docker
-  fish
-  gnupg
-  mas
-  wget
-)
-
-brew install "${PACKAGES[@]}" || :
-
-echo "# install apps"
-APPS=(
-  discord
-  google-drive
-	slack
-	vivaldi
-  vlc
-	homebrew/cask-drivers/yubico-yubikey-manager
-  wezterm
-  zoom
-	zsa-wally
-)
-
-brew install --cask "${APPS[@]}" || :
+echo "# "
+brew bundle
 
 echo "# install if fisher is not installed"
 if ! ( type "fisher" > /dev/null 2>&1 ); then
