@@ -43,8 +43,8 @@ asdf plugin add kubectl
 asdf plugin add neovim
 asdf plugin add nodejs
 asdf plugin add python
-asdf plugin add ruby
 asdf plugin add rubbish https://github.com/grimoh/asdf-rubbish.git
+asdf plugin add ruby
 asdf plugin add terraform
 
 echo "# install the asdf plugin version"
