@@ -3,7 +3,9 @@
 local config = require('lspconfig')
 
 -- bashls
+config.bashls.setup{}
 -- dockerls
+config.dockerls.setup{}
 -- gopls
 config.gopls.setup{}
 -- jsonls
