@@ -143,9 +143,6 @@ function()
 		'williamboman/nvim-lsp-installer',
 		cmd = { 'LspInstallInfo', 'LspInstall*' },
 		event = { 'BufRead' },
-		-- config = function()
-		-- 	require('config.nvim-lsp-installer')
-		-- end,
 	}
 	-------------------------------
 	--
