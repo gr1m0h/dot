@@ -43,11 +43,15 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 alias c='clear'
 
+# rm
+alias rm='rubbish chuckout'
+
 # asdf
 source /opt/homebrew/opt/asdf/libexec/asdf.fish
 
 # kubectl
 alias k='kubectl'
 
-# rm alias
-alias rm='rubbish chuckout'
+# npm
+set -gx NPM_CONFIG_PREFIX $HOME/.packages/npm
+set PATH $NPM_CONFIG_PREFIX/bin $PATH
