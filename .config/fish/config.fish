@@ -37,11 +37,13 @@ function fish_right_prompt
 	echo (git_branch)
 end
 
-# alias
+# util
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias c='clear'
+
+set -gx EDITOR $HOME/.asdf/shims/nvim
 
 # rm
 alias rm='rubbish chuckout'
@@ -55,3 +57,13 @@ alias k='kubectl'
 # npm
 set -gx NPM_CONFIG_PREFIX $HOME/.packages/npm
 set PATH $NPM_CONFIG_PREFIX/bin $PATH
+
+# mysql
+set -gx DATADIR $HOME/.data/mysql
+# To initialize a new database
+#       mysqld --initialize-insecure --datadir=$DATADIR
+#       mysql_ssl_rsa_setup --datadir=$DATADIR
+# To run the server:
+#       mysqld_safe --datadir=$DATADIR
+# To stop the server:
+#       mysqladmin -u root shutdown
