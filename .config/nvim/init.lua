@@ -23,6 +23,7 @@ vim.g.nobackup = true
 vim.g.noundofile = true
 
 vim.opt.shortmess:append({ I = true })
+vim.opt.mouse = 'a'
 
 -- use program
 vim.g.python3_host_prog = '$HOME/.asdf/shims/python3'
@@ -33,7 +34,7 @@ vim.g.ruby_host_prog = '$HOME/.asdf/shims/ruby'
 vim.api.nvim_set_keymap('n', 'pi', ':PackerInstall<Return>', { noremap = true })
 vim.api.nvim_set_keymap('n', 'ps', ':PackerSync<Return>', { noremap = true })
 
---
+-- lsp
 vim.api.nvim_set_keymap('n', 'li', ':LspInfo<Return>', { noremap = true })
 vim.api.nvim_set_keymap('n', 'lii', ':LspInstallInfo<Return>', { noremap = true })
 
