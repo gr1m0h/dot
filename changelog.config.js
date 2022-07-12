@@ -20,47 +20,47 @@ module.exports = {
   scopes: [],
   types: {
     chore: {
-      description: "ソース、テストコードに変更を含まない雑多なコミット(ライブラリ変更など)",
+      description: "For miscellaneous commits that do not include changes to source code or test code (e.g., library changes)",
       value: "chore",
     },
     revert: {
-      description: "revertコミット用",
+      description: "For revert commit",
       value: "revert",
     },
     ci: {
-      description: "`.gitlab-ci.yml`をはじめとするCIの手順や変数に関する変更",
+      description: "For changes to CI procedures and variables",
       value: "ci",
     },
     docs: {
-      description: "ドキュメントに関する変更",
+      description: "For document modification",
       value: "docs",
     },
     feat: {
-      description: "新機能や既存機能の変更、および既存機能の削除",
+      description: "For new features, changes to existing features, and deletion of existing features",
       value: "feat",
     },
     fix: {
-      description: "不具合の修正",
+      description: "For fixing defects",
       value: "fix",
     },
     perf: {
-      description: "パフォーマンス改善のための変更",
+      description: "For changes to improve performance",
       value: "perf",
     },
     refactor: {
-      description: "コミット前後で動作に影響を与えないリファクタリング",
+      description: "For refactoring that does not affect behavior before and after commit",
       value: "refactor",
     },
     style: {
-      description: "`go fmt` などコードの体裁に関する変更",
+      description: "For change the appearance of the code",
       value: "style",
     },
     test: {
-      description: "テストコードの追加、変更",
+      description: "For adding or changing test code",
       value: "test",
     },
     build: {
-      description: "`Dockerfile`などビルド手順、外部依存に関する変更",
+      description: "For changes related to build procedures and external dependencies",
       value: "build",
     },
   },
