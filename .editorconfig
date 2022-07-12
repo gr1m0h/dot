@@ -1,17 +1,24 @@
+; https://editorconfig.org/
+
 root = true
 
 [*]
 charset = utf-8
 indent_style = space
 indent_size = 2
-insert_final_newline = ture
-
-[*.md]
+insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.yml, *.yaml, *.toml]
-indent_style = space
-
-[*.go]
+[{Makefile,go.mod,go.sum,*.go,.gitmodules}]
 indent_style = tab
+indent_size = 4
+
+[*.md]
+indent_size = 4
+# trailing spaces in markdown indicate word wrap
+trim_trailing_whitespace = false
+eclint_indent_style = unset
+max_line_length = 80
+
+[Dockerfile]
 indent_size = 4
