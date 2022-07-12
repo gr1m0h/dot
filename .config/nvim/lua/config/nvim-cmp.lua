@@ -12,18 +12,18 @@ cmp.setup {
 		end,
 	},
 	sources = {
-    { name = 'nvim_lsp' },
-    { name = 'nvim_lsp_signature_help' },
-    { name = 'nvim_lsp_document_symbol' },
-    { name = 'nvim_lua' },
-    { name = 'buffer' },
-    { name = 'path' },
-    { name = 'cmdline' },
-    { name = 'luasnip' },
-    { name = 'treesitter' },
+		{ name = 'nvim_lsp' },
+		{ name = 'nvim_lsp_signature_help' },
+		{ name = 'nvim_lsp_document_symbol' },
+		{ name = 'nvim_lua' },
+		{ name = 'buffer' },
+		{ name = 'path' },
+		{ name = 'cmdline' },
+		{ name = 'luasnip' },
+		{ name = 'treesitter' },
 		{ name = 'copilot' },
 		{ name = 'cmp_tabnine' },
-  },
+  	},
 }
 
 -- autopairs
