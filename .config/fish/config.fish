@@ -54,6 +54,10 @@ source /opt/homebrew/opt/asdf/libexec/asdf.fish
 # kubectl
 alias k='kubectl'
 
+# go
+set -gx GOPATH $HOME/.packages/go
+set PATH $GOPATH/bin $PATH
+
 # npm
 set -gx NPM_CONFIG_PREFIX $HOME/.packages/npm
 set PATH $NPM_CONFIG_PREFIX/bin $PATH
