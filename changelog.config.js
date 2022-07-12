@@ -1,6 +1,6 @@
 module.exports = {
   disableEmoji: false,
-  format: "{type}: refs {ticket} {subject}",
+  format: "{type}: refs {subject}",
   list: [
     "feat",
     "fix",
@@ -16,7 +16,7 @@ module.exports = {
   ],
   maxMessageLength: 64,
   minMessageLength: 3,
-  questions: ["type", "ticket", "subject"],
+  questions: ["type", "subject"],
   scopes: [],
   types: {
     chore: {
