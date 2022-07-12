@@ -1,12 +1,12 @@
 -- https://github.com/chen244/csv-tools.lua
 
 require('csvtools').setup {
-	before = 10,
-	after = 10,
-	-- this will clear the highlight of buf after move
-	clearafter = false,
-	-- this will provide a overflow show
-	showoverflow = false,
-	-- add an alone title
-	titelflow = true,
+  before = 10,
+  after = 10,
+  -- this will clear the highlight of buf after move
+  clearafter = false,
+  -- this will provide a overflow show
+  showoverflow = false,
+  -- add an alone title
+  titelflow = true,
 }

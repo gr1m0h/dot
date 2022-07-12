@@ -11,7 +11,7 @@ killall Finder
 
 echo "# install command line tools for xcode"
 if [ ! -d /Library/Developer/CommandLineTools ]; then
-	xcode-select --install
+  xcode-select --install
 fi
 
 echo "# cd root"
@@ -27,7 +27,7 @@ brew bundle
 
 echo "# install if fisher is not installed"
 if ! ( type "fisher" > /dev/null 2>&1 ); then
-	curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs https://git.io/fisher
+  curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs https://git.io/fisher
 fi
 
 echo "# install fisher plugins(fish-ghq, dracula, fish-kubectl-cpmpletions, done, fzf, z)"
