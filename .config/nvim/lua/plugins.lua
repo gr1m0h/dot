@@ -13,11 +13,11 @@ function()
 	-- Utils
 	--
 	-------------------------------
-  -- All the lua functions I don't want to write twice
-  use {
-    'nvim-lua/plenary.nvim',
-    module = 'plenary',
-  }
+	-- All the lua functions I don't want to write twice
+	use {
+		'nvim-lua/plenary.nvim',
+		module = 'plenary',
+	}
 	-----------------------------
 	--
 	-- Notify
@@ -119,11 +119,11 @@ function()
 		after = 'nvim-cmp',
 	}
 	--------------------
-  -- Neovim can be used as a language server to inject LSP diagnostics, code actions, etc. via Lua
-  -- use {
-  --   'jose-elias-alvarez/null-ls.nvim',
-  --   after = 'plenary',
-  -- }
+	-- Neovim can be used as a language server to inject LSP diagnostics, code actions, etc. via Lua
+	-- use {
+	--   'jose-elias-alvarez/null-ls.nvim',
+	--   after = 'plenary',
+	-- }
 	-------------------------------
 	--
 	-- Language Server Protocol(LSP)
@@ -143,9 +143,6 @@ function()
 		'williamboman/nvim-lsp-installer',
 		cmd = { 'LspInstallInfo', 'LspInstall*' },
 		event = { 'BufRead' },
-    -- config = function()
-    --     require('nvim-lsp-installer').setup{}
-    --   end,
 		-- config = function()
 		-- 	require('config.nvim-lsp-installer')
 		-- end,
