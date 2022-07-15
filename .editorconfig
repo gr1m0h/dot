@@ -8,17 +8,17 @@ indent_style = space
 indent_size = 2
 insert_final_newline = true
 trim_trailing_whitespace = true
+end_of_line = lf
 
 [{Makefile,go.mod,go.sum,*.go,.gitmodules}]
 indent_style = tab
 indent_size = 4
 
-[*.md]
+[{*.md,*.mdx,*.md.tmpl}]
 indent_size = 4
 # trailing spaces in markdown indicate word wrap
 trim_trailing_whitespace = false
 eclint_indent_style = unset
-max_line_length = 80
 
 [Dockerfile]
 indent_size = 4
