@@ -1,0 +1,8 @@
+---
+# aqua - Declarative CLI Version Manager
+# https://aquaproj.github.io/
+registries:
+- type: standard
+  ref: v3.19.0 # renovate: depName=aquaproj/aqua-registry
+packages:
+- name: junegunn/fzf@0.31.0

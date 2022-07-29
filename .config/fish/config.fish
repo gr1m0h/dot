@@ -44,12 +44,17 @@ alias ....='cd ../../..'
 alias c='clear'
 
 set -gx EDITOR $HOME/.asdf/shims/nvim
+set -gx XDG_DATA_HOME $HOME/.local/share
 
 # rm
 alias rm='rubbish chuckout'
 
 # asdf
 source /opt/homebrew/opt/asdf/libexec/asdf.fish
+
+# aqua
+set -gx AQUA_ROOT_DIR $XDG_DATA_HOME/aquaproj-aqua
+set -gx PATH $AQUA_ROOT_DIR/bin $PATH
 
 # kubectl
 alias k='kubectl'
