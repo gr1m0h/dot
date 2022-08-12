@@ -8,6 +8,7 @@ fish_vi_key_bindings
 function fish_mode_prompt
 end
 
+# util
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
@@ -21,6 +22,7 @@ source /opt/homebrew/opt/asdf/libexec/asdf.fish
 
 # aqua
 set -gx AQUA_ROOT_DIR $XDG_DATA_HOME/aquaproj-aqua
+set -gx AQUA_GLOBAL_CONFIG $HOME/.aqua.yaml
 set -gx PATH $AQUA_ROOT_DIR/bin $PATH
 
 set -gx EDITOR $AQUA_ROOT_DIR/bin/nvim
