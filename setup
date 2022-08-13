@@ -221,8 +221,8 @@ setup_packages(){
 }
 
 case "$1" in
-  link)
-    setup_symlinks
+  dotfiles)
+    setup_dotfiles
     ;;
   homebrew)
     setup_homebrew
@@ -243,7 +243,7 @@ case "$1" in
     setup_packages
     ;;
   all)
-    setup_symlinks
+    setup_dotfiles
     setup_homebrew
     setup_fish
     setup_macos
@@ -252,7 +252,7 @@ case "$1" in
     setup_packages
     ;;
   *)
-    echo -e $"\nUsage: $(basename "$0") {link|homebrew|fish|macos|asdfvm|nepvim|pkgs|all}\n"
+    echo -e $"\nUsage: $(basename "$0") {dotfiles|homebrew|fish|macos|asdfvm|nepvim|pkgs|all}\n"
     exit 1
     ;;
 esac
