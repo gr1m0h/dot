@@ -257,5 +257,4 @@ case "$1" in
     ;;
 esac
 
-echo -e
 success "Done."
