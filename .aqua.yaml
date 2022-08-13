@@ -1,5 +1,3 @@
-
-
 ---
 # aqua - Declarative CLI Version Manager
 # https://aquaproj.github.io/
@@ -8,3 +6,19 @@ registries:
   ref: v3.19.0 # renovate: depName=aquaproj/aqua-registry
 packages:
 - name: junegunn/fzf@0.31.0
+- name: x-motemen/ghq@v1.3.0
+- name: kubernetes/kubectl
+  version: v1.24.3
+- name: neovim/neovim@v0.7.2
+- name: grafana/k6@v0.39.0
+- name: stedolan/jq@jq-1.6
+- name: golang/go@go1.18.4
+- name: kubernetes-sigs/kind@v0.14.0
+- name: kubernetes-sigs/krew@v0.4.3
+- name: hashicorp/terraform@v1.2.7
+- name: docker/cli@v20.10.17
+- name: abiosoft/colima@v0.4.4
+- name: lima-vm/lima@v0.11.3
+- name: docker/compose@v2.9.0
+- name: helm/helm@v3.9.3
+- name: roboll/helmfile@v0.144.0
