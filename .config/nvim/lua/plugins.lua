@@ -118,12 +118,6 @@ function()
     run = './install.sh',
     after = 'nvim-cmp',
   }
-  --------------------
-  -- Neovim can be used as a language server to inject LSP diagnostics, code actions, etc. via Lua
-  -- use {
-  --   'jose-elias-alvarez/null-ls.nvim',
-  --   after = 'plenary',
-  -- }
   -------------------------------
   --
   -- Language Server Protocol(LSP)
@@ -132,18 +126,14 @@ function()
   -- quickstart configurations for the neovim LSP client
   use {
     'neovim/nvim-lspconfig',
-    after = { 'cmp-nvim-lsp', 'nvim-lsp-installer' },
+    after = { 'cmp-nvim-lsp' },
     cmd = { 'LspInfo', 'LspLog' },
     config = function()
       require('config.nvim-lspconfig')
     end,
   }
-  -- seamlessly manage LSP servers with :LspInstall
-  use {
-    'williamboman/nvim-lsp-installer',
-    cmd = { 'LspInstallInfo', 'LspInstall*' },
-    event = { 'BufRead' },
-  }
+  -- Neovim can be used as a language server to inject LSP diagnostics, code actions, etc. via Lua
+  use 'jose-elias-alvarez/null-ls.nvim'
   -------------------------------
   --
   -- Snippet
@@ -200,6 +190,14 @@ function()
       require('config.indent-blankline')
     end,
   }
+	-- A light-weight lsp plugin based on neovim's built-in lsp with a highly performant UI.
+	use {
+		'glepnir/lspsaga.nvim',
+		branch = 'main',
+		config = function()
+			require('config.lspsaga')
+		end,
+	}
   -------------------------------
   --
   -- Moving
@@ -248,6 +246,8 @@ function()
     'editorconfig/editorconfig-vim',
     event = 'VimEnter',
   }
+  -- Distraction-free coding for neovim
+  use 'folke/zen-mode.nvim'
   -------------------------------
   --
   -- Appearance
@@ -272,6 +272,29 @@ function()
       require('nvim-gps').setup()
     end,
   }
+  -- The fastest Neovim colorizer.
+  use 'norcalli/nvim-colorizer.lua'
+  -- vscode-like pictograms for neovim lsp completion items
+  use 'onsails/lspkind.nvim'
+  -------------------------------
+  --
+  -- Fuzzy finder, Filer
+  --
+  -------------------------------
+  -- Find, Filter, Preview, Pick. All lua, all the time.
+  use {
+      'nvim-telescope/telescope.nvim',
+      tag = '0.1.0',
+      requires = { 'plenary.nvim' },
+      config = function()
+        require('config.telescope')
+      end,
+  }
+  -- File Browser extension for telescope.nvim
+  use {
+    'nvim-telescope/telescope-file-browser.nvim',
+    requires = { 'telescope.nvim' },
+  }
   -------------------------------
   --
   -- AI Completion
@@ -290,6 +313,18 @@ function()
       vim.schedule(function()
         require('copilot')
       end)
+    end,
+  }
+  -------------------------------
+  --
+  -- Git
+  --
+  -------------------------------
+  -- Git integration for buffers
+  use {
+    'lewis6991/gitsigns.nvim',
+    config = function()
+      require('gitsigns').setup()
     end,
   }
   -------------------------------

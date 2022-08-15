@@ -1,6 +1,9 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter
 
-require('nvim-treesitter.configs').setup {
+local status, ts = pcall(require, 'nvim-treesitter.configs')
+if (not status) then return end
+
+ts.setup {
   ensure_installed = {
     'bash',
     'css',
