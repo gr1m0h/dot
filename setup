@@ -116,7 +116,7 @@ setup_macos(){
     # install command line tools for xcode
     if [ ! -d /Library/Developer/CommandLineTools ]; then
       info "xcode not installed. Installing."
-	    xcode-select --install
+      xcode-select --install
     fi
 
     echo "Finder: show all filename extensions"

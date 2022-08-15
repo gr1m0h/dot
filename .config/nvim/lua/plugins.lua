@@ -190,14 +190,14 @@ function()
       require('config.indent-blankline')
     end,
   }
-	-- A light-weight lsp plugin based on neovim's built-in lsp with a highly performant UI.
-	use {
-		'glepnir/lspsaga.nvim',
-		branch = 'main',
-		config = function()
-			require('config.lspsaga')
-		end,
-	}
+  -- A light-weight lsp plugin based on neovim's built-in lsp with a highly performant UI.
+  use {
+    'glepnir/lspsaga.nvim',
+    branch = 'main',
+    config = function()
+      require('config.lspsaga')
+    end,
+  }
   -------------------------------
   --
   -- Moving
