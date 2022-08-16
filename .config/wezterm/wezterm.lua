@@ -9,5 +9,6 @@ return {
   },
   exit_behavior = 'Close',
 	font = wezterm.font 'UDEV Gothic',
+	font_size = 13.0,
 	use_ime = true,
 }
