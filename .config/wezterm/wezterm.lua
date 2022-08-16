@@ -7,5 +7,7 @@ return {
         { key = 'd', mods = 'CMD',
           action = wezterm.action{ SplitHorizontal = { domain = 'CurrentPaneDomain' }}},
   },
-  exit_behavior = "Close"
+  exit_behavior = 'Close',
+	font = wezterm.font 'UDEV Gothic',
+	use_ime = true,
 }
