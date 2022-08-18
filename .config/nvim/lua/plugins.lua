@@ -225,9 +225,10 @@ function()
   -- autopairs
   use {
     'windwp/nvim-autopairs',
+    branch = master,
     event = 'VimEnter',
     config = function()
-      require('config.nvim-autopairs')
+      require('nvim-autopairs').setup { disable_filetype = { 'TelescopePrompt' , 'vim' } }
     end,
   }
   -- use treesitter to auto close and auto rename html tag
