@@ -277,6 +277,13 @@ function()
   use 'norcalli/nvim-colorizer.lua'
   -- vscode-like pictograms for neovim lsp completion items
   use 'onsails/lspkind.nvim'
+  use {
+    'folke/trouble.nvim',
+    requires = 'kyazdani42/nvim-web-devicons',
+    config = function()
+      require('trouble').setup{}
+    end,
+  }
   -------------------------------
   --
   -- Fuzzy finder, Filer
