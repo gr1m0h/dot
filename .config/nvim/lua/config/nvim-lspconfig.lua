@@ -9,7 +9,7 @@ config.sumneko_lua.setup{
     Lua = {
       diagnostics = {
         enable = true,
-        globals = {'vim'},
+        globals = { 'vim', 'use' },
       },
     }
   },
