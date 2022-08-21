@@ -23,6 +23,7 @@ vim.g.nobackup = true
 vim.g.noundofile = true
 
 vim.opt.shortmess:append({ I = true })
+vim.opt.showmode = true
 vim.opt.mouse = 'a'
 
 -- use program
@@ -31,8 +32,11 @@ vim.g.ruby_host_prog = '$HOME/.asdf/shims/ruby'
 
 -- keybindings
 -- packer
-vim.api.nvim_set_keymap('n', 'pi', ':PackerInstall<Return>', { noremap = true })
-vim.api.nvim_set_keymap('n', 'ps', ':PackerSync<Return>', { noremap = true })
+vim.keymap.set('n', 'pi', ':PackerInstall<Return>', { noremap = true })
+vim.keymap.set('n', 'ps', ':PackerSync<Return>', { noremap = true })
+
+-- lsp
+vim.keymap.set('n', 'ls', ':LspStart<Return>', { noremap = true })
 
 -- checkhealth
-vim.api.nvim_set_keymap('n', 'ch', ':checkhealth<Return>', { noremap = true })
+vim.keymap.set('n', 'ch', ':checkhealth<Return>', { noremap = true })
