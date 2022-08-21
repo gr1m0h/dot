@@ -13,11 +13,13 @@ function()
   -- Utils
   --
   -------------------------------
-  -- All the lua functions I don't want to write twice
+  -- all the lua functions
   use {
     'nvim-lua/plenary.nvim',
     module = 'plenary',
   }
+  -- faster file format identification
+  use 'nathom/filetype.nvim'
   -----------------------------
   --
   -- Notify
@@ -33,7 +35,7 @@ function()
   -- Color Scheme
   --
   -------------------------------
-  -- dracula theme for neovim
+  -- dracula theme
   local dracula = 'dracula.nvim'
   use {
     'Mofiqul/dracula.nvim',
@@ -46,7 +48,7 @@ function()
   -- Auto Completion
   --
   -------------------------------
-  -- completion plugin for neovim
+  -- completion plugin
   use {
     'hrsh7th/nvim-cmp',
     requires = {
@@ -66,37 +68,37 @@ function()
     'hrsh7th/cmp-nvim-lsp',
     after = 'nvim-cmp',
   }
-  -- for displaying function signatures with the current parameter emphasized
+  -- displaying function signatures with the current parameter emphasized
   use {
     'hrsh7th/cmp-nvim-lsp-signature-help',
     after = 'nvim-cmp',
   }
-  -- for textDocument/documentSymbol via nvim-lsp
+  -- textDocument/documentSymbol via nvim-lsp
   use{
     'hrsh7th/cmp-nvim-lsp-document-symbol',
     after = 'nvim-cmp',
   }
-  -- for neovim lua api
+  -- neovim lua api
   use {
     'hrsh7th/cmp-nvim-lua',
     after = 'nvim-cmp',
   }
-  -- for buffer words
+  -- buffer words
   use{
     'hrsh7th/cmp-buffer',
     after = 'nvim-cmp',
   }
-  -- for filesystem paths
+  -- filesystem paths
   use {
     'hrsh7th/cmp-path',
     after = 'nvim-cmp',
   }
-  -- for vim's cmdline
+  -- vim's cmdline
   use {
     'hrsh7th/cmp-cmdline',
     after = 'nvim-cmp',
   }
-  -- for displaying function signatures with the current parameter emphasized
+  -- luasnip completion source
   use {
     'saadparwaiz1/cmp_luasnip',
     after = 'nvim-cmp',
