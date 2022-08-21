@@ -1,6 +1,7 @@
 -- https://github.com/neovim/nvim-lspconfig
 
-local config = require('lspconfig')
+local status, config = pcall(require,'lspconfig')
+if (not status) then return end
 
 -- dockerls
 config.dockerls.setup{}
@@ -8,7 +9,7 @@ config.dockerls.setup{}
 config.gopls.setup{
   on_attach = on_attach,
   filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
-  cmd = { 'gopls', 'serve'},
+  cmd = { 'gopls', 'serve' },
 }
 -- quick_lint_js
 config.quick_lint_js.setup{}
@@ -20,4 +21,3 @@ config.tsserver.setup{}
 config.yamlls.setup{}
 
 vim.api.nvim_set_keymap('n', 'li', ':LspInfo<Return>', { noremap = true })
-vim.api.nvim_set_keymap('n', 'lii', ':LspInstallInfo<Return>', { noremap = true })

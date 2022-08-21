@@ -1,6 +1,7 @@
 -- https://github.com/L3MON4D3/LuaSnip
 
-local ls = require('luasnip')
+local status, ls = pcall(require, 'luasnip')
+if (not status) then return end
 
 ls.config.set_config {
   history = true,

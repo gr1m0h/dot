@@ -2,6 +2,7 @@
 
 local status, cmp = pcall(require, 'cmp')
 if (not status) then return end
+
 local luasnip = require('luasnip')
 local lspkind = require('lspkind')
 
@@ -44,7 +45,7 @@ cmp.setup {
 
 -- autopairs
 local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done({ map_char = { tex = "" } }))
+cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done({ map_char = { tex = '' } }))
 
 vim.g.completeopt = 'menu,menuone,noselect'
 vim.cmd [[

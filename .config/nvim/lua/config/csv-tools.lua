@@ -1,6 +1,9 @@
 -- https://github.com/chen244/csv-tools.lua
 
-require('csvtools').setup {
+local status, csv = pcall(require, 'csvtools.lua')
+if (not status) then return end
+
+csv.setup {
   before = 10,
   after = 10,
   -- this will clear the highlight of buf after move

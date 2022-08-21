@@ -1,14 +1,9 @@
 -- https://github.com/nvim-lualine/lualine.nvim
 
-local function is_available_gps()
-  local ok, _ = pcall(require, "nvim-gps")
-  if not ok then
-    return false
-  end
-  return require("nvim-gps").is_available()
-end
+local status, lualine = pcall(require, 'lualine')
+if (not status) then return end
 
-require('lualine').setup {
+lualine.setup {
   options = {
     icon_enabled = true,
     theme = 'dracula',
@@ -22,10 +17,10 @@ require('lualine').setup {
     lualine_c = { {
       'filename',
       file_status = true, -- displays file status (readonly status, modified status)
-      path = 0 -- 0 = just filename, 1 = relative path, 2 = absolute path
+      path = 1-- 0 = just filename, 1 = relative path, 2 = absolute path
     } },
     lualine_x = {
-      { 'diagnostics', sources = { "nvim_diagnostic" }, symbols = { error = ' ', warn = ' ', info = ' ',
+      { 'diagnostics', sources = { 'nvim_diagnostic' }, symbols = { error = ' ', warn = ' ', info = ' ',
         hint = ' ' } },
       'encoding',
       'filetype'
