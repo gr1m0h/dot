@@ -20,6 +20,8 @@ function()
   }
   -- faster file format identification
   use 'nathom/filetype.nvim'
+  -- faster lua plugin loading
+  use 'lewis6991/impatient.nvim'
   -----------------------------
   --
   -- Notify
