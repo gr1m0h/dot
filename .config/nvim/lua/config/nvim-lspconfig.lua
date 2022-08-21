@@ -19,5 +19,7 @@ config.terraformls.setup{}
 config.tsserver.setup{}
 -- yamlls
 config.yamlls.setup{}
+--
 
 vim.api.nvim_set_keymap('n', 'li', ':LspInfo<Return>', { noremap = true })
+vim.api.nvim_set_keymap('n', 'ls', ':LspStart<Return>', { noremap = true })

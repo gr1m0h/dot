@@ -35,8 +35,5 @@ vim.g.ruby_host_prog = '$HOME/.asdf/shims/ruby'
 vim.keymap.set('n', 'pi', ':PackerInstall<Return>', { noremap = true })
 vim.keymap.set('n', 'ps', ':PackerSync<Return>', { noremap = true })
 
--- lsp
-vim.keymap.set('n', 'ls', ':LspStart<Return>', { noremap = true })
-
 -- checkhealth
 vim.keymap.set('n', 'ch', ':checkhealth<Return>', { noremap = true })
