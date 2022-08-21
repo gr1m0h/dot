@@ -209,7 +209,7 @@ function()
     branch = 'v2',
     config = function()
       -- you can configure Hop the way you like here; see :h hop-config
-      require'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
+      require('hop').setup { keys = 'etovxqpdygfblzhckisuran' }
     end,
   }
   -------------------------------
@@ -225,7 +225,6 @@ function()
   -- autopairs
   use {
     'windwp/nvim-autopairs',
-    branch = master,
     event = 'VimEnter',
     config = function()
       require('nvim-autopairs').setup { disable_filetype = { 'TelescopePrompt' , 'vim' } }
