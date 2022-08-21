@@ -247,7 +247,12 @@ function()
     event = 'VimEnter',
   }
   -- Distraction-free coding for neovim
-  use 'folke/zen-mode.nvim'
+  use {
+    'folke/zen-mode.nvim',
+    config = function()
+      require('config.zen-mode')
+    end,
+  }
   -------------------------------
   --
   -- Appearance
