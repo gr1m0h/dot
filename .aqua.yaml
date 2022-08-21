@@ -25,3 +25,4 @@ packages:
 - name: telepresenceio/telepresence@v2.7.1
 - name: BurntSushi/ripgrep@13.0.0
 - name: sharkdp/fd@v8.4.0
+- name: sumneko/lua-language-server@3.5.3
