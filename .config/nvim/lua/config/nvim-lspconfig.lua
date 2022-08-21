@@ -3,23 +3,31 @@
 local status, config = pcall(require,'lspconfig')
 if (not status) then return end
 
--- dockerls
+-- lua
+config.sumneko_lua.setup{
+  settings = {
+    Lua = {
+      diagnostics = {
+        enable = true,
+        globals = {'vim'},
+      },
+    }
+  },
+}
+-- docker
 config.dockerls.setup{}
--- gopls
+-- go
 config.gopls.setup{
-  on_attach = on_attach,
-  filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
   cmd = { 'gopls', 'serve' },
 }
--- quick_lint_js
+-- js
 config.quick_lint_js.setup{}
--- terraformls
+-- terraform
 config.terraformls.setup{}
--- tsserver
+-- typescript
 config.tsserver.setup{}
--- yamlls
+-- yaml
 config.yamlls.setup{}
---
 
-vim.api.nvim_set_keymap('n', 'li', ':LspInfo<Return>', { noremap = true })
-vim.api.nvim_set_keymap('n', 'ls', ':LspStart<Return>', { noremap = true })
+vim.keymap.set('n', 'li', ':LspInfo<Return>', { noremap = true })
+vim.keymap.set('n', 'ls', ':LspStart<Return>', { noremap = true })
