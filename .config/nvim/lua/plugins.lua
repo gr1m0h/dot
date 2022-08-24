@@ -7,10 +7,7 @@ end
 require('packer').startup{
 function()
   -- package manager
-  use {
-		'wbthomason/packer.nvim',
-		opt = true,
-	}
+  use 'wbthomason/packer.nvim'
   -----------------------------
   --
   -- Utils
