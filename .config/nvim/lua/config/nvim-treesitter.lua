@@ -35,3 +35,5 @@ ts.setup {
   -- https://github.com/yioneko/nvim-yati
   yati = { enable = true },
 }
+
+vim.keymap.set('n', 'ts', ':TSUpdateSync<Return>', { noremap = true })
