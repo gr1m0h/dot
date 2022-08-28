@@ -8,7 +8,7 @@ return {
           action = wezterm.action{ SplitHorizontal = { domain = 'CurrentPaneDomain' }}},
   },
   exit_behavior = 'Close',
-	font = wezterm.font 'UDEV Gothic',
+	font = wezterm.font 'HackGen Console NF',
 	font_size = 13.0,
 	use_ime = true,
 }
