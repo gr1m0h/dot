@@ -13,9 +13,9 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias c='clear'
-alias rm='rubbish chuckout'
 
 set -gx XDG_DATA_HOME $HOME/.local/share
+set -gx XDG_CONFIG_HOME $HOME/.config
 
 # asdf
 source /opt/homebrew/opt/asdf/libexec/asdf.fish
@@ -26,6 +26,9 @@ set -gx AQUA_GLOBAL_CONFIG $HOME/.aqua.yaml
 set -gx PATH $AQUA_ROOT_DIR/bin $PATH
 
 set -gx EDITOR $AQUA_ROOT_DIR/bin/nvim
+
+# docker
+alias docker-compose='docker-cli-plugin-docker-compose'
 
 # kubectl
 alias k='kubectl'
