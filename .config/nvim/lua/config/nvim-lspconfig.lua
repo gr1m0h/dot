@@ -3,6 +3,8 @@
 local status, config = pcall(require,'lspconfig')
 if (not status) then return end
 
+-- sql
+config.sqls.setup{}
 -- lua
 config.sumneko_lua.setup{
   settings = {
