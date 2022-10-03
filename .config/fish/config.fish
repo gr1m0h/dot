@@ -1,5 +1,5 @@
 # remove greeting messsage
-set -x fish_greeting
+set -gx fish_greeting
 
 # vi mode
 fish_vi_key_bindings
@@ -35,11 +35,11 @@ alias k='kubectl'
 
 # go
 set -gx GOPATH $HOME/.packages/go
-set PATH $GOPATH/bin $PATH
+set -gx PATH $GOPATH/bin $PATH
 
 # npm
 set -gx NPM_CONFIG_PREFIX $HOME/.packages/npm
-set PATH $NPM_CONFIG_PREFIX/bin $PATH
+set -gx PATH $NPM_CONFIG_PREFIX/bin $PATH
 
 # mysql
 set -gx DATADIR $HOME/.data/mysql
