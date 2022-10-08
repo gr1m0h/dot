@@ -27,3 +27,5 @@ packages:
 - name: sharkdp/fd@v8.4.0
 - name: sumneko/lua-language-server@3.5.3
 - name: golang-migrate/migrate@v4.15.2
+- name: mozilla/sops@v3.7.3
+- name: sharkdp/bat@v0.22.1

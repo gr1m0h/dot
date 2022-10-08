@@ -30,6 +30,9 @@ set -gx EDITOR $AQUA_ROOT_DIR/bin/nvim
 # docker
 alias docker-compose='docker-cli-plugin-docker-compose'
 
+# cat
+alias cat='bat'
+
 # kubectl
 alias k='kubectl'
 
