@@ -1,5 +1,7 @@
 # remove greeting messsage
-set -gx fish_greeting
+set -g fish_greeting
+
+set -g theme_display_date yes
 
 # vi mode
 fish_vi_key_bindings
@@ -16,6 +18,7 @@ alias c='clear'
 
 set -gx XDG_DATA_HOME $HOME/.local/share
 set -gx XDG_CONFIG_HOME $HOME/.config
+set -gx WORKSPACE_HOME $HOME/workspace
 
 # asdf
 source /opt/homebrew/opt/asdf/libexec/asdf.fish
@@ -26,6 +29,10 @@ set -gx AQUA_GLOBAL_CONFIG $HOME/.aqua.yaml
 set -gx PATH $AQUA_ROOT_DIR/bin $PATH
 
 set -gx EDITOR $AQUA_ROOT_DIR/bin/nvim
+
+# ghq
+set -gx GHQ_ROOT_DIR $WORKSPACE_HOME
+set -gx GHQ_SELECTOR fzf
 
 # docker
 alias docker-compose='docker-cli-plugin-docker-compose'
