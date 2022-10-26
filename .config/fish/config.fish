@@ -1,14 +1,8 @@
 # remove greeting messsage
-set -g fish_greeting
-
-set -g theme_display_date yes
+set -gx fish_greeting
 
 # vi mode
 fish_vi_key_bindings
-
-# enable grimoh/fish-prompt
-function fish_mode_prompt
-end
 
 # util
 alias ..='cd ..'
@@ -18,7 +12,7 @@ alias c='clear'
 
 set -gx XDG_DATA_HOME $HOME/.local/share
 set -gx XDG_CONFIG_HOME $HOME/.config
-set -gx WORKSPACE_HOME $HOME/workspace
+set -gx WORKSPACE_HOME $HOME/Documents/workspace
 
 # asdf
 source /opt/homebrew/opt/asdf/libexec/asdf.fish
