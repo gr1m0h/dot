@@ -151,9 +151,19 @@ function()
 		end,
 	}
   -- Debug Adapter Protocol client implementation for Neovim
-  use 'mfussenegger/nvim-dap'
+  use {
+		'mfussenegger/nvim-dap',
+		config = function()
+			require('config/nvim-dap')
+		end,
+	}
 	-- A UI for nvim-dap
-	use 'rcarriga/nvim-dap-ui'
+	use {
+		'rcarriga/nvim-dap-ui',
+		config = function()
+			require('config/nvim-dap-ui')
+		end,
+	}
   -- Neovim can be used as a language server to inject LSP diagnostics, code actions, etc. via Lua
   use 'jose-elias-alvarez/null-ls.nvim'
   -------------------------------
