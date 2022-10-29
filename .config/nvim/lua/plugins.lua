@@ -136,12 +136,26 @@ function()
       require('config.nvim-lspconfig')
     end,
   }
+	-- Portable package manager for Neovim that runs everywhere Neovim runs. Easily install and manage LSP servers, DAP servers, linters, and formatters.
+	use {
+		'williamboman/mason.nvim',
+		config = function()
+		  require('mason').setup()
+		end,
+	}
+	-- Extension to mason.nvim that makes it easier to use lspconfig with mason.nvim
+	use {
+		'williamboman/mason-lspconfig.nvim',
+		config = function()
+			require('config.mason-lspconfig')
+		end,
+	}
+  -- Debug Adapter Protocol client implementation for Neovim
+  use 'mfussenegger/nvim-dap'
+	-- A UI for nvim-dap
+	use 'rcarriga/nvim-dap-ui'
   -- Neovim can be used as a language server to inject LSP diagnostics, code actions, etc. via Lua
   use 'jose-elias-alvarez/null-ls.nvim'
-	--
-	use 'williamboman/mason.nvim'
-	--
-	use 'williamboman/mason-lspconfig.nvim'
   -------------------------------
   --
   -- Snippet
