@@ -16,7 +16,7 @@ local fb_actions = require 'telescope'.extensions.file_browser.actions
 telescope.setup {
   defaults = {
     mappings = {
-      n = { ['q'] = actions.close },
+      q = { ['q'] = actions.close },
       i = { ['<c-t>'] = trouble.open_with_trouble },
       n = { ['<c-t>'] = trouble.open_with_trouble },
     },
