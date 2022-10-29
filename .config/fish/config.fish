@@ -1,9 +1,6 @@
 # remove greeting messsage
 set -gx fish_greeting
 
-# vi mode
-fish_vi_key_bindings
-
 # util
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -30,6 +27,9 @@ set -gx GHQ_SELECTOR fzf
 
 # docker
 alias docker-compose='docker-cli-plugin-docker-compose'
+
+# top
+alias top='gotop'
 
 # cat
 alias cat='bat'
