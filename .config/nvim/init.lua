@@ -31,9 +31,10 @@ vim.g.python3_host_prog = '$HOME/.asdf/shims/python3'
 vim.g.ruby_host_prog = '$HOME/.asdf/shims/ruby'
 
 -- keybindings
+local set = vim.keymap.set
 -- packer
-vim.keymap.set('n', 'pi', ':PackerInstall<Return>', { noremap = true })
-vim.keymap.set('n', 'ps', ':PackerSync<Return>', { noremap = true })
+set('n', 'pi', ':PackerInstall<Return>', { noremap = true })
+set('n', 'ps', ':PackerSync<Return>', { noremap = true })
 
 -- checkhealth
-vim.keymap.set('n', 'ch', ':checkhealth<Return>', { noremap = true })
+set('n', 'ch', ':checkhealth<Return>', { noremap = true })
