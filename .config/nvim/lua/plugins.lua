@@ -138,6 +138,10 @@ function()
   }
   -- Neovim can be used as a language server to inject LSP diagnostics, code actions, etc. via Lua
   use 'jose-elias-alvarez/null-ls.nvim'
+	--
+	use 'williamboman/mason.nvim'
+	--
+	use 'williamboman/mason-lspconfig.nvim'
   -------------------------------
   --
   -- Snippet
