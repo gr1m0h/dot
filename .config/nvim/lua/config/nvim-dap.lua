@@ -38,14 +38,14 @@ dap.adapters.go = function(callback, config)
 end
 
 dap.configurations.go = {
-	{
+  {
     type = "go",
-		name = "Debug",
-		request = "launch",
-		program = "${file}"
+    name = "Debug",
+    request = "launch",
+    program = "${file}"
   },
   {
-		type = "go",
+    type = "go",
     name = "Debug test", -- configuration for debugging test files
     request = "launch",
     mode = "test",

@@ -62,5 +62,3 @@ config.yamlls.setup{}
 
 set('n', 'li', ':LspInfo<Return>', { noremap = true })
 set('n', 'ls', ':LspStart<Return>', { noremap = true })
-
-
