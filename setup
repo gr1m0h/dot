@@ -93,7 +93,7 @@ setup_fish(){
   fi
 
   # install fisher plugins
-  FISHER_PACKAGE=(
+  FISHER_PACKAGES=(
     decors/fish-ghq
     dracula/fish
     evanlucas/fish-kubectl-completions
@@ -103,7 +103,7 @@ setup_fish(){
     grimoh/fish-aqua
     grimoh/fish-prompt
   )
-  fish -C 'fisher install "${FISHER_PACKAGE[@]}" || :'
+  fish -C 'fisher install "${FISHER_PACKAGES[@]}" || :'
 }
 
 setup_macos(){
@@ -185,6 +185,21 @@ setup_asdfvm(){
   asdf install
 }
 
+setup_aqua(){
+  title "Setting up aqua"
+
+  # install aqua plugins
+  aqua install
+}
+
+setup_docker(){
+  title "Setting up docker"
+
+  # change to use docker.sock mounted by colima
+  docker context use colima
+  # echo $1 | sudo ln -s $HOME/.colima/docker.sock /var/run/docker.sock
+}
+
 setup_neovim(){
   title "Setting up neovim"
 
@@ -208,16 +223,20 @@ setup_packages(){
   python3 -m pip install pynvim
 
   # install npm packages
-  npm install --global neovim
-  npm install --global dockerfile-language-server-nodejs
-  npm install --global eclint
-  npm install --global quick-lint-js
-  npm install --global typescript-language-server
-  npm install --global typescript
-  npm install --global yaml-language-server
+  NPM_PACKAGES=(
+    neovim
+    eclint
+    typescript
+  )
+  npm install --global "${NPM_PACKAGES[@]}" || :
 
   # install go packages
-  go install golang.org/x/tools/gopls@latest
+  GO_PACKAGES=(
+    golang.org/x/tools/cmd/godoc@latest
+    google.golang.org/protobuf/cmd/protoc-gen-go@latest
+    google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+  )
+  go install "${GO_PACKAGE[@]}" || :
 }
 
 case "$1" in
@@ -236,6 +255,12 @@ case "$1" in
   asdfvm)
     setup_asdfvm
     ;;
+  aqua)
+    setup_aqua
+    ;;
+  docker)
+    setup_docker
+    ;;
   neovim)
     setup_neovim
     ;;
@@ -248,6 +273,8 @@ case "$1" in
     setup_fish
     setup_macos
     setup_asdfvm
+    setup_aqua
+    setup_docker
     setup_neovim
     setup_packages
     ;;
