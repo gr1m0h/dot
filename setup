@@ -19,7 +19,7 @@ err() {
 }
 
 warn() {
-    echo -e "${COLOR_YELLOW}WARNING: ${COLOR_NONE}$1"
+  echo -e "${COLOR_YELLOW}WARNING: ${COLOR_NONE}$1"
 }
 
 info() {
@@ -279,7 +279,7 @@ case "$1" in
     setup_packages
     ;;
   *)
-    echo -e $"\nUsage: $(basename "$0") {dotfiles|homebrew|fish|macos|asdfvm|nepvim|pkgs|all}\n"
+    echo $"\nUsage: $(basename "$0") {dotfiles|homebrew|fish|macos|asdfvm|aqua|docker|neovim|pkgs|all|help}\n"
     exit 1
     ;;
 esac
