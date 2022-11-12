@@ -279,7 +279,7 @@ case "$1" in
     setup_packages
     ;;
   *)
-    echo $"\nUsage: $(basename "$0") {dotfiles|homebrew|fish|macos|asdfvm|aqua|docker|neovim|pkgs|all|help}\n"
+    echo $"\nUsage: $(basename "$0") {dotfiles|homebrew|fish|macos|asdfvm|aqua|docker|neovim|pkgs|all}\n"
     exit 1
     ;;
 esac
