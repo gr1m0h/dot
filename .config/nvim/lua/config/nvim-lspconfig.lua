@@ -16,7 +16,9 @@ local on_attach = function(client, bufnr)
 end
 
 -- sql
-config.sqls.setup{}
+config.sqls.setup{
+  on_attach = on_attach,
+}
 -- lua
 config.sumneko_lua.setup{
   on_attach = on_attach,
@@ -30,7 +32,9 @@ config.sumneko_lua.setup{
   },
 }
 -- docker
-config.dockerls.setup{}
+config.dockerls.setup{
+  on_attach = on_attach,
+}
 -- go
 config.gopls.setup{
   on_attach = on_attach,
@@ -48,17 +52,25 @@ config.gopls.setup{
   },
 }
 -- js
-config.quick_lint_js.setup{}
+config.quick_lint_js.setup{
+  on_attach = on_attach,
+}
 -- terraform
-config.terraformls.setup{}
+config.terraformls.setup{
+	on_attach = on_attach,
+	filetypes = { 'terraform', 'tf' },
+	cmd = { 'terraform-ls', 'serve' },
+}
 -- typescript
 config.tsserver.setup{
   on_attach = on_attach,
   filetypes = { "typescript", "typescriptreact", "typescript.tsx" },
-  cmd = { "typescript-language-server", "--stdio" }
+  cmd = { "typescript-language-server", "--stdio" },
 }
 -- yaml
-config.yamlls.setup{}
+config.yamlls.setup{
+	on_attach = on_attach,
+}
 
 set('n', 'li', ':LspInfo<Return>', { noremap = true })
 set('n', 'ls', ':LspStart<Return>', { noremap = true })

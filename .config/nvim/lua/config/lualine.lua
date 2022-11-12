@@ -16,8 +16,10 @@ lualine.setup {
     lualine_b = { 'branch' },
     lualine_c = { {
       'filename',
-      file_status = true, -- displays file status (readonly status, modified status)
-      path = 1-- 0 = just filename, 1 = relative path, 2 = absolute path
+			-- displays file status (readonly status, modified status)
+      file_status = true,
+      -- 0 = just filename, 1 = relative path, 2 = absolute path
+      path = 0
     } },
     lualine_x = {
       { 'diagnostics', sources = { 'nvim_diagnostic' }, symbols = { error = ' ', warn = ' ', info = ' ',
@@ -33,8 +35,10 @@ lualine.setup {
     lualine_b = {},
     lualine_c = { {
       'filename',
-      file_status = true, -- displays file status (readonly status, modified status)
-      path = 1 -- 0 = just filename, 1 = relative path, 2 = absolute path
+			-- displays file status (readonly status, modified status)
+      file_status = true,
+      -- 0 = just filename, 1 = relative path, 2 = absolute path
+      path = 1
     } },
     lualine_x = { 'location' },
     lualine_y = {},

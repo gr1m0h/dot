@@ -22,6 +22,7 @@ ts.setup {
     'scss',
     'toml',
     'typescript',
+    'tsx',
     'vim',
     'vue',
     'yaml',
@@ -30,6 +31,9 @@ ts.setup {
     enable = true,
     disable = {},
     additional_vim_regex_highlighting = false,
+  },
+  autotag = {
+    enable = true,
   },
   -- indent plugin
   -- https://github.com/yioneko/nvim-yati

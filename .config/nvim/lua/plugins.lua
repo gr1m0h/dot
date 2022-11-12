@@ -42,7 +42,7 @@ require('packer').startup {
     use {
       'Mofiqul/dracula.nvim',
       config = function()
-        vim.cmd [[ colorscheme dracula ]]
+        require('config.dracula')
       end,
     }
     -------------------------------
@@ -140,7 +140,7 @@ require('packer').startup {
     use {
       'williamboman/mason.nvim',
       config = function()
-        require('mason').setup()
+        require('config.mason')
       end,
     }
     -- Extension to mason.nvim that makes it easier to use lspconfig with mason.nvim
@@ -154,7 +154,7 @@ require('packer').startup {
     use {
       'mfussenegger/nvim-dap',
       config = function()
-        require('config/nvim-dap')
+        require('config.nvim-dap')
       end,
     }
     -- A UI for nvim-dap
@@ -166,7 +166,7 @@ require('packer').startup {
         'nvim-treesitter/nvim-treesitter',
       },
       config = function()
-        require('config/nvim-dap-ui')
+        require('config.nvim-dap-ui')
       end,
     }
     -- Neovim can be used as a language server to inject LSP diagnostics, code actions, etc. via Lua
@@ -219,6 +219,13 @@ require('packer').startup {
     -- Reading
     --
     -------------------------------
+    -- lua `fork` of vim-web-devicons for neovim
+    use {
+      'nvim-tree/nvim-web-devicons',
+      config = function()
+        require('config.nvim-web-devicons')
+      end,
+    }
     -- indent
     use {
       'lukas-reineke/indent-blankline.nvim',
@@ -235,6 +242,14 @@ require('packer').startup {
         require('config.lspsaga')
       end,
     }
+    -- A snazzy bufferline for Neovim
+    use {
+      'akinsho/bufferline.nvim',
+      requires = 'nvim-tree/nvim-web-devicons',
+      config = function()
+        require("config.bufferline")
+      end,
+    }
     -------------------------------
     --
     -- Moving
@@ -245,8 +260,7 @@ require('packer').startup {
       'phaazon/hop.nvim',
       branch = 'v2',
       config = function()
-        -- you can configure Hop the way you like here; see :h hop-config
-        require('hop').setup { keys = 'etovxqpdygfblzhckisuran' }
+        require('config.hop')
       end,
     }
     -------------------------------
@@ -264,7 +278,7 @@ require('packer').startup {
       'windwp/nvim-autopairs',
       event = 'VimEnter',
       config = function()
-        require('nvim-autopairs').setup { disable_filetype = { 'TelescopePrompt', 'vim' } }
+        require('config.nvim-autopairs')
       end,
     }
     -- use treesitter to auto close and auto rename html tag
@@ -273,7 +287,7 @@ require('packer').startup {
       requires = { { 'nvim-treesitter/nvim-treesitter', opt = true } },
       after = { 'nvim-treesitter' },
       config = function()
-        require('nvim-ts-autotag').setup()
+        require('config.nvim-ts-autotag')
       end,
     }
     -- vim plugin for extensible and universal comments that can also handle embedded file types
@@ -300,7 +314,7 @@ require('packer').startup {
       'nvim-lualine/lualine.nvim',
       after = dracula,
       -- web devicons
-      requires = { 'kyazdani42/nvim-web-devicons', opt = true },
+      requires = { 'nvim-tree/nvim-web-devicons', opt = true },
       config = function()
         require('config.lualine')
       end,
@@ -311,7 +325,7 @@ require('packer').startup {
       requires = { { 'nvim-treesitter/nvim-treesitter', opt = true } },
       after = { 'nvim-treesitter' },
       config = function()
-        require('nvim-gps').setup()
+        require('config.nvim-gps')
       end,
     }
     -- The fastest Neovim colorizer.
@@ -320,9 +334,9 @@ require('packer').startup {
     use 'onsails/lspkind.nvim'
     use {
       'folke/trouble.nvim',
-      requires = 'kyazdani42/nvim-web-devicons',
+      requires = 'nvim-tree/nvim-web-devicons',
       config = function()
-        require('trouble').setup {}
+        require('config.trouble')
       end,
     }
     -------------------------------
@@ -359,9 +373,7 @@ require('packer').startup {
       'zbirenbaum/copilot.lua',
       after = 'copilot.vim',
       config = function()
-        vim.schedule(function()
-          require('copilot')
-        end)
+        require('config.copilot')
       end,
     }
     -------------------------------
@@ -373,7 +385,7 @@ require('packer').startup {
     use {
       'lewis6991/gitsigns.nvim',
       config = function()
-        require('gitsigns').setup()
+        require('config.gitsigns')
       end,
     }
     -------------------------------
@@ -385,7 +397,7 @@ require('packer').startup {
     use {
       'leoluz/nvim-dap-go',
       config = function()
-        require('dap-go').setup()
+        require('config.dap-go')
       end
     }
     -- markdown
