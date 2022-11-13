@@ -4,7 +4,16 @@ if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
   vim.api.nvim_command "packadd packer.nvim"
 end
 
-require("packer").startup {
+local status, packer = pcall(require, "packer")
+if (not status) then return end
+
+packer.init {
+  display = {
+    open_fn = require 'packer.util'.float,
+  },
+}
+
+packer.startup {
   function()
     -- package manager
     use "wbthomason/packer.nvim"
