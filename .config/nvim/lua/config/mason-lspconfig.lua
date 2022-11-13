@@ -1,17 +1,18 @@
 -- https://github.com/williamboman/mason-lspconfig.nvim
 
-local status, masonlsp = pcall(require, 'mason-lspconfig')
+local status, masonlsp = pcall(require, "mason-lspconfig")
 if (not status) then return end
 
-masonlsp.setup{
+masonlsp.setup {
   ensure_installed = {
-    'sqls',
-    'sumneko_lua',
-    'dockerls',
-    'gopls',
-    'quick_lint_js',
-    'tsserver',
-    'terraformls',
-    'yamlls',
+    "sqls",
+    "sumneko_lua",
+    "dockerls",
+		"gopls",
+		"rome",
+    "tsserver",
+    "terraformls",
+    "yamlls",
+    "marksman",
   }
 }

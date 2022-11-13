@@ -1,6 +1,6 @@
 -- https://github.com/lukas-reineke/indent-blankline.nvim
 
-local status, indent = pcall(require, 'indent_blankline')
+local status, indent = pcall(require, "indent_blankline")
 if (not status) then return end
 
 vim.opt.list = true

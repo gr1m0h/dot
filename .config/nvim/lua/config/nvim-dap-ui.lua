@@ -1,9 +1,9 @@
 -- https://github.com/rcarriga/nvim-dap-ui
 
-local status, dapui = pcall(require, 'dapui')
+local status, dapui = pcall(require, "dapui")
 if (not status) then return end
 
-local dap = require('dap')
+local dap = require("dap")
 
 dapui.setup()
 

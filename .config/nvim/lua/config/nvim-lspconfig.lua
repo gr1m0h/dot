@@ -1,6 +1,6 @@
 -- https://github.com/neovim/nvim-lspconfig
 
-local status, config = pcall(require,'lspconfig')
+local status, config = pcall(require,"lspconfig")
 if (not status) then return end
 
 local set = vim.keymap.set
@@ -26,7 +26,7 @@ config.sumneko_lua.setup{
     Lua = {
       diagnostics = {
         enable = true,
-        globals = { 'vim', 'use' },
+        globals = { "vim", "use" },
       },
     }
   },
@@ -38,7 +38,7 @@ config.dockerls.setup{
 -- go
 config.gopls.setup{
   on_attach = on_attach,
-  cmd = { 'gopls', 'serve' },
+  cmd = { "gopls", "serve" },
   settings = {
     gopls = {
       analyses = {
@@ -58,8 +58,8 @@ config.quick_lint_js.setup{
 -- terraform
 config.terraformls.setup{
 	on_attach = on_attach,
-	filetypes = { 'terraform', 'tf' },
-	cmd = { 'terraform-ls', 'serve' },
+	filetypes = { "terraform", "tf" },
+	cmd = { "terraform-ls", "serve" },
 }
 -- typescript
 config.tsserver.setup{
@@ -72,5 +72,5 @@ config.yamlls.setup{
 	on_attach = on_attach,
 }
 
-set('n', 'li', ':LspInfo<Return>', { noremap = true })
-set('n', 'ls', ':LspStart<Return>', { noremap = true })
+set("n", "li", ":LspInfo<Return>", { noremap = true })
+set("n", "ls", ":LspStart<Return>", { noremap = true })

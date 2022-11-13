@@ -1,6 +1,6 @@
 -- https://github.com/chen244/csv-tools.lua
 
-local status, csv = pcall(require, 'csvtools.lua')
+local status, csv = pcall(require, "csvtools.lua")
 if (not status) then return end
 
 csv.setup {
