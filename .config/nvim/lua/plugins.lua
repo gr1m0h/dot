@@ -50,6 +50,7 @@ packer.startup {
     local dracula = "dracula.nvim"
     use {
       "Mofiqul/dracula.nvim",
+      opt = true,
       config = function()
         require("config.dracula")
       end,
