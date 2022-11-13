@@ -40,6 +40,9 @@ packer.startup {
     use {
       "rcarriga/nvim-notify",
       event = "VimEnter",
+      config = function()
+        require("config.nvim-notify")
+      end
     }
     -------------------------------
     --
