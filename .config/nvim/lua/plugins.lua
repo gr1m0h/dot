@@ -107,11 +107,6 @@ packer.startup {
 			"hrsh7th/cmp-path",
 			after = "nvim-cmp",
 		}
-		-- vim"s cmdline
-		use {
-			"hrsh7th/cmp-cmdline",
-			after = "nvim-cmp",
-		}
 		-- luasnip completion source
 		use {
 			"saadparwaiz1/cmp_luasnip",
