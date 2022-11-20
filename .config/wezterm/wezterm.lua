@@ -73,4 +73,5 @@ return {
 	font = wezterm.font 'HackGen Console NF',
 	font_size = 13.0,
 	use_ime = true,
+  window_background_opacity = 0.9,
 }
