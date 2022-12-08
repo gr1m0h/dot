@@ -70,7 +70,7 @@ return {
 	color_scheme = 'Dracula',
 	keys = keys,
 	exit_behavior = 'Close',
-	font = wezterm.font 'HackGen Console NF',
+	font = wezterm.font 'HackGen35 Console NFJ',
 	font_size = 13.0,
 	use_ime = true,
   window_background_opacity = 0.9,
