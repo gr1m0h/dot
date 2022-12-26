@@ -167,6 +167,17 @@ setup_macos(){
     echo "Enable Safari’s debug menu"
     defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
 
+		# Security and Privacy Setting
+
+		echo "Enable password request for sleep wake and screen saver"
+		defaults write com.apple.screensaver askForPassword -bool true
+
+		echo "Set the time before requesting a password"
+		defaults write com.apple.screensaver askForPasswordDelay -int 0
+
+		echo "Enable Firewall"
+		defaults write /Library/Preferences/com.apple.alf globalstate -int 1
+
     echo "Kill affected applications"
     for app in Safari Finder Dock Mail SystemUIServer; do killall "$app" >/dev/null 2>&1; done
   else
