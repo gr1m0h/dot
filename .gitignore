@@ -3,3 +3,6 @@
 !/.cspell.json
 !/.nvim/
 !/.nvim/**
+
+### javascript
+node_modules
