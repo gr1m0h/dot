@@ -214,7 +214,7 @@ setup_macos(){
 
     # Clock
     echo "Date options: Show the day of the week: on"
-    defaults write com.apple.menuextra.clock 'DateFormat' -string 'EEE H:mm'
+    defaults write com.apple.menuextra.clock 'DateFormat' -string 'EEE d MMM HH:mm'
 
     echo "Kill affected applications"
     for app in Safari Finder Dock; do killall "$app" >/dev/null 2>&1; done
