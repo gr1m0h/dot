@@ -4,11 +4,10 @@ local status, masonnull = pcall(require, "mason-null-ls")
 if (not status) then return end
 
 masonnull.setup {
-	ensure_installed = {
-		"prettier",
-		"goimports",
-		"jq",
-		"yamlfmt",
-	},
-	automatic_setup = true,
+  ensure_installed = {
+    "goimports",
+    "jq",
+    "yamlfmt",
+  },
+  automatic_setup = true,
 }
