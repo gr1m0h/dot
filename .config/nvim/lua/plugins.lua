@@ -40,6 +40,13 @@ packer.startup {
         vim.g['readme_viewer#plugin_manager'] = 'packer.nvim'
       end
     }
+    -- Create key bindings that stick. WhichKey is a lua plugin for Neovim 0.5 that displays a popup with possible keybindings of the command you started typing.
+    use {
+      'folke/which-key.nvim',
+      config = function()
+        require('which-key').setup{}
+      end
+    }
     -----------------------------
     --
     -- Notify
@@ -372,6 +379,8 @@ packer.startup {
       'nvim-telescope/telescope-file-browser.nvim',
       requires = { 'telescope.nvim' },
     }
+    -- (Teles-)Hopping to the moon.
+    use 'nvim-telescope/telescope-hop.nvim'
     -------------------------------
     --
     -- Git
