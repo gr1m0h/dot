@@ -46,6 +46,7 @@ vim.opt.shortmess:append({ I = true })
 vim.opt.showmode = true
 vim.opt.mouse = 'a'
 vim.opt.laststatus = 3
+vim.opt.helplang = 'ja', 'en'
 
 -- use program
 vim.g.python3_host_prog = '$HOME/.asdf/shims/python3'
