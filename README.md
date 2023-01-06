@@ -1,5 +1,13 @@
 # dotfiles
 
+## NeoVim
+
+Neovim startup time
+
+```sh
+194.895  000.001: --- NVIM STARTED ---
+```
+
 ## Usage
 
 ```sh
