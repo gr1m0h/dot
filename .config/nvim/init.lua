@@ -52,11 +52,5 @@ vim.opt.helplang = 'ja', 'en'
 vim.g.python3_host_prog = '$HOME/.asdf/shims/python3'
 vim.g.ruby_host_prog = '$HOME/.asdf/shims/ruby'
 
--- keybindings
-local set = vim.keymap.set
--- packer
-set('n', 'pi', ':PackerInstall<Return>', { noremap = true })
-set('n', 'ps', ':PackerSync<Return>', { noremap = true })
-
 -- checkhealth
-set('n', 'ch', ':checkhealth<Return>', { noremap = true })
+vim.keymap.set('n', 'ch', ':checkhealth<Return>', { noremap = true })
