@@ -8,6 +8,6 @@ vim.opt.listchars:append("space:⋅")
 vim.opt.listchars:append("eol:↴")
 
 indent.setup {
-    show_end_of_line = true,
-    space_char_blankline = " ",
+	show_end_of_line = true,
+	space_char_blankline = " ",
 }

@@ -10,8 +10,8 @@ local action = require("lspsaga.codeaction")
 -- code action
 vim.keymap.set("n", "<leadeer>ca", action.code_action, { silent = true })
 vim.keymap.set("v", "<leader>ca", function()
-  vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<C-U>", true, false, true))
-  action.range_code_action()
+	vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<C-U>", true, false, true))
+	action.range_code_action()
 end, { silent = true })
 -- or use command
 vim.keymap.set("n", "<leader>ca", "<cmd>Lspsaga code_action<CR>", { silent = true })

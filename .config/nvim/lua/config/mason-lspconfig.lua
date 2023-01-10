@@ -4,15 +4,15 @@ local status, masonlsp = pcall(require, "mason-lspconfig")
 if (not status) then return end
 
 masonlsp.setup {
-  ensure_installed = {
-    "sqls",
-    "sumneko_lua",
-    "dockerls",
+	ensure_installed = {
+		"sqls",
+		"sumneko_lua",
+		"dockerls",
 		"gopls",
 		"rome",
-    "tsserver",
-    "terraformls",
-    "yamlls",
-    "marksman",
-  }
+		"tsserver",
+		"terraformls",
+		"yamlls",
+		"marksman",
+	}
 }
