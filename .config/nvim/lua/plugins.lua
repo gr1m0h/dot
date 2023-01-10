@@ -386,7 +386,7 @@ packer.startup {
 			requires = { 'telescope.nvim' },
 		}
 		-- (Teles-)Hopping to the moon.
-		use 'nvim-telescope/telescope-hop.nvim'
+		-- use 'nvim-telescope/telescope-hop.nvim'
 		-------------------------------
 		--
 		-- Git
