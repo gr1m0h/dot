@@ -332,6 +332,10 @@ packer.startup {
         vim.keymap.set('n', 'zm', ':ZenMode<Return>', { noremap = true, silent = true })
       end,
     }
+    -- Easy and high speed coding method
+    use {
+      'mattn/vim-sonictemplate'
+    }
     -------------------------------
     --
     -- Appearance
