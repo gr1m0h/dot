@@ -364,6 +364,7 @@ packer.startup {
     use 'norcalli/nvim-colorizer.lua'
     -- vscode-like pictograms for neovim lsp completion items
     use 'onsails/lspkind.nvim'
+    -- 🚦 A pretty diagnostics, references, telescope results, quickfix and location list to help you solve all the trouble your code is causing.
     use {
       'folke/trouble.nvim',
       requires = 'nvim-tree/nvim-web-devicons',
