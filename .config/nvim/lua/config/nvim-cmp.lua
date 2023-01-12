@@ -40,6 +40,25 @@ cmp.setup {
   },
 }
 
+cmp.setup.cmdline('/', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = 'buffer' }
+  }
+})
+
+cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    name = 'cmdline',
+    option = {
+      ignore_cmds = { 'Man', '!' }
+    }
+  })
+})
+
 vim.g.completeopt = 'menu,menuone,noselect'
 vim.cmd [[
   highlight! default link CmpItemKind CmpItemMenuDefault

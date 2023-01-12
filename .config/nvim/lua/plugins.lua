@@ -121,6 +121,11 @@ packer.startup {
       'hrsh7th/cmp-buffer',
       after = cmp,
     }
+    -- nvim-cmp source for vim's cmdline
+    use {
+      'hrsh7th/cmp-cmdline',
+      after = cmp,
+    }
     -- nvim-cmp source for path
     use {
       'hrsh7th/cmp-path',
@@ -134,6 +139,7 @@ packer.startup {
     -- cmp source for treesitter
     use {
       'ray-x/cmp-treesitter',
+      run = ':TSUpdate',
       after = cmp,
     }
     -------------------------------
