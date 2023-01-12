@@ -372,6 +372,14 @@ packer.startup {
         require('trouble').setup {}
       end,
     }
+    -- Prismatic line decorations for the adventurous vim user
+    use {
+      'mvllow/modes.nvim',
+      tag = 'v0.2.0',
+      config = function()
+        require('modes').setup {}
+      end
+    }
     -------------------------------
     --
     -- Fuzzy finder, Filer
