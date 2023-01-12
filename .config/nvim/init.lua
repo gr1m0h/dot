@@ -1,24 +1,42 @@
 require('plugins')
 
--- disable standard plugins
-vim.g.did_install_default_menus = 1
-vim.g.did_install_syntax_menu   = 1
-vim.g.did_indent_on             = 1
-vim.g.did_load_filetypes        = 1
-vim.g.did_load_ftplugin         = 1
-vim.g.loaded_2html_plugin       = 1
-vim.g.loaded_gzip               = 1
-vim.g.loaded_man                = 1
-vim.g.loaded_matchit            = 1
-vim.g.loaded_matchparen         = 1
-vim.g.loaded_netrwPlugin        = 1
-vim.g.loaded_remote_plugins     = 1
-vim.g.loaded_shada_plugin       = 1
-vim.g.loaded_spellfile_plugin   = 1
-vim.g.loaded_tarPlugin          = 1
-vim.g.loaded_tutor_mode_plugin  = 1
-vim.g.loaded_zipPlugin          = 1
-vim.g.skip_loading_mswin        = 1
+-- disable default plugins
+local disable_plugins = {
+  'loaded_gzip',
+  'loaded_shada_plugin',
+  'loadedzip',
+  'loaded_spellfile_plugin',
+  'loaded_tutor_mode_plugin',
+  'loaded_tar',
+  'loaded_tarPlugin',
+  'loaded_zip',
+  'loaded_zipPlugin',
+  'loaded_rrhelper',
+  'loaded_2html_plugin',
+  'loaded_vimball',
+  'loaded_vimballPlugin',
+  'loaded_getscript',
+  'loaded_getscriptPlugin',
+  'loaded_matchparen',
+  'loaded_matchit',
+  'loaded_man',
+  'loaded_netrw',
+  'loaded_netrwPlugin',
+  'loaded_netrwSettings',
+  'loaded_netrwFileHandlers',
+  'loaded_logiPat',
+  'loaded_remote_plugins',
+  'did_load_filetypes',
+  'did_load_ftplugin',
+  'did_indent_on',
+  'did_install_default_menus',
+  'did_install_syntax_menu',
+  'skip_loading_mswin',
+}
+
+for _, name in pairs(disable_plugins) do
+	vim.g[name] = 1
+end
 
 -- config
 vim.o.encoding = 'utf-8'
@@ -46,7 +64,7 @@ vim.opt.shortmess:append({ I = true })
 vim.opt.showmode = true
 vim.opt.mouse = 'a'
 vim.opt.laststatus = 3
-vim.opt.helplang = 'ja', 'en'
+vim.opt.helplang = 'ja'
 vim.opt.termguicolors = true
 
 -- use program
