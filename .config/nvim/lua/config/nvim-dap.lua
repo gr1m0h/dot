@@ -1,6 +1,6 @@
 -- https://github.com/mfussenegger/nvim-dap
 
-local status, dap = pcall(require, "dap")
+local status, dap = pcall(require, 'dap')
 if (not status) then return end
 
 dap.adapters.go = function(callback, config)
@@ -10,29 +10,29 @@ dap.adapters.go = function(callback, config)
 	local port = 38697
 	local opts = {
 		stdio = { nil, stdout },
-		args = { "dap", "-l", "127.0.0.1:" .. port },
+		args = { 'dap', '-l', '127.0.0.1:' .. port },
 		detached = true
 	}
-	handle, pid_or_err = vim.loop.spawn("dlv", opts, function(code)
+	handle, pid_or_err = vim.loop.spawn('dlv', opts, function(code)
 		stdout:close()
 		handle:close()
 		if code ~= 0 then
-			print("dlv exited with code", code)
+			print('dlv exited with code', code)
 		end
 	end)
-	assert(handle, "Error running dlv: " .. tostring(pid_or_err))
+	assert(handle, 'Error running dlv: ' .. tostring(pid_or_err))
 	stdout:read_start(function(err, chunk)
 		assert(not err, err)
 		if chunk then
 			vim.schedule(function()
-				require("dap.repl").append(chunk)
+				require('dap.repl').append(chunk)
 			end)
 		end
 	end)
 	-- Wait for delve to start
 	vim.defer_fn(
 		function()
-			callback({ type = "server", host = "127.0.0.1", port = port })
+			callback({ type = 'server', host = '127.0.0.1', port = port })
 		end,
 		100)
 end
