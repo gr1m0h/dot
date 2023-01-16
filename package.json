@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "setup": "node --loader ts-node/esm setup.ts"
+    "setup": "node --loader ts-node/esm setup.ts",
     "clean": "rm setup.js"
   },
   "dependencies": {
