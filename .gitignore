@@ -52,4 +52,3 @@ typings/
 .yarn-integrity
 .env
 .next
-*.js
