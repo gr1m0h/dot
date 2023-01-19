@@ -24,7 +24,7 @@ packer.startup {
       -- A use-package inspired plugin manager for Neovim. Uses native packages, supports Luarocks dependencies, written in Lua, allows for expressive config
       'wbthomason/packer.nvim',
       config = function()
-        vim.keymap.set('n', 'ps', ':PackerSync<Return>', { noremap = true })
+        vim.keymap.set('n', 'ps', ':PackerSync<Return>', { noremap = true, silent = true })
       end
     }
     use {
