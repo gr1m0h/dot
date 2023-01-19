@@ -327,13 +327,8 @@ packer.startup {
     use {
       -- The fastest Neovim colorizer.
       'norcalli/nvim-colorizer.lua',
-    }
-    use {
-      -- Prismatic line decorations for the adventurous vim user
-      'mvllow/modes.nvim',
-      tag = 'v0.2.0',
       config = function()
-        require('config.modes')
+        require('colorizer').setup {}
       end
     }
     -------------------------------
