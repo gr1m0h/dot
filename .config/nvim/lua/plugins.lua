@@ -302,14 +302,10 @@ packer.startup {
         require('config.lualine')
       end,
     }
-    -- Simple statusline component that shows what scope you are working inside
     use {
-      'SmiteshP/nvim-gps',
-      requires = { { 'nvim-treesitter/nvim-treesitter', opt = true } },
-      after = ts,
-      config = function()
-        require('nvim-gps').setup {}
-      end,
+      -- Simple winbar/statusline plugin that shows your current code context
+      'SmiteshP/nvim-navic',
+      requires = 'neovim/nvim-lspconfig',
     }
     -------------------------------
     -- Bufferline
