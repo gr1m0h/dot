@@ -343,6 +343,15 @@ packer.startup {
         vim.keymap.set('n', 'zm', ':ZenMode<Return>', { noremap = true, silent = true })
       end,
     }
+    -------------------------------
+    -- Navigation
+    use {
+      -- Neovim plugin for a code outline window
+      'stevearc/aerial.nvim',
+      config = function()
+        require('aerial').setup {}
+      end
+    }
     -------------------------------------------------
     --
     -- Coding
