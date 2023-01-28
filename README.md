@@ -8,7 +8,7 @@ Neovim startup time
 142.325  000.001: --- NVIM STARTED ---
 ```
 
-## Usage
+## WIP: Usage
 
 ```sh
 /bin/zsh setup all
