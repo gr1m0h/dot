@@ -22,11 +22,15 @@ packages:
 - name: docker/compose@v2.9.0
 - name: helm/helm@v3.9.3
 - name: roboll/helmfile@v0.144.0
-- name: telepresenceio/telepresence@v2.7.1
 - name: BurntSushi/ripgrep@13.0.0
 - name: sharkdp/fd@v8.4.0
-- name: sumneko/lua-language-server@3.5.3
 - name: golang-migrate/migrate@v4.15.2
 - name: mozilla/sops@v3.7.3
 - name: sharkdp/bat@v0.22.1
 - name: xxxserxxx/gotop@v4.2.0
+- name: nektos/act@v0.2.33
+- name: aquasecurity/trivy@v0.34.0
+- name: sachaos/viddy@v0.3.6
+- name: Aloxaf/silicon@v0.5.1
+- name: cli/cli@v2.22.1
+
