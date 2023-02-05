@@ -20,8 +20,8 @@ local function day_of_week(w_num)
 end
 
 wezterm.on('update-status', function(window, pane)
-	local wday = string.format('(%s )', day_of_week(os.date('*t').wday))
-	local date = wezterm.strftime('📆 %Y-%m-%d ' .. wday .. ' ⏰ %H:%M:%S');
+	local wday = string.format('(%s)', day_of_week(os.date('*t').wday))
+	local date = wezterm.strftime('📆 %Y-%m-%d '.. wday ..' ⏰ %H:%M:%S');
 
 	local bat = ''
 
@@ -67,11 +67,13 @@ local keys = {
 }
 
 return {
-	color_scheme = 'Dracula',
+  color_scheme = 'Dracula (Official)',
 	keys = keys,
 	exit_behavior = 'Close',
 	font = wezterm.font 'HackGen35 Console NFJ',
 	font_size = 13.0,
 	use_ime = true,
 	window_background_opacity = 0.9,
+  use_fancy_tab_bar = false,
+	window_decorations = "RESIZE",
 }
