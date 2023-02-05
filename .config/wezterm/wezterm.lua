@@ -72,7 +72,6 @@ return {
   window_background_image_hsb = {
     brightness = 0.05,
   },
-  window_background_opacity = 0.8,
   keys = keys,
   exit_behavior = 'Close',
   font = wezterm.font 'HackGen35 Console NFJ',
