@@ -228,10 +228,12 @@ setup_asdfvm(){
 
   # add asdf plugins
   asdf plugin add 1password-cli
+  asdf plugin add awscli
+  asdf plugin add caddy
   asdf plugin add nodejs
   asdf plugin add python
-  asdf plugin add rubbish https://github.com/grimoh/asdf-rubbish.git
   asdf plugin add ruby
+  asdf plugin add vhs
 
   # install asdf plugins
   asdf install
