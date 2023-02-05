@@ -1,42 +1,46 @@
-format = """$all"""
+format = '$all'
 
-right_format = """$git_branch $git_status"""
+right_format = '$cmd_duration'
 
 add_newline = false
 
 # modules
 [character]
 disabled = false
-error_symbol = "[✗](bold #ff5555)"
-success_symbol = "[➜](bold #50fa7b)"
+error_symbol = '[✗](bold #ff5555)'
+success_symbol = '[❯](bold #50fa7b)'
+vimcmd_symbol = '[❮](bold #8be9fd)'
+vimcmd_replace_one_symbol = '[❮](bold #f1fa8c)'
+vimcmd_replace_symbol = '[❮](bold #f1fa8c)'
+vimcmd_visual_symbol = '[❮](bold #ff79c6)'
 
 [cmd_duration]
 disabled = false
-format = "⏰[$duration]($style)"
-style = "bold #f1fa8c"
+format = '[$duration]($style)'
+style = 'bold #f1fa8c'
 
 [directory]
 disabled = false
 truncation_symbol = '…/'
-style = "bold #50fa7b"
+style = 'bold #50fa7b'
 
 [git_branch]
 disabled = false
-format = "[$symbol$branch(:$remote_branch)]($style)"
-style = "bold #ff79c6"
+format = '[$symbol$branch(:$remote_branch)]($style)'
+style = 'bold #ff79c6'
 
 [git_status]
 disabled = false
-style = "bold #ffb86c"
+style = 'bold #ff79c6'
 
 [hostname]
 disabled = false
-style = "bold #bd93f9"
+style = 'bold #bd93f9'
 
 [username]
 disabled = false
-format = "[$user]($style) on "
-style_user = "bold #8be9fd"
+format = '[$user]($style)'
+style_user = 'bold #8be9fd'
 
 [line_break]
 disabled = false
