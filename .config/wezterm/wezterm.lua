@@ -21,7 +21,7 @@ end
 
 wezterm.on('update-status', function(window, pane)
   local wday = string.format('(%s)', day_of_week(os.date('*t').wday))
-  local date = wezterm.strftime('📆 %Y-%m-%d ' .. wday .. ' ⏰ %H:%M:%S');
+  local date = wezterm.strftime('📆%Y-%m-%d' .. wday .. ' ⏰%H:%M:%S');
 
   local bat = ''
 
@@ -30,28 +30,28 @@ wezterm.on('update-status', function(window, pane)
     local battery_icon = ''
 
     if battery_state_of_charge >= 80 then
-      battery_icon = '🌕  '
+      battery_icon = '🌕'
     elseif battery_state_of_charge >= 70 then
-      battery_icon = '🌖  '
+      battery_icon = '🌖'
     elseif battery_state_of_charge >= 60 then
-      battery_icon = '🌖  '
+      battery_icon = '🌖'
     elseif battery_state_of_charge >= 50 then
-      battery_icon = '🌗  '
+      battery_icon = '🌗'
     elseif battery_state_of_charge >= 40 then
-      battery_icon = '🌗  '
+      battery_icon = '🌗'
     elseif battery_state_of_charge >= 30 then
-      battery_icon = '🌘  '
+      battery_icon = '🌘'
     elseif battery_state_of_charge >= 20 then
-      battery_icon = '🌘  '
+      battery_icon = '🌘'
     else
-      battery_icon = '🌑  '
+      battery_icon = '🌑'
     end
 
     bat = string.format('%s%.0f%% ', battery_icon, battery_state_of_charge)
   end
 
   window:set_right_status(wezterm.format {
-    { Text = date .. '  ' .. bat },
+    { Text = date .. ' ' .. bat },
   })
 end)
 
