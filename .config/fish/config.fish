@@ -1,15 +1,10 @@
 # remove greeting messsage
 set -gx fish_greeting
 
+# util
 set -gx XDG_DATA_HOME $HOME/.local/share
 set -gx XDG_CONFIG_HOME $HOME/.config
 set -gx WORKSPACE_HOME $HOME/Documents/workspace
-
-# util
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias c='clear'
 
 # asdf
 source /opt/homebrew/opt/asdf/libexec/asdf.fish
@@ -48,3 +43,11 @@ set -gx PATH $GOPATH/bin $PATH
 # npm
 set -gx NPM_CONFIG_PREFIX $HOME/.packages/npm
 set -gx PATH $NPM_CONFIG_PREFIX/bin $PATH
+
+# alias
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias c='clear'
+
+alias wxt='curl https://wttr.in/Tokyo'
