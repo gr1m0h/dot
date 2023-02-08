@@ -11,43 +11,6 @@
   rebase = false
 [commit]
   gpgsign = true
-[color]
-  ui = true
-[color "branch"]
-  current = cyan bold reverse
-  local = white
-  plain =
-  remote = cyan
-[color "diff"]
-  commit =
-  func = cyan
-  plain =
-  whitespace = magenta reverse
-  meta = white
-  frag = cyan bold reverse
-  old = red
-  new = green
-[color "grep"]
-  context =
-  filename =
-  linenumber = white
-  match =
-  selected =
-  separator =
-[color "interactive"]
-  error =
-  header =
-  help =
-  prompt =
-[color "status"]
-  added = green
-  changed = yellow
-  header =
-  localBranch =
-  remoteBranch = cyan bold
-  unmerged = magenta bold reverse
-  untracked = red
-  updated = green bold
 [ghq]
   root = /Users/gr1m0h/Documents/workspace
 [gpg]
@@ -56,3 +19,5 @@
   program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
 [alias]
   graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+[include]
+	path = /opt/homebrew/opt/dracula-git/gitconfig
