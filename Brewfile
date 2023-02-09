@@ -25,6 +25,7 @@ cask "google-drive"
 cask "slack"
 cask "vlc"
 cask "wezterm-nightly"
+cask "zoom"
 if OS.mac?
   tap "gromgit/fuse"
   brew "mas"
