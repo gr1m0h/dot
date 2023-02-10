@@ -119,6 +119,7 @@ setup_macos(){
       xcode-select --install
     fi
 
+    # install rosetta
     softwareupdate --install-rosetta
 
     # Terminal
@@ -233,6 +234,7 @@ setup_asdfvm(){
   asdf plugin add awscli
   asdf plugin add caddy
   asdf plugin add nodejs
+  asdf plugin add pre-commit
   asdf plugin add python
   asdf plugin add ruby
   asdf plugin add vhs
