@@ -119,6 +119,8 @@ setup_macos(){
       xcode-select --install
     fi
 
+    softwareupdate --install-rosetta
+
     # Terminal
     echo "only use UTF-8 in Terminal.app"
     defaults write com.apple.terminal StringEncodings -array 4
