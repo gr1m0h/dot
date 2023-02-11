@@ -1,6 +1,9 @@
 # remove greeting messsage
 set -gx fish_greeting
 
+# vi mode
+fish_vi_key_bindings
+
 # util
 set -gx XDG_DATA_HOME $HOME/.local/share
 set -gx XDG_CONFIG_HOME $HOME/.config
