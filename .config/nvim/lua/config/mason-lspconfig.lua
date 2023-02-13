@@ -6,7 +6,7 @@ if (not status) then return end
 masonlsp.setup {
 	ensure_installed = {
 		'sqls',
-		'sumneko_lua',
+		'lua_ls',
 		'dockerls',
 		'gopls',
 		'rome',

@@ -28,7 +28,7 @@ config.sqls.setup {
   capabilities = capabilities,
 }
 -- lua
-config.sumneko_lua.setup {
+config.lua_ls.setup {
   on_attach = on_attach,
   capabilities = capabilities,
   settings = {
