@@ -209,11 +209,6 @@ packer.startup {
       after = cmp,
     }
     use {
-      -- spell source for nvim-cmp based on vim's spellsuggest.
-      'f3fora/cmp-spell',
-      after = cmp,
-    }
-    use {
       -- cmp source for treesitter
       'ray-x/cmp-treesitter',
       run = ':TSUpdate',

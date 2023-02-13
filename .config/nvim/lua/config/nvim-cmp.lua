@@ -7,67 +7,58 @@ local luasnip = require('luasnip')
 local lspkind = require('lspkind')
 
 cmp.setup {
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
-  },
-  mapping = cmp.mapping.preset.insert({
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.close(),
-    ['<CR>'] = cmp.mapping.confirm({
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true
-    }),
-  }),
-  sources = cmp.config.sources({
-    { name = 'nvim_lsp' },
-    { name = 'nvim_lsp_signature_help' },
-    { name = 'nvim_lsp_document_symbol' },
-    { name = 'nvim_lua' },
-    { name = 'buffer' },
-    { name = 'path' },
-    { name = 'luasnip' },
-    { name = 'treesitter' },
-    {
-      name = 'spell',
-      option = {
-        keep_all_entries = false,
-        enable_in_context = function()
-          return true
-        end
-      }
-    }
-  }),
-  formatting = {
-    format = lspkind.cmp_format({
-      with_text = true,
-      maxwidth = 50,
-    })
-  },
+	snippet = {
+		expand = function(args)
+			luasnip.lsp_expand(args.body)
+		end,
+	},
+	mapping = cmp.mapping.preset.insert({
+		['<C-d>'] = cmp.mapping.scroll_docs(-4),
+		['<C-f>'] = cmp.mapping.scroll_docs(4),
+		['<C-Space>'] = cmp.mapping.complete(),
+		['<C-e>'] = cmp.mapping.close(),
+		['<CR>'] = cmp.mapping.confirm({
+			behavior = cmp.ConfirmBehavior.Replace,
+			select = true
+		}),
+	}),
+	sources = cmp.config.sources({
+		{ name = 'nvim_lsp' },
+		{ name = 'nvim_lsp_signature_help' },
+		{ name = 'nvim_lsp_document_symbol' },
+		{ name = 'nvim_lua' },
+		{ name = 'buffer' },
+		{ name = 'path' },
+		{ name = 'luasnip' },
+		{ name = 'treesitter' },
+	}),
+	formatting = {
+		format = lspkind.cmp_format({
+			with_text = true,
+			maxwidth = 50,
+		})
+	},
 }
 
 cmp.setup.cmdline('/', {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = {
-    { name = 'nvim_lsp_document_symbol' },
-    { name = 'buffer' },
-  }
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = {
+		{ name = 'nvim_lsp_document_symbol' },
+		{ name = 'buffer' },
+	}
 })
 
 cmp.setup.cmdline(':', {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = cmp.config.sources({
-  }, {
-    { name = 'path' },
-  }, {
-    name = 'cmdline',
-    option = {
-      ignore_cmds = { 'Man', '!' }
-    }
-  })
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = cmp.config.sources({
+	}, {
+		{ name = 'path' },
+	}, {
+		name = 'cmdline',
+		option = {
+			ignore_cmds = { 'Man', '!' }
+		}
+	})
 })
 
 vim.g.completeopt = 'menu,menuone,noselect'
