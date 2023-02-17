@@ -1,7 +1,7 @@
 [user]
   name = grimoh
   email = dev@grimoh.net
-	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDhKI4Vl3+Vp/T/edqCcmHbRjn0eQoL6d2nGn77o/Efb
+  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDhKI4Vl3+Vp/T/edqCcmHbRjn0eQoL6d2nGn77o/Efb
 [core]
   editor = nvim -c \"set fenc=utf-8\"
   diff = auto
@@ -20,4 +20,4 @@
 [alias]
   graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 [include]
-	path = /opt/homebrew/opt/dracula-git/gitconfig
+  path = /opt/homebrew/opt/dracula-git/gitconfig
