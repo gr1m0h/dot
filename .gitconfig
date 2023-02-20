@@ -1,6 +1,7 @@
 [user]
   name = grimoh
   email = dev@grimoh.net
+  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDhKI4Vl3+Vp/T/edqCcmHbRjn0eQoL6d2nGn77o/Efb
 [core]
   editor = nvim -c \"set fenc=utf-8\"
   diff = auto
@@ -28,5 +29,7 @@
   root = /Users/gr1m0h/Documents/workspace
 [gpg]
   format = ssh
+[gpg "ssh"]
+  program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
 [include]
   path = /opt/homebrew/opt/dracula-git/gitconfig
