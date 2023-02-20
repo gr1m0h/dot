@@ -20,6 +20,7 @@
   st = status
   sw = switch
   swc = switch -c
+  lo = log --oneline
   graph = log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'
   cancel = reset --soft HEAD^
   merge-plan = merge --no-commit --no-ff
