@@ -2,6 +2,7 @@
 set -gx fish_greeting
 
 # vi mode
+
 fish_vi_key_bindings
 
 # util
@@ -55,5 +56,3 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias c='clear'
-
-alias wxt='curl https://wttr.in/Tokyo'
