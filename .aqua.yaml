@@ -12,10 +12,10 @@ packages:
 - name: neovim/neovim@v0.8.3
 - name: grafana/k6@v0.42.0
 - name: stedolan/jq@jq-1.6
-- name: golang/go@go1.18.4
+- name: golang/go@go1.20.1
 - name: kubernetes-sigs/kind@v0.14.0
 - name: kubernetes-sigs/krew@v0.4.3
-- name: hashicorp/terraform@v1.2.7
+- name: hashicorp/terraform@v1.3.9
 - name: docker/cli@v20.10.17
 - name: abiosoft/colima@v0.5.2
 - name: lima-vm/lima@v0.11.3

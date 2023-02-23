@@ -15,6 +15,7 @@
   alias = !git config --get-regexp '^alias\\.' | sed 's/alias\\.\\([^ ]*\\) \\(.*\\)/\\1\\ => \\2/' | sort
   a = !git add -A && git status
   au = !git add -u && git status
+  ru = remote update -p
   cam = commit --amend
   wip = commit -m "wip"
   cm = commit
