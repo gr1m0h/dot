@@ -17,7 +17,7 @@
   au = !git add -u && git status
   ru = remote update -p
   cam = commit --amend
-  wip = commit -m "wip"
+  wip = commit -m 'wip'
   cm = commit
   st = status
   sw = switch
