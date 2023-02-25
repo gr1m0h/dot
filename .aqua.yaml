@@ -6,7 +6,7 @@ registries:
   ref: v3.127.0 # renovate: depName=aquaproj/aqua-registry
 packages:
 - name: junegunn/fzf@0.38.0
-- name: x-motemen/ghq@v1.3.0
+- name: x-motemen/ghq@v1.4.1
 - name: kubernetes/kubectl
   version: v1.24.3
 - name: neovim/neovim@v0.8.3
