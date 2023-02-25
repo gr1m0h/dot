@@ -1,6 +1,6 @@
 # dotfiles
 
-## NeoVim
+## Neovim
 
 Neovim startup time
 
