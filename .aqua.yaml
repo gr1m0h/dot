@@ -10,7 +10,7 @@ packages:
 - name: kubernetes/kubectl
   version: v1.24.3
 - name: neovim/neovim@v0.8.3
-- name: grafana/k6@v0.42.0
+- name: grafana/k6@v0.43.0
 - name: stedolan/jq@jq-1.6
 - name: golang/go@go1.20.1
 - name: kubernetes-sigs/kind@v0.14.0
