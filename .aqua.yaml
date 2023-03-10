@@ -20,7 +20,7 @@ packages:
 - name: abiosoft/colima@v0.5.2
 - name: lima-vm/lima@v0.14.2
 - name: docker/compose@v2.16.0
-- name: helm/helm@v3.11.1
+- name: helm/helm@v3.11.2
 - name: roboll/helmfile@v0.144.0
 - name: BurntSushi/ripgrep@13.0.0
 - name: sharkdp/fd@v8.7.0
