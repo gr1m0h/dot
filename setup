@@ -237,6 +237,8 @@ setup_asdfvm(){
   asdf plugin add pre-commit
   asdf plugin add python
   asdf plugin add ruby
+	asdf plugin add shellcheck
+	asdf plugin add shfmt
   asdf plugin add vhs
 
   # install asdf plugins
@@ -282,9 +284,11 @@ setup_packages(){
 
   # install npm packages
   NPM_PACKAGES=(
-    neovim
     eclint
+		git-cz
+    neovim
     typescript
+		zx
   )
   npm install --global "${NPM_PACKAGES[@]}" || :
 
