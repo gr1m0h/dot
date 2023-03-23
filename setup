@@ -284,6 +284,7 @@ setup_packages(){
 
   # install npm packages
   NPM_PACKAGES=(
+		0x
     eclint
 		git-cz
     neovim
