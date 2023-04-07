@@ -23,9 +23,12 @@
   au = !git add -u && git status
   ap = !git add -p && git status
   ru = remote update -p
+  rup = !git remote update -p && git pull origin main
+  rb = rebase --interactive
+  rbc = rebase --continue
+  cm = commit
   cam = commit --amend
   wip = commit -m 'wip'
-  cm = commit
   st = status
   sw = switch
   swc = switch -c
