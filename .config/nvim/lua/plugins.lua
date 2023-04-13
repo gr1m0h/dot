@@ -455,13 +455,6 @@ packer.startup {
         require('config.mason-null-ls')
       end
     }
-    -------------------------------
-    -- Format
-    use {
-      -- EditorConfig plugin for Vim
-      'editorconfig/editorconfig-vim',
-      event = 'VimEnter',
-    }
     -------------------------------------------------
     --
     -- Programming Languages

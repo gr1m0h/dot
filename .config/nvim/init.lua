@@ -59,6 +59,7 @@ vim.o.wildmenu = true
 vim.g.noswapfile = true
 vim.g.nobackup = true
 vim.g.noundofile = true
+vim.g.editorconfig = true
 
 vim.opt.shortmess:append({ I = true })
 vim.opt.showmode = true
