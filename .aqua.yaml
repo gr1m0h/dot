@@ -3,7 +3,7 @@
 # https://aquaproj.github.io/
 registries:
 - type: standard
-  ref: v3.149.0 # renovate: depName=aquaproj/aqua-registry
+  ref: v3.153.0 # renovate: depName=aquaproj/aqua-registry
 packages:
 - name: junegunn/fzf@0.38.0
 - name: x-motemen/ghq@v1.4.1
