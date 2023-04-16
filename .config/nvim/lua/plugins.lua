@@ -160,7 +160,7 @@ packer.startup {
       'hrsh7th/nvim-cmp',
       tag = 'v0.0.1',
       requires = {
-        { 'L3MON4D3/LuaSnip', opt = true, event = 'VimEnter' },
+        { 'L3MON4D3/LuaSnip',      opt = true, event = 'VimEnter' },
         { 'windwp/nvim-autopairs', opt = true, event = 'VimEnter' },
       },
       after = { 'LuaSnip', 'nvim-autopairs' },
@@ -215,8 +215,19 @@ packer.startup {
       after = cmp,
     }
     use {
+      -- Lua plugin to turn github copilot into a cmp source
+      'zbirenbaum/copilot-cmp',
+      after = { cmp, 'copilot.lua' },
+      config = function()
+        require('copilot_cmp').setup()
+      end
+    }
+    use {
       -- vscode-like pictograms for neovim lsp completion items
       'onsails/lspkind.nvim',
+      config = function()
+        require('config.lspkind')
+      end
     }
     -------------------------------------------------
     --
@@ -376,6 +387,17 @@ packer.startup {
     use {
       -- Easy and high speed coding method
       'mattn/vim-sonictemplate'
+    }
+    -------------------------------
+    -- AI
+    use {
+      -- Fully featured & enhanced replacement for copilot.vim complete with API for interacting with Github Copilot
+      'zbirenbaum/copilot.lua',
+      cmd = 'Copilot',
+      event = 'InsertEnter',
+      config = function()
+        require('config.copilot')
+      end
     }
     -------------------------------
     -- Debugger
