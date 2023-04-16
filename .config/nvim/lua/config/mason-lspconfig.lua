@@ -5,7 +5,7 @@ if (not status) then return end
 
 masonlsp.setup {
 	ensure_installed = {
-		'sqls',
+		'sqlls',
 		'lua_ls',
 		'dockerls',
 		'gopls',

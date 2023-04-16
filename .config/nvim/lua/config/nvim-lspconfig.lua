@@ -23,7 +23,7 @@ end
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 -- sql
-config.sqls.setup {
+config.sqlls.setup {
   on_attach = on_attach,
   capabilities = capabilities,
 }
