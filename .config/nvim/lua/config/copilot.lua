@@ -5,6 +5,6 @@ if (not status) then return end
 
 
 copilot.setup {
-  suggestion = { enabled = false },
-  pannel = { enabled = false },
+  suggestion = { enabled = true },
+  pannel = { enabled = true },
 }

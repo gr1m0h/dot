@@ -15,6 +15,17 @@ local on_attach = function(client, bufnr)
       callback = function() vim.lsp.buf.format() end
     })
   end
+end
+
+local on_attach_navic = function(client, bufnr)
+  -- format on save
+  if client.server_capabilities.documentFormattingProvider then
+    vim.api.nvim_create_autocmd('BufWritePre', {
+      group = vim.api.nvim_create_augroup('Format', { clear = true }),
+      buffer = bufnr,
+      callback = function() vim.lsp.buf.format() end
+    })
+  end
   -- navic
   navic.attach(client, bufnr)
 end
@@ -24,12 +35,12 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 -- sql
 config.sqlls.setup {
-  on_attach = on_attach,
+  on_attach = on_attach_navic,
   capabilities = capabilities,
 }
 -- lua
 config.lua_ls.setup {
-  on_attach = on_attach,
+  on_attach = on_attach_navic,
   capabilities = capabilities,
   settings = {
     Lua = {
@@ -42,12 +53,12 @@ config.lua_ls.setup {
 }
 -- docker
 config.dockerls.setup {
-  on_attach = on_attach,
+  on_attach = on_attach_navic,
   capabilities = capabilities,
 }
 -- go
 config.gopls.setup {
-  on_attach = on_attach,
+  on_attach = on_attach_navic,
   capabilities = capabilities,
   cmd = { 'gopls', 'serve' },
   settings = {
@@ -64,14 +75,14 @@ config.gopls.setup {
 }
 -- terraform
 config.terraformls.setup {
-  on_attach = on_attach,
+  on_attach = on_attach_navic,
   capabilities = capabilities,
   filetypes = { 'terraform', 'tf' },
   cmd = { 'terraform-ls', 'serve' },
 }
 -- javascript / typescript
 config.tsserver.setup {
-  on_attach = on_attach,
+  on_attach = on_attach_navic,
   capabilities = capabilities,
   filetypes = { 'typescript', 'typescriptreact', 'typescript.tsx' },
   cmd = { 'typescript-language-server', '--stdio' },
@@ -83,13 +94,13 @@ config.rome.setup {
 }
 -- markdown
 config.marksman.setup {
-  on_attach = on_attach,
+  on_attach = on_attach_navic,
   filetypes = { 'markdown' },
   capabilities = capabilities,
 }
 -- yaml
 config.yamlls.setup {
-  on_attach = on_attach,
+  on_attach = on_attach_navic,
   filetypes = { 'yaml' },
   capabilities = capabilities,
 }
