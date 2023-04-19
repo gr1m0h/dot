@@ -125,6 +125,7 @@ packer.startup {
     use {
       -- Extension to mason.nvim that makes it easier to use lspconfig with mason.nvim. Strongly recommended for Windows users.
       'williamboman/mason-lspconfig.nvim',
+      after = { 'mason.nvim' },
       config = function()
         require('config.mason-lspconfig')
       end,
