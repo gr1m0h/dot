@@ -1,4 +1,4 @@
-#!/in/sh
+#!/bin/sh
 
 DOTFILES="$(pwd)"
 COLOR_GRAY="\033[1;38;5;243m"
