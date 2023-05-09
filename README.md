@@ -5,7 +5,7 @@
 Neovim startup time
 
 ```sh
-155.216  000.001: --- NVIM STARTED ---
+154.230  000.003: --- NVIM STARTED ---
 ```
 
 ## WIP: Usage
