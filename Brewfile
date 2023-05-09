@@ -19,13 +19,16 @@ brew "ttyd"
 brew "wget"
 cask "1password"
 cask "brave-browser"
+cask "discord"
 cask "font-hackgen"
 cask "font-hackgen-nerd"
 cask "google-drive"
 cask "obs"
 cask "slack"
+cask "spotify"
 cask "vlc"
 cask "wezterm-nightly"
+cask "yubico-yubikey-manager"
 cask "zoom"
 if OS.mac?
   tap "gromgit/fuse"
@@ -33,6 +36,8 @@ if OS.mac?
   brew "gromgit/fuse/sshfs-mac"
   cask "blackhole-2ch"
   cask "macfuse"
+  mas "Kindle", id: 405399194
+  mas "LINE", id: 539883307
   mas "Magnet", id: 441258766
   mas "LadioCast", id: 411213048
 end
