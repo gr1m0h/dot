@@ -20,7 +20,6 @@ ts.setup {
     'markdown_inline',
     'python',
     'ruby',
-    'rust',
     'scss',
     'toml',
     'typescript',
