@@ -19,7 +19,7 @@ packages:
 - name: docker/cli@v20.10.17
 - name: abiosoft/colima@v0.5.4
 - name: lima-vm/lima@v0.15.1
-- name: docker/compose@v2.16.0
+- name: docker/compose@v2.18.1
 - name: helm/helm@v3.11.3
 - name: roboll/helmfile@v0.144.0
 - name: BurntSushi/ripgrep@13.0.0
