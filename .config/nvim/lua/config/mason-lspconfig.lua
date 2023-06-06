@@ -9,7 +9,7 @@ masonlsp.setup {
 		'lua_ls',
 		'dockerls',
 		'gopls',
-    'pylsp',
+		'pylsp',
 		'rome',
 		'tsserver',
 		'terraformls',
