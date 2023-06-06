@@ -240,6 +240,7 @@ setup_asdfvm(){
 	asdf plugin add shellcheck
 	asdf plugin add shfmt
   asdf plugin add vhs
+  asdf plugin add sops
 
   # install asdf plugins
   asdf install
