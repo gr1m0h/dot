@@ -26,6 +26,8 @@
   rup = !git remote update -p && git pull origin main
   rb = rebase --interactive
   rbc = rebase --continue
+  rv = revert
+  rvm = revert -m 1
   cm = commit
   cam = commit --amend
   wip = commit -m 'wip'
