@@ -95,10 +95,6 @@ packer.startup {
       end
     }
     use {
-      -- A project which translate Vim documents into Japanese.
-      'vim-jp/vimdoc-ja',
-    }
-    use {
       -- Viewing plugin's README easily like vim help
       '4513ECHO/vim-readme-viewer',
       opt = true,
@@ -149,6 +145,7 @@ packer.startup {
     use {
       -- Standalone UI for nvim-lsp progress
       'j-hui/fidget.nvim',
+      tag = 'legacy',
       config = function()
         require('fidget').setup {}
       end,
@@ -237,11 +234,11 @@ packer.startup {
     -------------------------------
     -- Moving
     use {
-      -- Neovim motions on speed!
-      'phaazon/hop.nvim',
-      branch = 'v2',
+      -- Navigate your code with search labels, enhanced character motions and Treesitter integration
+      'folke/flash.nvim',
+      tag = 'v1.10.1',
       config = function()
-        require('config.hop')
+        require('config.flash')
       end,
     }
     -------------------------------------------------
