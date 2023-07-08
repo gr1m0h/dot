@@ -1,0 +1,37 @@
+[user]
+  name = grimoh
+  email = dev@grimoh.net
+  sihningkey = B8329A7018A26333
+  signingkey = B555152DCD4534B378465BBCB8329A7018A26333
+[core]
+  editor = nvim -c \"set fenc=utf-8\"
+  diff = auto
+  status = auto
+  branch = auto
+[pull]
+  rebase = false
+[commit]
+  gpgsign = true
+[ghq]
+  root = /home/gr1m0h/workspace
+[alias]
+  alias = !git config --get-regexp '^alias\\.' | sed 's/alias\\.\\([^ ]*\\) \\(.*\\)/\\1\\ => \\2/' | sort
+  a = !git add -A && git status
+  au = !git add -u && git status
+  ap = !git add -p && git status
+  ru = remote update -p
+  rup = !git remote update -p && git pull origin main
+  rb = rebase --interactive
+  rbc = rebase --continue
+  rv = revert
+  rvm = revert -m 1
+  cm = commit
+  cam = commit --amend
+  wip = commit -m 'wip'
+  st = status
+  sw = switch
+  swc = switch -c
+  lo = log --oneline
+  graph = log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'
+  cancel = reset --soft HEAD^
+  merge-plan = merge --no-commit --no-ff
