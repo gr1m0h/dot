@@ -32,6 +32,6 @@ packages:
 - name: aquasecurity/trivy@v0.43.1
 - name: sachaos/viddy@v0.3.6
 - name: Aloxaf/silicon@v0.5.1
-- name: cli/cli@v2.32.0
+- name: cli/cli@v2.32.1
 - name: starship/starship@v1.15.0
 
