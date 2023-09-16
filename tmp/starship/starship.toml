@@ -1,34 +1,32 @@
 # A minimal left prompt
-format = """$all"""
+format = '''$all'''
 
 # move the rest of the prompt to the right
-right_format = """$cmd_duration $time"""
+right_format = '''$cmd_duration $time'''
 
 [character]
-error_symbol = "[✗](bold #ff5555)"
-success_symbol = "[>](bold #50fa7b)"
+error_symbol = '[✗](bold #ff7070)'
+success_symbol = '[>](bold #8be9fd)'
 
 [cmd_duration]
 format = '[$duration]($style)'
-style = "bold #f1fa8c"
+style = 'bold #f1fa8c'
 
 [directory]
-style = "bold #50fa7b"
+style = 'bold #8be9fd'
 
 [git_branch]
-style = "bold #ff79c6"
+style = 'bold #a8ffde'
 
 [git_status]
-style = "bold #ff5555"
+style = 'bold #a8ffde'
 
 [hostname]
-style = "bold #bd93f9"
+style = 'bold #f1fa8c'
 
 [username]
-format = "[$user]($style) on "
-style_user = "bold #8be9fd"
-
-[fill]
+format = '[$user]($style) '
+style_user = 'bold #8be9fd'
 
 [time]
 disabled = false
