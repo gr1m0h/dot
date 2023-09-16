@@ -1,10 +1,12 @@
-# fig
 # Fig pre block. Keep at the top of this file.
 [[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
-
+# fig
 # theme
 export ZSH_THEME='dracula'
 source $XDG_CONFIG_HOME/zsh/zsh-syntax-highlighting.sh
+
+# sheldon
+eval "$(sheldon source)"
 
 # util
 export XDG_DATA_HOME=$HOME/.local/share
@@ -42,9 +44,12 @@ export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
 export STARSHIP_CONFIG=$XDG_CONFIG_HOME/starship/starship.toml
 eval "$(starship init zsh)"
 
-# fig
-# Fig post block. Keep at the bottom of this file.
-[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
+# Instantly recognize newly installed commands
+zstyle ":completion:*:commands" rehash 1
 
+# fig
 # aliases
 source ~/.zsh_aliases
+
+# Fig post block. Keep at the bottom of this file.
+[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
