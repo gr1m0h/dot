@@ -21,6 +21,7 @@ brew "aquaproj/aqua/aqua"
 brew "dracula/install/dracula-git"
 brew "gromgit/fuse/sshfs-mac"
 cask "1password"
+cask "android-studio"
 cask "brave-browser"
 cask "discord"
 cask "fig"
@@ -33,12 +34,14 @@ cask "visual-studio-code"
 cask "vpn-by-google-one"
 cask "wezterm-nightly"
 cask "zoom"
-mas "Kindle", id: 405399194
 mas "LINE", id: 539883307
 mas "Magnet", id: 441258766
 mas "Numbers", id: 409203825
 mas "Skitch", id: 425955336
+mas "Xcode", id: 497799835
 vscode "asvetliakov.vscode-neovim"
+vscode "Dart-Code.dart-code"
+vscode "Dart-Code.flutter"
 vscode "dracula-theme.theme-dracula"
 vscode "golang.go"
 vscode "manasxx.background-cover"
