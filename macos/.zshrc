@@ -11,10 +11,6 @@ export XDG_DATA_HOME=$HOME/.local/share
 export XDG_CONFIG_HOME=$HOME/.config
 export WORKSPACE=$HOME/Documents/workspace
 export EDITOR=/opt/homebrew/bin/nvim
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias c='clear'
 
 # gpg
 export GPG_TTY=$(tty)
@@ -34,15 +30,6 @@ export FZF_DEFAULT_OPTS=' --color=fg:#f8f8f2,bg:#32324b,hl:#8be9fd --color=fg+:#
 export GHQ_ROOT_DIR=$WORKSPACE
 export GHQ_SELECTOR=fzf
 
-# docker
-alias docker-compose='docker-cli-plugin-docker-compose'
-
-# top
-alias top='gotop'
-
-# cat
-alias cat='bat'
-
 # go
 export GOPATH=$HOME/.packages/go
 export PATH=$GOPATH/bin:$PATH
@@ -58,3 +45,6 @@ eval "$(starship init zsh)"
 # fig
 # Fig post block. Keep at the bottom of this file.
 [[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
+
+# aliases
+source ~/.zsh_aliases

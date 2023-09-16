@@ -1,0 +1,20 @@
+# navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias c='clear'
+
+# directory
+alias ls='ls -G'
+alias la='ls -lAh'
+alias ll='ls -lh'
+alias md='mkdir -p'
+
+# docker
+alias docker-compose='docker-cli-plugin-docker-compose'
+
+# top
+alias top='gotop'
+
+# cat
+alias cat='bat'
