@@ -16,6 +16,9 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 alias c='clear'
 
+# gpg
+export GPG_TTY=$(tty)
+
 # asdf
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
 
