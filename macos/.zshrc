@@ -1,6 +1,7 @@
+# fig
 # Fig pre block. Keep at the top of this file.
 [[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
-# fig
+
 # theme
 export ZSH_THEME='dracula'
 source $XDG_CONFIG_HOME/zsh/zsh-syntax-highlighting.sh
@@ -9,11 +10,28 @@ source $XDG_CONFIG_HOME/zsh/zsh-syntax-highlighting.sh
 eval "$(sheldon source)"
 
 # util
+bindkey -v
 export XDG_DATA_HOME=$HOME/.local/share
 export XDG_CONFIG_HOME=$HOME/.config
 export WORKSPACE=$HOME/Documents/workspace
 export EDITOR=/opt/homebrew/bin/nvim
 setopt no_beep
+setopt auto_cd
+setopt auto_pushd
+autoload -U compinit
+compinit
+
+# history
+HISTFILE=$HOME/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt hist_ignore_all_dups
+setopt hist_ignore_dups
+setopt share_history
+setopt append_history
+setopt inc_append_history
+setopt hist_no_store
+setopt hist_reduce_blanks
 
 # gpg
 export GPG_TTY=$(tty)
@@ -48,9 +66,9 @@ eval "$(starship init zsh)"
 # Instantly recognize newly installed commands
 zstyle ":completion:*:commands" rehash 1
 
-# fig
 # aliases
 source ~/.zsh_aliases
 
+# fig
 # Fig post block. Keep at the bottom of this file.
 [[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
