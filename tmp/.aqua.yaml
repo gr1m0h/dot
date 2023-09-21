@@ -24,7 +24,7 @@ packages:
 - name: BurntSushi/ripgrep@13.0.0
 - name: sharkdp/fd@v8.7.0
 - name: golang-migrate/migrate@v4.16.2
-- name: mozilla/sops@v3.7.3
+- name: mozilla/sops@v3.8.0
 - name: sharkdp/bat@v0.23.0
 - name: xxxserxxx/gotop@v4.2.0
 - name: nektos/act@v0.2.50
