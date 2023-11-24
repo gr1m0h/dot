@@ -69,6 +69,13 @@ zstyle ":completion:*:commands" rehash 1
 # aliases
 source ~/.zsh_aliases
 
+# flutter
+export FLUTTER_ROOT="$(asdf where flutter)"
+export PATH=$PATH:$HOME/.pub-cache/bin
+
+# java
+. ~/.asdf/plugins/java/set-java-home.zsh
+
 # fig
 # Fig post block. Keep at the bottom of this file.
 [[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
