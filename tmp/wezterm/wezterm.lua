@@ -68,13 +68,13 @@ local keys = {
 
 return {
   color_scheme = 'Dracula (Official)',
-  window_background_image = '/Users/gr1m0h/.config/wezterm/images/wallpaper.png',
+  window_background_image = '/Users/d4rj3311n6/.config/wezterm/images/wallpaper.png',
   window_background_image_hsb = {
-    brightness = 0.1,
+    brightness = 0.05,
   },
   keys = keys,
   exit_behavior = 'Close',
-  font = wezterm.font 'HackGen35 Console NFJ',
+  font = wezterm.font 'HackGen35 Console NF',
   font_size = 13.0,
   use_ime = true,
   use_fancy_tab_bar = false,

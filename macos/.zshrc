@@ -2,10 +2,6 @@
 # Fig pre block. Keep at the top of this file.
 [[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
 
-# theme
-export ZSH_THEME='dracula'
-source $XDG_CONFIG_HOME/zsh/zsh-syntax-highlighting.sh
-
 # sheldon
 eval "$(sheldon source)"
 
