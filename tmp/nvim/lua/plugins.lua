@@ -196,12 +196,6 @@ require('lazy').setup({
     opts = {}
   },
   -------------------------------
-  -- filetype detection
-  {
-    'nathom/filetype.nvim',
-    tag = 'v0.4',
-  },
-  -------------------------------
   -- layout
   {
     'folke/zen-mode.nvim',
@@ -287,18 +281,13 @@ require('lazy').setup({
   -------------------------------
   -- markdown
   {
-    'iamcco/markdown-preview.nvim',
-    tag = 'v0.0.10',
-    ft = { 'markdown' },
-    build = function() vim.fn['mkdp#util#install']() end,
-    setup = function()
-      vim.keymap.set("n", "pv", ":MarkdownPreview<Return>", { noremap = true, silent = true })
-    end,
-  },
-  {
     'dhruvasagar/vim-table-mode',
     cmd = { 'TableModeEnable' },
+    lazy = true,
   },
   -- sql
-  'jsborjesson/vim-uppercase-sql'
+  {
+    'jsborjesson/vim-uppercase-sql',
+    lazy = true,
+  }
 })
