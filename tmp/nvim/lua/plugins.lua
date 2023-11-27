@@ -283,11 +283,5 @@ require('lazy').setup({
   {
     'dhruvasagar/vim-table-mode',
     cmd = { 'TableModeEnable' },
-    lazy = true,
   },
-  -- sql
-  {
-    'jsborjesson/vim-uppercase-sql',
-    lazy = true,
-  }
 })
