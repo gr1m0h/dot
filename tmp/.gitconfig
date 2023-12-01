@@ -1,5 +1,5 @@
 [user]
-  name = grimoh
+  name = gr1m0h
   email = dev@grimoh.net
   signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDhKI4Vl3+Vp/T/edqCcmHbRjn0eQoL6d2nGn77o/Efb
 [core]
@@ -7,6 +7,8 @@
   diff = auto
   status = auto
   branch = auto
+  autocrlf = false
+  eol = lf
 [pull]
   rebase = false
 [commit]
