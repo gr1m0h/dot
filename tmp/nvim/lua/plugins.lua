@@ -209,11 +209,6 @@ require('lazy').setup({
     'stevearc/aerial.nvim',
     opts = {}
   },
-  -- ui
-  {
-    'stevearc/dressing.nvim',
-    opts = {},
-  },
   -------------------------------------------------
   --
   -- Coding
@@ -289,13 +284,4 @@ require('lazy').setup({
     'dhruvasagar/vim-table-mode',
     cmd = { 'TableModeEnable' },
   },
-  -- flutter
-  {
-    'akinsho/flutter-tools.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'stevearc/dressing.nvim',
-    },
-    config = true,
-  }
 })
