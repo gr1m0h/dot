@@ -73,11 +73,6 @@ config.gopls.setup {
     },
   },
 }
--- python
-config.pylsp.setup {
-  on_attach = on_attach_navic,
-  capabilities = capabilities,
-}
 -- terraform
 config.terraformls.setup {
   on_attach = on_attach_navic,
@@ -92,7 +87,7 @@ config.tsserver.setup {
   filetypes = { 'typescript', 'typescriptreact', 'typescript.tsx' },
   cmd = { 'typescript-language-server', '--stdio' },
 }
-config.rome.setup {
+config.biome.setup {
   on_attach = on_attach,
   capabilities = capabilities,
   filetypes = { 'javascript', 'typescript' },
@@ -103,12 +98,13 @@ config.marksman.setup {
   capabilities = capabilities,
   filetypes = { 'markdown' },
 }
--- yaml
-config.yamlls.setup {
+-- kotlin
+config.kotlin_language_server.setup {
   on_attach = on_attach_navic,
   capabilities = capabilities,
-  filetypes = { 'yaml' },
+  filetypes = { 'kotlin' },
 }
+
 
 set('n', 'li', ':LspInfo<Return>', { noremap = true, silent = true })
 set('n', 'ls', ':LspStart<Return>', { noremap = true, silent = true })
