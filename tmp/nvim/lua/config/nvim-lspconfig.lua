@@ -105,6 +105,5 @@ config.kotlin_language_server.setup {
   filetypes = { 'kotlin' },
 }
 
-
 set('n', 'li', ':LspInfo<Return>', { noremap = true, silent = true })
 set('n', 'ls', ':LspStart<Return>', { noremap = true, silent = true })
