@@ -99,9 +99,10 @@ config.marksman.setup {
   filetypes = { 'markdown' },
 }
 -- kotlin
-require 'lspconfig'.kotlin_language_server.setup {
+config.kotlin_language_server.setup {
   on_attach = on_attach_navic,
   capabilities = capabilities,
+  filetypes = { 'kotlin' },
 }
 
 set('n', 'li', ':LspInfo<Return>', { noremap = true, silent = true })

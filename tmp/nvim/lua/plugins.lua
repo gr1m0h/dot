@@ -18,6 +18,7 @@ require('lazy').setup({
   -- notify
   {
     'rcarriga/nvim-notify',
+    tag = 'v3.13.2',
     event = 'VimEnter',
     config = function()
       local notify = require('notify')
@@ -41,6 +42,7 @@ require('lazy').setup({
   -- standard fatture enhancement
   {
     'folke/which-key.nvim',
+    tag = 'v1.6.0',
     event = 'VeryLazy',
     init = function()
       vim.o.timeout = true
@@ -56,16 +58,19 @@ require('lazy').setup({
   -- language server protocol
   {
     'neovim/nvim-lspconfig',
+    tag = 'v0.1.7',
     config = function()
       require('config.nvim-lspconfig')
     end,
   },
   {
     'williamboman/mason.nvim',
+    tag = 'v1.9.0',
     opts = {},
   },
   {
     'williamboman/mason-lspconfig.nvim',
+    tag = 'v1.26.0',
     config = function()
       require('config.mason-lspconfig')
     end,
@@ -82,11 +87,13 @@ require('lazy').setup({
   },
   {
     'folke/trouble.nvim',
+    tag = 'v2.10.0',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     opts = {},
   },
   {
     'j-hui/fidget.nvim',
+    tag = 'v1.2.0',
     opts = {},
   },
   -------------------------------
@@ -128,7 +135,7 @@ require('lazy').setup({
   -- telescope
   {
     'nvim-telescope/telescope.nvim',
-    tag = '0.1.4',
+    tag = '0.1.5',
     dependencies = { 'plenary.nvim' },
     config = function()
       require('config.telescope')
@@ -183,7 +190,7 @@ require('lazy').setup({
   -- buffer line
   {
     'akinsho/bufferline.nvim',
-    tag = 'v3.1.0',
+    tag = 'v4.4.1',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
     },
@@ -221,6 +228,7 @@ require('lazy').setup({
   },
   {
     'L3MON4D3/LuaSnip',
+    tag = 'v2.2.0',
     after = { 'friendly-snippets' },
     config = function()
       require('config.LuaSnip')
@@ -233,13 +241,14 @@ require('lazy').setup({
   -- git
   {
     'lewis6991/gitsigns.nvim',
-    tag = 'v0.6',
+    tag = 'v0.7',
     opts = {}
   },
   -------------------------------
   -- reading assistant
   {
     'lukas-reineke/indent-blankline.nvim',
+    tah = 'v3.5.2',
     main = 'ibl',
     opts = {},
   },
@@ -282,6 +291,7 @@ require('lazy').setup({
   -- markdown
   {
     'dhruvasagar/vim-table-mode',
+    tag = 'v4.8.1',
     cmd = { 'TableModeEnable' },
   },
 })
