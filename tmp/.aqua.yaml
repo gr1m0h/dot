@@ -5,32 +5,8 @@ registries:
 - type: standard
   ref: v4.92.0 # renovate: depName=aquaproj/aqua-registry
 packages:
-- name: junegunn/fzf@0.42.0
-- name: x-motemen/ghq@v1.4.2
-- name: kubernetes/kubectl
-  version: v1.24.3
-- name: grafana/k6@v0.46.0
-- name: stedolan/jq@jq-1.6
-- name: golang/go@go1.21.1
-- name: kubernetes-sigs/kind@v0.20.0
-- name: kubernetes-sigs/krew@v0.4.4
-- name: hashicorp/terraform@v1.5.7
 - name: docker/cli@v20.10.17
-- name: abiosoft/colima@v0.5.5
-- name: lima-vm/lima@v0.17.2
 - name: docker/compose@v2.22.0
-- name: helm/helm@v3.13.0
-- name: roboll/helmfile@v0.144.0
-- name: BurntSushi/ripgrep@13.0.0
-- name: sharkdp/fd@v8.7.0
-- name: golang-migrate/migrate@v4.16.2
-- name: mozilla/sops@v3.8.0
-- name: sharkdp/bat@v0.23.0
 - name: xxxserxxx/gotop@v4.2.0
-- name: nektos/act@v0.2.54
-- name: aquasecurity/trivy@v0.45.1
-- name: sachaos/viddy@v0.3.7
 - name: Aloxaf/silicon@v0.5.1
-- name: cli/cli@v2.35.0
-- name: starship/starship@v1.16.0
 
