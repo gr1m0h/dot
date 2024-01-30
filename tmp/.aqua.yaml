@@ -9,4 +9,3 @@ packages:
 - name: docker/compose@v2.22.0
 - name: xxxserxxx/gotop@v4.2.0
 - name: Aloxaf/silicon@v0.5.1
-
