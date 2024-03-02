@@ -13,7 +13,6 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
   -- lua library
-  'lewis6991/impatient.nvim',
   'nvim-lua/plenary.nvim',
   -- notify
   {
