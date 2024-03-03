@@ -247,7 +247,7 @@ require('lazy').setup({
   -- reading assistant
   {
     'lukas-reineke/indent-blankline.nvim',
-    tah = 'v3.5.2',
+    tag = 'v3.5.2',
     main = 'ibl',
     opts = {},
   },
@@ -273,6 +273,7 @@ require('lazy').setup({
   'nvimtools/none-ls.nvim',
   {
     'jay-babu/mason-null-ls.nvim',
+    tag = 'v2.5.1',
     event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
       'williamboman/mason.nvim',
