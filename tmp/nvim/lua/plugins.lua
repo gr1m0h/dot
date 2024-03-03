@@ -121,6 +121,10 @@ require('lazy').setup({
     build = ':TSUpdate',
   },
   {
+    'lukas-reineke/cmp-rg',
+    tag = 'v1.3.9',
+  },
+  {
     'onsails/lspkind.nvim',
     config = function()
       require('config.lspkind')
