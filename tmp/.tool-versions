@@ -27,6 +27,6 @@ shfmt 3.7.0
 starship 1.16.0
 stylua 0.19.1
 terraform 1.6.5
-trivy 0.47.0
+trivy 0.50.1
 vhs 0.2.0
 viddy 0.4.0
