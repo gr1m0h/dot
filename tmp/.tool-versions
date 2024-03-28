@@ -8,7 +8,7 @@ colima 0.6.6
 docker-compose-v1 2.23.3
 fd 8.7.1
 firebase 12.6.1
-flutter 3.13.6-stable
+flutter 3.19.5-stable
 fzf 0.44.1
 ghq 1.4.2
 github-cli 2.39.2
