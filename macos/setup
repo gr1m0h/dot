@@ -49,7 +49,7 @@ setup_dotfiles() {
       info "~${dotfile#$HOME} already exists... Skipping."
     else
       info "Downloading $HOME/$dotfile"
-      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/grimoh/dorfiles/HEAD/$dotfile)"
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/HEAD/dots/$dotfile)"
     fi
   done
 
@@ -59,7 +59,7 @@ setup_dotfiles() {
     info "$HOME/.config already exists... Skipping."
   else
     info "Downloading $HOME/.config"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/grimoh/dorfiles/HEAD/.config)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/HEAD/.config)"
   fi
 }
 
@@ -72,38 +72,11 @@ setup_homebrew() {
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
 
-  # for Linux
-  if [ "$(uname)" == "Linux" ]; then
-    test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)"
-    test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-    test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile
-  fi
+  info "Downloading Brewfile"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/HEAD/macos/Brewfile)"
 
-  # install brew dependencies from Brewfile
+  info "Install brew dependencies form Brewfile"
   brew bundle
-}
-
-setup_fish(){
-  title "Setting up fish-shell"
-
-  # install if fisher is not installed
-  if ! ( type "fisher" > /dev/null 2>&1 ); then
-    info "Fisher not installed. Installing."
-    curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
-  fi
-
-  # install fisher plugins
-  FISHER_PACKAGES=(
-    decors/fish-ghq
-    dracula/fish
-    franciscolourenco/done
-    jethrokuan/fzf
-    jethrokuan/z
-    jorgebucaran/autopair.fish
-    grimoh/fish-aqua
-    grimoh/fish-prompt
-  )
-  fish -C 'fisher install "${FISHER_PACKAGES[@]}" || :'
 }
 
 setup_macos(){
@@ -231,18 +204,37 @@ setup_asdfvm(){
 
   # add asdf plugins
   asdf plugin add 1password-cli
+  asdf plugin add act
   asdf plugin add awscli
+  asdf plugin add bat
   asdf plugin add caddy
+  asdf plugin add cocoapods
+  asdf plugin add colima
+  asdf plugin add fd
+  asdf plugin add firebase
+  asdf plugin add flutter
+  asdf plugin add fzf
+  asdf plugin add ghq
+  asdf plugin add github-cli
+  asdf plugin add golang
+  asdf plugin add java
+  asdf plugin add jq
+  asdf plugin add k6
+  asdf plugin add lima
+  asdf plugin add neovim
   asdf plugin add nodejs
   asdf plugin add pre-commit
   asdf plugin add python
+  asdf plugin add ripgrep
   asdf plugin add ruby
-	asdf plugin add shellcheck
-	asdf plugin add shfmt
+  asdf plugin add starship
+  asdf plugin add terraform
+  asdf plugin add trivy
   asdf plugin add vhs
-  asdf plugin add sops
+  asdf plugin add viddy
 
   # install asdf plugins
+  arch -x86_64 asdf install bat
   asdf install
 }
 
@@ -310,9 +302,6 @@ case "$1" in
   homebrew)
     setup_homebrew
     ;;
-  fish)
-    setup_fish
-    ;;
   macos)
     setup_macos
     ;;
@@ -334,7 +323,6 @@ case "$1" in
   all)
     setup_dotfiles
     setup_homebrew
-    setup_fish
     setup_macos
     setup_asdfvm
     setup_aqua
@@ -343,7 +331,7 @@ case "$1" in
     setup_packages
     ;;
   *)
-    echo $"\nUsage: $(basename "$0") {dotfiles|homebrew|fish|macos|asdfvm|aqua|docker|neovim|pkgs|all}\n"
+    echo $"\nUsage: $(basename "$0") {dotfiles|homebrew|macos|asdfvm|aqua|docker|neovim|pkgs|all}\n"
     exit 1
     ;;
 esac
