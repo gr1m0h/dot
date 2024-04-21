@@ -220,6 +220,7 @@ setup_asdfvm(){
   asdf plugin add java
   asdf plugin add jq
   asdf plugin add k6
+  asdf plugin add kubectl
   asdf plugin add lima
   asdf plugin add neovim
   asdf plugin add nodejs
