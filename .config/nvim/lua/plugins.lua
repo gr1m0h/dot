@@ -92,7 +92,7 @@ require('lazy').setup({
   },
   {
     'j-hui/fidget.nvim',
-    tag = 'v1.2.0',
+    tag = 'v1.4.1',
     opts = {},
   },
   -------------------------------
@@ -193,7 +193,7 @@ require('lazy').setup({
   -- buffer line
   {
     'akinsho/bufferline.nvim',
-    tag = 'v4.5.2',
+    tag = 'v4.5.3',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
     },
@@ -277,7 +277,7 @@ require('lazy').setup({
   'nvimtools/none-ls.nvim',
   {
     'jay-babu/mason-null-ls.nvim',
-    tag = 'v2.5.1',
+    tag = 'v2.6.0',
     event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
       'williamboman/mason.nvim',
