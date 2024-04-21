@@ -9,7 +9,6 @@ bindkey -v
 export XDG_DATA_HOME=$HOME/.local/share
 export XDG_CONFIG_HOME=$HOME/.config
 export WORKSPACE=$HOME/Documents/workspace
-export EDITOR=/opt/homebrew/bin/nvim
 setopt no_beep
 setopt auto_cd
 setopt auto_pushd
@@ -33,6 +32,7 @@ export GPG_TTY=$(tty)
 
 # asdf
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
+export EDITOR="$(asdf where neovim)"
 
 # aqua
 export AQUA_ROOT_DIR=$XDG_DATA_HOME/aquaproj-aqua
