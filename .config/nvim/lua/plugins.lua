@@ -193,7 +193,7 @@ require('lazy').setup({
   -- buffer line
   {
     'akinsho/bufferline.nvim',
-    tag = 'v4.5.3',
+    tag = 'v4.6.0',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
     },
