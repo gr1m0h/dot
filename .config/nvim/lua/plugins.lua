@@ -125,6 +125,12 @@ require('lazy').setup({
     tag = 'v1.3.9',
   },
   {
+    'zbirenbaum/copilot-cmp',
+    config = function()
+      require('copilot_cmp').setup()
+    end
+  },
+  {
     'onsails/lspkind.nvim',
     config = function()
       require('config.lspkind')
@@ -285,6 +291,19 @@ require('lazy').setup({
     },
     config = function()
       require('config.mason-null-ls')
+    end,
+  },
+  -------------------------------------------------
+  --
+  -- AI
+  --
+  -------------------------------
+  {
+    'zbirenbaum/copilot.lua',
+    cmd = 'Copilot',
+    event = 'InsertEnter',
+    config = function()
+      require('copilot').setup()
     end,
   },
   -------------------------------------------------
