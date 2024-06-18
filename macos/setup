@@ -214,6 +214,7 @@ setup_asdfvm(){
   asdf plugin add firebase
   asdf plugin add flutter
   asdf plugin add fzf
+  asdf plugin add gcloud
   asdf plugin add ghq
   asdf plugin add github-cli
   asdf plugin add golang

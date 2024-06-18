@@ -9,6 +9,7 @@ fd 8.7.1
 firebase 12.6.1
 flutter 3.13.6-stable
 fzf 0.44.1
+gcloud 450.0.0
 ghq 1.4.2
 github-cli 2.39.2
 golang 1.21.6
