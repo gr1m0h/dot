@@ -2,7 +2,6 @@
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
-
 alias c='clear'
 
 # directory
@@ -11,8 +10,10 @@ alias la='ls -lAh'
 alias ll='ls -lh'
 alias md='mkdir -p'
 
-# top
+# tools
+alias docker-compose='docker-cli-plugin-docker-compose'
 alias top='gotop'
-
-# cat
 alias cat='bat'
+alias k='kubectl'
+
+alias update-nvim='asdf uninstall neovim stable && asdf install neovim stable'
