@@ -303,8 +303,22 @@ require('lazy').setup({
     cmd = 'Copilot',
     event = 'InsertEnter',
     config = function()
-      require('copilot').setup()
+      require('copilot').setup({
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+      })
     end,
+  },
+  {
+    'CopilotC-Nvim/CopilotChat.nvim',
+    tag = 'v2.10.1',
+    dependencies = {
+      'zbirenbaum/copilot.lua',
+      'nvim-lua/plenary.nvim',
+    },
+    opts = {
+      debug = true,
+    },
   },
   -------------------------------------------------
   --
