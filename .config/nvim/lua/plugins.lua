@@ -319,6 +319,9 @@ require('lazy').setup({
     opts = {
       debug = true,
     },
+    config = function()
+      require('config.CopilotChat')
+    end,
   },
   -------------------------------------------------
   --
