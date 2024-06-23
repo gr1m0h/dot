@@ -86,7 +86,7 @@ require('lazy').setup({
   },
   {
     'folke/trouble.nvim',
-    tag = 'v2.10.0',
+    tag = 'v3.4.3',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     opts = {},
   },
