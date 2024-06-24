@@ -41,7 +41,7 @@ require('lazy').setup({
   -- standard fatture enhancement
   {
     'folke/which-key.nvim',
-    tag = 'v1.6.0',
+    tag = 'v2.1.0',
     event = 'VeryLazy',
     init = function()
       vim.o.timeout = true
