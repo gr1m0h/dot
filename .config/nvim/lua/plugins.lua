@@ -237,7 +237,7 @@ require('lazy').setup({
   },
   {
     'L3MON4D3/LuaSnip',
-    tag = 'v2.2.0',
+    tag = 'v2.3.0',
     after = { 'friendly-snippets' },
     config = function()
       require('config.LuaSnip')
