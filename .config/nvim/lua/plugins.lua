@@ -257,7 +257,7 @@ require('lazy').setup({
   -- reading assistant
   {
     'lukas-reineke/indent-blankline.nvim',
-    tag = 'v3.5.2',
+    tag = 'v3.6.3',
     main = 'ibl',
     opts = {},
   },
