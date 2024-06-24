@@ -17,7 +17,7 @@ require('lazy').setup({
   -- notify
   {
     'rcarriga/nvim-notify',
-    tag = 'v3.13.5',
+    tag = 'v3.13.2',
     event = 'VimEnter',
     config = function()
       local notify = require('notify')
@@ -250,7 +250,7 @@ require('lazy').setup({
   -- git
   {
     'lewis6991/gitsigns.nvim',
-    tag = 'v0.7',
+    tag = 'v0.9.0',
     opts = {}
   },
   -------------------------------
