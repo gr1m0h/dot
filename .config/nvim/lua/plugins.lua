@@ -175,6 +175,9 @@ require('lazy').setup({
     'windwp/nvim-ts-autotag',
     dependencies = { { 'nvim-treesitter/nvim-treesitter', lazy = true } },
     opts = {},
+    config = function()
+      require('config.nvim-ts-autotag')
+    end
   },
   -------------------------------------------------
   --
