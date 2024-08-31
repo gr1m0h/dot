@@ -67,6 +67,7 @@ source ~/.zsh_aliases
 # flutter
 export FLUTTER_ROOT="$(asdf where flutter)"
 export PATH=$PATH:$HOME/.pub-cache/bin
+export CHROME_EXECUTABLE="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
 
 # java
 . ~/.asdf/plugins/java/set-java-home.zsh
