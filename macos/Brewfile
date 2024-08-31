@@ -5,13 +5,13 @@ tap "homebrew/cask-drivers"
 tap "homebrew/cask-fonts"
 tap "wez/wezterm"
 brew "asdf"
+brew "curl"
 brew "git"
+brew "unbound"
 brew "gnutls"
 brew "gnupg"
 brew "mas"
 brew "sheldon"
-brew "ttyd"
-brew "wget"
 brew "aquaproj/aqua/aqua"
 brew "gromgit/fuse/sshfs-mac"
 cask "1password"
@@ -30,9 +30,9 @@ cask "opal-composer"
 cask "slack"
 cask "wezterm-nightly"
 cask "zoom"
-mas "LINE", id: 539883307
-mas "Skitch", id: 425955336
-mas "Magnet", id: 441258766
 mas "Hidden Bar", id: 1452453066
+mas "LINE", id: 539883307
+mas "Magnet", id: 441258766
 mas "Numbers", id: 409203825
+mas "Skitch", id: 425955336
 mas "Xcode", id: 497799835
