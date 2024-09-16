@@ -30,9 +30,9 @@ setopt hist_reduce_blanks
 # gpg
 export GPG_TTY=$(tty)
 
-# asdf
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
-export EDITOR="$(asdf where neovim)"
+# mise
+# eval "$(~/.local/bin/mise activate zsh)"
+export EDITOR="$(mise where neovim)"
 
 # aqua
 export AQUA_ROOT_DIR=$XDG_DATA_HOME/aquaproj-aqua
@@ -61,16 +61,16 @@ eval "$(starship init zsh)"
 # Instantly recognize newly installed commands
 zstyle ":completion:*:commands" rehash 1
 
-# aliases
-source ~/.zsh_aliases
-
 # flutter
-export FLUTTER_ROOT="$(asdf where flutter)"
+export FLUTTER_ROOT="$(mise where flutter)"
 export PATH=$PATH:$HOME/.pub-cache/bin
 export CHROME_EXECUTABLE="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
 
-# java
-. ~/.asdf/plugins/java/set-java-home.zsh
+# aliases
+source ~/.zsh_aliases
+
+# completions
+source ~/.zsh_completions
 
 # Fig post block. Keep at the bottom of this file.
 [[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
