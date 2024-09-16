@@ -11,7 +11,7 @@ flutter 3.13.6-stable
 fzf 0.44.1
 gcloud 450.0.0
 ghq 1.4.2
-github-cli 2.39.2
+github-cli 2.56.0
 golang 1.21.6
 java openjdk-21
 jq 1.7
