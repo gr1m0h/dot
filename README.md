@@ -9,5 +9,5 @@
 help
 
 ```sh
-Usage: setup {dotfiles|homebrew|fish|macos|asdfvm|aqua|docker|neovim|pkgs|all}
+Usage: setup {dotfiles|homebrew|fish|macos|aqua|docker|neovim|pkgs|all}
 ```
