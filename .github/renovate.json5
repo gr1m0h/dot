@@ -12,7 +12,6 @@
         "^(?<depName>[\\w-]+)\\s*=\\s*\"(?<currentValue>(?!latest)[^\"]+)\""
       ],
       "extractVersion": "^\\s*(?<depName>[\\w-]+)\\s*=\\s*\"(?<currentValue>[^\"]+)\"$"
-      }
     }
   },
 
