@@ -4,6 +4,14 @@
     "config:base",
     "github>aquaproj/aqua-renovate-config#2.3.1"
   ],
+  "packageRules": [
+    {
+      "managers": ["mise"],
+      "updateTypes": ["minor", "patch"],
+      "paths": ["mise.toml"],
+      "enabled": true
+    }
+  ],
 
   "automerge": true
 }
