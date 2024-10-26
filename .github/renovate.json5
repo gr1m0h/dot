@@ -5,32 +5,5 @@
     "github>aquaproj/aqua-renovate-config#2.3.1"
   ],
 
-  "customManagers": {
-    "mise": {
-      "fileMatch": ["^\\.mise\\.toml$"],
-      "matchStrings": [
-        "^(?<depName>[\\w-]+)\\s*=\\s*\"(?<currentValue>(?!latest)[^\"]+)\""
-      ],
-      "extractVersion": "^\\s*(?<depName>[\\w-]+)\\s*=\\s*\"(?<currentValue>[^\"]+)\"$"
-    }
-  },
-
-  "packageRules": [
-    {
-      "packagePatterns": ["mise"],
-      "groupName": "mise dependencies",
-      "automerge": true,
-      "schedule": ["before 3am on Monday"],
-      "enabled": true
-    },
-    // {
-    //   "packagePatterns": ["mise"],
-    //   "groupName": "major updates",
-    //   "major": {
-    //     "automerge": false,
-    //   }
-    // }
-  ],
-
   "automerge": true
 }
