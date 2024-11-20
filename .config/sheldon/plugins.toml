@@ -12,19 +12,17 @@
 
 shell = "zsh"
 
-[plugins]
-
-[plugins.zsh-autosuggestions]
-github = 'zsh-users/zsh-autosuggestions'
-
 [plugins.fast-syntax-highlighting]
 github = 'zdharma/fast-syntax-highlighting'
 
 [plugins.zsh-z]
 github = 'agkozak/zsh-z'
 
-[plugins.zsh]
-github = 'dracula/zsh'
-
 [plugins.autopair]
 github = 'hlissner/zsh-autopair'
+
+[plugins.zsh-autosuggestions]
+github = 'zsh-users/zsh-autosuggestions'
+
+[plugins.fzf-git]
+github = "junegunn/fzf-git.sh"
