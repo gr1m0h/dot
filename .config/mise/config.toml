@@ -1,5 +1,4 @@
 [tools]
-starship = "latest"
 jq = "latest"
 neovim = "latest"
 ghq = "latest"
@@ -17,3 +16,4 @@ flutter = "3.24.3-stable"
 go = "1.23.1"
 python = "3.12.6"
 terraform = "1.9.5"
+starship = "latest"
