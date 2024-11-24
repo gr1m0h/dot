@@ -63,12 +63,12 @@ end)
 local keys = {
   {
     key = 'h',
-    mods = 'CMD',
+    mods = 'CTRL',
     action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
   },
   {
     key = 'v',
-    mods = 'CMD',
+    mods = 'CTRL',
     action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' },
   },
 }
