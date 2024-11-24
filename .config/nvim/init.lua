@@ -65,8 +65,8 @@ vim.opt.helplang = 'ja'
 vim.opt.termguicolors = true
 
 vim.g.noexpandtab = true
-vim.g.python3_host_prog = '$HOME/.asdf/shims/python3'
-vim.g.ruby_host_prog = '$HOME/.asdf/shims/ruby'
+vim.g.python3_host_prog = '$HOME/.local/share/mise/shims/python3'
+vim.g.ruby_host_prog = '/usr/bin/ruby'
 
 vim.loader.enable()
 vim.keymap.set('n', 'ch', ':checkhealth<Return>', { noremap = true })
