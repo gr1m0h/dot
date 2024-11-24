@@ -20,20 +20,29 @@ setopt inc_append_history
 setopt hist_no_store
 setopt hist_reduce_blanks
 
+# Set PATH, MANPATH, etc., for Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # gpg
 export GPG_TTY=$(tty)
 
-# mise
-eval "$(/opt/homebrew/bin/mise activate zsh)"
-export EDITOR="$(mise where neovim)"
+# aqua
+export AQUA_ROOT_DIR=$XDG_DATA_HOME/aquaproj-aqua
+export AQUA_GLOBAL_CONFIG=$HOME/.aqua.yaml
+export PATH=$AQUA_ROOT_DIR/bin:$PATH
 
-# ghq
-export GHQ_ROOT_DIR=$WORKSPACE
-export GHQ_SELECTOR=fzf
+# mise
+# eval "$(/opt/homebrew/bin/mise activate zsh)"
+export PATH="$HOME/.local/share/mise/shims:$PATH"
+export EDITOR="$(mise where neovim)"
 
 # starship
 export STARSHIP_CONFIG=$XDG_CONFIG_HOME/starship/starship.toml
 eval "$(starship init zsh)"
+
+# ghq
+export GHQ_ROOT_DIR=$WORKSPACE
+export GHQ_SELECTOR=fzf
 
 # sheldon
 eval "$(sheldon source)"
@@ -53,11 +62,6 @@ export PATH=$GOPATH/bin:$PATH
 # npm
 export NPM_CONFIG_PREFIX=$HOME/.packages/npm
 export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
-
-# aqua
-export AQUA_ROOT_DIR=$XDG_DATA_HOME/aquaproj-aqua
-export AQUA_GLOBAL_CONFIG=$HOME/.aqua.yaml
-export PATH=$AQUA_ROOT_DIR/bin:$PATH
 
 # Instantly recognize newly installed commands
 zstyle ":completion:*:commands" rehash 1
