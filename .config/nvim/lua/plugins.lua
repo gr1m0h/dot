@@ -17,12 +17,10 @@ require('lazy').setup({
   -- notify
   {
     'rcarriga/nvim-notify',
-    tag = 'v3.13.2',
+    tag = 'v3.14.0',
     event = 'VimEnter',
     config = function()
-      local notify = require('notify')
-      vim.notify = notify
-      notify.history()
+      require('config.nvim-notify')
     end,
     opts = {},
   },

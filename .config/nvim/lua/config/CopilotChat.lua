@@ -40,12 +40,12 @@ copilotc.setup {
       selection = select.diagnostics,
     },
     Commit = {
-      prompt = 'Write commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit. Please translate the answer into Japanese.',
+      prompt = 'Write commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit.',
       mapping = '<leader>cc',
       selection = select.gitdiff,
     },
     CommitStaged = {
-      prompt = 'Write commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit. Please translate the answer into Japanese.',
+      prompt = 'Write commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit.',
       mmaping = '<leader>cs',
       selection = function(source)
         return select.gitdiff(source, true)

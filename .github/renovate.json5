@@ -2,35 +2,15 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base",
-    "github>aquaproj/aqua-renovate-config#1.11.0"
+    "github>aquaproj/aqua-renovate-config#2.3.1"
   ],
-
-  "customManagers": {
-    "mise": {
-      "fileMatch": ["^\\.mise\\.toml$"],
-      "matchStrings": [
-        "^(?<depName>[\\w-]+)\\s*=\\s*\"(?<currentValue>(?!latest)[^\"]+)\""
-      ],
-      "extractVersion": "^\\s*(?<depName>[\\w-]+)\\s*=\\s*\"(?<currentValue>[^\"]+)\"$"
-      }
-    }
-  },
-
   "packageRules": [
     {
-      "packagePatterns": ["mise"],
-      "groupName": "mise dependencies",
-      "automerge": true,
-      "schedule": ["before 3am on Monday"],
+      "managers": ["mise"],
+      "updateTypes": ["minor", "patch"],
+      "paths": ["mise.toml"],
       "enabled": true
-    },
-    // {
-    //   "packagePatterns": ["mise"],
-    //   "groupName": "major updates",
-    //   "major": {
-    //     "automerge": false,
-    //   }
-    // }
+    }
   ],
 
   "automerge": true

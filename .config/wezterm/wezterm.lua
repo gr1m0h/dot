@@ -60,18 +60,21 @@ wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_wid
   return string.format(' %d ', tab_index)
 end)
 
-
 local keys = {
-  -- This will create a new split and run your default program inside it
-  { key = 'd', mods = 'CMD', action = wezterm.action { SplitHorizontal = { domain = 'CurrentPaneDomain' } } },
+  {
+    key = 'h',
+    mods = 'CTRL',
+    action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
+  },
+  {
+    key = 'v',
+    mods = 'CTRL',
+    action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' },
+  },
 }
 
 return {
   color_scheme = 'Dracula (Official)',
-  window_background_image = '/Users/d4rj3311n6/.config/wezterm/images/wallpaper.png',
-  window_background_image_hsb = {
-    brightness = 0.05,
-  },
   keys = keys,
   exit_behavior = 'Close',
   font = wezterm.font 'HackGen35 Console NF',
