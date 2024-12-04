@@ -159,7 +159,7 @@ require('lazy').setup({
   {
     'nvim-treesitter/nvim-treesitter',
     event = 'VimEnter',
-    build = 'TSUpdate',
+    build = ':TSUpdate',
     config = function()
       require('config.nvim-treesitter')
     end,
