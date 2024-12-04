@@ -105,5 +105,14 @@ config.kotlin_language_server.setup {
   filetypes = { 'kotlin' },
 }
 
+-- Not managed by mason-lspconfig
+config.sourcekit.setup {
+  on_attach = on_attach_navic,
+  capabilities = capabilities,
+  filetypes = { 'swift' },
+}
+
+-- Not managed by mason-ls
+
 set('n', 'li', ':LspInfo<Return>', { noremap = true, silent = true })
 set('n', 'ls', ':LspStart<Return>', { noremap = true, silent = true })
