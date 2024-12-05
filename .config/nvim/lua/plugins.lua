@@ -323,6 +323,38 @@ require('lazy').setup({
   },
   -------------------------------------------------
   --
+  -- Debug Adapter Protocol
+  --
+  -------------------------------
+  {
+    'mfussenegger/nvim-dap',
+    tag = '0.8.0',
+    config = function()
+      require('config.nvim-dap')
+    end,
+  },
+  {
+    'theHamsta/nvim-dap-virtual-text',
+    config = function()
+      require('config.nvim-dap-virtual-text')
+    end,
+  },
+  {
+    'rcarriga/nvim-dap-ui',
+    tag = 'v4.0.0',
+    config = function()
+      require('config.nvim-dap-ui')
+    end,
+  },
+  {
+    "jay-babu/mason-nvim-dap.nvim",
+    tag = 'v2.4.0',
+    config = function()
+      require('config.mason-nvim-dap')
+    end,
+  },
+  -------------------------------------------------
+  --
   -- Programming Language
   --
   -------------------------------
