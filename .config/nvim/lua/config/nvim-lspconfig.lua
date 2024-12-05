@@ -110,9 +110,17 @@ config.sourcekit.setup {
   on_attach = on_attach_navic,
   capabilities = capabilities,
   filetypes = { 'swift' },
+  cmd = {
+    'sourcekit-lsp',
+    '-Xswiftc',
+    '-sdk',
+    '-Xswiftc',
+    vim.fn.system('xcrun --show-sdk-path --sdk macosx')
+  },
 }
 
 -- Not managed by mason-ls
 
+-- keybind
 set('n', 'li', ':LspInfo<Return>', { noremap = true, silent = true })
 set('n', 'ls', ':LspStart<Return>', { noremap = true, silent = true })
