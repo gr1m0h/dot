@@ -14,6 +14,7 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- lua library
   'nvim-lua/plenary.nvim',
+  'MunifTanjim/nui.nvim',
   -- notify
   {
     'rcarriga/nvim-notify',
@@ -329,14 +330,11 @@ require('lazy').setup({
   {
     'mfussenegger/nvim-dap',
     tag = '0.8.0',
+    dependencies = {
+      'wojciech-kulik/xcodebuild.nvim',
+    },
     config = function()
       require('config.nvim-dap')
-    end,
-  },
-  {
-    'theHamsta/nvim-dap-virtual-text',
-    config = function()
-      require('config.nvim-dap-virtual-text')
     end,
   },
   {
@@ -346,22 +344,26 @@ require('lazy').setup({
       require('config.nvim-dap-ui')
     end,
   },
-  {
-    "jay-babu/mason-nvim-dap.nvim",
-    tag = 'v2.4.0',
-    config = function()
-      require('config.mason-nvim-dap')
-    end,
-  },
+  -- {
+  --   "jay-babu/mason-nvim-dap.nvim",
+  --   tag = 'v2.4.0',
+  --   config = function()
+  --     require('config.mason-nvim-dap')
+  --   end,
+  -- },
   -------------------------------------------------
   --
   -- Programming Language
   --
   -------------------------------
-  -- markdown
   {
-    'dhruvasagar/vim-table-mode',
-    tag = 'v4.8.1',
-    cmd = { 'TableModeEnable' },
+    'wojciech-kulik/xcodebuild.nvim',
+    dependencies = {
+      'nvim-telescope/telescope.nvim',
+      'MunifTanjim/nui.nvim',
+    },
+    config = function()
+      require('config.xcodebuild')
+    end,
   },
 })
