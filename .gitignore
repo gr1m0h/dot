@@ -55,6 +55,13 @@ typings/
 .next
 
 # dotfiles
+.config/.android
+.config/configstore
+.config/gcloud
+.config/gh
+.config/gh-copilot
+.config/github-copilot
+.config/sheldon/~plugins.toml.save
 .config/zsh/.zprofile
 .config/zsh/.zcompdump
 .config/zsh/.zsh_sessions/
