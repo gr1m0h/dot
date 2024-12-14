@@ -9,7 +9,6 @@ masonlsp.setup {
     'lua_ls',
     'dockerls',
     'gopls',
-    'biome',
     'tsserver',
     'terraformls',
     'marksman',

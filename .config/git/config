@@ -16,7 +16,7 @@
 [push]
   autoSetupRemote = true
 [ghq]
-  root = /Users/d4rj3311n6/Documents/workspace
+  root = /Users/gr1m0h/Documents/workspace
 [gpg]
   format = ssh
 [gpg "ssh"]

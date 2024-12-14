@@ -87,17 +87,6 @@ config.tsserver.setup {
   filetypes = { 'typescript', 'typescriptreact', 'typescript.tsx' },
   cmd = { 'typescript-language-server', '--stdio' },
 }
-config.biome.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-  filetypes = { 'javascript', 'typescript' },
-}
--- markdown
-config.marksman.setup {
-  on_attach = on_attach_navic,
-  capabilities = capabilities,
-  filetypes = { 'markdown' },
-}
 -- kotlin
 config.kotlin_language_server.setup {
   on_attach = on_attach_navic,
