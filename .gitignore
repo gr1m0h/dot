@@ -55,7 +55,7 @@ typings/
 .next
 
 # dotfiles
-.zprofile
-.zcompdump
-.zsh_sessions/
-.zsh_history
+.config/zsh/.zprofile
+.config/zsh/.zcompdump
+.config/zsh/.zsh_sessions/
+.config/zsh/.zsh_history
