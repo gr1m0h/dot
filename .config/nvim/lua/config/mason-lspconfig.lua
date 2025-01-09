@@ -11,7 +11,6 @@ masonlsp.setup {
     'gopls',
     'tsserver',
     'terraformls',
-    'marksman',
-    'kotlin_language_server'
+    'kotlin_language_server',
   }
 }
