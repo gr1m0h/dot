@@ -3,7 +3,7 @@
 local status, copilotc = pcall(require, 'CopilotChat')
 if (not status) then return end
 
-local context = require('CopilotChat.context')
+local select = require('CopilotChat.select')
 --
 copilotc.setup {
   show_help = 'yes',
@@ -34,12 +34,22 @@ copilotc.setup {
       prompt = '/COPILOT_GENERATE Please generate tests for my code. Please translate the answer into Japanese.',
       mapping = '<leader>ct',
     },
-    -- Commit = {
-    --   prompt = 'Write commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit.',
-    --   mapping = '<leader>cs',
-    --   selection = function()
-    --     return context.gitdiff(staged)
-    --   end,
-    -- },
+    FixDiagnostic = {
+      prompt = 'Please assist with the following diagnostic issue in file. Please translate the answer into Japanese.',
+      mapping = '<leader>cx',
+      selection = select.diagnostics,
+    },
+    Commit = {
+      prompt = 'Write commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit.',
+      mapping = '<leader>cc',
+      selection = select.gitdiff,
+    },
+    CommitStaged = {
+      prompt = 'Write commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit.',
+      mmaping = '<leader>cs',
+      selection = function(source)
+        return select.gitdiff(source, true)
+      end,
+    },
   },
 }
