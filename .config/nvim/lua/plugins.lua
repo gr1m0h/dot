@@ -14,11 +14,12 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- lua library
   'nvim-lua/plenary.nvim',
+  'nvim-neotest/nvim-nio',
   'MunifTanjim/nui.nvim',
   -- notify
   {
     'rcarriga/nvim-notify',
-    tag = 'v3.14.0',
+    tag = 'v3.15.0',
     event = 'VimEnter',
     config = function()
       require('config.nvim-notify')
@@ -40,7 +41,7 @@ require('lazy').setup({
   -- standard fatture enhancement
   {
     'folke/which-key.nvim',
-    tag = 'v2.1.0',
+    tag = 'v3.15.0',
     event = 'VeryLazy',
     init = function()
       vim.o.timeout = true
@@ -56,19 +57,19 @@ require('lazy').setup({
   -- language server protocol
   {
     'neovim/nvim-lspconfig',
-    tag = 'v0.1.7',
+    tag = 'v1.3.0',
     config = function()
       require('config.nvim-lspconfig')
     end,
   },
   {
     'williamboman/mason.nvim',
-    tag = 'v1.9.0',
+    tag = 'v1.10.0',
     opts = {},
   },
   {
     'williamboman/mason-lspconfig.nvim',
-    tag = 'v1.26.0',
+    tag = 'v1.31.0',
     config = function()
       require('config.mason-lspconfig')
     end,
@@ -85,52 +86,74 @@ require('lazy').setup({
   },
   {
     'folke/trouble.nvim',
-    tag = 'v3.4.3',
+    tag = 'v3.6.0',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     opts = {},
   },
   {
     'j-hui/fidget.nvim',
-    tag = 'v1.4.1',
+    tag = 'v1.5.0',
     opts = {},
   },
   -------------------------------
   -- auto completion
   {
     'hrsh7th/nvim-cmp',
-    tag = 'v0.0.1',
+    tag = 'v0.0.2',
+    event = 'InsertEnter',
     dependencies = {
-      { 'L3MON4D3/LuaSnip',      lazy = true, event = 'VimEnter' },
-      { 'windwp/nvim-autopairs', lazy = true, event = 'VimEnter' },
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-nvim-lsp-signature-help',
+      'hrsh7th/cmp-nvim-lsp-document-symbol',
+      'hrsh7th/cmp-nvim-lua',
+      'hrsh7th/cmp-buffer',
+      'hrsh7th/cmp-path',
+      'saadparwaiz1/cmp_luasnip',
+      'zbirenbaum/copilot-cmp',
+      'onsails/lspkind.nvim',
     },
     config = function()
       require('config.nvim-cmp')
     end,
   },
-  'hrsh7th/cmp-nvim-lsp',
-  'hrsh7th/cmp-nvim-lsp-signature-help',
-  'hrsh7th/cmp-nvim-lsp-document-symbol',
-  'hrsh7th/cmp-nvim-lua',
-  'hrsh7th/cmp-buffer',
-  'hrsh7th/cmp-cmdline',
-  'hrsh7th/cmp-path',
-  'saadparwaiz1/cmp_luasnip',
   {
-    'ray-x/cmp-treesitter',
-    build = ':TSUpdate',
+    'hrsh7th/cmp-nvim-lsp',
+    lazy = true,
   },
   {
-    'lukas-reineke/cmp-rg',
-    tag = 'v1.3.9',
+    'hrsh7th/cmp-nvim-lsp-signature-help',
+    lazy = true,
+  },
+  {
+    'hrsh7th/cmp-nvim-lsp-document-symbol',
+    lazy = true,
+  },
+  {
+    'hrsh7th/cmp-nvim-lua',
+    lazy = true,
+  },
+  {
+    'hrsh7th/cmp-buffer',
+    lazy = true,
+  },
+  {
+    'hrsh7th/cmp-path',
+    lazy = true,
+  },
+  {
+    'saadparwaiz1/cmp_luasnip',
+    lazy = true,
   },
   {
     'zbirenbaum/copilot-cmp',
+    lazy = true,
     config = function()
       require('copilot_cmp').setup()
     end
   },
   {
     'onsails/lspkind.nvim',
+    lazy = true,
     config = function()
       require('config.lspkind')
     end
@@ -143,7 +166,7 @@ require('lazy').setup({
   -- telescope
   {
     'nvim-telescope/telescope.nvim',
-    tag = '0.1.5',
+    tag = '0.1.8',
     dependencies = { 'plenary.nvim' },
     config = function()
       require('config.telescope')
@@ -201,7 +224,7 @@ require('lazy').setup({
   -- buffer line
   {
     'akinsho/bufferline.nvim',
-    tag = 'v4.9.0',
+    tag = 'v4.9.1',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
     },
@@ -259,7 +282,7 @@ require('lazy').setup({
   -- reading assistant
   {
     'lukas-reineke/indent-blankline.nvim',
-    tag = 'v3.6.3',
+    tag = 'v3.8.7',
     main = 'ibl',
     opts = {},
   },
@@ -310,7 +333,7 @@ require('lazy').setup({
   },
   {
     'CopilotC-Nvim/CopilotChat.nvim',
-    tag = 'v2.10.1',
+    tag = 'v3.3.3',
     dependencies = {
       'zbirenbaum/copilot.lua',
       'nvim-lua/plenary.nvim',
@@ -329,7 +352,7 @@ require('lazy').setup({
   -------------------------------
   {
     'mfussenegger/nvim-dap',
-    tag = '0.8.0',
+    tag = '0.9.0',
     dependencies = {
       'wojciech-kulik/xcodebuild.nvim',
     },
@@ -340,6 +363,10 @@ require('lazy').setup({
   {
     'rcarriga/nvim-dap-ui',
     tag = 'v4.0.0',
+    dependencies = {
+      'mfussenegger/nvim-dap',
+      'nvim-neotest/nvim-nio',
+    },
     config = function()
       require('config.nvim-dap-ui')
     end,

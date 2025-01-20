@@ -9,30 +9,42 @@ local lspkind = require('lspkind')
 cmp.setup {
   snippet = {
     expand = function(args)
-      luasnip.lsp_expand(args.body)
+      luasnip.lsp_expand(args)
     end,
   },
   mapping = cmp.mapping.preset.insert({
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.close(),
     ['<CR>'] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Replace,
       select = true
     }),
+    ['<tab>'] = cmp.mapping(function(original)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      else
+        original()
+      end
+    end, { 'i', 's' }),
+    ['<S-tab>'] = cmp.mapping(function(original)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.expand_or_jumbable() then
+        luasnip.jump(-1)
+      else
+        original()
+      end
+    end, { 'i', 's' }),
   }),
   sources = cmp.config.sources({
-    { name = 'copilot' },
     { name = 'nvim_lsp' },
     { name = 'nvim_lsp_signature_help' },
     { name = 'nvim_lsp_document_symbol' },
-    { name = 'nvim_lua' },
+    { name = 'copilot' },
+    { name = 'luasnip' },
     { name = 'buffer' },
     { name = 'path' },
-    { name = 'luasnip' },
-    { name = 'treesitter' },
-    { name = 'rg' },
+    { name = 'nvim_lua' },
   }),
   formatting = {
     format = lspkind.cmp_format({
@@ -42,12 +54,12 @@ cmp.setup {
   },
 }
 
-cmp.setup.cmdline('/', {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = {
-    { name = 'nvim_lsp_document_symbol' },
-    { name = 'buffer' },
-  }
+require 'cmp'.setup.cmdline('/', {
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp_document_symbol' }
+  }, {
+    { name = 'buffer' }
+  })
 })
 
 cmp.setup.cmdline(':', {

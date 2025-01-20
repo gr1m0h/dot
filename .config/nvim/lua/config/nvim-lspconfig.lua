@@ -81,7 +81,7 @@ config.terraformls.setup {
   cmd = { 'terraform-ls', 'serve' },
 }
 -- javascript / typescript
-config.tsserver.setup {
+config.ts_ls.setup {
   on_attach = on_attach_navic,
   capabilities = capabilities,
   filetypes = { 'typescript', 'typescriptreact', 'typescript.tsx' },
@@ -97,16 +97,28 @@ config.kotlin_language_server.setup {
 -- Not managed by mason-lspconfig
 config.sourcekit.setup {
   on_attach = on_attach_navic,
-  capabilities = capabilities,
-  filetypes = { 'swift' },
+  capabilities = {
+    workspace = {
+      didChangeWatchedFiles = {
+        dynamicRegistration = true,
+      },
+    },
+  },
   cmd = {
     'sourcekit-lsp',
     '-Xswiftc',
     '-sdk',
     '-Xswiftc',
-    vim.fn.system('xcrun --show-sdk-path --sdk macosx')
+    vim.fn.system('xcrun --sdk iphonesimulator --show-sdk-path'),
+    '-Xswiftc',
+    '-target',
+    '-Xswiftc',
+    -- 'x86_64-apple-ios`xcrun --sdk iphonesimulator --show-sdk-platform-version`-simulator',
+    'x86_64-apple-ios18.2-simulator',
   },
 }
+
+config.dartls.setup {}
 
 -- Not managed by mason-ls
 

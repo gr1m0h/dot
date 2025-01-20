@@ -5,9 +5,7 @@ if (not status) then return end
 
 ts.setup {
   ensure_installed = {
-    'astro',
     'bash',
-    'css',
     'dart',
     'dockerfile',
     'go',
@@ -25,7 +23,6 @@ ts.setup {
     'terraform',
     'tsx',
     'typescript',
-    'vim',
     'yaml',
   },
   highlight = {

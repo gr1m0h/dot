@@ -9,7 +9,7 @@ masonlsp.setup {
     'lua_ls',
     'dockerls',
     'gopls',
-    'tsserver',
+    'ts_ls',
     'terraformls',
     'kotlin_language_server',
   }
