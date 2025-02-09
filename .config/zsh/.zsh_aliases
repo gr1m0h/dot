@@ -15,6 +15,5 @@ alias md='mkdir -p'
 alias docker-compose='docker-cli-plugin-docker-compose'
 alias top='gotop'
 alias cat='bat'
-alias k='kubectl'
 
-alias update-nvim='asdf uninstall neovim stable && asdf install neovim stable'
+alias update-nvim='mise uninstall neovim stable && mise install neovim stable'

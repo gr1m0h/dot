@@ -1,6 +1,5 @@
 # util
 bindkey -v
-source $ZDOTDIR/.zshenv
 export WORKSPACE=$HOME/Documents/workspace
 setopt no_beep
 setopt auto_cd
@@ -25,6 +24,9 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # gpg
 export GPG_TTY=$(tty)
+
+# git-czx
+export GIT_CZX_CONFIG=$XDG_CONFIG_HOME/git-czx/config.js
 
 # aqua
 export AQUA_ROOT_DIR=$XDG_DATA_HOME/aquaproj-aqua
