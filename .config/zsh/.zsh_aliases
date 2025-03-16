@@ -16,4 +16,5 @@ alias docker-compose='docker-cli-plugin-docker-compose'
 alias top='gotop'
 alias cat='bat'
 
+# mise
 alias update-nvim='mise uninstall neovim stable && mise install neovim stable'
