@@ -10,50 +10,46 @@ COLOR_YELLOW="\033[1;33m"
 COLOR_NONE="\033[0m"
 
 title() {
-  echo -e "\n${COLOR_PURPLE}$1${COLOR_NONE}"
-  echo -e "${COLOR_GRAY}==============================${COLOR_NONE}\n"
+  printf "\n%s\n" "${COLOR_PURPLE}$1${COLOR_NONE}"
+  printf "%s\n\n" "${COLOR_GRAY}==============================${COLOR_NONE}"
 }
 
 err() {
-  echo -e "${COLOR_RED}ERROR: ${COLOR_NONE}$1"
+  printf "%s\n" "${COLOR_RED}ERROR: ${COLOR_NONE}$1"
 }
 
 warn() {
-  echo -e "${COLOR_YELLOW}WARNING: ${COLOR_NONE}$1"
+  printf "%s\n" "${COLOR_YELLOW}WARNING: ${COLOR_NONE}$1"
 }
 
 info() {
-  echo -e "${COLOR_BLUE}INFO: ${COLOR_NONE}$1"
+  printf "%s\n" "${COLOR_BLUE}INFO: ${COLOR_NONE}$1"
 }
 
 success() {
-  echo -e "${COLOR_GREEN}$1${COLOR_NONE}"
+  printf "%s\n" "${COLOR_GREEN}$1${COLOR_NONE}"
 }
 
 setup_dotfiles() {
   title "Downloading dotfiles"
 
-  echo -e
+  echo
   info "downloading dotfiles"
-  DOTFILES=(
-    .aqua.yaml
-    .editorconfig
-    .gitconfig
-    .tool-versions
-    .zprofile
-    .zshrc
-  )
+  DOTFILES="
+.editorconfig
+.zshenv
+"
 
-  for dotfile in "${DOTFILES[@]}"; do
+  for dotfile in $DOTFILES; do
     if [ -e "$HOME/$dotfile" ]; then
       info "~${dotfile#$HOME} already exists... Skipping."
     else
       info "Downloading $HOME/$dotfile"
-      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/HEAD/dots/$dotfile)"
+      /bin/bash -c "$(curl -fsSL "https://raw.githubusercontent.com/gr1m0h/dot/HEAD/dots/$dotfile")"
     fi
   done
 
-  echo -e
+  echo
   info "installing .config"
   if [ -d "$HOME/.config" ]; then
     info "$HOME/.config already exists... Skipping."
@@ -67,24 +63,24 @@ setup_homebrew() {
   title "Setting up Homebrew"
 
   # install if Homebrew is not installed
-  if test ! "$( command -v brew )"; then
+  if test ! "$(command -v brew)"; then
     info "Homebrew not installed. Installing."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
 
   info "Downloading Brewfile"
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/HEAD/macos/Brewfile)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/HEAD/Brewfile)"
 
   info "Install brew dependencies form Brewfile"
   brew bundle
 }
 
-setup_macos(){
+setup_macos() {
   title "Configuring macOS"
-  if [[ "$(uname)" == "Darwin" ]]; then
+  if [ "$(uname)" = "Darwin" ]; then
 
     # make working space dir
-    mkdir -p $HOME/Documents/workspace
+    mkdir -p "$HOME/Documents/workspace"
 
     # install command line tools for xcode
     if [ ! -d /Library/Developer/CommandLineTools ]; then
@@ -199,102 +195,37 @@ setup_macos(){
   fi
 }
 
-setup_aqua(){
-  title "Setting up aqua"
-
-  # install aqua plugins
-  aqua install
-}
-
-setup_docker(){
+setup_docker() {
   title "Setting up docker"
 
   # change to use docker.sock mounted by colima
   docker context use colima
-  # echo $1 | sudo ln -s $HOME/.colima/docker.sock /var/run/docker.sock
-}
-
-setup_neovim(){
-  title "Setting up neovim"
-
-  # install packer(neovim package management plugin) if not installed
-  if ! ( ! -d ~/.local/share/nvim/site/pack/packer/opt/packer.nvim ); then
-    info "Packer not installed. Installing."
-    git clone https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/opt/packer.nvim
-  fi
-}
-
-setup_packages(){
-  title "Install packages"
-
-  # make package
-  mkdir -p $HOME/.packages/go $HOME/.packages/npm
-
-  # install gem packages
-  gem install neovim
-
-  # install python packages
-  python3 -m pip install pynvim
-
-  # install npm packages
-  NPM_PACKAGES=(
-		0x
-    eclint
-		git-cz
-    neovim
-    typescript
-		zx
-  )
-  npm install --global "${NPM_PACKAGES[@]}" || :
-
-  # install go packages
-  GO_PACKAGES=(
-    golang.org/x/tools/cmd/godoc@latest
-    google.golang.org/protobuf/cmd/protoc-gen-go@latest
-    google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-  )
-  go install "${GO_PACKAGE[@]}" || :
+  echo "$1" | sudo ln -s "$HOME/.colima/docker.sock" /var/run/docker.sock
 }
 
 case "$1" in
-  dotfiles)
-    setup_dotfiles
-    ;;
-  homebrew)
-    setup_homebrew
-    ;;
-  macos)
-    setup_macos
-    ;;
-  asdfvm)
-    setup_asdfvm
-    ;;
-  aqua)
-    setup_aqua
-    ;;
-  docker)
-    setup_docker
-    ;;
-  neovim)
-    setup_neovim
-    ;;
-  pkgs)
-    setup_packages
-    ;;
-  all)
-    setup_dotfiles
-    setup_homebrew
-    setup_macos
-    setup_asdfvm
-    setup_aqua
-    setup_docker
-    setup_neovim
-    setup_packages
-    ;;
-  *)
-    echo $"\nUsage: $(basename "$0") {dotfiles|homebrew|macos|asdfvm|aqua|docker|neovim|pkgs|all}\n"
-    exit 1
-    ;;
+dotfiles)
+  setup_dotfiles
+  ;;
+homebrew)
+  setup_homebrew
+  ;;
+macos)
+  setup_macos
+  ;;
+docker)
+  setup_docker "$@"
+  ;;
+all)
+  setup_dotfiles
+  setup_homebrew
+  setup_macos
+  setup_docker
+  ;;
+*)
+  printf "\nUsage: %s {dotfiles|homebrew|macos|docker|all}\n" "$(basename "$0")"
+  exit 1
+  ;;
 esac
 
 success "Done."
