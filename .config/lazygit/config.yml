@@ -1,0 +1,13 @@
+customCommands:
+  - command: git cz
+    context: files
+    subprocess: true
+    key: C
+gui:
+  language: "ja"
+  showIcons: true
+git:
+  branchLogCmd: "git log --graph --color=always --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' {{branchName}} --"
+  allBranchesLogCmd: "git log --graph --color=always --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --all"
+  paging:
+    colorArg: always
