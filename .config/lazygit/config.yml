@@ -1,8 +1,9 @@
 customCommands:
-  - command: git cz
+  - key: C
     context: files
+    command: "git commit -v -t ~/.config/git/commit_template_with_prompt.txt"
+    description: "Commit changes using git editor"
     subprocess: true
-    key: C
 gui:
   language: "ja"
   showIcons: true
