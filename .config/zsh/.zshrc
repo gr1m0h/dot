@@ -74,5 +74,5 @@ source $ZDOTDIR/.zsh_aliases
 # completions
 source $ZDOTDIR/.zsh_completions
 
-# luup
-source $ZDOTDIR/.zsh_luup
+# corp settings
+source $ZDOTDIR/.zsh_corp

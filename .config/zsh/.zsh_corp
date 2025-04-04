@@ -1,0 +1,5 @@
+export PATH="/usr/local/opt/openssl/bin:$PATH"
+
+whoes_using_port() {
+  lsof -i -P | grep "$@" | head -n 1 | awk '{print $2}'
+}
