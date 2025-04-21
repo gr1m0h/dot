@@ -28,11 +28,6 @@ export GPG_TTY=$(tty)
 # git-czx
 export GIT_CZX_CONFIG=$XDG_CONFIG_HOME/git-czx/config.js
 
-# aqua
-export AQUA_ROOT_DIR=$XDG_DATA_HOME/aquaproj-aqua
-export AQUA_GLOBAL_CONFIG=$HOME/.aqua.yaml
-export PATH=$AQUA_ROOT_DIR/bin:$PATH
-
 # mise
 # eval "$(/opt/homebrew/bin/mise activate zsh)"
 export PATH="$HOME/.local/share/mise/shims:$PATH"
@@ -56,14 +51,6 @@ export FZF_DEFAULT_OPTS=' --color=fg:#f8f8f2,bg:#32324b,hl:#8be9fd --color=fg+:#
 export FLUTTER_ROOT="$(mise where flutter)"
 export PATH=$PATH:$HOME/.pub-cache/bin
 export CHROME_EXECUTABLE="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
-
-# go
-export GOPATH=$HOME/.packages/go
-export PATH=$GOPATH/bin:$PATH
-
-# npm
-export NPM_CONFIG_PREFIX=$HOME/.packages/npm
-export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
 
 # Instantly recognize newly installed commands
 zstyle ":completion:*:commands" rehash 1
