@@ -1,9 +1,15 @@
 #!/bin/sh
 
-set -e
+# Exit on error, undefined variables, and propagate errors in pipes
+set -euo pipefail
 
+# Configuration
 REPO_URL="https://raw.githubusercontent.com/gr1m0h/dot/HEAD"
 DOTPATH="$(pwd)"
+# Make sure DOTPATH is set
+if [ -z "${DOTPATH}" ]; then
+  DOTPATH="$(cd "$(dirname "$0")/.." && pwd)"
+fi
 COLOR_GRAY="\033[1;38;5;243m"
 COLOR_PURPLE="\033[1;35m"
 COLOR_RED="\033[1;31m"
@@ -38,7 +44,9 @@ download_file() {
   local src="$1"
   local dest="$2"
   
-  curl -fsSL "$REPO_URL/$src" -o "$dest"
+  if ! curl -fsSL "$REPO_URL/$src" -o "$dest"; then
+    err "Failed to download $src to $dest"
+  fi
 }
 
 setup_dotfiles() {
@@ -59,12 +67,19 @@ setup_dotfiles() {
   done
 
   if [ -d "$HOME/.config" ]; then
-    info "$HOME/.config already exists... Skipping."
+    info "$HOME/.config already exists... Checking if files need to be updated."
+    if [ ! -e "$HOME/.config/starship.toml" ]; then
+      info "Downloading config files to $HOME/.config"
+      mkdir -p "$HOME/.config"
+      download_file "dots/.config/starship.toml" "$HOME/.config/starship.toml"
+    else
+      info "Config files already exist... Skipping."
+    fi
   else
     info "Creating $HOME/.config directory"
     mkdir -p "$HOME/.config"
-    info "Downloading .config files"
-    download_file ".config" "$HOME/.config"
+    info "Downloading config files"
+    download_file "dots/.config/starship.toml" "$HOME/.config/starship.toml"
   fi
 }
 
@@ -74,24 +89,45 @@ setup_homebrew() {
   # install if Homebrew is not installed
   if ! command -v brew >/dev/null 2>&1; then
     info "Homebrew not installed. Installing."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+      err "Failed to install Homebrew"
+    fi
     
     # Make sure brew is in PATH
     case "$(uname -m)" in
       arm64)
-        eval "$(/opt/homebrew/bin/brew shellenv)"
+        if [ -f "/opt/homebrew/bin/brew" ]; then
+          eval "$(/opt/homebrew/bin/brew shellenv)"
+        else
+          err "Homebrew installation failed - brew executable not found"
+        fi
         ;;
       x86_64)
-        eval "$(/usr/local/bin/brew shellenv)"
+        if [ -f "/usr/local/bin/brew" ]; then
+          eval "$(/usr/local/bin/brew shellenv)"
+        else
+          err "Homebrew installation failed - brew executable not found"
+        fi
+        ;;
+      *)
+        err "Unsupported architecture: $(uname -m)"
         ;;
     esac
+    
+    # Verify brew is now in path
+    if ! command -v brew >/dev/null 2>&1; then
+      err "Homebrew installation succeeded but brew is not in PATH"
+    fi
   fi
 
   info "Downloading Brewfile"
   download_file "Brewfile" "$DOTPATH/Brewfile"
 
   info "Installing brew dependencies from Brewfile"
-  brew bundle --file="$DOTPATH/Brewfile" || warn "Failed to install some Homebrew packages"
+  if ! brew bundle --file="$DOTPATH/Brewfile"; then
+    warn "Failed to install some Homebrew packages. Check logs for details."
+    info "You can try running 'brew bundle --file=\"$DOTPATH/Brewfile\"' manually later."
+  fi
 }
 
 setup_macos() {
@@ -102,12 +138,34 @@ setup_macos() {
   fi
 
   info "Creating workspace directory"
-  mkdir -p "$HOME/Documents/workspace"
+  if ! mkdir -p "$HOME/Documents/workspace"; then
+    warn "Failed to create workspace directory"
+  else
+    success "Created workspace directory at $HOME/Documents/workspace"
+  fi
 
   # Install command line tools for xcode if not installed
   if [ ! -d /Library/Developer/CommandLineTools ]; then
     info "Installing Xcode Command Line Tools"
-    xcode-select --install || warn "Failed to install Xcode Command Line Tools"
+    # xcode-select --install is interactive and can't be scripted effectively
+    # Using a more reliable approach
+    touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+    PROD=$(softwareupdate -l | grep "\*.*Command Line" | tail -n 1 | sed 's/^[^C]* //')
+    if [ -n "$PROD" ]; then
+      info "Found Command Line Tools update: $PROD"
+      if ! softwareupdate -i "$PROD" --verbose; then
+        warn "Failed to install Xcode Command Line Tools"
+        info "You may need to install manually with 'xcode-select --install'"
+      else
+        success "Installed Xcode Command Line Tools successfully"
+      fi
+    else
+      warn "No Command Line Tools found in software update"
+      info "Falling back to interactive installation"
+      xcode-select --install || warn "Failed to install Xcode Command Line Tools"
+      info "This may require user interaction - check for dialogs"
+    fi
+    rm /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
   else
     info "Xcode Command Line Tools already installed"
   fi
@@ -183,27 +241,60 @@ setup_macos() {
 setup_docker() {
   title "Setting up docker"
 
+  # Check prerequisites
   if ! command -v docker >/dev/null 2>&1; then
-    err "Docker not installed. Please install Docker first."
+    warn "Docker not installed. Please install Docker first using 'brew install docker'."
+    info "Skipping docker setup."
+    return 1
   fi
 
   if ! command -v colima >/dev/null 2>&1; then
-    err "Colima not installed. Please install Colima first."
+    warn "Colima not installed. Please install Colima first using 'brew install colima'."
+    info "Skipping docker setup."
+    return 1
   fi
 
-  info "Starting Colima if not running"
+  # Start Colima if not running
+  info "Checking Colima status"
   if ! colima status >/dev/null 2>&1; then
-    info "Starting Colima"
-    colima start || err "Failed to start Colima"
+    info "Starting Colima with default configuration"
+    if ! colima start; then
+      warn "Failed to start Colima. Please check logs with 'colima logs' and try again manually."
+      return 1
+    fi
+    success "Colima started successfully"
   else
     info "Colima is already running"
   fi
 
+  # Configure Docker context
   info "Setting up docker context to use colima"
-  docker context use colima || true
+  if ! docker context use colima; then
+    warn "Failed to set docker context to colima"
+    info "You can set it manually with 'docker context use colima'"
+  else
+    success "Docker context set to colima"
+  fi
 
+  # Create docker socket link (with better error handling)
   info "Linking docker socket for compatibility"
-  sudo ln -sf "$HOME/.colima/docker.sock" /var/run/docker.sock || warn "Failed to create docker socket link (requires sudo)"
+  if [ -S "$HOME/.colima/docker.sock" ]; then
+    # Check if we can use sudo
+    if sudo -n true 2>/dev/null; then
+      if sudo ln -sf "$HOME/.colima/docker.sock" /var/run/docker.sock; then
+        success "Created docker socket link successfully"
+      else
+        warn "Failed to create docker socket link (requires sudo)"
+        info "You can create it manually with 'sudo ln -sf \"$HOME/.colima/docker.sock\" /var/run/docker.sock'"
+      fi
+    else
+      warn "Sudo access required but not available without password"
+      info "You can create the docker socket link manually with 'sudo ln -sf \"$HOME/.colima/docker.sock\" /var/run/docker.sock'"
+    fi
+  else
+    warn "Colima docker socket not found at $HOME/.colima/docker.sock"
+    info "Make sure Colima is running properly"
+  fi
 }
 
 case "$1" in
