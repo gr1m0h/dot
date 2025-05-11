@@ -1,6 +1,9 @@
 #!/bin/sh
 
-DOTFILES="$(pwd)"
+set -e
+
+REPO_URL="https://raw.githubusercontent.com/gr1m0h/dot/HEAD"
+DOTPATH="$(pwd)"
 COLOR_GRAY="\033[1;38;5;243m"
 COLOR_PURPLE="\033[1;35m"
 COLOR_RED="\033[1;31m"
@@ -16,6 +19,7 @@ title() {
 
 err() {
   printf "%s\n" "${COLOR_RED}ERROR: ${COLOR_NONE}$1"
+  exit 1
 }
 
 warn() {
@@ -30,32 +34,37 @@ success() {
   printf "%s\n" "${COLOR_GREEN}$1${COLOR_NONE}"
 }
 
+download_file() {
+  local src="$1"
+  local dest="$2"
+  
+  curl -fsSL "$REPO_URL/$src" -o "$dest"
+}
+
 setup_dotfiles() {
   title "Downloading dotfiles"
 
-  echo
-  info "downloading dotfiles"
-  DOTFILES="
+  local dotfiles="
 .editorconfig
 .zshenv
 "
 
-  for dotfile in $DOTFILES; do
+  for dotfile in $dotfiles; do
     if [ -e "$HOME/$dotfile" ]; then
-      info "~${dotfile#$HOME} already exists... Skipping."
+      info "$dotfile already exists... Skipping."
     else
-      info "Downloading $HOME/$dotfile"
-      /bin/bash -c "$(curl -fsSL "https://raw.githubusercontent.com/gr1m0h/dot/HEAD/dots/$dotfile")"
+      info "Downloading $dotfile to $HOME/$dotfile"
+      download_file "dots/$dotfile" "$HOME/$dotfile"
     fi
   done
 
-  echo
-  info "installing .config"
   if [ -d "$HOME/.config" ]; then
     info "$HOME/.config already exists... Skipping."
   else
-    info "Downloading $HOME/.config"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/HEAD/.config)"
+    info "Creating $HOME/.config directory"
+    mkdir -p "$HOME/.config"
+    info "Downloading .config files"
+    download_file ".config" "$HOME/.config"
   fi
 }
 
@@ -63,144 +72,138 @@ setup_homebrew() {
   title "Setting up Homebrew"
 
   # install if Homebrew is not installed
-  if test ! "$(command -v brew)"; then
+  if ! command -v brew >/dev/null 2>&1; then
     info "Homebrew not installed. Installing."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    
+    # Make sure brew is in PATH
+    case "$(uname -m)" in
+      arm64)
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+        ;;
+      x86_64)
+        eval "$(/usr/local/bin/brew shellenv)"
+        ;;
+    esac
   fi
 
   info "Downloading Brewfile"
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/HEAD/Brewfile)"
+  download_file "Brewfile" "$DOTPATH/Brewfile"
 
-  info "Install brew dependencies form Brewfile"
-  brew bundle
+  info "Installing brew dependencies from Brewfile"
+  brew bundle --file="$DOTPATH/Brewfile" || warn "Failed to install some Homebrew packages"
 }
 
 setup_macos() {
   title "Configuring macOS"
-  if [ "$(uname)" = "Darwin" ]; then
-
-    # make working space dir
-    mkdir -p "$HOME/Documents/workspace"
-
-    # install command line tools for xcode
-    if [ ! -d /Library/Developer/CommandLineTools ]; then
-      info "xcode not installed. Installing."
-      xcode-select --install
-    fi
-
-    # install rosetta
-    softwareupdate --install-rosetta
-
-    # Terminal
-    echo "only use UTF-8 in Terminal.app"
-    defaults write com.apple.terminal StringEncodings -array 4
-
-    # Safari
-    echo "Enable Safari’s debug menu"
-    defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
-
-    # Finder
-    echo "Finder: show all filename extensions"
-    defaults write NSGlobalDomain AppleShowAllExtensions -bool true
-
-    echo "show hidden files by default"
-    defaults write com.apple.Finder AppleShowAllFiles -bool false
-
-    echo "show the ~/Library folder in Finder"
-    chflags nohidden ~/Library
-
-    echo "Use current directory as default search scope in Finder"
-    defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
-
-    echo "Show Path bar in Finder"
-    defaults write com.apple.finder ShowPathbar -bool true
-
-    echo "Show Status bar in Finder"
-    defaults write com.apple.finder ShowStatusBar -bool true
-
-    echo "Set Desktop dir the default location for new Finder windows"
-    defaults write com.apple.finder NewWindowTarget -string "PfDe"
-
-    # Dock
-    echo "Wipe all app icons from the Dock"
-    defaults write com.apple.dock persistent-apps -array
-
-    echo "Dock is placed at the bottom"
-    defaults write com.apple.dock orientation bottom
-
-    echo "Minimize animation"
-    defaults write com.apple.dock min effect -string suck
-
-    echo "Enable a larger Dock Icon size than default"
-    defaults write com.apple.dock largesize -float 95
-
-    echo "Automatically hide the Dock"
-    defaults write com.apple.dock autohide -bool true
-
-    echo "Hide recently used applications"
-    defaults write com.apple.dock show-recents -bool false
-
-    echo "Hides indicators for launched applications"
-    defaults write com.apple.dock show-process-indicators -bool false
-
-    # Menu bar
-    echo "Hide the Time Machine and Volume icons from the menu bar"
-    for domain in ~/Library/Preferences/ByHost/com.apple.systemuiserver.*; do
-      defaults write "${domain}" dontAutoLoad -array \
-        "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
-        "/System/Library/CoreServices/Menu Extras/Volume.menu"
-    done
-
-    # keyboard
-    echo "Expand save dialog by default"
-    defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
-
-    echo "Enable full keyboard access for all controls (e.g. enable Tab in modal dialogs)"
-    defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
-
-    echo "Enable subpixel font rendering on non-Apple LCDs"
-    defaults write NSGlobalDomain AppleFontSmoothing -int 2
-
-    echo "Disable press-and-hold for keys in favor of key repeat"
-    defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
-
-    echo "Set a blazingly fast keyboard repeat rate"
-    defaults write NSGlobalDomain KeyRepeat -int 1
-
-    echo "Set a shorter Delay until key repeat"
-    defaults write NSGlobalDomain InitialKeyRepeat -int 15
-
-    # Trackpad
-    echo "Enable tap to click"
-    defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
-
-    # Security and Privacy
-    echo "Enable password request for sleep wake and screen saver"
-    defaults write com.apple.screensaver askForPassword -bool true
-
-    echo "Set the time before requesting a password"
-    defaults write com.apple.screensaver askForPasswordDelay -int 0
-
-    echo "Enable Firewall"
-    defaults write /Library/Preferences/com.apple.alf globalstate -int 1
-
-    # Clock
-    echo "Date options: Show the day of the week: on"
-    defaults write com.apple.menuextra.clock 'DateFormat' -string 'EEE d MMM HH:mm'
-
-    echo "Kill affected applications"
-    for app in Safari Finder Dock; do killall "$app" >/dev/null 2>&1; done
-  else
+  if [ "$(uname)" != "Darwin" ]; then
     warn "macOS not detected. Skipping."
+    return
   fi
+
+  info "Creating workspace directory"
+  mkdir -p "$HOME/Documents/workspace"
+
+  # Install command line tools for xcode if not installed
+  if [ ! -d /Library/Developer/CommandLineTools ]; then
+    info "Installing Xcode Command Line Tools"
+    xcode-select --install || warn "Failed to install Xcode Command Line Tools"
+  else
+    info "Xcode Command Line Tools already installed"
+  fi
+
+  # Install Rosetta 2 on Apple Silicon
+  if [ "$(uname -m)" = "arm64" ]; then
+    if ! pgrep -q oahd; then
+      info "Installing Rosetta for Apple Silicon"
+      softwareupdate --install-rosetta --agree-to-license || warn "Failed to install Rosetta"
+    else
+      info "Rosetta already installed"
+    fi
+  fi
+
+  info "Configuring Terminal"
+  defaults write com.apple.terminal StringEncodings -array 4
+
+  info "Configuring Safari"
+  defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
+
+  info "Configuring Finder"
+  defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+  defaults write com.apple.Finder AppleShowAllFiles -bool false
+  chflags nohidden ~/Library
+  defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+  defaults write com.apple.finder ShowPathbar -bool true
+  defaults write com.apple.finder ShowStatusBar -bool true
+  defaults write com.apple.finder NewWindowTarget -string "PfDe"
+
+  info "Configuring Dock"
+  defaults write com.apple.dock persistent-apps -array
+  defaults write com.apple.dock orientation bottom
+  defaults write com.apple.dock "mineffect" -string "suck"
+  defaults write com.apple.dock largesize -float 95
+  defaults write com.apple.dock autohide -bool true
+  defaults write com.apple.dock show-recents -bool false
+  defaults write com.apple.dock show-process-indicators -bool false
+
+  info "Configuring Menu Bar"
+  for domain in ~/Library/Preferences/ByHost/com.apple.systemuiserver.*; do
+    defaults write "${domain}" dontAutoLoad -array \
+      "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
+      "/System/Library/CoreServices/Menu Extras/Volume.menu"
+  done
+
+  info "Configuring Keyboard"
+  defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+  defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
+  defaults write NSGlobalDomain AppleFontSmoothing -int 2
+  defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+  defaults write NSGlobalDomain KeyRepeat -int 1
+  defaults write NSGlobalDomain InitialKeyRepeat -int 15
+
+  info "Configuring Trackpad"
+  defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+
+  info "Configuring Security and Privacy"
+  defaults write com.apple.screensaver askForPassword -bool true
+  defaults write com.apple.screensaver askForPasswordDelay -int 0
+  sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1 || warn "Failed to enable firewall (requires sudo)"
+
+  info "Configuring Clock"
+  defaults write com.apple.menuextra.clock 'DateFormat' -string 'EEE d MMM HH:mm'
+
+  info "Restarting affected applications"
+  for app in Safari Finder Dock SystemUIServer; do 
+    killall "$app" >/dev/null 2>&1 || true
+  done
+  
+  success "macOS configured successfully"
 }
 
 setup_docker() {
   title "Setting up docker"
 
-  # change to use docker.sock mounted by colima
-  docker context use colima
-  echo "$1" | sudo ln -s "$HOME/.colima/docker.sock" /var/run/docker.sock
+  if ! command -v docker >/dev/null 2>&1; then
+    err "Docker not installed. Please install Docker first."
+  fi
+
+  if ! command -v colima >/dev/null 2>&1; then
+    err "Colima not installed. Please install Colima first."
+  fi
+
+  info "Starting Colima if not running"
+  if ! colima status >/dev/null 2>&1; then
+    info "Starting Colima"
+    colima start || err "Failed to start Colima"
+  else
+    info "Colima is already running"
+  fi
+
+  info "Setting up docker context to use colima"
+  docker context use colima || true
+
+  info "Linking docker socket for compatibility"
+  sudo ln -sf "$HOME/.colima/docker.sock" /var/run/docker.sock || warn "Failed to create docker socket link (requires sudo)"
 }
 
 case "$1" in
@@ -214,7 +217,7 @@ macos)
   setup_macos
   ;;
 docker)
-  setup_docker "$@"
+  setup_docker
   ;;
 all)
   setup_dotfiles
