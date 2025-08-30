@@ -3,7 +3,7 @@
 !/.cspell.json
 !/.nvim/
 !/.nvim/**
-/.config/nvim/lazy-lock.json
+dots/.config/nvim/lazy-lock.json
 
 # macOS
 ### https://raw.github.com/github/gitignore/07c730e1fccfe0f92b29e039ba149d20bfb332e7/Global/macOS.gitignore
@@ -55,14 +55,14 @@ typings/
 .next
 
 # dotfiles
-.config/.android
-.config/configstore
-.config/gcloud
-.config/gh
-.config/gh-copilot
-.config/github-copilot
-.config/sheldon/~plugins.toml.save
-.config/zsh/.zprofile
-.config/zsh/.zcompdump
-.config/zsh/.zsh_sessions/
-.config/zsh/.zsh_history
+dots/.config/.android
+dots/.config/configstore
+dots/.config/gcloud
+dots/.config/gh
+dots/.config/gh-copilot
+dots/.config/github-copilot
+dots/.config/sheldon/~plugins.toml.save
+dots/.config/zsh/.zprofile
+dots/.config/zsh/.zcompdump
+dots/.config/zsh/.zsh_sessions/
+dots/.config/zsh/.zsh_history
