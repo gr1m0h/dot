@@ -43,7 +43,7 @@ success() {
 download_file() {
   local src="$1"
   local dest="$2"
-  
+
   if ! curl -fsSL "$REPO_URL/$src" -o "$dest"; then
     err "Failed to download $src to $dest"
   fi
@@ -55,6 +55,7 @@ setup_dotfiles() {
   local dotfiles="
 .editorconfig
 .zshenv
+.actrc
 "
 
   for dotfile in $dotfiles; do
@@ -66,21 +67,84 @@ setup_dotfiles() {
     fi
   done
 
-  if [ -d "$HOME/.config" ]; then
-    info "$HOME/.config already exists... Checking if files need to be updated."
-    if [ ! -e "$HOME/.config/starship.toml" ]; then
-      info "Downloading config files to $HOME/.config"
-      mkdir -p "$HOME/.config"
-      download_file "dots/.config/starship.toml" "$HOME/.config/starship.toml"
+  # Setup .config directory structure
+  info "Setting up .config directory"
+  mkdir -p "$HOME/.config/zsh"
+  mkdir -p "$HOME/.config/starship"
+
+  # Zsh configuration files
+  local zsh_configs="
+.zshrc
+.zsh_aliases
+.zsh_completions
+.zsh_corp
+"
+
+  for config in $zsh_configs; do
+    if [ -e "$HOME/.config/zsh/$config" ]; then
+      info "zsh/$config already exists... Skipping."
     else
-      info "Config files already exist... Skipping."
+      info "Downloading zsh/$config to $HOME/.config/zsh/$config"
+      download_file "dots/.config/zsh/$config" "$HOME/.config/zsh/$config"
     fi
+  done
+
+  # Starship configuration
+  if [ -e "$HOME/.config/starship/starship.toml" ]; then
+    info "starship/starship.toml already exists... Skipping."
   else
-    info "Creating $HOME/.config directory"
-    mkdir -p "$HOME/.config"
-    info "Downloading config files"
-    download_file "dots/.config/starship.toml" "$HOME/.config/starship.toml"
+    info "Downloading starship/starship.toml to $HOME/.config/starship/starship.toml"
+    download_file "dots/.config/starship/starship.toml" "$HOME/.config/starship/starship.toml"
   fi
+
+  # Additional config directories
+  local config_dirs="
+hammerspoon
+sheldon
+wezterm
+git
+"
+
+  for dir in $config_dirs; do
+    mkdir -p "$HOME/.config/$dir"
+    info "Setting up $dir configuration"
+
+    case "$dir" in
+    hammerspoon)
+      if [ -e "$HOME/.config/hammerspoon/init.lua" ]; then
+        info "hammerspoon/init.lua already exists... Skipping."
+      else
+        download_file "dots/.config/hammerspoon/init.lua" "$HOME/.config/hammerspoon/init.lua"
+      fi
+      ;;
+    sheldon)
+      if [ -e "$HOME/.config/sheldon/plugins.toml" ]; then
+        info "sheldon/plugins.toml already exists... Skipping."
+      else
+        download_file "dots/.config/sheldon/plugins.toml" "$HOME/.config/sheldon/plugins.toml"
+      fi
+      ;;
+    wezterm)
+      if [ -e "$HOME/.config/wezterm/wezterm.lua" ]; then
+        info "wezterm/wezterm.lua already exists... Skipping."
+      else
+        download_file "dots/.config/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"
+      fi
+      ;;
+    git)
+      if [ -e "$HOME/.config/git/config" ]; then
+        info "git/config already exists... Skipping."
+      else
+        download_file "dots/.config/git/config" "$HOME/.config/git/config"
+      fi
+      if [ -e "$HOME/.config/git/ignore" ]; then
+        info "git/ignore already exists... Skipping."
+      else
+        download_file "dots/.config/git/ignore" "$HOME/.config/git/ignore"
+      fi
+      ;;
+    esac
+  done
 }
 
 setup_homebrew() {
@@ -92,28 +156,28 @@ setup_homebrew() {
     if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
       err "Failed to install Homebrew"
     fi
-    
+
     # Make sure brew is in PATH
     case "$(uname -m)" in
-      arm64)
-        if [ -f "/opt/homebrew/bin/brew" ]; then
-          eval "$(/opt/homebrew/bin/brew shellenv)"
-        else
-          err "Homebrew installation failed - brew executable not found"
-        fi
-        ;;
-      x86_64)
-        if [ -f "/usr/local/bin/brew" ]; then
-          eval "$(/usr/local/bin/brew shellenv)"
-        else
-          err "Homebrew installation failed - brew executable not found"
-        fi
-        ;;
-      *)
-        err "Unsupported architecture: $(uname -m)"
-        ;;
+    arm64)
+      if [ -f "/opt/homebrew/bin/brew" ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+      else
+        err "Homebrew installation failed - brew executable not found"
+      fi
+      ;;
+    x86_64)
+      if [ -f "/usr/local/bin/brew" ]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+      else
+        err "Homebrew installation failed - brew executable not found"
+      fi
+      ;;
+    *)
+      err "Unsupported architecture: $(uname -m)"
+      ;;
     esac
-    
+
     # Verify brew is now in path
     if ! command -v brew >/dev/null 2>&1; then
       err "Homebrew installation succeeded but brew is not in PATH"
@@ -199,24 +263,30 @@ setup_macos() {
   defaults write com.apple.dock persistent-apps -array
   defaults write com.apple.dock orientation bottom
   defaults write com.apple.dock "mineffect" -string "suck"
-  defaults write com.apple.dock largesize -float 95
+  defaults write com.apple.dock largesize -float 94
+  defaults write com.apple.dock magnification -bool true
   defaults write com.apple.dock autohide -bool true
   defaults write com.apple.dock show-recents -bool false
   defaults write com.apple.dock show-process-indicators -bool false
 
   info "Configuring Menu Bar"
-  for domain in ~/Library/Preferences/ByHost/com.apple.systemuiserver.*; do
-    defaults write "${domain}" dontAutoLoad -array \
-      "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
-      "/System/Library/CoreServices/Menu Extras/Volume.menu"
-  done
+  # Menu bar configuration may not work on newer macOS versions
+  if [ -f "/System/Library/CoreServices/Menu Extras/Volume.menu" ]; then
+    for domain in ~/Library/Preferences/ByHost/com.apple.systemuiserver.*; do
+      defaults write "${domain}" dontAutoLoad -array \
+        "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
+        "/System/Library/CoreServices/Menu Extras/Volume.menu" 2>/dev/null || warn "Menu bar configuration may require manual setup"
+    done
+  else
+    info "Menu bar configuration updated for newer macOS versions"
+  fi
 
   info "Configuring Keyboard"
   defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
   defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
   defaults write NSGlobalDomain AppleFontSmoothing -int 2
   defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
-  defaults write NSGlobalDomain KeyRepeat -int 1
+  defaults write NSGlobalDomain KeyRepeat -int 2
   defaults write NSGlobalDomain InitialKeyRepeat -int 15
 
   info "Configuring Trackpad"
@@ -227,14 +297,17 @@ setup_macos() {
   defaults write com.apple.screensaver askForPasswordDelay -int 0
   sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1 || warn "Failed to enable firewall (requires sudo)"
 
+  # Disable automatic login
+  sudo defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser 2>/dev/null || true
+
   info "Configuring Clock"
-  defaults write com.apple.menuextra.clock 'DateFormat' -string 'EEE d MMM HH:mm'
+  defaults write com.apple.menuextra.clock 'DateFormat' -string 'EEE d MMM HH:mm' 2>/dev/null || warn "Clock format may need manual configuration in System Settings"
 
   info "Restarting affected applications"
-  for app in Safari Finder Dock SystemUIServer; do 
+  for app in Safari Finder Dock SystemUIServer; do
     killall "$app" >/dev/null 2>&1 || true
   done
-  
+
   success "macOS configured successfully"
 }
 
@@ -278,21 +351,21 @@ setup_docker() {
 
   # Create docker socket link (with better error handling)
   info "Linking docker socket for compatibility"
-  if [ -S "$HOME/.colima/docker.sock" ]; then
+  if [ -S "$HOME/.config/colima/default/docker.sock" ]; then
     # Check if we can use sudo
     if sudo -n true 2>/dev/null; then
-      if sudo ln -sf "$HOME/.colima/docker.sock" /var/run/docker.sock; then
+      if sudo ln -sf "$HOME/.config/colima/default/docker.sock" /var/run/docker.sock; then
         success "Created docker socket link successfully"
       else
         warn "Failed to create docker socket link (requires sudo)"
-        info "You can create it manually with 'sudo ln -sf \"$HOME/.colima/docker.sock\" /var/run/docker.sock'"
+        info "You can create it manually with 'sudo ln -sf \"$HOME/.config/colima/default/docker.sock\" /var/run/docker.sock'"
       fi
     else
       warn "Sudo access required but not available without password"
-      info "You can create the docker socket link manually with 'sudo ln -sf \"$HOME/.colima/docker.sock\" /var/run/docker.sock'"
+      info "You can create the docker socket link manually with 'sudo ln -sf \"$HOME/.config/colima/default/docker.sock\" /var/run/docker.sock'"
     fi
   else
-    warn "Colima docker socket not found at $HOME/.colima/docker.sock"
+    warn "Colima docker socket not found at $HOME/.config/colima/default/docker.sock"
     info "Make sure Colima is running properly"
   fi
 }
