@@ -1,0 +1,7 @@
+{
+  "config": {
+    "default": true,
+    "MD013": false, // disable line length limit
+    "MD034": false, // disable base URL warning
+  },
+}
