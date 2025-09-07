@@ -372,6 +372,36 @@ setup_docker() {
   fi
 }
 
+setup_mcp_servers() {
+  title "Setting up Claude MCP Servers"
+
+  # Check if claude command is available
+  if ! command -v claude >/dev/null 2>&1; then
+    warn "Claude CLI not installed. Please install Claude CLI first."
+    info "Visit https://docs.anthropic.com/en/docs/claude-code/quickstart for installation instructions."
+    return 1
+  fi
+
+  if [ -e "$HOME/.env" ]; then
+    warn ".env not found."
+    return 1
+  fi
+
+  info "Adding GitHub Remote MCP server"
+  if ! claude mcp add --transport http github https://api.githubcopilot.com/mcp -H "Authorization: Bearer $(grep GITHUB_PAT .env | cut -d '=' -f2)"; then
+    warn "Failed to add GitHub Remote MCP server"
+  else
+    success "Added GitHub Remote MCP server"
+  fi
+
+  info "Checking MCP server health"
+  if ! claude mcp list; then
+    warn "Failed to list MCP servers"
+  else
+    success "MCP servers configured successfully"
+  fi
+}
+
 case "$1" in
 dotfiles)
   setup_dotfiles
@@ -385,14 +415,18 @@ macos)
 docker)
   setup_docker
   ;;
+mcp)
+  setup_mcp_servers
+  ;;
 all)
   setup_dotfiles
   setup_homebrew
   setup_macos
   setup_docker
+  setup_mcp_servers
   ;;
 *)
-  printf "\nUsage: %s {dotfiles|homebrew|macos|docker|all}\n" "$(basename "$0")"
+  printf "\nUsage: %s {dotfiles|homebrew|macos|docker|mcp|all}\n" "$(basename "$0")"
   exit 1
   ;;
 esac
