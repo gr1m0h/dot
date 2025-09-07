@@ -56,6 +56,8 @@ setup_dotfiles() {
 .editorconfig
 .zshenv
 .actrc
+.mmcp.json
+.markdownlint-cli2.jsonc
 "
 
   for dotfile in $dotfiles; do
