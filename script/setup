@@ -382,13 +382,13 @@ setup_mcp_servers() {
     return 1
   fi
 
-  if [ -e "$HOME/.env" ]; then
+  if [ ! -e "$HOME/.env" ]; then
     warn ".env not found."
     return 1
   fi
 
   info "Adding GitHub Remote MCP server"
-  if ! claude mcp add --transport http github https://api.githubcopilot.com/mcp -H "Authorization: Bearer $(grep GITHUB_PAT .env | cut -d '=' -f2)"; then
+  if ! claude mcp add --transport http github https://api.githubcopilot.com/mcp -H "Authorization: Bearer $(grep GITHUB_PAT "$HOME/.env" | cut -d '=' -f2)"; then
     warn "Failed to add GitHub Remote MCP server"
   else
     success "Added GitHub Remote MCP server"
