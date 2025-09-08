@@ -15,6 +15,8 @@ curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh |
 curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s homebrew
 curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s macos
 curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s docker
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s mcp
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s serena
 ```
 
 ## Manual Setup
@@ -35,6 +37,8 @@ script/setup all
 | `homebrew` | Package manager and application installation via Brewfile |
 | `macos` | macOS system preferences and defaults |
 | `docker` | Docker environment setup with Colima |
+| `mcp` | Claude MCP (Model Context Protocol) servers setup |
+| `serena` | Serena AI code assistant configuration |
 | `all` | Install all components (default) |
 
 ## What's Included
@@ -64,6 +68,15 @@ script/setup all
 - **Colima**: Lightweight container runtime for macOS
 - **Docker context**: Automatically configured for Colima
 - **Socket linking**: Compatible with standard Docker workflows
+
+### MCP Servers
+- **GitHub Remote MCP server**: Integration with GitHub API for Claude
+- **Authentication**: Uses GitHub PAT from `.env` file
+
+### Serena Configuration
+- **AI Code Assistant**: Semantic code understanding and navigation
+- **Project Management**: Intelligent project-based code analysis
+- **Memory System**: Persistent project knowledge storage
 
 ## Security Notice
 
@@ -102,4 +115,6 @@ script/setup dotfiles
 script/setup homebrew
 script/setup macos
 script/setup docker
+script/setup mcp
+script/setup serena
 ```

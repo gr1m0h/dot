@@ -402,6 +402,23 @@ setup_mcp_servers() {
   fi
 }
 
+setup_serena() {
+  title "Setting up Serena Configuration"
+
+  info "Setting up Serena directory"
+  mkdir -p "$HOME/.serena"
+
+  # Download serena_config.yml
+  if [ -e "$HOME/.serena/serena_config.yml" ]; then
+    info "serena_config.yml already exists... Skipping."
+  else
+    info "Downloading serena_config.yml to $HOME/.serena/serena_config.yml"
+    download_file "dots/.serena/serena_config.yml" "$HOME/.serena/serena_config.yml"
+  fi
+
+  success "Serena configuration setup completed"
+}
+
 case "$1" in
 dotfiles)
   setup_dotfiles
@@ -418,15 +435,19 @@ docker)
 mcp)
   setup_mcp_servers
   ;;
+serena)
+  setup_serena
+  ;;
 all)
   setup_dotfiles
   setup_homebrew
   setup_macos
   setup_docker
   setup_mcp_servers
+  setup_serena
   ;;
 *)
-  printf "\nUsage: %s {dotfiles|homebrew|macos|docker|mcp|all}\n" "$(basename "$0")"
+  printf "\nUsage: %s {dotfiles|homebrew|macos|docker|mcp|serena|all}\n" "$(basename "$0")"
   exit 1
   ;;
 esac
