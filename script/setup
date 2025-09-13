@@ -55,7 +55,6 @@ setup_dotfiles() {
   local dotfiles="
 .editorconfig
 .zshenv
-.actrc
 .mmcp.json
 .markdownlint-cli2.jsonc
 "
