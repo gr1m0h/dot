@@ -20,4 +20,5 @@ alias cat='bat'
 alias update-nvim='mise uninstall neovim stable && mise install neovim stable'
 
 # claude
-alias clcm="git diff --staged | claude -p 'Write commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit.'"
+alias git_commit_message_claude="git diff --staged | claude -p 'Write commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Return ONLY plain text, no markdown, no code blocks, no formatting, no backticks.'"
+alias clcm='git commit -m "$(git_commit_message_claude 2>/dev/null)"'
