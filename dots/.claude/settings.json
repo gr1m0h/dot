@@ -1,0 +1,40 @@
+{
+  "cleanupPeriodDays": 30,
+  "env": {
+    "DISABLE_AUTOUPDATER": "1",
+    "DISABLE_MICROCOMPACT": "1",
+    "DISABLE_ERROR_REPORTING": "1",
+    "DISABLE_TELEMETRY": "1",
+    "CLAUDE_CODE_AUTO_CONNECT_IDE": "1",
+    "CLAUDE_CODE_IDE_SKIP_AUTO_INSTALL": "1",
+    "CLAUDE_CODE_IDE_SKIP_VALID_CHECK": "1",
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "MAX_THINKING_TOKENS": "31999"
+  },
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": ["*"],
+    "deny": [
+      "Bash(sudo:*)",
+      "Bash(rm:*)",
+      "Bash(rm -rf:*)",
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(git reset:*)",
+      "Bash(git rebase:*)",
+      "Read(.env.*)",
+      "Read(id_rsa)",
+      "Read(**/*token*)",
+      "Read(**/*key*)",
+      "Write(.env*)",
+      "Write(**/secrets/**)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(nc:*)"
+    ],
+    "defaultMode": "acceptEdits"
+  },
+  "model": "claude-sonnet-4-5@20250929",
+  "enableAllProjectMcpServers": false
+}
