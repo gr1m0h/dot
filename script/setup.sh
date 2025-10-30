@@ -4,11 +4,13 @@
 set -euo pipefail
 
 # Configuration
-REPO_URL="https://raw.githubusercontent.com/gr1m0h/dot/HEAD"
-DOTPATH="$(pwd)"
-# Make sure DOTPATH is set
-if [ -z "${DOTPATH}" ]; then
+REPO_URL="https://raw.githubusercontent.com/gr1m0h/dot/main"
+# Set DOTPATH - for local development use the script's parent directory
+if [ -d "$(dirname "$0")/../.git" ]; then
   DOTPATH="$(cd "$(dirname "$0")/.." && pwd)"
+else
+  # For remote execution, we don't need a local DOTPATH anymore
+  DOTPATH=""
 fi
 
 # State tracking
@@ -210,6 +212,8 @@ setup_homebrew() {
     arm64)
       if [ -f "/opt/homebrew/bin/brew" ]; then
         eval "$(/opt/homebrew/bin/brew shellenv)"
+        # Also add to current shell session
+        export PATH="/opt/homebrew/bin:$PATH"
       else
         warn "Homebrew installation failed - brew executable not found"
         return 1
@@ -218,6 +222,8 @@ setup_homebrew() {
     x86_64)
       if [ -f "/usr/local/bin/brew" ]; then
         eval "$(/usr/local/bin/brew shellenv)"
+        # Also add to current shell session
+        export PATH="/usr/local/bin:$PATH"
       else
         warn "Homebrew installation failed - brew executable not found"
         return 1
@@ -234,35 +240,53 @@ setup_homebrew() {
       warn "Homebrew installation succeeded but brew is not in PATH"
       return 1
     fi
+    
+    info "Homebrew installed successfully at: $(which brew)"
+    info "Note: To ensure Homebrew is available in future sessions, add the following to your shell profile:"
+    case "$(uname -m)" in
+    arm64)
+      info "  eval \"\$(/opt/homebrew/bin/brew shellenv)\""
+      ;;
+    x86_64)
+      info "  eval \"\$(/usr/local/bin/brew shellenv)\""
+      ;;
+    esac
+  else
+    info "Homebrew already installed at: $(which brew)"
+    # Ensure brew is in PATH even if already installed
+    case "$(uname -m)" in
+    arm64)
+      if [ -f "/opt/homebrew/bin/brew" ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+      fi
+      ;;
+    x86_64)
+      if [ -f "/usr/local/bin/brew" ]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+      fi
+      ;;
+    esac
   fi
 
-  # Download Brewfile only if it doesn't exist or is different
-  info "Checking Brewfile"
+  # Install brew dependencies directly from GitHub repository
+  info "Installing brew dependencies from GitHub repository Brewfile"
+  local brewfile_url="$REPO_URL/Brewfile"
+  
+  # First, download the Brewfile to a temporary location
   local temp_brewfile="$TEMP_DIR/Brewfile"
-  if download_file "Brewfile" "$temp_brewfile"; then
-    if [ -f "$DOTPATH/Brewfile" ]; then
-      if ! diff -q "$DOTPATH/Brewfile" "$temp_brewfile" >/dev/null 2>&1; then
-        info "Brewfile has changed, updating..."
-        cp "$temp_brewfile" "$DOTPATH/Brewfile"
-      else
-        info "Brewfile is up to date"
-      fi
+  if curl -fsSL "$brewfile_url" -o "$temp_brewfile"; then
+    info "Successfully downloaded Brewfile from repository"
+    
+    # Run brew bundle with the downloaded Brewfile
+    if ! brew bundle --file="$temp_brewfile"; then
+      warn "Failed to install some Homebrew packages. Check logs for details."
+      info "You can try running 'brew bundle' manually later with the Brewfile from the repository."
     else
-      info "Creating new Brewfile"
-      cp "$temp_brewfile" "$DOTPATH/Brewfile"
+      success "Homebrew packages installed successfully"
     fi
   else
-    warn "Failed to download Brewfile"
-    if [ ! -f "$DOTPATH/Brewfile" ]; then
-      return 1
-    fi
-    info "Using existing Brewfile"
-  fi
-
-  info "Installing brew dependencies from Brewfile"
-  if ! brew bundle --file="$DOTPATH/Brewfile"; then
-    warn "Failed to install some Homebrew packages. Check logs for details."
-    info "You can try running 'brew bundle --file=\"$DOTPATH/Brewfile\"' manually later."
+    warn "Failed to download Brewfile from repository"
+    return 1
   fi
   
   return 0

@@ -27,6 +27,10 @@ err() {
   exit 1
 }
 
+warn() {
+  printf "%s\n" "${COLOR_YELLOW}WARNING: ${COLOR_NONE}$1"
+}
+
 info() {
   printf "%s\n" "${COLOR_BLUE}INFO: ${COLOR_NONE}$1"
 }
