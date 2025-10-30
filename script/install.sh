@@ -8,50 +8,27 @@ REPO_URL="https://raw.githubusercontent.com/gr1m0h/dot/main"
 TEMP_DIR=$(mktemp -d)
 SCRIPT_PATH="$TEMP_DIR/setup.sh"
 
-# Check if output supports colors
-if [ -t 1 ] && command -v tput >/dev/null 2>&1; then
-  # Use tput for better compatibility
-  COLOR_GRAY=$(tput setaf 243 || true)
-  COLOR_PURPLE=$(tput setaf 5 || true)
-  COLOR_RED=$(tput setaf 1 || true)
-  COLOR_BLUE=$(tput setaf 4 || true)
-  COLOR_GREEN=$(tput setaf 2 || true)
-  COLOR_YELLOW=$(tput setaf 3 || true)
-  COLOR_NONE=$(tput sgr0 || true)
-  COLOR_BOLD=$(tput bold || true)
-else
-  COLOR_GRAY=""
-  COLOR_PURPLE=""
-  COLOR_RED=""
-  COLOR_BLUE=""
-  COLOR_GREEN=""
-  COLOR_YELLOW=""
-  COLOR_NONE=""
-  COLOR_BOLD=""
-fi
-
 title() {
   echo ""
-  echo "${COLOR_BOLD}${COLOR_PURPLE}$1${COLOR_NONE}"
-  echo "${COLOR_GRAY}==============================${COLOR_NONE}"
+  echo "===== $1 ====="
   echo ""
 }
 
 err() {
-  echo "${COLOR_RED}${COLOR_BOLD}ERROR: ${COLOR_NONE}$1"
+  echo "[ERROR] $1"
   exit 1
 }
 
 warn() {
-  echo "${COLOR_YELLOW}${COLOR_BOLD}WARNING: ${COLOR_NONE}$1"
+  echo "[WARNING] $1"
 }
 
 info() {
-  echo "${COLOR_BLUE}${COLOR_BOLD}INFO: ${COLOR_NONE}$1"
+  echo "[INFO] $1"
 }
 
 success() {
-  echo "${COLOR_GREEN}${COLOR_BOLD}$1${COLOR_NONE}"
+  echo "[SUCCESS] $1"
 }
 
 cleanup() {
@@ -63,7 +40,10 @@ cleanup() {
 # Set trap to cleanup on exit
 trap cleanup EXIT
 
-title "gr1m0h/dot installer"
+echo "========================================="
+echo "       gr1m0h/dot installer"
+echo "========================================="
+echo ""
 
 info "Downloading setup script..."
 if ! curl -fsSL "$REPO_URL/script/setup.sh" -o "$SCRIPT_PATH"; then
@@ -88,12 +68,14 @@ case "$COMPONENT" in
     fi
     ;;
   *)
-    printf "\nUsage: %s {dotfiles|homebrew|macos|docker|mcp|serena|all}\n" "$(basename "$0")"
-    printf "Default: all\n\n"
-    printf "Examples:\n"
-    printf "  curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh\n"
-    printf "  curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s dotfiles\n"
-    printf "  curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s mcp\n"
+    echo ""
+    echo "Usage: $(basename "$0") {dotfiles|homebrew|macos|docker|mcp|serena|all}"
+    echo "Default: all"
+    echo ""
+    echo "Examples:"
+    echo "  curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh"
+    echo "  curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s dotfiles"
+    echo "  curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s mcp"
     exit 1
     ;;
 esac
