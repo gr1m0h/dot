@@ -20,13 +20,25 @@ mkdir -p "$STATE_DIR"
 
 # Temporary directory
 TEMP_DIR=$(mktemp -d)
-COLOR_GRAY="\033[1;38;5;243m"
-COLOR_PURPLE="\033[1;35m"
-COLOR_RED="\033[1;31m"
-COLOR_BLUE="\033[1;34m"
-COLOR_GREEN="\033[1;32m"
-COLOR_YELLOW="\033[1;33m"
-COLOR_NONE="\033[0m"
+
+# Color definitions - only use colors if in a TTY
+if [ -t 1 ]; then
+  COLOR_GRAY="\033[1;38;5;243m"
+  COLOR_PURPLE="\033[1;35m"
+  COLOR_RED="\033[1;31m"
+  COLOR_BLUE="\033[1;34m"
+  COLOR_GREEN="\033[1;32m"
+  COLOR_YELLOW="\033[1;33m"
+  COLOR_NONE="\033[0m"
+else
+  COLOR_GRAY=""
+  COLOR_PURPLE=""
+  COLOR_RED=""
+  COLOR_BLUE=""
+  COLOR_GREEN=""
+  COLOR_YELLOW=""
+  COLOR_NONE=""
+fi
 
 title() {
   printf "\n%s\n" "${COLOR_PURPLE}$1${COLOR_NONE}"
@@ -202,6 +214,23 @@ setup_homebrew() {
   # install if Homebrew is not installed
   if ! command -v brew >/dev/null 2>&1; then
     info "Homebrew not installed. Installing."
+    
+    # Check if running in non-interactive mode
+    if [ ! -t 0 ] || [ ! -t 1 ]; then
+      warn "Running in non-interactive mode. Homebrew installation requires sudo access."
+      warn "Please ensure you have Administrator privileges before running this script."
+      warn "To install Homebrew manually, run:"
+      warn "  /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
+      warn ""
+      warn "Alternatively, you can:"
+      warn "1. Clone this repository locally:"
+      warn "   git clone https://github.com/gr1m0h/dot.git"
+      warn "   cd dot"
+      warn "2. Run the setup script directly:"
+      warn "   script/setup.sh homebrew"
+      return 1
+    fi
+    
     if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
       warn "Failed to install Homebrew"
       return 1

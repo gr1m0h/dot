@@ -29,6 +29,22 @@ cd dot
 script/setup.sh all
 ```
 
+### Important Notes
+
+**Homebrew Installation**: The remote installation method (`curl ... | sh`) requires Administrator privileges to install Homebrew. If you don't have sudo access or prefer to install manually:
+
+1. First install Homebrew manually:
+   ```sh
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
+
+2. Then clone and run the setup:
+   ```sh
+   git clone https://github.com/gr1m0h/dot.git
+   cd dot
+   script/setup.sh all
+   ```
+
 ## Available Components
 
 | Component | Description |

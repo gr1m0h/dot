@@ -8,14 +8,24 @@ REPO_URL="https://raw.githubusercontent.com/gr1m0h/dot/main"
 TEMP_DIR=$(mktemp -d)
 SCRIPT_PATH="$TEMP_DIR/setup.sh"
 
-# Color definitions
-COLOR_GRAY="\033[1;38;5;243m"
-COLOR_PURPLE="\033[1;35m"
-COLOR_RED="\033[1;31m"
-COLOR_BLUE="\033[1;34m"
-COLOR_GREEN="\033[1;32m"
-COLOR_YELLOW="\033[1;33m"
-COLOR_NONE="\033[0m"
+# Color definitions - only use colors if in a TTY
+if [ -t 1 ]; then
+  COLOR_GRAY="\033[1;38;5;243m"
+  COLOR_PURPLE="\033[1;35m"
+  COLOR_RED="\033[1;31m"
+  COLOR_BLUE="\033[1;34m"
+  COLOR_GREEN="\033[1;32m"
+  COLOR_YELLOW="\033[1;33m"
+  COLOR_NONE="\033[0m"
+else
+  COLOR_GRAY=""
+  COLOR_PURPLE=""
+  COLOR_RED=""
+  COLOR_BLUE=""
+  COLOR_GREEN=""
+  COLOR_YELLOW=""
+  COLOR_NONE=""
+fi
 
 title() {
   printf "\n%s\n" "${COLOR_PURPLE}$1${COLOR_NONE}"
