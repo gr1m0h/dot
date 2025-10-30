@@ -66,6 +66,20 @@ mark_step() {
   touch "$STATE_DIR/$step"
 }
 
+# Detect current shell for mise activate
+get_shell_type() {
+  # Check if we're running in zsh
+  if [ -n "${ZSH_VERSION:-}" ]; then
+    echo "zsh"
+  # Check if we're running in bash
+  elif [ -n "${BASH_VERSION:-}" ]; then
+    echo "bash"
+  # Default to bash if we can't detect
+  else
+    echo "bash"
+  fi
+}
+
 # Run a function with error handling
 run_step() {
   local step_name="$1"
@@ -522,7 +536,7 @@ setup_docker() {
     fi
     
     # Ensure mise is activated in current shell
-    eval "$(mise activate sh)"
+    eval "$(mise activate $(get_shell_type))"
   fi
 
   # Start Colima if not running
@@ -586,12 +600,12 @@ setup_mcp_servers() {
   fi
 
   # Ensure mise is activated in current shell
-  eval "$(mise activate sh)"
+  eval "$(mise activate $(get_shell_type))"
 
   # Check if claude command is available
   if ! command -v claude >/dev/null 2>&1; then
     warn "Claude CLI not found after mise install."
-    info "You may need to restart your shell or run: eval \"\$(mise activate sh)\""
+    info "You may need to restart your shell or run: eval \"\$(mise activate \$(get_shell_type))\""
     return 1
   fi
 
