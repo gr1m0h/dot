@@ -21,15 +21,17 @@ mkdir -p "$STATE_DIR"
 # Temporary directory
 TEMP_DIR=$(mktemp -d)
 
-# Color definitions - only use colors if in a TTY
-if [ -t 1 ]; then
-  COLOR_GRAY="\033[1;38;5;243m"
-  COLOR_PURPLE="\033[1;35m"
-  COLOR_RED="\033[1;31m"
-  COLOR_BLUE="\033[1;34m"
-  COLOR_GREEN="\033[1;32m"
-  COLOR_YELLOW="\033[1;33m"
-  COLOR_NONE="\033[0m"
+# Check if output supports colors
+if [ -t 1 ] && command -v tput >/dev/null 2>&1; then
+  # Use tput for better compatibility
+  COLOR_GRAY=$(tput setaf 243 || true)
+  COLOR_PURPLE=$(tput setaf 5 || true)
+  COLOR_RED=$(tput setaf 1 || true)
+  COLOR_BLUE=$(tput setaf 4 || true)
+  COLOR_GREEN=$(tput setaf 2 || true)
+  COLOR_YELLOW=$(tput setaf 3 || true)
+  COLOR_NONE=$(tput sgr0 || true)
+  COLOR_BOLD=$(tput bold || true)
 else
   COLOR_GRAY=""
   COLOR_PURPLE=""
@@ -38,28 +40,31 @@ else
   COLOR_GREEN=""
   COLOR_YELLOW=""
   COLOR_NONE=""
+  COLOR_BOLD=""
 fi
 
 title() {
-  printf "\n%s\n" "${COLOR_PURPLE}$1${COLOR_NONE}"
-  printf "%s\n\n" "${COLOR_GRAY}==============================${COLOR_NONE}"
+  echo ""
+  echo "${COLOR_BOLD}${COLOR_PURPLE}$1${COLOR_NONE}"
+  echo "${COLOR_GRAY}==============================${COLOR_NONE}"
+  echo ""
 }
 
 err() {
-  printf "%s\n" "${COLOR_RED}ERROR: ${COLOR_NONE}$1"
+  echo "${COLOR_RED}${COLOR_BOLD}ERROR: ${COLOR_NONE}$1"
   exit 1
 }
 
 warn() {
-  printf "%s\n" "${COLOR_YELLOW}WARNING: ${COLOR_NONE}$1"
+  echo "${COLOR_YELLOW}${COLOR_BOLD}WARNING: ${COLOR_NONE}$1"
 }
 
 info() {
-  printf "%s\n" "${COLOR_BLUE}INFO: ${COLOR_NONE}$1"
+  echo "${COLOR_BLUE}${COLOR_BOLD}INFO: ${COLOR_NONE}$1"
 }
 
 success() {
-  printf "%s\n" "${COLOR_GREEN}$1${COLOR_NONE}"
+  echo "${COLOR_GREEN}${COLOR_BOLD}$1${COLOR_NONE}"
 }
 
 download_file() {
