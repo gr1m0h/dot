@@ -2,33 +2,34 @@
 
 Personal dotfiles and development environment setup for macOS.
 
-## Quick Setup (Recommended)
+## Quick Setup
 
-**One-Command Installation**:
-
+**Install everything:**
 ```sh
-# Install everything - automatically switches to interactive mode when needed
 curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh
 ```
 
-This smart installer will:
-- ✅ Automatically detect if Homebrew needs installation
-- ✅ Switch to interactive mode for password prompts
-- ✅ Install Homebrew and all packages from Brewfile
-- ✅ Set up dotfiles, macOS settings, Docker, MCP servers, and Serena
-- ✅ Handle all password prompts properly
-
-**Install specific components**:
+**Install specific components:**
 ```sh
-# Dotfiles only (no Homebrew required)
 curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s dotfiles
-
-# macOS settings only
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s homebrew
 curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s macos
-
-# Other components
-curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s {docker|mcp|serena}
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s docker
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s mcp
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s serena
 ```
+
+When installing Homebrew or configuring system settings, you'll be prompted for your password.
+
+## What Gets Installed
+
+- **Homebrew**: Package manager for macOS
+- **Packages**: Git, Docker, Claude, and other tools from Brewfile
+- **Dotfiles**: Zsh configuration, Git config, editor settings
+- **macOS Settings**: Dock, Finder, security preferences
+- **Docker**: Container platform with Colima
+- **MCP Servers**: Claude integration tools
+- **Serena**: Development environment configuration
 
 ## Manual Setup
 
@@ -40,17 +41,6 @@ cd dot
 script/setup.sh all
 ```
 
-### How It Works
-
-The installer is smart:
-1. When you run the piped command, it detects if it's in non-interactive mode
-2. If Homebrew installation is needed, it automatically re-launches itself interactively
-3. This allows proper password prompts while keeping the simple one-liner interface
-
-No need for complex commands - just use:
-```sh
-curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh
-```
 
 ## Available Components
 

@@ -194,25 +194,11 @@ setup_homebrew() {
 
   # install if Homebrew is not installed
   if ! command -v brew >/dev/null 2>&1; then
-    info "Homebrew not installed. Installing."
-    
-    # Install Homebrew
     info "Installing Homebrew..."
-    info "Note: You will be prompted for your password."
+    info "Please enter your password when prompted."
     
     if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
       warn "Failed to install Homebrew"
-      
-      # Check if running in non-interactive mode
-      if [ ! -t 0 ] || [ ! -t 1 ]; then
-        warn ""
-        warn "You are running in non-interactive mode (piped script)."
-        warn "To install Homebrew interactively, use this command instead:"
-        warn ""
-        warn "  curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh -o install.sh && sh install.sh && rm install.sh"
-        warn ""
-        warn "Or install Homebrew manually first, then run this script again."
-      fi
       return 1
     fi
     
@@ -406,20 +392,21 @@ setup_macos() {
   defaults write com.apple.screensaver askForPasswordDelay -int 0
   
   # Enable firewall and disable automatic login (requires sudo)
-  info "Configuring system security settings (requires administrator password)..."
+  info "Configuring system security settings..."
+  info "Please enter your password when prompted."
   
   # Try to enable firewall
-  if ! sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1 2>/dev/null; then
-    warn "Failed to enable firewall - you may need to enable it manually in System Settings > Security & Privacy"
-  else
+  if sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1; then
     success "Firewall enabled"
+  else
+    warn "Failed to enable firewall - you may need to enable it manually in System Settings > Security & Privacy"
   fi
   
   # Try to disable automatic login
-  if ! sudo defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser 2>/dev/null; then
-    info "Automatic login already disabled or not configured"
-  else
+  if sudo defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser 2>/dev/null; then
     success "Automatic login disabled"
+  else
+    info "Automatic login already disabled or not configured"
   fi
 
   info "Configuring Clock"
@@ -475,15 +462,14 @@ setup_docker() {
   # Create docker socket link (with better error handling)
   info "Linking docker socket for compatibility"
   if [ -S "$HOME/.config/colima/default/docker.sock" ]; then
-    info "Creating docker socket link (requires administrator password)..."
+    info "Creating docker socket link..."
+    info "Please enter your password when prompted."
     
-    if sudo ln -sf "$HOME/.config/colima/default/docker.sock" /var/run/docker.sock 2>/dev/null; then
+    if sudo ln -sf "$HOME/.config/colima/default/docker.sock" /var/run/docker.sock; then
       success "Created docker socket link successfully"
     else
       warn "Failed to create docker socket link"
       warn "This is not critical - Docker will still work through colima context"
-      info "If needed, you can create it manually with:"
-      info "  sudo ln -sf \"$HOME/.config/colima/default/docker.sock\" /var/run/docker.sock"
     fi
   else
     warn "Colima docker socket not found at $HOME/.config/colima/default/docker.sock"
