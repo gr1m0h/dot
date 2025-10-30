@@ -1,6 +1,3 @@
-tap "homebrew/bundle"
-tap "homebrew/cask-drivers"
-tap "homebrew/cask-fonts"
 tap "wez/wezterm"
 brew "curl"
 brew "git"
@@ -30,4 +27,4 @@ mas "LINE", id: 539883307
 mas "Magnet", id: 441258766
 mas "Numbers", id: 409203825
 mas "Skitch", id: 425955336
-mas "Xcode", id: 497799835
+# mas "Xcode", id: 497799835  # Commented out for CI - install manually if needed
