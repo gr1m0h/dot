@@ -4,36 +4,30 @@ Personal dotfiles and development environment setup for macOS.
 
 ## Quick Setup (Recommended)
 
-**Interactive Installation (Supports Homebrew with Password Prompt)**:
+**One-Command Installation**:
 
 ```sh
-# Download and run interactively (recommended)
-curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh -o install.sh && sh install.sh && rm install.sh
+# Install everything - automatically switches to interactive mode when needed
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh
 ```
 
-This will:
-- Install Homebrew (prompts for password)
-- Install all packages from Brewfile
-- Set up dotfiles
-- Configure macOS settings (prompts for password for system-level changes)
-- Set up Docker with Colima (may prompt for password)
-- Configure MCP servers and Serena
+This smart installer will:
+- ✅ Automatically detect if Homebrew needs installation
+- ✅ Switch to interactive mode for password prompts
+- ✅ Install Homebrew and all packages from Brewfile
+- ✅ Set up dotfiles, macOS settings, Docker, MCP servers, and Serena
+- ✅ Handle all password prompts properly
 
-**Password prompts occur for:**
-1. Homebrew installation (initial setup)
-2. macOS security settings (firewall, login settings)
-3. Docker socket configuration (optional)
-
-**Install specific components only**:
+**Install specific components**:
 ```sh
-# Download script and run with component option
-curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh -o install.sh && sh install.sh dotfiles && rm install.sh
-```
-
-**Non-interactive Installation (No Homebrew)**:
-```sh
-# For CI/automation or when Homebrew is already installed
+# Dotfiles only (no Homebrew required)
 curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s dotfiles
+
+# macOS settings only
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s macos
+
+# Other components
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s {docker|mcp|serena}
 ```
 
 ## Manual Setup
@@ -46,19 +40,17 @@ cd dot
 script/setup.sh all
 ```
 
-### One-liner Installation
+### How It Works
 
-For the absolute quickest setup, use this one-liner:
+The installer is smart:
+1. When you run the piped command, it detects if it's in non-interactive mode
+2. If Homebrew installation is needed, it automatically re-launches itself interactively
+3. This allows proper password prompts while keeping the simple one-liner interface
 
+No need for complex commands - just use:
 ```sh
-curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh -o install.sh && sh install.sh && rm install.sh
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh
 ```
-
-This approach:
-- ✅ Downloads the script first, then runs it interactively
-- ✅ Allows password prompts for Homebrew installation
-- ✅ Automatically cleans up the downloaded script
-- ✅ Works with all components (Homebrew, dotfiles, etc.)
 
 ## Available Components
 

@@ -118,7 +118,6 @@ setup_dotfiles() {
 .zshrc
 .zsh_aliases
 .zsh_completions
-.zsh_corp
 "
 
   for config in $zsh_configs; do
@@ -358,7 +357,7 @@ setup_macos() {
   defaults write com.apple.terminal StringEncodings -array 4
 
   info "Configuring Safari"
-  defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
+  defaults write com.apple.Safari IncludeInternalDebugMenu -bool true 2>/dev/null || info "Safari settings may need manual configuration due to privacy restrictions"
 
   info "Configuring Finder"
   defaults write NSGlobalDomain AppleShowAllExtensions -bool true

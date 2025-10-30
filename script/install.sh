@@ -46,6 +46,34 @@ echo "       gr1m0h/dot installer"
 echo "========================================="
 echo ""
 
+# Check if running in non-interactive mode (piped)
+if [ ! -t 0 ] || [ ! -t 1 ]; then
+  # Check for command line arguments
+  COMPONENT="${1:-all}"
+  
+  # If trying to install homebrew in non-interactive mode, re-execute interactively
+  if [ "$COMPONENT" = "all" ] || [ "$COMPONENT" = "homebrew" ]; then
+    echo ""
+    warn "Detected non-interactive mode. Homebrew installation requires interactive mode."
+    info "Automatically switching to interactive installation..."
+    echo ""
+    
+    # Download the script to a temporary location and execute it
+    TEMP_INSTALL_SCRIPT=$(mktemp)
+    info "Downloading installer for interactive execution..."
+    
+    if curl -fsSL "$REPO_URL/script/install.sh" -o "$TEMP_INSTALL_SCRIPT"; then
+      chmod +x "$TEMP_INSTALL_SCRIPT"
+      info "Launching interactive installer..."
+      echo ""
+      # Execute the script interactively
+      exec sh "$TEMP_INSTALL_SCRIPT" "$COMPONENT"
+    else
+      err "Failed to download installer for interactive mode"
+    fi
+  fi
+fi
+
 info "Downloading setup script..."
 if ! curl -fsSL "$REPO_URL/script/setup.sh" -o "$SCRIPT_PATH"; then
   err "Failed to download setup script"
