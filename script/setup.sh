@@ -47,8 +47,16 @@ success() {
 download_file() {
   local src="$1"
   local dest="$2"
+  
+  # Ensure parent directory exists
+  local parent_dir=$(dirname "$dest")
+  if [ ! -d "$parent_dir" ]; then
+    info "Creating directory: $parent_dir"
+    mkdir -p "$parent_dir"
+  fi
 
   if ! curl -fsSL "$REPO_URL/$src" -o "$dest"; then
+    warn "Failed to download: $src to $dest"
     return 1
   fi
   return 0
@@ -118,7 +126,10 @@ setup_dotfiles() {
       info "$dotfile already exists... Skipping."
     else
       info "Downloading $dotfile to $HOME/$dotfile"
-      download_file "dots/$dotfile" "$HOME/$dotfile"
+      if ! download_file "dots/$dotfile" "$HOME/$dotfile"; then
+        warn "Failed to download $dotfile"
+        overall_success=1
+      fi
     fi
   done
 
@@ -139,7 +150,10 @@ setup_dotfiles() {
       info "zsh/$config already exists... Skipping."
     else
       info "Downloading zsh/$config to $HOME/.config/zsh/$config"
-      download_file "dots/.config/zsh/$config" "$HOME/.config/zsh/$config"
+      if ! download_file "dots/.config/zsh/$config" "$HOME/.config/zsh/$config"; then
+        warn "Failed to download zsh/$config"
+        overall_success=1
+      fi
     fi
   done
 
@@ -148,7 +162,10 @@ setup_dotfiles() {
     info "starship/starship.toml already exists... Skipping."
   else
     info "Downloading starship/starship.toml to $HOME/.config/starship/starship.toml"
-    download_file "dots/.config/starship/starship.toml" "$HOME/.config/starship/starship.toml"
+    if ! download_file "dots/.config/starship/starship.toml" "$HOME/.config/starship/starship.toml"; then
+      warn "Failed to download starship/starship.toml"
+      overall_success=1
+    fi
   fi
 
   # Additional config directories
@@ -170,40 +187,58 @@ nvim
       if [ -e "$HOME/.config/hammerspoon/init.lua" ]; then
         info "hammerspoon/init.lua already exists... Skipping."
       else
-        download_file "dots/.config/hammerspoon/init.lua" "$HOME/.config/hammerspoon/init.lua"
+        if ! download_file "dots/.config/hammerspoon/init.lua" "$HOME/.config/hammerspoon/init.lua"; then
+          warn "Failed to download hammerspoon/init.lua"
+          overall_success=1
+        fi
       fi
       ;;
     sheldon)
       if [ -e "$HOME/.config/sheldon/plugins.toml" ]; then
         info "sheldon/plugins.toml already exists... Skipping."
       else
-        download_file "dots/.config/sheldon/plugins.toml" "$HOME/.config/sheldon/plugins.toml"
+        if ! download_file "dots/.config/sheldon/plugins.toml" "$HOME/.config/sheldon/plugins.toml"; then
+          warn "Failed to download sheldon/plugins.toml"
+          overall_success=1
+        fi
       fi
       ;;
     wezterm)
       if [ -e "$HOME/.config/wezterm/wezterm.lua" ]; then
         info "wezterm/wezterm.lua already exists... Skipping."
       else
-        download_file "dots/.config/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"
+        if ! download_file "dots/.config/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"; then
+          warn "Failed to download wezterm/wezterm.lua"
+          overall_success=1
+        fi
       fi
       ;;
     git)
       if [ -e "$HOME/.config/git/config" ]; then
         info "git/config already exists... Skipping."
       else
-        download_file "dots/.config/git/config" "$HOME/.config/git/config"
+        if ! download_file "dots/.config/git/config" "$HOME/.config/git/config"; then
+          warn "Failed to download git/config"
+          overall_success=1
+        fi
       fi
       if [ -e "$HOME/.config/git/ignore" ]; then
         info "git/ignore already exists... Skipping."
       else
-        download_file "dots/.config/git/ignore" "$HOME/.config/git/ignore"
+        if ! download_file "dots/.config/git/ignore" "$HOME/.config/git/ignore"; then
+          warn "Failed to download git/ignore"
+          overall_success=1
+        fi
       fi
       ;;
     mise)
       if [ -e "$HOME/.config/mise/config.toml" ]; then
         info "mise/config.toml already exists... Skipping."
       else
-        download_file "dots/.config/mise/config.toml" "$HOME/.config/mise/config.toml"
+        if ! download_file "dots/.config/mise/config.toml" "$HOME/.config/mise/config.toml"; then
+          warn "Failed to download mise/config.toml"
+          overall_success=1
+        fi
       fi
       ;;
     nvim)
@@ -213,25 +248,49 @@ nvim
       else
         info "Setting up nvim configuration"
         # Download all nvim config files
-        download_file "dots/.config/nvim/init.lua" "$HOME/.config/nvim/init.lua"
-        download_file "dots/.config/nvim/.neoconf.json" "$HOME/.config/nvim/.neoconf.json"
-        download_file "dots/.config/nvim/.markdownlint.json" "$HOME/.config/nvim/.markdownlint.json"
-        download_file "dots/.config/nvim/markdownlint.jsonc" "$HOME/.config/nvim/markdownlint.jsonc"
-        download_file "dots/.config/nvim/stylua.toml" "$HOME/.config/nvim/stylua.toml"
-        download_file "dots/.config/nvim/lazyvim.json" "$HOME/.config/nvim/lazyvim.json"
-        download_file "dots/.config/nvim/lazy-lock.json" "$HOME/.config/nvim/lazy-lock.json"
+        local nvim_files="
+init.lua
+.neoconf.json
+.markdownlint.json
+markdownlint.jsonc
+stylua.toml
+lazyvim.json
+lazy-lock.json
+"
+        for file in $nvim_files; do
+          if ! download_file "dots/.config/nvim/$file" "$HOME/.config/nvim/$file"; then
+            warn "Failed to download nvim/$file"
+            overall_success=1
+          fi
+        done
         
         # Create lua directories and download files
         mkdir -p "$HOME/.config/nvim/lua/config"
         mkdir -p "$HOME/.config/nvim/lua/plugins"
         
-        download_file "dots/.config/nvim/lua/config/autocmds.lua" "$HOME/.config/nvim/lua/config/autocmds.lua"
-        download_file "dots/.config/nvim/lua/config/keymaps.lua" "$HOME/.config/nvim/lua/config/keymaps.lua"
-        download_file "dots/.config/nvim/lua/config/options.lua" "$HOME/.config/nvim/lua/config/options.lua"
-        download_file "dots/.config/nvim/lua/config/lazy.lua" "$HOME/.config/nvim/lua/config/lazy.lua"
+        local lua_config_files="
+autocmds.lua
+keymaps.lua
+options.lua
+lazy.lua
+"
+        for file in $lua_config_files; do
+          if ! download_file "dots/.config/nvim/lua/config/$file" "$HOME/.config/nvim/lua/config/$file"; then
+            warn "Failed to download nvim/lua/config/$file"
+            overall_success=1
+          fi
+        done
         
-        download_file "dots/.config/nvim/lua/plugins/lint.lua" "$HOME/.config/nvim/lua/plugins/lint.lua"
-        download_file "dots/.config/nvim/lua/plugins/example.lua" "$HOME/.config/nvim/lua/plugins/example.lua"
+        local lua_plugin_files="
+lint.lua
+example.lua
+"
+        for file in $lua_plugin_files; do
+          if ! download_file "dots/.config/nvim/lua/plugins/$file" "$HOME/.config/nvim/lua/plugins/$file"; then
+            warn "Failed to download nvim/lua/plugins/$file"
+            overall_success=1
+          fi
+        done
       fi
       ;;
     esac
