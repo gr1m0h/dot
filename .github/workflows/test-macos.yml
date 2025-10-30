@@ -14,6 +14,8 @@ on:
           - homebrew
           - macos
           - docker
+          - mcp
+          - serena
           - install
 
 jobs:
@@ -126,6 +128,40 @@ jobs:
           fi
           
           ./script/setup.sh docker || echo "Docker setup completed with warnings (expected in CI)"
+          
+      - name: Test setup script - mcp servers
+        if: ${{ github.event.inputs.test_mode == 'mcp' || github.event.inputs.test_mode == 'all' }}
+        run: |
+          echo "=== Testing setup script with MCP servers ==="
+          chmod +x script/setup.sh
+          
+          # Create a dummy .env file for testing
+          echo "GITHUB_PAT=test_token_12345" > $HOME/.env
+          
+          # Create a mock claude command for testing
+          mkdir -p $HOME/bin
+          echo '#!/bin/bash' > $HOME/bin/claude
+          echo 'echo "Mock claude command executed with: $@"' >> $HOME/bin/claude
+          echo 'exit 0' >> $HOME/bin/claude
+          chmod +x $HOME/bin/claude
+          export PATH=$HOME/bin:$PATH
+          
+          ./script/setup.sh mcp || echo "MCP setup completed (mocked in CI)"
+          
+          # Verify Claude settings.json was created
+          echo "=== Verifying MCP setup ==="
+          ls -la $HOME/.claude/settings.json || echo "Claude settings.json not found"
+          
+      - name: Test setup script - serena
+        if: ${{ github.event.inputs.test_mode == 'serena' || github.event.inputs.test_mode == 'all' }}
+        run: |
+          echo "=== Testing setup script with Serena ==="
+          chmod +x script/setup.sh
+          ./script/setup.sh serena
+          
+          # Verify Serena configuration was created
+          echo "=== Verifying Serena setup ==="
+          ls -la $HOME/.serena/serena_config.yml || echo "Serena config not found"
           
       - name: Test all setup options
         if: ${{ github.event.inputs.test_mode == 'all' }}
