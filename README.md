@@ -4,30 +4,45 @@ Personal dotfiles and development environment setup for macOS.
 
 ## Quick Setup
 
-**Install everything:**
+### New Mac Setup (Recommended)
+```sh
+# Step 1: Ensure you have administrator access
+sudo -v
+
+# Step 2: Install everything including Homebrew
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh
+```
+
+The installer will automatically:
+- Install Homebrew (if not installed)
+- Install all packages from Brewfile
+- Configure dotfiles and system settings
+
+### If Homebrew is already installed
 ```sh
 curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh
 ```
 
 **Install specific components:**
 ```sh
+# Components that don't require Homebrew
 curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s dotfiles
-curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s homebrew
 curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s macos
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s serena
+
+# Components that require Homebrew (install Homebrew first)
 curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s docker
 curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s mcp
-curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s serena
 ```
-
-When installing Homebrew or configuring system settings, you'll be prompted for your password.
 
 ## What Gets Installed
 
 - **Homebrew**: Package manager for macOS
-- **Packages**: Git, Docker, Claude, and other tools from Brewfile
+- **mise**: Runtime version manager (manages Node.js, Python, Go, etc.)
+- **Development Tools**: Via mise - Claude CLI, Docker, Neovim, and more
+- **Packages**: From Brewfile - Git, GnuPG, GUI apps
 - **Dotfiles**: Zsh configuration, Git config, editor settings
 - **macOS Settings**: Dock, Finder, security preferences
-- **Docker**: Container platform with Colima
 - **MCP Servers**: Claude integration tools
 - **Serena**: Development environment configuration
 
@@ -53,6 +68,29 @@ script/setup.sh all
 | `mcp` | Claude MCP (Model Context Protocol) servers setup |
 | `serena` | Serena AI code assistant configuration |
 | `all` | Install all components (default) |
+
+## Troubleshooting
+
+### Homebrew installation fails with "Need sudo access"
+This happens when running the installer via pipe (`curl | sh`). Solution:
+```sh
+# First, cache your sudo password
+sudo -v
+
+# Then run the installer
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh
+```
+
+### Claude CLI not found
+The Claude desktop app (`cask "claude"`) is different from Claude CLI (`claude-code`). The CLI is installed via mise along with other development tools. Make sure mise installation completes successfully.
+
+### Docker setup fails
+Docker and Colima are installed via mise. Make sure mise installation completes successfully. If mise is not available, the installer will fall back to installing via Homebrew.
+
+### Tools not found after installation
+Many development tools (Node.js, Python, Go, Docker, etc.) are installed via mise. After installation, you may need to:
+1. Restart your terminal
+2. Or run: `eval "$(mise activate zsh)"` (or `sh` for sh/bash)
 
 ## What's Included
 

@@ -143,6 +143,7 @@ hammerspoon
 sheldon
 wezterm
 git
+mise
 "
 
   for dir in $config_dirs; do
@@ -183,10 +184,44 @@ git
         download_file "dots/.config/git/ignore" "$HOME/.config/git/ignore"
       fi
       ;;
+    mise)
+      if [ -e "$HOME/.config/mise/config.toml" ]; then
+        info "mise/config.toml already exists... Skipping."
+      else
+        download_file "dots/.config/mise/config.toml" "$HOME/.config/mise/config.toml"
+      fi
+      ;;
     esac
   done
   
   return $overall_success
+}
+
+setup_mise() {
+  title "Setting up mise tools"
+  
+  # Check if mise is available
+  if ! command -v mise >/dev/null 2>&1; then
+    warn "mise not installed. Please ensure Homebrew setup completed successfully."
+    return 1
+  fi
+  
+  # Ensure mise config exists
+  if [ ! -f "$HOME/.config/mise/config.toml" ]; then
+    warn "mise config not found. Please ensure dotfiles setup completed successfully."
+    return 1
+  fi
+  
+  info "Installing all mise tools..."
+  if mise install; then
+    success "All mise tools installed successfully"
+    info "Tools installed include: Node.js, Python, Go, Docker, Claude CLI, and more"
+  else
+    warn "Some mise tools failed to install"
+    return 1
+  fi
+  
+  return 0
 }
 
 setup_homebrew() {
@@ -195,14 +230,35 @@ setup_homebrew() {
   # install if Homebrew is not installed
   if ! command -v brew >/dev/null 2>&1; then
     info "Installing Homebrew..."
-    info "Please enter your password when prompted."
     
-    if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+    # Check if we have sudo access
+    if ! sudo -n true 2>/dev/null; then
+      if [ ! -t 0 ]; then
+        # Non-interactive mode without sudo
+        warn "Homebrew installation requires administrator privileges."
+        warn "Please run one of these commands first:"
+        warn ""
+        warn "Option 1: Cache sudo password, then run installer:"
+        warn "  sudo -v"
+        warn "  curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh"
+        warn ""
+        warn "Option 2: Install Homebrew manually:"
+        warn "  /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
+        warn "  Then run: curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh"
+        return 1
+      else
+        # Interactive mode - prompt for password
+        info "Please enter your password when prompted."
+      fi
+    fi
+    
+    # Install Homebrew
+    if NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+      success "Homebrew installed successfully"
+    else
       warn "Failed to install Homebrew"
       return 1
     fi
-    
-    success "Homebrew installed successfully"
 
     # Make sure brew is in PATH
     case "$(uname -m)" in
@@ -424,17 +480,49 @@ setup_macos() {
 setup_docker() {
   title "Setting up docker"
 
-  # Check prerequisites
-  if ! command -v docker >/dev/null 2>&1; then
-    warn "Docker not installed. Please install Docker first using 'brew install docker'."
-    info "Skipping docker setup."
+  # Check if Homebrew is available
+  if ! command -v brew >/dev/null 2>&1; then
+    warn "Homebrew not available. Cannot install Docker automatically."
+    info "Please install Homebrew first, then run this script again."
     return 1
   fi
 
-  if ! command -v colima >/dev/null 2>&1; then
-    warn "Colima not installed. Please install Colima first using 'brew install colima'."
-    info "Skipping docker setup."
-    return 1
+  # Check if mise is available
+  if ! command -v mise >/dev/null 2>&1; then
+    warn "mise not installed. Installing docker and colima via Homebrew as fallback..."
+    
+    # Install docker if not available
+    if ! command -v docker >/dev/null 2>&1; then
+      info "Docker not installed. Installing via Homebrew..."
+      if brew install docker; then
+        success "Docker installed successfully"
+      else
+        warn "Failed to install Docker"
+        return 1
+      fi
+    fi
+
+    # Install colima if not available
+    if ! command -v colima >/dev/null 2>&1; then
+      info "Colima not installed. Installing via Homebrew..."
+      if brew install colima; then
+        success "Colima installed successfully"
+      else
+        warn "Failed to install Colima"
+        return 1
+      fi
+    fi
+  else
+    # Use mise to install docker and colima
+    info "Ensuring docker and colima are installed via mise..."
+    if mise install; then
+      success "mise tools installed successfully"
+    else
+      warn "Failed to install mise tools"
+    fi
+    
+    # Ensure mise is activated in current shell
+    eval "$(mise activate sh)"
   fi
 
   # Start Colima if not running
@@ -482,10 +570,28 @@ setup_docker() {
 setup_mcp_servers() {
   title "Setting up Claude MCP Servers"
 
+  # Check if mise is available
+  if ! command -v mise >/dev/null 2>&1; then
+    warn "mise not installed. Please ensure Homebrew setup completed successfully."
+    return 1
+  fi
+
+  # Install mise tools including claude-code
+  info "Installing mise tools (including claude-code)..."
+  if mise install; then
+    success "mise tools installed successfully"
+  else
+    warn "Failed to install mise tools"
+    return 1
+  fi
+
+  # Ensure mise is activated in current shell
+  eval "$(mise activate sh)"
+
   # Check if claude command is available
   if ! command -v claude >/dev/null 2>&1; then
-    warn "Claude CLI not installed. Please install Claude CLI first."
-    info "Visit https://docs.anthropic.com/en/docs/claude-code/quickstart for installation instructions."
+    warn "Claude CLI not found after mise install."
+    info "You may need to restart your shell or run: eval \"\$(mise activate sh)\""
     return 1
   fi
 
@@ -589,6 +695,9 @@ homebrew)
 macos)
   run_step "macos" setup_macos || true
   ;;
+mise)
+  run_step "mise" setup_mise || true
+  ;;
 docker)
   run_step "docker" setup_docker || true
   ;;
@@ -602,6 +711,7 @@ all)
   # Run all steps, continuing even if some fail
   run_step "dotfiles" setup_dotfiles || warn "Dotfiles setup failed, continuing..."
   run_step "homebrew" setup_homebrew || warn "Homebrew setup failed, continuing..."
+  run_step "mise" setup_mise || warn "mise setup failed, continuing..."
   run_step "macos" setup_macos || warn "macOS setup failed, continuing..."
   run_step "docker" setup_docker || warn "Docker setup failed, continuing..."
   run_step "mcp_servers" setup_mcp_servers || warn "MCP servers setup failed, continuing..."
