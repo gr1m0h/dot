@@ -10,11 +10,8 @@ brew "mise"
 brew "qemu"
 brew "sheldon"
 cask "1password"
-cask "android-file-transfer"
-cask "android-studio"
 cask "brave-browser"
 cask "claude"
-cask "discord"
 cask "font-hackgen"
 cask "font-hackgen-nerd"
 cask "hammerspoon"
@@ -23,7 +20,6 @@ cask "slack"
 cask "wezterm"
 cask "zoom"
 mas "Hidden Bar", id: 1452453066
-mas "LINE", id: 539883307
 mas "Magnet", id: 441258766
 mas "Numbers", id: 409203825
 mas "Skitch", id: 425955336
