@@ -158,6 +158,7 @@ sheldon
 wezterm
 git
 mise
+nvim
 "
 
   for dir in $config_dirs; do
@@ -203,6 +204,34 @@ mise
         info "mise/config.toml already exists... Skipping."
       else
         download_file "dots/.config/mise/config.toml" "$HOME/.config/mise/config.toml"
+      fi
+      ;;
+    nvim)
+      # nvim has many files, so download the entire structure
+      if [ -e "$HOME/.config/nvim/init.lua" ]; then
+        info "nvim config already exists... Skipping."
+      else
+        info "Setting up nvim configuration"
+        # Download all nvim config files
+        download_file "dots/.config/nvim/init.lua" "$HOME/.config/nvim/init.lua"
+        download_file "dots/.config/nvim/.neoconf.json" "$HOME/.config/nvim/.neoconf.json"
+        download_file "dots/.config/nvim/.markdownlint.json" "$HOME/.config/nvim/.markdownlint.json"
+        download_file "dots/.config/nvim/markdownlint.jsonc" "$HOME/.config/nvim/markdownlint.jsonc"
+        download_file "dots/.config/nvim/stylua.toml" "$HOME/.config/nvim/stylua.toml"
+        download_file "dots/.config/nvim/lazyvim.json" "$HOME/.config/nvim/lazyvim.json"
+        download_file "dots/.config/nvim/lazy-lock.json" "$HOME/.config/nvim/lazy-lock.json"
+        
+        # Create lua directories and download files
+        mkdir -p "$HOME/.config/nvim/lua/config"
+        mkdir -p "$HOME/.config/nvim/lua/plugins"
+        
+        download_file "dots/.config/nvim/lua/config/autocmds.lua" "$HOME/.config/nvim/lua/config/autocmds.lua"
+        download_file "dots/.config/nvim/lua/config/keymaps.lua" "$HOME/.config/nvim/lua/config/keymaps.lua"
+        download_file "dots/.config/nvim/lua/config/options.lua" "$HOME/.config/nvim/lua/config/options.lua"
+        download_file "dots/.config/nvim/lua/config/lazy.lua" "$HOME/.config/nvim/lua/config/lazy.lua"
+        
+        download_file "dots/.config/nvim/lua/plugins/lint.lua" "$HOME/.config/nvim/lua/plugins/lint.lua"
+        download_file "dots/.config/nvim/lua/plugins/example.lua" "$HOME/.config/nvim/lua/plugins/example.lua"
       fi
       ;;
     esac
