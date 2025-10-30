@@ -58,7 +58,15 @@ COMPONENT="${1:-all}"
 case "$COMPONENT" in
   dotfiles|homebrew|macos|docker|mcp|serena|all)
     info "Running setup with option: $COMPONENT"
-    "$SCRIPT_PATH" "$COMPONENT"
+    if "$SCRIPT_PATH" "$COMPONENT"; then
+      success "Installation completed successfully!"
+    else
+      warn "Installation completed with some errors"
+      info "You can check ~/.setup-state.d for progress and re-run to retry failed steps"
+      info "To reset and start fresh: rm -rf ~/.setup-state.d"
+      # Exit with non-zero but don't use err() to avoid abrupt termination
+      exit 1
+    fi
     ;;
   *)
     printf "\nUsage: %s {dotfiles|homebrew|macos|docker|mcp|serena|all}\n" "$(basename "$0")"
@@ -70,5 +78,3 @@ case "$COMPONENT" in
     exit 1
     ;;
 esac
-
-success "Installation completed!"

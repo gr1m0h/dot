@@ -10,6 +10,14 @@ DOTPATH="$(pwd)"
 if [ -z "${DOTPATH}" ]; then
   DOTPATH="$(cd "$(dirname "$0")/.." && pwd)"
 fi
+
+# State tracking
+STATE_FILE="$HOME/.setup-state"
+STATE_DIR="$HOME/.setup-state.d"
+mkdir -p "$STATE_DIR"
+
+# Temporary directory
+TEMP_DIR=$(mktemp -d)
 COLOR_GRAY="\033[1;38;5;243m"
 COLOR_PURPLE="\033[1;35m"
 COLOR_RED="\033[1;31m"
@@ -45,12 +53,49 @@ download_file() {
   local dest="$2"
 
   if ! curl -fsSL "$REPO_URL/$src" -o "$dest"; then
-    err "Failed to download $src to $dest"
+    return 1
+  fi
+  return 0
+}
+
+# Check if a step has been completed
+check_step() {
+  local step="$1"
+  [ -f "$STATE_DIR/$step" ]
+}
+
+# Mark a step as completed
+mark_step() {
+  local step="$1"
+  touch "$STATE_DIR/$step"
+}
+
+# Run a function with error handling
+run_step() {
+  local step_name="$1"
+  local func_name="$2"
+  
+  if check_step "$step_name"; then
+    info "$step_name already completed... Skipping."
+    return 0
+  fi
+  
+  info "Running $step_name"
+  if "$func_name"; then
+    mark_step "$step_name"
+    success "$step_name completed successfully"
+    return 0
+  else
+    warn "$step_name failed"
+    return 1
   fi
 }
 
 setup_dotfiles() {
   title "Downloading dotfiles"
+  
+  # Track overall success
+  local overall_success=0
 
   local dotfiles="
 .editorconfig
@@ -145,6 +190,8 @@ git
       ;;
     esac
   done
+  
+  return $overall_success
 }
 
 setup_homebrew() {
@@ -154,7 +201,8 @@ setup_homebrew() {
   if ! command -v brew >/dev/null 2>&1; then
     info "Homebrew not installed. Installing."
     if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
-      err "Failed to install Homebrew"
+      warn "Failed to install Homebrew"
+      return 1
     fi
 
     # Make sure brew is in PATH
@@ -163,42 +211,68 @@ setup_homebrew() {
       if [ -f "/opt/homebrew/bin/brew" ]; then
         eval "$(/opt/homebrew/bin/brew shellenv)"
       else
-        err "Homebrew installation failed - brew executable not found"
+        warn "Homebrew installation failed - brew executable not found"
+        return 1
       fi
       ;;
     x86_64)
       if [ -f "/usr/local/bin/brew" ]; then
         eval "$(/usr/local/bin/brew shellenv)"
       else
-        err "Homebrew installation failed - brew executable not found"
+        warn "Homebrew installation failed - brew executable not found"
+        return 1
       fi
       ;;
     *)
-      err "Unsupported architecture: $(uname -m)"
+      warn "Unsupported architecture: $(uname -m)"
+      return 1
       ;;
     esac
 
     # Verify brew is now in path
     if ! command -v brew >/dev/null 2>&1; then
-      err "Homebrew installation succeeded but brew is not in PATH"
+      warn "Homebrew installation succeeded but brew is not in PATH"
+      return 1
     fi
   fi
 
-  info "Downloading Brewfile"
-  download_file "Brewfile" "$DOTPATH/Brewfile"
+  # Download Brewfile only if it doesn't exist or is different
+  info "Checking Brewfile"
+  local temp_brewfile="$TEMP_DIR/Brewfile"
+  if download_file "Brewfile" "$temp_brewfile"; then
+    if [ -f "$DOTPATH/Brewfile" ]; then
+      if ! diff -q "$DOTPATH/Brewfile" "$temp_brewfile" >/dev/null 2>&1; then
+        info "Brewfile has changed, updating..."
+        cp "$temp_brewfile" "$DOTPATH/Brewfile"
+      else
+        info "Brewfile is up to date"
+      fi
+    else
+      info "Creating new Brewfile"
+      cp "$temp_brewfile" "$DOTPATH/Brewfile"
+    fi
+  else
+    warn "Failed to download Brewfile"
+    if [ ! -f "$DOTPATH/Brewfile" ]; then
+      return 1
+    fi
+    info "Using existing Brewfile"
+  fi
 
   info "Installing brew dependencies from Brewfile"
   if ! brew bundle --file="$DOTPATH/Brewfile"; then
     warn "Failed to install some Homebrew packages. Check logs for details."
     info "You can try running 'brew bundle --file=\"$DOTPATH/Brewfile\"' manually later."
   fi
+  
+  return 0
 }
 
 setup_macos() {
   title "Configuring macOS"
   if [ "$(uname)" != "Darwin" ]; then
     warn "macOS not detected. Skipping."
-    return
+    return 0
   fi
 
   info "Creating workspace directory"
@@ -295,10 +369,15 @@ setup_macos() {
   info "Configuring Security and Privacy"
   defaults write com.apple.screensaver askForPassword -bool true
   defaults write com.apple.screensaver askForPasswordDelay -int 0
-  sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1 || warn "Failed to enable firewall (requires sudo)"
-
-  # Disable automatic login
-  sudo defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser 2>/dev/null || true
+  
+  # Enable firewall with sudo (non-fatal if fails)
+  if sudo -n true 2>/dev/null; then
+    sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1 || warn "Failed to enable firewall"
+    # Disable automatic login
+    sudo defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser 2>/dev/null || true
+  else
+    warn "Sudo access required for firewall and login settings. Run with sudo access or configure manually."
+  fi
 
   info "Configuring Clock"
   defaults write com.apple.menuextra.clock 'DateFormat' -string 'EEE d MMM HH:mm' 2>/dev/null || warn "Clock format may need manual configuration in System Settings"
@@ -309,6 +388,7 @@ setup_macos() {
   done
 
   success "macOS configured successfully"
+  return 0
 }
 
 setup_docker() {
@@ -357,7 +437,7 @@ setup_docker() {
       if sudo ln -sf "$HOME/.config/colima/default/docker.sock" /var/run/docker.sock; then
         success "Created docker socket link successfully"
       else
-        warn "Failed to create docker socket link (requires sudo)"
+        warn "Failed to create docker socket link"
         info "You can create it manually with 'sudo ln -sf \"$HOME/.config/colima/default/docker.sock\" /var/run/docker.sock'"
       fi
     else
@@ -368,6 +448,8 @@ setup_docker() {
     warn "Colima docker socket not found at $HOME/.config/colima/default/docker.sock"
     info "Make sure Colima is running properly"
   fi
+  
+  return 0
 }
 
 setup_mcp_servers() {
@@ -385,21 +467,47 @@ setup_mcp_servers() {
     return 1
   fi
 
-  # Download and overwrite Claude settings.json
-  info "Downloading Claude settings.json"
+  # Download Claude settings.json only if different
+  info "Checking Claude settings.json"
   mkdir -p "$HOME/.claude"
-  if download_file "dots/.claude/settings.json" "$HOME/.claude/settings.json"; then
-    success "Downloaded and updated Claude settings.json"
+  local temp_settings="$TEMP_DIR/settings.json"
+  if download_file "dots/.claude/settings.json" "$temp_settings"; then
+    if [ -f "$HOME/.claude/settings.json" ]; then
+      if ! diff -q "$HOME/.claude/settings.json" "$temp_settings" >/dev/null 2>&1; then
+        info "settings.json has changed, updating..."
+        # Backup existing settings
+        cp "$HOME/.claude/settings.json" "$HOME/.claude/settings.json.backup"
+        cp "$temp_settings" "$HOME/.claude/settings.json"
+        success "Updated Claude settings.json (backup saved as settings.json.backup)"
+      else
+        info "Claude settings.json is up to date"
+      fi
+    else
+      info "Creating new Claude settings.json"
+      cp "$temp_settings" "$HOME/.claude/settings.json"
+      success "Created Claude settings.json"
+    fi
   else
     warn "Failed to download Claude settings.json"
     return 1
   fi
 
-  info "Adding GitHub Remote MCP server"
-  if ! claude mcp add --transport http github https://api.githubcopilot.com/mcp -H "Authorization: Bearer $(grep GITHUB_PAT "$HOME/.env" | cut -d '=' -f2)"; then
-    warn "Failed to add GitHub Remote MCP server"
+  # Check if GitHub MCP server already exists
+  info "Checking GitHub Remote MCP server"
+  if claude mcp list 2>/dev/null | grep -q "github"; then
+    info "GitHub Remote MCP server already configured"
   else
-    success "Added GitHub Remote MCP server"
+    info "Adding GitHub Remote MCP server"
+    local github_token=$(grep GITHUB_PAT "$HOME/.env" | cut -d '=' -f2 | tr -d '"' | tr -d "'")
+    if [ -z "$github_token" ]; then
+      warn "GITHUB_PAT not found in .env file"
+      return 1
+    fi
+    if ! claude mcp add --transport http github https://api.githubcopilot.com/mcp -H "Authorization: Bearer $github_token"; then
+      warn "Failed to add GitHub Remote MCP server"
+    else
+      success "Added GitHub Remote MCP server"
+    fi
   fi
 
   info "Checking MCP server health"
@@ -408,6 +516,8 @@ setup_mcp_servers() {
   else
     success "MCP servers configured successfully"
   fi
+  
+  return 0
 }
 
 setup_serena() {
@@ -421,41 +531,58 @@ setup_serena() {
     info "serena_config.yml already exists... Skipping."
   else
     info "Downloading serena_config.yml to $HOME/.serena/serena_config.yml"
-    download_file "dots/.serena/serena_config.yml" "$HOME/.serena/serena_config.yml"
+    if ! download_file "dots/.serena/serena_config.yml" "$HOME/.serena/serena_config.yml"; then
+      warn "Failed to download serena_config.yml"
+      return 1
+    fi
   fi
 
   success "Serena configuration setup completed"
+  return 0
 }
 
+# Cleanup function
+cleanup() {
+  if [ -d "$TEMP_DIR" ]; then
+    rm -rf "$TEMP_DIR"
+  fi
+}
+
+# Set trap to cleanup on exit
+trap cleanup EXIT
+
+# Main execution
 case "$1" in
 dotfiles)
-  setup_dotfiles
+  run_step "dotfiles" setup_dotfiles || true
   ;;
 homebrew)
-  setup_homebrew
+  run_step "homebrew" setup_homebrew || true
   ;;
 macos)
-  setup_macos
+  run_step "macos" setup_macos || true
   ;;
 docker)
-  setup_docker
+  run_step "docker" setup_docker || true
   ;;
 mcp)
-  setup_mcp_servers
+  run_step "mcp_servers" setup_mcp_servers || true
   ;;
 serena)
-  setup_serena
+  run_step "serena" setup_serena || true
   ;;
 all)
-  setup_dotfiles
-  setup_homebrew
-  setup_macos
-  setup_docker
-  setup_mcp_servers
-  setup_serena
+  # Run all steps, continuing even if some fail
+  run_step "dotfiles" setup_dotfiles || warn "Dotfiles setup failed, continuing..."
+  run_step "homebrew" setup_homebrew || warn "Homebrew setup failed, continuing..."
+  run_step "macos" setup_macos || warn "macOS setup failed, continuing..."
+  run_step "docker" setup_docker || warn "Docker setup failed, continuing..."
+  run_step "mcp_servers" setup_mcp_servers || warn "MCP servers setup failed, continuing..."
+  run_step "serena" setup_serena || warn "Serena setup failed, continuing..."
   ;;
 *)
   printf "\nUsage: %s {dotfiles|homebrew|macos|docker|mcp|serena|all}\n" "$(basename "$0")"
+  printf "\nTo reset progress and run again: rm -rf ~/.setup-state.d\n"
   exit 1
   ;;
 esac
