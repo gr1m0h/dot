@@ -199,23 +199,33 @@ setup_homebrew() {
     
     # Check if running in non-interactive mode
     if [ ! -t 0 ] || [ ! -t 1 ]; then
-      warn "Running in non-interactive mode. Homebrew installation requires sudo access."
-      warn "Please ensure you have Administrator privileges before running this script."
-      warn "To install Homebrew manually, run:"
-      warn "  /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
-      warn ""
-      warn "Alternatively, you can:"
-      warn "1. Clone this repository locally:"
-      warn "   git clone https://github.com/gr1m0h/dot.git"
-      warn "   cd dot"
-      warn "2. Run the setup script directly:"
-      warn "   script/setup.sh homebrew"
-      return 1
-    fi
-    
-    if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
-      warn "Failed to install Homebrew"
-      return 1
+      info "Running in non-interactive mode. Attempting automatic Homebrew installation..."
+      
+      # Try to install Homebrew in non-interactive mode
+      # This will work if the user has passwordless sudo or is already authenticated
+      if CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+        info "Homebrew installed successfully in non-interactive mode"
+      else
+        warn "Automatic Homebrew installation failed. This usually happens because:"
+        warn "- You need Administrator privileges (sudo access)"
+        warn "- Your sudo requires a password"
+        warn ""
+        warn "Solutions:"
+        warn "1. Run sudo -v before running this script to cache your password"
+        warn "2. Install Homebrew manually first:"
+        warn "   /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
+        warn "3. Clone the repository and run locally:"
+        warn "   git clone https://github.com/gr1m0h/dot.git"
+        warn "   cd dot"
+        warn "   script/setup.sh homebrew"
+        return 1
+      fi
+    else
+      # Interactive mode - normal installation
+      if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+        warn "Failed to install Homebrew"
+        return 1
+      fi
     fi
 
     # Make sure brew is in PATH

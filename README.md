@@ -31,19 +31,29 @@ script/setup.sh all
 
 ### Important Notes
 
-**Homebrew Installation**: The remote installation method (`curl ... | sh`) requires Administrator privileges to install Homebrew. If you don't have sudo access or prefer to install manually:
+**Homebrew Installation**: The installer will attempt to automatically install Homebrew. For this to work smoothly:
 
-1. First install Homebrew manually:
-   ```sh
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   ```
+**Option 1 - Automatic Installation (Recommended)**:
+```sh
+# Cache your sudo password first
+sudo -v
 
-2. Then clone and run the setup:
-   ```sh
-   git clone https://github.com/gr1m0h/dot.git
-   cd dot
-   script/setup.sh all
-   ```
+# Then run the installer
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh
+```
+
+**Option 2 - Manual Homebrew Installation**:
+```sh
+# Install Homebrew first
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Then clone and run the setup
+git clone https://github.com/gr1m0h/dot.git
+cd dot
+script/setup.sh all
+```
+
+**Note**: The automatic installation requires Administrator privileges. If you don't have sudo access, please use Option 2.
 
 ## Available Components
 
