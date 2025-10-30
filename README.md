@@ -26,7 +26,7 @@ If you prefer to clone the repository first:
 ```sh
 git clone https://github.com/gr1m0h/dot.git
 cd dot
-script/setup all
+script/setup.sh all
 ```
 
 ## Available Components
@@ -98,7 +98,7 @@ Fork this repository and modify the configuration files to match your preference
 - `Brewfile`: Add/remove applications and packages
 - `dots/.zshrc`: Customize shell environment
 - `dots/.config/starship.toml`: Modify prompt appearance
-- `script/setup`: Adjust installation behavior
+- `script/setup.sh`: Adjust installation behavior
 
 ## Troubleshooting
 
@@ -111,10 +111,10 @@ If the installation fails:
 
 ```sh
 # Run individual components for debugging
-script/setup dotfiles
-script/setup homebrew
-script/setup macos
-script/setup docker
-script/setup mcp
-script/setup serena
+script/setup.sh dotfiles
+script/setup.sh homebrew
+script/setup.sh macos
+script/setup.sh docker
+script/setup.sh mcp
+script/setup.sh serena
 ```

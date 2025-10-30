@@ -6,7 +6,7 @@ set -euo pipefail
 # Configuration
 REPO_URL="https://raw.githubusercontent.com/gr1m0h/dot/main"
 TEMP_DIR=$(mktemp -d)
-SCRIPT_PATH="$TEMP_DIR/setup"
+SCRIPT_PATH="$TEMP_DIR/setup.sh"
 
 # Color definitions
 COLOR_GRAY="\033[1;38;5;243m"
@@ -47,24 +47,26 @@ trap cleanup EXIT
 title "gr1m0h/dot installer"
 
 info "Downloading setup script..."
-if ! curl -fsSL "$REPO_URL/script/setup" -o "$SCRIPT_PATH"; then
+if ! curl -fsSL "$REPO_URL/script/setup.sh" -o "$SCRIPT_PATH"; then
   err "Failed to download setup script"
 fi
 
 chmod +x "$SCRIPT_PATH"
 
 # Check for command line arguments
-case "${1:-all}" in
-  dotfiles|homebrew|macos|docker|all)
-    info "Running setup with option: $1"
-    "$SCRIPT_PATH" "$1"
+COMPONENT="${1:-all}"
+case "$COMPONENT" in
+  dotfiles|homebrew|macos|docker|mcp|serena|all)
+    info "Running setup with option: $COMPONENT"
+    "$SCRIPT_PATH" "$COMPONENT"
     ;;
   *)
-    printf "\nUsage: %s {dotfiles|homebrew|macos|docker|all}\n" "$(basename "$0")"
+    printf "\nUsage: %s {dotfiles|homebrew|macos|docker|mcp|serena|all}\n" "$(basename "$0")"
     printf "Default: all\n\n"
     printf "Examples:\n"
     printf "  curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh\n"
     printf "  curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s dotfiles\n"
+    printf "  curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh | sh -s mcp\n"
     exit 1
     ;;
 esac

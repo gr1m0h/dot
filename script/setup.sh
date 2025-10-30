@@ -56,7 +56,6 @@ setup_dotfiles() {
 .editorconfig
 .zshenv
 .mmcp.json
-.markdownlint-cli2.jsonc
 "
 
   for dotfile in $dotfiles; do
@@ -383,6 +382,16 @@ setup_mcp_servers() {
 
   if [ ! -e "$HOME/.env" ]; then
     warn ".env not found."
+    return 1
+  fi
+
+  # Download and overwrite Claude settings.json
+  info "Downloading Claude settings.json"
+  mkdir -p "$HOME/.claude"
+  if download_file "dots/.claude/settings.json" "$HOME/.claude/settings.json"; then
+    success "Downloaded and updated Claude settings.json"
+  else
+    warn "Failed to download Claude settings.json"
     return 1
   fi
 

@@ -59,8 +59,8 @@ jobs:
         if: ${{ github.event.inputs.test_mode == 'dotfiles' || github.event.inputs.test_mode == 'all' }}
         run: |
           echo "=== Testing setup script with dotfiles ==="
-          chmod +x script/setup
-          ./script/setup dotfiles
+          chmod +x script/setup.sh
+          ./script/setup.sh dotfiles
           
           # Verify some dotfiles were created
           echo "=== Verifying dotfiles installation ==="
@@ -72,7 +72,7 @@ jobs:
         if: ${{ github.event.inputs.test_mode == 'homebrew' || github.event.inputs.test_mode == 'all' }}
         run: |
           echo "=== Testing setup script with homebrew ==="
-          chmod +x script/setup
+          chmod +x script/setup.sh
           
           # Check if Homebrew is already installed
           if command -v brew >/dev/null 2>&1; then
@@ -83,7 +83,7 @@ jobs:
           fi
           
           # Run homebrew setup
-          ./script/setup homebrew
+          ./script/setup.sh homebrew
           
           # Verify Homebrew installation
           if command -v brew >/dev/null 2>&1; then
@@ -100,8 +100,8 @@ jobs:
         if: ${{ github.event.inputs.test_mode == 'macos' || github.event.inputs.test_mode == 'all' }}
         run: |
           echo "=== Testing setup script with macOS settings ==="
-          chmod +x script/setup
-          ./script/setup macos
+          chmod +x script/setup.sh
+          ./script/setup.sh macos
           
           # Verify some settings were applied
           echo "=== Verifying macOS settings ==="
@@ -112,7 +112,7 @@ jobs:
         if: ${{ github.event.inputs.test_mode == 'docker' || github.event.inputs.test_mode == 'all' }}
         run: |
           echo "=== Testing setup script with docker ==="
-          chmod +x script/setup
+          chmod +x script/setup.sh
           
           # Install docker and colima first if not present
           if ! command -v docker >/dev/null 2>&1; then
@@ -125,20 +125,20 @@ jobs:
             fi
           fi
           
-          ./script/setup docker || echo "Docker setup completed with warnings (expected in CI)"
+          ./script/setup.sh docker || echo "Docker setup completed with warnings (expected in CI)"
           
       - name: Test all setup options
         if: ${{ github.event.inputs.test_mode == 'all' }}
         run: |
           echo "=== Testing setup script with all options ==="
-          chmod +x script/setup
-          ./script/setup all || echo "Setup completed with some warnings (expected in CI)"
+          chmod +x script/setup.sh
+          ./script/setup.sh all || echo "Setup completed with some warnings (expected in CI)"
           
       - name: Validate script syntax
         run: |
           echo "=== Validating script syntax ==="
           sh -n script/install.sh
-          sh -n script/setup
+          sh -n script/setup.sh
           echo "All scripts have valid syntax"
           
       - name: Test error handling
@@ -146,7 +146,7 @@ jobs:
           echo "=== Testing error handling ==="
           
           # Test with invalid option
-          ./script/setup invalid-option || echo "Expected failure for invalid option"
+          ./script/setup.sh invalid-option || echo "Expected failure for invalid option"
           ./script/install.sh invalid-option || echo "Expected failure for invalid option"
           
           echo "Error handling tests completed"
