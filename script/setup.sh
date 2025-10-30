@@ -197,36 +197,27 @@ setup_homebrew() {
   if ! command -v brew >/dev/null 2>&1; then
     info "Homebrew not installed. Installing."
     
-    # Check if running in non-interactive mode
-    if [ ! -t 0 ] || [ ! -t 1 ]; then
-      info "Running in non-interactive mode. Attempting automatic Homebrew installation..."
+    # Install Homebrew
+    info "Installing Homebrew..."
+    info "Note: You will be prompted for your password."
+    
+    if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+      warn "Failed to install Homebrew"
       
-      # Try to install Homebrew in non-interactive mode
-      # This will work if the user has passwordless sudo or is already authenticated
-      if CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
-        info "Homebrew installed successfully in non-interactive mode"
-      else
-        warn "Automatic Homebrew installation failed. This usually happens because:"
-        warn "- You need Administrator privileges (sudo access)"
-        warn "- Your sudo requires a password"
+      # Check if running in non-interactive mode
+      if [ ! -t 0 ] || [ ! -t 1 ]; then
         warn ""
-        warn "Solutions:"
-        warn "1. Run sudo -v before running this script to cache your password"
-        warn "2. Install Homebrew manually first:"
-        warn "   /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
-        warn "3. Clone the repository and run locally:"
-        warn "   git clone https://github.com/gr1m0h/dot.git"
-        warn "   cd dot"
-        warn "   script/setup.sh homebrew"
-        return 1
+        warn "You are running in non-interactive mode (piped script)."
+        warn "To install Homebrew interactively, use this command instead:"
+        warn ""
+        warn "  curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh -o install.sh && sh install.sh && rm install.sh"
+        warn ""
+        warn "Or install Homebrew manually first, then run this script again."
       fi
-    else
-      # Interactive mode - normal installation
-      if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
-        warn "Failed to install Homebrew"
-        return 1
-      fi
+      return 1
     fi
+    
+    success "Homebrew installed successfully"
 
     # Make sure brew is in PATH
     case "$(uname -m)" in
@@ -415,13 +406,21 @@ setup_macos() {
   defaults write com.apple.screensaver askForPassword -bool true
   defaults write com.apple.screensaver askForPasswordDelay -int 0
   
-  # Enable firewall with sudo (non-fatal if fails)
-  if sudo -n true 2>/dev/null; then
-    sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1 || warn "Failed to enable firewall"
-    # Disable automatic login
-    sudo defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser 2>/dev/null || true
+  # Enable firewall and disable automatic login (requires sudo)
+  info "Configuring system security settings (requires administrator password)..."
+  
+  # Try to enable firewall
+  if ! sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1 2>/dev/null; then
+    warn "Failed to enable firewall - you may need to enable it manually in System Settings > Security & Privacy"
   else
-    warn "Sudo access required for firewall and login settings. Run with sudo access or configure manually."
+    success "Firewall enabled"
+  fi
+  
+  # Try to disable automatic login
+  if ! sudo defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser 2>/dev/null; then
+    info "Automatic login already disabled or not configured"
+  else
+    success "Automatic login disabled"
   fi
 
   info "Configuring Clock"
@@ -477,17 +476,15 @@ setup_docker() {
   # Create docker socket link (with better error handling)
   info "Linking docker socket for compatibility"
   if [ -S "$HOME/.config/colima/default/docker.sock" ]; then
-    # Check if we can use sudo
-    if sudo -n true 2>/dev/null; then
-      if sudo ln -sf "$HOME/.config/colima/default/docker.sock" /var/run/docker.sock; then
-        success "Created docker socket link successfully"
-      else
-        warn "Failed to create docker socket link"
-        info "You can create it manually with 'sudo ln -sf \"$HOME/.config/colima/default/docker.sock\" /var/run/docker.sock'"
-      fi
+    info "Creating docker socket link (requires administrator password)..."
+    
+    if sudo ln -sf "$HOME/.config/colima/default/docker.sock" /var/run/docker.sock 2>/dev/null; then
+      success "Created docker socket link successfully"
     else
-      warn "Sudo access required but not available without password"
-      info "You can create the docker socket link manually with 'sudo ln -sf \"$HOME/.config/colima/default/docker.sock\" /var/run/docker.sock'"
+      warn "Failed to create docker socket link"
+      warn "This is not critical - Docker will still work through colima context"
+      info "If needed, you can create it manually with:"
+      info "  sudo ln -sf \"$HOME/.config/colima/default/docker.sock\" /var/run/docker.sock"
     fi
   else
     warn "Colima docker socket not found at $HOME/.config/colima/default/docker.sock"

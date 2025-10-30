@@ -40,6 +40,7 @@ cleanup() {
 # Set trap to cleanup on exit
 trap cleanup EXIT
 
+echo ""
 echo "========================================="
 echo "       gr1m0h/dot installer"
 echo "========================================="
