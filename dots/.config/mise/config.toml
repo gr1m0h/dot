@@ -37,7 +37,6 @@ kubectl = "1.30.7"
 "npm:sharp-cli" = "latest"
 uv = "0.8.14"
 "npm:mmcp" = "latest"
-"npm:@anthropic-ai/claude-code" = "2.0.9"
 "npm:happy-coder" = "latest"
 
 [settings]
