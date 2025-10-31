@@ -113,37 +113,37 @@ download_config_directory() {
   local dir_name="$1"
   shift
   local files=("$@")
-  
+
   local dest_dir="$HOME/.config/$dir_name"
-  
+
   # Skip if directory already exists
   if [ -d "$dest_dir" ]; then
     info ".config/$dir_name already exists... Skipping."
     return 0
   fi
-  
+
   info "Downloading .config/$dir_name configuration"
   mkdir -p "$dest_dir"
-  
+
   local dir_success=0
-  
+
   # Download all files for this directory
   for file in "${files[@]}"; do
     local src="dots/.config/$dir_name/$file"
     local dest="$dest_dir/$file"
-    
+
     # Create parent directory if file is in subdirectory
     local parent_dir=$(dirname "$dest")
     if [ ! -d "$parent_dir" ]; then
       mkdir -p "$parent_dir"
     fi
-    
+
     if ! download_file "$src" "$dest"; then
       warn "Failed to download $dir_name/$file"
       dir_success=1
     fi
   done
-  
+
   return $dir_success
 }
 
@@ -174,28 +174,24 @@ setup_dotfiles() {
 
   # Setup .config directory
   mkdir -p "$HOME/.config"
-  
+
   # Download each config directory if it doesn't exist
   info "Setting up .config directories"
-  
+
   # bat configuration
   download_config_directory "bat" \
     "config" || overall_success=1
-  
-  # git configuration  
+
+  # git configuration
   download_config_directory "git" \
     "commit_template_with_prompt.txt" \
     "config" \
     "ignore" || overall_success=1
-  
-  # lazygit configuration
-  download_config_directory "lazygit" \
-    "config.yml" || overall_success=1
-  
+
   # mise configuration
   download_config_directory "mise" \
     "config.toml" || overall_success=1
-  
+
   # nvim configuration
   download_config_directory "nvim" \
     ".markdownlint.json" \
@@ -211,21 +207,21 @@ setup_dotfiles() {
     "lua/config/options.lua" \
     "lua/plugins/example.lua" \
     "lua/plugins/lint.lua" || overall_success=1
-  
+
   # sheldon configuration
   download_config_directory "sheldon" \
     "plugins.toml" || overall_success=1
-  
+
   # starship configuration
   download_config_directory "starship" \
     "starship.toml" || overall_success=1
-  
+
   # wezterm configuration
   download_config_directory "wezterm" \
     "wezterm.lua" \
     "colors/dracula.toml" \
     "images/wallpaper.png" || overall_success=1
-  
+
   # zsh configuration
   download_config_directory "zsh" \
     ".zsh_aliases" \
