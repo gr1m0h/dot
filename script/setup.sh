@@ -386,6 +386,11 @@ setup_macos() {
     return 0
   fi
 
+  # Get macOS version for compatibility checks
+  local os_version=$(sw_vers -productVersion)
+  local os_major_version=$(echo "$os_version" | cut -d. -f1)
+  info "Detected macOS version: $os_version"
+
   info "Creating workspace directory"
   if ! mkdir -p "$HOME/Documents/workspace"; then
     warn "Failed to create workspace directory"
@@ -429,11 +434,28 @@ setup_macos() {
     fi
   fi
 
+  info "Configuring System UI"
+  # Enable dark mode
+  defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
+  # Disable transparency
+  defaults write com.apple.universalaccess reduceTransparency -bool true
+  # Always show scrollbars
+  defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
+  # Disable the "Are you sure you want to open this application?" dialog
+  defaults write com.apple.LaunchServices LSQuarantine -bool false
+  # Expand save panel by default
+  defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+  defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
+
   info "Configuring Terminal"
   defaults write com.apple.terminal StringEncodings -array 4
 
   info "Configuring Safari"
   defaults write com.apple.Safari IncludeInternalDebugMenu -bool true 2>/dev/null || info "Safari settings may need manual configuration due to privacy restrictions"
+  # Enable Safari's debug menu
+  defaults write com.apple.Safari IncludeDevelopMenu -bool true
+  defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+  defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
 
   info "Configuring Finder"
   defaults write NSGlobalDomain AppleShowAllExtensions -bool true
@@ -443,50 +465,81 @@ setup_macos() {
   defaults write com.apple.finder ShowPathbar -bool true
   defaults write com.apple.finder ShowStatusBar -bool true
   defaults write com.apple.finder NewWindowTarget -string "PfDe"
+  # Disable the warning when changing a file extension
+  defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+  # Avoid creating .DS_Store files on network or USB volumes
+  defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+  defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+  # Use list view in all Finder windows by default
+  defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+  # Show the ~/Library folder
+  chflags nohidden ~/Library
+  # Show the /Volumes folder
+  sudo chflags nohidden /Volumes
+  # Disable the warning before emptying the Trash
+  defaults write com.apple.finder WarnOnEmptyTrash -bool false
 
   info "Configuring Dock"
-  defaults write com.apple.dock persistent-apps -array
+  # Don't clear existing apps, just modify settings
   defaults write com.apple.dock orientation bottom
-  defaults write com.apple.dock "mineffect" -string "suck"
+  defaults write com.apple.dock mineffect -string "genie"
+  defaults write com.apple.dock tilesize -int 48
   defaults write com.apple.dock largesize -float 94
   defaults write com.apple.dock magnification -bool true
   defaults write com.apple.dock autohide -bool true
   defaults write com.apple.dock show-recents -bool false
-  defaults write com.apple.dock show-process-indicators -bool false
+  defaults write com.apple.dock show-process-indicators -bool true
+  # Speed up Mission Control animations
+  defaults write com.apple.dock expose-animation-duration -float 0.1
+  # Don't automatically rearrange Spaces based on most recent use
+  defaults write com.apple.dock mru-spaces -bool false
+  # Remove the auto-hiding Dock delay
+  defaults write com.apple.dock autohide-delay -float 0
+  # Remove the animation when hiding/showing the Dock
+  defaults write com.apple.dock autohide-time-modifier -float 0.2
 
-  info "Configuring Menu Bar"
-  # Menu bar configuration may not work on newer macOS versions
-  if [ -f "/System/Library/CoreServices/Menu Extras/Volume.menu" ]; then
-    for domain in ~/Library/Preferences/ByHost/com.apple.systemuiserver.*; do
-      defaults write "${domain}" dontAutoLoad -array \
-        "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
-        "/System/Library/CoreServices/Menu Extras/Volume.menu" 2>/dev/null || warn "Menu bar configuration may require manual setup"
-    done
-  else
-    info "Menu bar configuration updated for newer macOS versions"
-  fi
+  info "Configuring Screenshot"
+  # Save screenshots to the desktop
+  defaults write com.apple.screencapture location -string "$HOME/Desktop"
+  # Save screenshots in PNG format
+  defaults write com.apple.screencapture type -string "png"
+  # Disable shadow in screenshots
+  defaults write com.apple.screencapture disable-shadow -bool true
 
   info "Configuring Keyboard"
-  defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
   defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
   defaults write NSGlobalDomain AppleFontSmoothing -int 2
   defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
   defaults write NSGlobalDomain KeyRepeat -int 2
   defaults write NSGlobalDomain InitialKeyRepeat -int 15
+  # Disable automatic capitalization
+  defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+  # Disable smart dashes
+  defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+  # Disable automatic period substitution
+  defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
+  # Disable smart quotes
+  defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+  # Disable auto-correct
+  defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 
   info "Configuring Trackpad"
   defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+  defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+  # Enable tap to click for this user and for the login screen
+  defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+  defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 
   info "Configuring Security and Privacy"
   defaults write com.apple.screensaver askForPassword -bool true
   defaults write com.apple.screensaver askForPasswordDelay -int 0
 
-  # Enable firewall and disable automatic login (requires sudo)
+  # Enable firewall (requires sudo)
   info "Configuring system security settings..."
   info "Please enter your password when prompted."
 
   # Try to enable firewall
-  if sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1; then
+  if sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on 2>/dev/null; then
     success "Firewall enabled"
   else
     warn "Failed to enable firewall - you may need to enable it manually in System Settings > Security & Privacy"
@@ -502,8 +555,26 @@ setup_macos() {
   info "Configuring Clock"
   defaults write com.apple.menuextra.clock 'DateFormat' -string 'EEE d MMM HH:mm' 2>/dev/null || warn "Clock format may need manual configuration in System Settings"
 
+  info "Configuring AirDrop"
+  # Use AirDrop over every interface
+  defaults write com.apple.NetworkBrowser BrowseAllInterfaces 1
+
+  info "Configuring Activity Monitor"
+  # Show the main window when launching Activity Monitor
+  defaults write com.apple.ActivityMonitor OpenMainWindow -bool true
+  # Visualize CPU usage in the Activity Monitor Dock icon
+  defaults write com.apple.ActivityMonitor IconType -int 5
+  # Show all processes in Activity Monitor
+  defaults write com.apple.ActivityMonitor ShowCategory -int 0
+
+  info "Configuring Window Animations"
+  # Disable opening and closing window animations
+  defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
+  # Increase window resize speed for Cocoa applications
+  defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
+
   info "Restarting affected applications"
-  for app in Safari Finder Dock SystemUIServer; do
+  for app in Safari Finder Dock SystemUIServer ActivityMonitor; do
     killall "$app" >/dev/null 2>&1 || true
   done
 
