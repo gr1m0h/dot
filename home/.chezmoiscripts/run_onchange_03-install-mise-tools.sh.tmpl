@@ -1,0 +1,20 @@
+#!/bin/bash
+set -euo pipefail
+
+echo "Installing mise tools..."
+
+# Ensure mise is available
+if ! command -v mise &>/dev/null; then
+    echo "Error: mise is not installed. Please run brew bundle first."
+    exit 1
+fi
+
+# Install all mise tools
+# The hash comment ensures this runs when config changes
+# mise config hash: {{ include "dot_config/mise/config.toml" | sha256sum }}
+mise install
+
+# Activate mise for current shell
+eval "$(mise activate bash)"
+
+echo "mise tools installed successfully!"

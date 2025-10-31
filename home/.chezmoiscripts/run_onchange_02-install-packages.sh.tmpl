@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+
+echo "Installing packages from Brewfile..."
+
+# Ensure brew is available
+if ! command -v brew &>/dev/null; then
+    echo "Error: Homebrew is not installed"
+    exit 1
+fi
+
+# Install from Brewfile
+# The hash comment ensures this runs when Brewfile changes
+# brewfile hash: {{ include "Brewfile" | sha256sum }}
+brew bundle --file={{ .chezmoi.sourceDir }}/home/Brewfile
+
+echo "Homebrew packages installed successfully!"

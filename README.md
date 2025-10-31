@@ -1,10 +1,27 @@
 # dotfiles
 
-Personal dotfiles and development environment setup for macOS.
+Personal dotfiles and development environment setup for macOS using [chezmoi](https://www.chezmoi.io/).
 
-## Quick Setup
+## Quick Setup (New Method with chezmoi)
 
-### New Mac Setup (Recommended)
+```sh
+# One-line install (installs chezmoi if needed, then applies dotfiles)
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/update/install.sh | sh
+```
+
+This will:
+1. Install chezmoi (if not already installed)
+2. Initialize and apply all dotfiles
+3. Run all setup scripts automatically (Homebrew, mise, macOS settings, etc.)
+
+### Update dotfiles later
+```sh
+chezmoi update
+```
+
+## Legacy Setup (Original Method)
+
+### New Mac Setup
 ```sh
 # Step 1: Ensure you have administrator access
 sudo -v
@@ -37,6 +54,7 @@ curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh |
 
 ## What Gets Installed
 
+- **chezmoi**: Dotfiles manager (new method)
 - **Homebrew**: Package manager for macOS
 - **mise**: Runtime version manager (manages Node.js, Python, Go, etc.)
 - **Development Tools**: Via mise - Claude CLI, Docker, Neovim, and more
@@ -48,8 +66,22 @@ curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/script/install.sh |
 
 ## Manual Setup
 
-If you prefer to clone the repository first:
+### Using chezmoi (Recommended)
+```sh
+# Install chezmoi
+brew install chezmoi  # or: sh -c "$(curl -fsLS get.chezmoi.io)"
 
+# Initialize from this repo
+chezmoi init gr1m0h/dot
+
+# Preview changes
+chezmoi diff
+
+# Apply dotfiles
+chezmoi apply
+```
+
+### Legacy method
 ```sh
 git clone https://github.com/gr1m0h/dot.git
 cd dot
@@ -146,6 +178,14 @@ This repository is designed to be safe for public sharing:
 ## Customization
 
 Fork this repository and modify the configuration files to match your preferences:
+
+### With chezmoi (Recommended)
+- Edit files in `home/` directory
+- Use `chezmoi edit <file>` to edit managed files
+- Use templates for machine-specific values (`.tmpl` files)
+- Test changes with `chezmoi diff` before applying
+
+### Legacy structure
 - `Brewfile`: Add/remove applications and packages
 - `dots/.zshrc`: Customize shell environment
 - `dots/.config/starship.toml`: Modify prompt appearance

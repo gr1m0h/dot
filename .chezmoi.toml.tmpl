@@ -1,0 +1,21 @@
+{{- $name := promptStringOnce . "name" "Your full name" -}}
+{{- $email := promptStringOnce . "email" "Your email address" -}}
+{{- $codespaces := env "CODESPACES" | not | not -}}
+{{- $container := env "REMOTE_CONTAINERS_IPC" | not | not -}}
+
+[data]
+    name = {{ $name | quote }}
+    email = {{ $email | quote }}
+    codespaces = {{ $codespaces }}
+    container = {{ $container }}
+
+[merge]
+    command = "nvim"
+    args = ["-d", "{{ "{{ .Destination }}" }}", "{{ "{{ .Source }}" }}", "{{ "{{ .Target }}" }}"]
+
+[diff]
+    exclude = ["scripts"]
+    pager = "bat"
+
+[status]
+    exclude = ["scripts"]
