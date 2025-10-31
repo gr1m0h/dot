@@ -47,7 +47,7 @@ success() {
 download_file() {
   local src="$1"
   local dest="$2"
-  
+
   # Ensure parent directory exists
   local parent_dir=$(dirname "$dest")
   if [ ! -d "$parent_dir" ]; then
@@ -92,12 +92,12 @@ get_shell_type() {
 run_step() {
   local step_name="$1"
   local func_name="$2"
-  
+
   if check_step "$step_name"; then
     info "$step_name already completed... Skipping."
     return 0
   fi
-  
+
   info "Running $step_name"
   if "$func_name"; then
     mark_step "$step_name"
@@ -109,9 +109,47 @@ run_step() {
   fi
 }
 
+download_config_directory() {
+  local dir_name="$1"
+  shift
+  local files=("$@")
+  
+  local dest_dir="$HOME/.config/$dir_name"
+  
+  # Skip if directory already exists
+  if [ -d "$dest_dir" ]; then
+    info ".config/$dir_name already exists... Skipping."
+    return 0
+  fi
+  
+  info "Downloading .config/$dir_name configuration"
+  mkdir -p "$dest_dir"
+  
+  local dir_success=0
+  
+  # Download all files for this directory
+  for file in "${files[@]}"; do
+    local src="dots/.config/$dir_name/$file"
+    local dest="$dest_dir/$file"
+    
+    # Create parent directory if file is in subdirectory
+    local parent_dir=$(dirname "$dest")
+    if [ ! -d "$parent_dir" ]; then
+      mkdir -p "$parent_dir"
+    fi
+    
+    if ! download_file "$src" "$dest"; then
+      warn "Failed to download $dir_name/$file"
+      dir_success=1
+    fi
+  done
+  
+  return $dir_success
+}
+
 setup_dotfiles() {
   title "Downloading dotfiles"
-  
+
   # Track overall success
   local overall_success=0
 
@@ -119,6 +157,7 @@ setup_dotfiles() {
 .editorconfig
 .zshenv
 .mmcp.json
+.hammerspoon
 "
 
   for dotfile in $dotfiles; do
@@ -133,187 +172,84 @@ setup_dotfiles() {
     fi
   done
 
-  # Setup .config directory structure
-  info "Setting up .config directory"
-  mkdir -p "$HOME/.config/zsh"
-  mkdir -p "$HOME/.config/starship"
-
-  # Zsh configuration files
-  local zsh_configs="
-.zshrc
-.zsh_aliases
-.zsh_completions
-"
-
-  for config in $zsh_configs; do
-    if [ -e "$HOME/.config/zsh/$config" ]; then
-      info "zsh/$config already exists... Skipping."
-    else
-      info "Downloading zsh/$config to $HOME/.config/zsh/$config"
-      if ! download_file "dots/.config/zsh/$config" "$HOME/.config/zsh/$config"; then
-        warn "Failed to download zsh/$config"
-        overall_success=1
-      fi
-    fi
-  done
-
-  # Starship configuration
-  if [ -e "$HOME/.config/starship/starship.toml" ]; then
-    info "starship/starship.toml already exists... Skipping."
-  else
-    info "Downloading starship/starship.toml to $HOME/.config/starship/starship.toml"
-    if ! download_file "dots/.config/starship/starship.toml" "$HOME/.config/starship/starship.toml"; then
-      warn "Failed to download starship/starship.toml"
-      overall_success=1
-    fi
-  fi
-
-  # Additional config directories
-  local config_dirs="
-hammerspoon
-sheldon
-wezterm
-git
-mise
-nvim
-"
-
-  for dir in $config_dirs; do
-    mkdir -p "$HOME/.config/$dir"
-    info "Setting up $dir configuration"
-
-    case "$dir" in
-    hammerspoon)
-      if [ -e "$HOME/.config/hammerspoon/init.lua" ]; then
-        info "hammerspoon/init.lua already exists... Skipping."
-      else
-        if ! download_file "dots/.config/hammerspoon/init.lua" "$HOME/.config/hammerspoon/init.lua"; then
-          warn "Failed to download hammerspoon/init.lua"
-          overall_success=1
-        fi
-      fi
-      ;;
-    sheldon)
-      if [ -e "$HOME/.config/sheldon/plugins.toml" ]; then
-        info "sheldon/plugins.toml already exists... Skipping."
-      else
-        if ! download_file "dots/.config/sheldon/plugins.toml" "$HOME/.config/sheldon/plugins.toml"; then
-          warn "Failed to download sheldon/plugins.toml"
-          overall_success=1
-        fi
-      fi
-      ;;
-    wezterm)
-      if [ -e "$HOME/.config/wezterm/wezterm.lua" ]; then
-        info "wezterm/wezterm.lua already exists... Skipping."
-      else
-        if ! download_file "dots/.config/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"; then
-          warn "Failed to download wezterm/wezterm.lua"
-          overall_success=1
-        fi
-      fi
-      ;;
-    git)
-      if [ -e "$HOME/.config/git/config" ]; then
-        info "git/config already exists... Skipping."
-      else
-        if ! download_file "dots/.config/git/config" "$HOME/.config/git/config"; then
-          warn "Failed to download git/config"
-          overall_success=1
-        fi
-      fi
-      if [ -e "$HOME/.config/git/ignore" ]; then
-        info "git/ignore already exists... Skipping."
-      else
-        if ! download_file "dots/.config/git/ignore" "$HOME/.config/git/ignore"; then
-          warn "Failed to download git/ignore"
-          overall_success=1
-        fi
-      fi
-      ;;
-    mise)
-      if [ -e "$HOME/.config/mise/config.toml" ]; then
-        info "mise/config.toml already exists... Skipping."
-      else
-        if ! download_file "dots/.config/mise/config.toml" "$HOME/.config/mise/config.toml"; then
-          warn "Failed to download mise/config.toml"
-          overall_success=1
-        fi
-      fi
-      ;;
-    nvim)
-      # nvim has many files, so download the entire structure
-      if [ -e "$HOME/.config/nvim/init.lua" ]; then
-        info "nvim config already exists... Skipping."
-      else
-        info "Setting up nvim configuration"
-        # Download all nvim config files
-        local nvim_files="
-init.lua
-.neoconf.json
-.markdownlint.json
-markdownlint.jsonc
-stylua.toml
-lazyvim.json
-lazy-lock.json
-"
-        for file in $nvim_files; do
-          if ! download_file "dots/.config/nvim/$file" "$HOME/.config/nvim/$file"; then
-            warn "Failed to download nvim/$file"
-            overall_success=1
-          fi
-        done
-        
-        # Create lua directories and download files
-        mkdir -p "$HOME/.config/nvim/lua/config"
-        mkdir -p "$HOME/.config/nvim/lua/plugins"
-        
-        local lua_config_files="
-autocmds.lua
-keymaps.lua
-options.lua
-lazy.lua
-"
-        for file in $lua_config_files; do
-          if ! download_file "dots/.config/nvim/lua/config/$file" "$HOME/.config/nvim/lua/config/$file"; then
-            warn "Failed to download nvim/lua/config/$file"
-            overall_success=1
-          fi
-        done
-        
-        local lua_plugin_files="
-lint.lua
-example.lua
-"
-        for file in $lua_plugin_files; do
-          if ! download_file "dots/.config/nvim/lua/plugins/$file" "$HOME/.config/nvim/lua/plugins/$file"; then
-            warn "Failed to download nvim/lua/plugins/$file"
-            overall_success=1
-          fi
-        done
-      fi
-      ;;
-    esac
-  done
+  # Setup .config directory
+  mkdir -p "$HOME/.config"
   
+  # Download each config directory if it doesn't exist
+  info "Setting up .config directories"
+  
+  # bat configuration
+  download_config_directory "bat" \
+    "config" || overall_success=1
+  
+  # git configuration  
+  download_config_directory "git" \
+    "commit_template_with_prompt.txt" \
+    "config" \
+    "ignore" || overall_success=1
+  
+  # lazygit configuration
+  download_config_directory "lazygit" \
+    "config.yml" || overall_success=1
+  
+  # mise configuration
+  download_config_directory "mise" \
+    "config.toml" || overall_success=1
+  
+  # nvim configuration
+  download_config_directory "nvim" \
+    ".markdownlint.json" \
+    ".neoconf.json" \
+    "init.lua" \
+    "lazy-lock.json" \
+    "lazyvim.json" \
+    "markdownlint.jsonc" \
+    "stylua.toml" \
+    "lua/config/autocmds.lua" \
+    "lua/config/keymaps.lua" \
+    "lua/config/lazy.lua" \
+    "lua/config/options.lua" \
+    "lua/plugins/example.lua" \
+    "lua/plugins/lint.lua" || overall_success=1
+  
+  # sheldon configuration
+  download_config_directory "sheldon" \
+    "plugins.toml" || overall_success=1
+  
+  # starship configuration
+  download_config_directory "starship" \
+    "starship.toml" || overall_success=1
+  
+  # wezterm configuration
+  download_config_directory "wezterm" \
+    "wezterm.lua" \
+    "colors/dracula.toml" \
+    "images/wallpaper.png" || overall_success=1
+  
+  # zsh configuration
+  download_config_directory "zsh" \
+    ".zsh_aliases" \
+    ".zsh_completions" \
+    ".zshrc" || overall_success=1
+
   return $overall_success
 }
 
 setup_mise() {
   title "Setting up mise tools"
-  
+
   # Check if mise is available
   if ! command -v mise >/dev/null 2>&1; then
     warn "mise not installed. Please ensure Homebrew setup completed successfully."
     return 1
   fi
-  
+
   # Ensure mise config exists
   if [ ! -f "$HOME/.config/mise/config.toml" ]; then
     warn "mise config not found. Please ensure dotfiles setup completed successfully."
     return 1
   fi
-  
+
   info "Installing all mise tools..."
   if mise install; then
     success "All mise tools installed successfully"
@@ -322,7 +258,7 @@ setup_mise() {
     warn "Some mise tools failed to install"
     return 1
   fi
-  
+
   return 0
 }
 
@@ -332,7 +268,7 @@ setup_homebrew() {
   # install if Homebrew is not installed
   if ! command -v brew >/dev/null 2>&1; then
     info "Installing Homebrew..."
-    
+
     # Check if we have sudo access
     if ! sudo -n true 2>/dev/null; then
       if [ ! -t 0 ]; then
@@ -353,7 +289,7 @@ setup_homebrew() {
         info "Please enter your password when prompted."
       fi
     fi
-    
+
     # Install Homebrew
     if NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
       success "Homebrew installed successfully"
@@ -395,7 +331,7 @@ setup_homebrew() {
       warn "Homebrew installation succeeded but brew is not in PATH"
       return 1
     fi
-    
+
     info "Homebrew installed successfully at: $(which brew)"
     info "Note: To ensure Homebrew is available in future sessions, add the following to your shell profile:"
     case "$(uname -m)" in
@@ -426,12 +362,12 @@ setup_homebrew() {
   # Install brew dependencies directly from GitHub repository
   info "Installing brew dependencies from GitHub repository Brewfile"
   local brewfile_url="$REPO_URL/Brewfile"
-  
+
   # First, download the Brewfile to a temporary location
   local temp_brewfile="$TEMP_DIR/Brewfile"
   if curl -fsSL "$brewfile_url" -o "$temp_brewfile"; then
     info "Successfully downloaded Brewfile from repository"
-    
+
     # Run brew bundle with the downloaded Brewfile
     if ! brew bundle --file="$temp_brewfile"; then
       warn "Failed to install some Homebrew packages. Check logs for details."
@@ -443,7 +379,7 @@ setup_homebrew() {
     warn "Failed to download Brewfile from repository"
     return 1
   fi
-  
+
   return 0
 }
 
@@ -548,18 +484,18 @@ setup_macos() {
   info "Configuring Security and Privacy"
   defaults write com.apple.screensaver askForPassword -bool true
   defaults write com.apple.screensaver askForPasswordDelay -int 0
-  
+
   # Enable firewall and disable automatic login (requires sudo)
   info "Configuring system security settings..."
   info "Please enter your password when prompted."
-  
+
   # Try to enable firewall
   if sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1; then
     success "Firewall enabled"
   else
     warn "Failed to enable firewall - you may need to enable it manually in System Settings > Security & Privacy"
   fi
-  
+
   # Try to disable automatic login
   if sudo defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser 2>/dev/null; then
     success "Automatic login disabled"
@@ -592,7 +528,7 @@ setup_docker() {
   # Check if mise is available
   if ! command -v mise >/dev/null 2>&1; then
     warn "mise not installed. Installing docker and colima via Homebrew as fallback..."
-    
+
     # Install docker if not available
     if ! command -v docker >/dev/null 2>&1; then
       info "Docker not installed. Installing via Homebrew..."
@@ -622,7 +558,7 @@ setup_docker() {
     else
       warn "Failed to install mise tools"
     fi
-    
+
     # Ensure mise is activated in current shell
     eval "$(mise activate $(get_shell_type))"
   fi
@@ -654,7 +590,7 @@ setup_docker() {
   if [ -S "$HOME/.config/colima/default/docker.sock" ]; then
     info "Creating docker socket link..."
     info "Please enter your password when prompted."
-    
+
     if sudo ln -sf "$HOME/.config/colima/default/docker.sock" /var/run/docker.sock; then
       success "Created docker socket link successfully"
     else
@@ -665,7 +601,7 @@ setup_docker() {
     warn "Colima docker socket not found at $HOME/.config/colima/default/docker.sock"
     info "Make sure Colima is running properly"
   fi
-  
+
   return 0
 }
 
@@ -751,7 +687,7 @@ setup_mcp_servers() {
   else
     success "MCP servers configured successfully"
   fi
-  
+
   return 0
 }
 
