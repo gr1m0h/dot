@@ -6,7 +6,7 @@ on open theFiles
         -- WeztermでNvimを起動
         tell application "WezTerm"
             activate
-            do shell script "/usr/local/bin/wezterm cli spawn --cwd " & quoted form of (do shell script "dirname " & quotedPath) & " -- nvim " & quotedPath
+            do shell script "/usr/local/bin/wezterm start --cwd " & quoted form of (do shell script "dirname " & quotedPath) & " -- nvim " & quotedPath
         end tell
     end repeat
 end open
@@ -15,6 +15,6 @@ end open
 on run
     tell application "WezTerm"
         activate
-        do shell script "/usr/local/bin/wezterm cli spawn -- nvim"
+        do shell script "/usr/local/bin/wezterm start -- nvim"
     end tell
 end run
