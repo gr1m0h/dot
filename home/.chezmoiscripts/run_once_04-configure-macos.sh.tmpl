@@ -33,9 +33,9 @@ defaults write com.apple.terminal StringEncodings -array 4
 # Safari
 echo "Configuring Safari..."
 defaults write com.apple.Safari IncludeInternalDebugMenu -bool true 2>/dev/null || true
-defaults write com.apple.Safari IncludeDevelopMenu -bool true
-defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
+defaults write com.apple.Safari IncludeDevelopMenu -bool true 2>/dev/null || true
+defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true 2>/dev/null || true
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true 2>/dev/null || true
 
 # Finder
 echo "Configuring Finder..."
