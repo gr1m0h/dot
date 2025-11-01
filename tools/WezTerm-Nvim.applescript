@@ -13,21 +13,13 @@ on open theFiles
         
         -- WezTerm CLIを使用してNvimを起動
         try
-            do shell script "/opt/homebrew/bin/wezterm cli spawn --cwd " & quoted form of fileDir & " -- /Users/d4rj3311n6/.local/share/mise/installs/neovim/0.11.4/bin/nvim " & quotedPath
+            -- whichコマンドでnvimパスを取得
+            set nvimPath to do shell script "which nvim"
+            do shell script "/opt/homebrew/bin/wezterm cli spawn --cwd " & quoted form of fileDir & " -- " & nvimPath & " " & quotedPath
         on error
             try
-                do shell script "/usr/local/bin/wezterm cli spawn --cwd " & quoted form of fileDir & " -- /Users/d4rj3311n6/.local/share/mise/installs/neovim/0.11.4/bin/nvim " & quotedPath
-            on error
-                try
-                    -- whichコマンドでnvimパスを取得
-                    set nvimPath to do shell script "which nvim"
-                    do shell script "/opt/homebrew/bin/wezterm cli spawn --cwd " & quoted form of fileDir & " -- " & nvimPath & " " & quotedPath
-                on error
-                    try
-                        set nvimPath to do shell script "which nvim"
-                        do shell script "/usr/local/bin/wezterm cli spawn --cwd " & quoted form of fileDir & " -- " & nvimPath & " " & quotedPath
-                    end try
-                end try
+                set nvimPath to do shell script "which nvim"
+                do shell script "/usr/local/bin/wezterm cli spawn --cwd " & quoted form of fileDir & " -- " & nvimPath & " " & quotedPath
             end try
         end try
     end repeat
@@ -40,21 +32,13 @@ on run
     end tell
     
     try
-        do shell script "/opt/homebrew/bin/wezterm cli spawn -- /Users/d4rj3311n6/.local/share/mise/installs/neovim/0.11.4/bin/nvim"
+        -- whichコマンドでnvimパスを取得
+        set nvimPath to do shell script "which nvim"
+        do shell script "/opt/homebrew/bin/wezterm cli spawn -- " & nvimPath
     on error
         try
-            do shell script "/usr/local/bin/wezterm cli spawn -- /Users/d4rj3311n6/.local/share/mise/installs/neovim/0.11.4/bin/nvim"
-        on error
-            try
-                -- whichコマンドでnvimパスを取得
-                set nvimPath to do shell script "which nvim"
-                do shell script "/opt/homebrew/bin/wezterm cli spawn -- " & nvimPath
-            on error
-                try
-                    set nvimPath to do shell script "which nvim"
-                    do shell script "/usr/local/bin/wezterm cli spawn -- " & nvimPath
-                end try
-            end try
+            set nvimPath to do shell script "which nvim"
+            do shell script "/usr/local/bin/wezterm cli spawn -- " & nvimPath
         end try
     end try
 end run
