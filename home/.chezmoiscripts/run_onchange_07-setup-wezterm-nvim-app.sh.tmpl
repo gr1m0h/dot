@@ -47,13 +47,40 @@ else
     exit 1
 fi
 
-# Copy template and replace placeholders with dynamic paths
-cp "$TEMPLATE_FILE" "$TEMP_DIR/WezTerm-Nvim.applescript"
+# Create processed AppleScript from template
+cat > "$TEMP_DIR/WezTerm-Nvim.applescript" << 'EOF'
+on open theFiles
+    repeat with aFile in theFiles
+        set filePath to POSIX path of aFile
+        set quotedPath to quoted form of filePath
+        
+        -- Get the directory of the file
+        set fileDir to do shell script "dirname " & quotedPath
+        
+        -- WezTermでNvimを起動
+        tell application "WezTerm"
+            activate
+        end tell
+        
+        -- WezTerm CLIを使用してNvimを起動
+        do shell script "WEZTERM_PATH_PLACEHOLDER cli spawn --cwd " & quoted form of fileDir & " -- NVIM_PATH_PLACEHOLDER " & quotedPath
+    end repeat
+end open
 
-# Replace template variables with actual paths
+-- ドラッグ&ドロップ以外でアプリが起動された場合
+on run
+    tell application "WezTerm"
+        activate
+    end tell
+    
+    do shell script "WEZTERM_PATH_PLACEHOLDER cli spawn -- NVIM_PATH_PLACEHOLDER"
+end run
+EOF
+
+# Replace placeholders with actual paths
 sed -i '' \
-    -e 's|/opt/homebrew/bin/wezterm|'"$WEZTERM_PATH"'|g' \
-    -e 's|/opt/homebrew/bin/nvim|'"$NVIM_PATH"'|g' \
+    -e "s|WEZTERM_PATH_PLACEHOLDER|$WEZTERM_PATH|g" \
+    -e "s|NVIM_PATH_PLACEHOLDER|$NVIM_PATH|g" \
     "$TEMP_DIR/WezTerm-Nvim.applescript"
 
 # Build the application
