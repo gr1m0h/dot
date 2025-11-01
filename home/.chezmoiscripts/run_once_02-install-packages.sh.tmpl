@@ -16,8 +16,6 @@ if [ ! -f "$HOME/Brewfile" ]; then
 fi
 
 # Install from Brewfile
-# The hash comment ensures this runs when Brewfile changes
-# brewfile hash: {{ include "Brewfile" | sha256sum }}
 brew bundle --file="$HOME/Brewfile"
 
 echo "Homebrew packages installed successfully!"
