@@ -47,10 +47,14 @@ else
     exit 1
 fi
 
-# Simple string replacement instead of chezmoi template processing
-sed -e 's|{{ \.wezterm_path | default "/opt/homebrew/bin/wezterm" }}|'"$WEZTERM_PATH"'|g' \
-    -e 's|{{ \.nvim_path | default "/opt/homebrew/bin/nvim" }}|'"$NVIM_PATH"'|g' \
-    "$TEMPLATE_FILE" > "$TEMP_DIR/WezTerm-Nvim.applescript"
+# Copy template and replace placeholders with dynamic paths
+cp "$TEMPLATE_FILE" "$TEMP_DIR/WezTerm-Nvim.applescript"
+
+# Replace template variables with actual paths
+sed -i '' \
+    -e 's|/opt/homebrew/bin/wezterm|'"$WEZTERM_PATH"'|g' \
+    -e 's|/opt/homebrew/bin/nvim|'"$NVIM_PATH"'|g' \
+    "$TEMP_DIR/WezTerm-Nvim.applescript"
 
 # Build the application
 echo "📦 Building WezTerm-Nvim.app..."
