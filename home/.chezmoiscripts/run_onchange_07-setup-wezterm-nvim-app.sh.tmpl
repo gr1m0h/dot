@@ -17,7 +17,21 @@ TEMP_DIR=$(mktemp -d)
 trap "rm -rf $TEMP_DIR" EXIT
 
 # Generate AppleScript from template
-chezmoi execute-template < "${HOME}/.local/share/chezmoi-scripts/WezTerm-Nvim.applescript.tmpl" > "$TEMP_DIR/WezTerm-Nvim.applescript"
+APPLESCRIPT_TEMPLATE="${HOME}/.local/share/chezmoi-scripts/WezTerm-Nvim.applescript.tmpl"
+APPLESCRIPT_SOURCE="${HOME}/.local/share/chezmoi/home/dot_local/share/chezmoi-scripts/WezTerm-Nvim.applescript.tmpl"
+
+if [ -f "$APPLESCRIPT_TEMPLATE" ]; then
+    echo "📝 Using applied template from $APPLESCRIPT_TEMPLATE"
+    chezmoi execute-template < "$APPLESCRIPT_TEMPLATE" > "$TEMP_DIR/WezTerm-Nvim.applescript"
+elif [ -f "$APPLESCRIPT_SOURCE" ]; then
+    echo "📝 Using source template from $APPLESCRIPT_SOURCE (fallback)"
+    chezmoi execute-template < "$APPLESCRIPT_SOURCE" > "$TEMP_DIR/WezTerm-Nvim.applescript"
+else
+    echo "❌ AppleScript template not found in either location:"
+    echo "  - $APPLESCRIPT_TEMPLATE"
+    echo "  - $APPLESCRIPT_SOURCE"
+    exit 1
+fi
 
 # Build the application
 echo "📦 Building WezTerm-Nvim.app..."
