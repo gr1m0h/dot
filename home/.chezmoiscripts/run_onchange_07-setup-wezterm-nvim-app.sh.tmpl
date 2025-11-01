@@ -1,0 +1,107 @@
+#!/bin/bash
+# This script builds and installs the WezTerm-Nvim AppleScript application
+# hash: {{ include "dot_local/share/chezmoi-scripts/WezTerm-Nvim.applescript.tmpl" | sha256sum }}
+
+set -e
+
+echo "🚀 Setting up WezTerm-Nvim.app..."
+
+# Create temp directory for building
+TEMP_DIR=$(mktemp -d)
+trap "rm -rf $TEMP_DIR" EXIT
+
+# Generate AppleScript from template
+chezmoi execute-template < "${HOME}/.local/share/chezmoi-scripts/WezTerm-Nvim.applescript.tmpl" > "$TEMP_DIR/WezTerm-Nvim.applescript"
+
+# Build the application
+echo "📦 Building WezTerm-Nvim.app..."
+osacompile -o "$TEMP_DIR/WezTerm-Nvim.app" "$TEMP_DIR/WezTerm-Nvim.applescript"
+
+# Create Applications directory if it doesn't exist
+mkdir -p "${HOME}/Applications"
+
+# Remove old version if exists
+if [ -d "${HOME}/Applications/WezTerm-Nvim.app" ]; then
+    echo "🗑️  Removing old version..."
+    rm -rf "${HOME}/Applications/WezTerm-Nvim.app"
+fi
+
+# Move app to Applications
+echo "📂 Installing to ~/Applications..."
+mv "$TEMP_DIR/WezTerm-Nvim.app" "${HOME}/Applications/"
+
+# Configure file associations using PlistBuddy
+echo "⚙️  Configuring file associations..."
+APP_PATH="${HOME}/Applications/WezTerm-Nvim.app"
+PLIST_PATH="$APP_PATH/Contents/Info.plist"
+
+# Add CFBundleDocumentTypes if it doesn't exist
+/usr/libexec/PlistBuddy -c "Delete :CFBundleDocumentTypes" "$PLIST_PATH" 2>/dev/null || true
+/usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes array" "$PLIST_PATH"
+
+# Define file extensions to associate
+EXTENSIONS=(
+    # Text files
+    "txt" "md" "markdown" "rst"
+    # Programming languages
+    "lua" "vim" "vimrc"
+    "js" "jsx" "ts" "tsx" "mjs" "cjs"
+    "py" "pyw" "pyi" "pyc"
+    "rb" "rake" "ru" "gemspec"
+    "go" "mod" "sum"
+    "rs" "toml" 
+    "c" "h" "cpp" "hpp" "cc" "cxx"
+    "java" "class" "jar"
+    "sh" "bash" "zsh" "fish"
+    # Config files
+    "yml" "yaml" "json" "jsonc" "json5"
+    "xml" "plist" "ini" "cfg" "conf"
+    "env" "gitignore" "gitconfig"
+    "dockerfile" "dockerignore"
+    # Web files
+    "html" "htm" "css" "scss" "sass" "less"
+    "php" "asp" "jsp"
+    # Other
+    "sql" "graphql" "proto"
+    {{ if .extra_extensions -}}
+    {{ range .extra_extensions -}}
+    "{{ . }}"
+    {{ end -}}
+    {{ end -}}
+)
+
+# Add document type
+/usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0 dict" "$PLIST_PATH"
+/usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0:CFBundleTypeExtensions array" "$PLIST_PATH"
+
+# Add all extensions
+for i in "${!EXTENSIONS[@]}"; do
+    ext="${EXTENSIONS[$i]}"
+    /usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0:CFBundleTypeExtensions:$i string '$ext'" "$PLIST_PATH"
+done
+
+# Set document type properties
+/usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0:CFBundleTypeName string 'Text Files'" "$PLIST_PATH"
+/usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0:CFBundleTypeRole string 'Editor'" "$PLIST_PATH"
+/usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0:CFBundleTypeIconFile string 'AppIcon'" "$PLIST_PATH"
+
+# Add bundle identifier
+/usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string 'com.local.wezterm-nvim'" "$PLIST_PATH" 2>/dev/null || \
+/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier 'com.local.wezterm-nvim'" "$PLIST_PATH"
+
+# Add bundle name
+/usr/libexec/PlistBuddy -c "Add :CFBundleName string 'WezTerm-Nvim'" "$PLIST_PATH" 2>/dev/null || \
+/usr/libexec/PlistBuddy -c "Set :CFBundleName 'WezTerm-Nvim'" "$PLIST_PATH"
+
+# Update LaunchServices database
+echo "🔄 Updating LaunchServices database..."
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "${HOME}/Applications/WezTerm-Nvim.app"
+
+echo "✅ WezTerm-Nvim.app setup complete!"
+echo ""
+echo "📝 Usage:"
+echo "  1. Right-click any text file in Finder"
+echo "  2. Select 'Open With' > 'WezTerm-Nvim'"
+echo "  3. Click 'Change All...' to set as default for that file type"
+echo ""
+echo "💡 Tip: You can also drag files onto the app icon to open them"

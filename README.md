@@ -5,7 +5,7 @@ Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/).
 ## Installation
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/update/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/install.sh | sh
 ```
 
 This installs:
