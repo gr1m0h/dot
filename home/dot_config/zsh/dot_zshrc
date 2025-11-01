@@ -29,9 +29,10 @@ export GPG_TTY=$(tty)
 export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 
 # mise
-# eval "$(/opt/homebrew/bin/mise activate zsh)"
-export PATH="$HOME/.local/share/mise/shims:$PATH"
-export EDITOR="$(mise where neovim)"
+if command -v mise &>/dev/null; then
+    eval "$(mise activate zsh)"
+fi
+export EDITOR="$(mise where neovim 2>/dev/null || echo nvim)"
 
 # sheldon
 eval "$(sheldon source)"
@@ -54,7 +55,10 @@ zstyle ":completion:*:commands" rehash 1
 export DOCKER_HOST="unix://${XDG_CONFIG_HOME}/colima/default/docker.sock"
 
 # flutter
-export FLUTTER_ROOT="$(mise where flutter)"
+if command -v mise &>/dev/null; then
+    FLUTTER_ROOT="$(mise where flutter 2>/dev/null || echo "")"
+    [ -n "$FLUTTER_ROOT" ] && export FLUTTER_ROOT
+fi
 export PATH=$PATH:$HOME/.pub-cache/bin
 export CHROME_EXECUTABLE="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
 
