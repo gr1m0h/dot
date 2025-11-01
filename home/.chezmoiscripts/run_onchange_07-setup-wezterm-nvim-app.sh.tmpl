@@ -4,6 +4,12 @@
 
 set -e
 
+# Skip in CI environment or non-macOS systems
+if [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ] || [ "$(uname)" != "Darwin" ]; then
+    echo "Skipping WezTerm-Nvim.app setup (CI environment or non-macOS)"
+    exit 0
+fi
+
 echo "🚀 Setting up WezTerm-Nvim.app..."
 
 # Create temp directory for building

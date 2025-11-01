@@ -1,6 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
+# Skip in CI environment
+if [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
+    echo "Skipping MCP setup in CI environment"
+    exit 0
+fi
+
 echo "Setting up Claude MCP Servers..."
 
 # Ensure mise is activated

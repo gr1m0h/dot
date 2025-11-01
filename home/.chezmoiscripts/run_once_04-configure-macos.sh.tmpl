@@ -2,6 +2,12 @@
 #!/bin/bash
 set -euo pipefail
 
+# Skip in CI environment
+if [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
+    echo "Skipping macOS configuration in CI environment"
+    exit 0
+fi
+
 echo "Configuring macOS settings..."
 
 # Get macOS version for compatibility checks

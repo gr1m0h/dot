@@ -14,28 +14,12 @@ echo ""
 if ! command -v chezmoi >/dev/null 2>&1; then
     echo "Installing chezmoi..."
     
-    # Detect OS and architecture
-    OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
-    ARCH="$(uname -m)"
-    
-    case "$ARCH" in
-        x86_64) ARCH="amd64" ;;
-        aarch64|arm64) ARCH="arm64" ;;
-        *) echo "Unsupported architecture: $ARCH"; exit 1 ;;
-    esac
-    
-    # Install chezmoi
-    if [ "$OS" = "darwin" ]; then
-        # Try to use Homebrew if available
-        if command -v brew >/dev/null 2>&1; then
-            brew install chezmoi
-        else
-            # Install using the official script
-            sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/bin"
-            export PATH="$HOME/bin:$PATH"
-        fi
+    # Install chezmoi on macOS
+    # Try to use Homebrew if available
+    if command -v brew >/dev/null 2>&1; then
+        brew install chezmoi
     else
-        # Linux or other Unix-like systems
+        # Install using the official script
         sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/bin"
         export PATH="$HOME/bin:$PATH"
     fi
