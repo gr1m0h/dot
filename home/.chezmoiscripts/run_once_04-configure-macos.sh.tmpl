@@ -20,7 +20,7 @@ mkdir -p "$HOME/Documents/workspace"
 # System UI Configuration
 echo "Configuring System UI..."
 defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
-defaults write com.apple.universalaccess reduceTransparency -bool true
+defaults write com.apple.universalaccess reduceTransparency -bool true 2>/dev/null || true
 defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
 defaults write com.apple.LaunchServices LSQuarantine -bool false
 defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
