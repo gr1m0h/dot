@@ -1,0 +1,163 @@
+name: Test Dotfiles Installation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-installation:
+    name: Test Installation on macOS
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test installation script
+        run: |
+          # Create a temporary home directory for testing
+          export TEST_HOME="$(mktemp -d)"
+          export ORIGINAL_HOME="$HOME"
+          export HOME="$TEST_HOME"
+
+          echo "Testing in temporary home: $HOME"
+
+          # Copy minimal git config for chezmoi
+          if [ -f "$ORIGINAL_HOME/.gitconfig" ]; then
+            cp "$ORIGINAL_HOME/.gitconfig" "$HOME/.gitconfig"
+          fi
+
+          # Run the installation
+          sh install.sh
+
+          # Verify chezmoi is installed
+          if command -v chezmoi >/dev/null 2>&1; then
+            echo "✓ chezmoi installed successfully"
+            chezmoi --version
+          else
+            echo "✗ chezmoi installation failed"
+            exit 1
+          fi
+
+          # Check if dotfiles are managed
+          echo "Managed files:"
+          chezmoi managed | head -20 || echo "Warning: No managed files found"
+
+          # List what was installed
+          echo ""
+          echo "Contents of test home directory:"
+          ls -la "$HOME" | head -20
+
+          # Test specific files
+          echo ""
+          echo "Testing specific configurations:"
+
+          # Check for key files
+          for file in ".zshenv" ".config/git/config" ".config/starship/starship.toml" ".hammerspoon/init.lua" ".config/wezterm/wezterm.lua" ".config/nvim/init.lua"; do
+            if [ -f "$HOME/$file" ]; then
+              echo "✓ $file exists"
+            else
+              echo "○ $file not found (might be optional)"
+            fi
+          done
+          
+          # Test Wezterm configuration
+          echo ""
+          echo "Testing Wezterm configuration:"
+          if [ -f "$HOME/.config/wezterm/wezterm.lua" ]; then
+            echo "✓ Wezterm config exists"
+            [ -f "$HOME/.config/wezterm/colors/dracula.toml" ] && echo "✓ Wezterm color scheme exists" || echo "○ Wezterm color scheme not found"
+            [ -f "$HOME/.config/wezterm/images/wallpaper.png" ] && echo "✓ Wezterm wallpaper exists" || echo "○ Wezterm wallpaper not found"
+          else
+            echo "✗ Wezterm config not found"
+          fi
+          
+          # Test Neovim configuration
+          echo ""
+          echo "Testing Neovim configuration:"
+          if [ -f "$HOME/.config/nvim/init.lua" ]; then
+            echo "✓ Neovim init.lua exists"
+            for dir in "lua" "lua/config" "lua/plugins"; do
+              [ -d "$HOME/.config/nvim/$dir" ] && echo "✓ $dir directory exists" || echo "○ $dir directory not found"
+            done
+            for file in "lazy-lock.json" "lazyvim.json" "stylua.toml"; do
+              [ -f "$HOME/.config/nvim/$file" ] && echo "✓ $file exists" || echo "○ $file not found"
+            done
+          else
+            echo "✗ Neovim config not found"
+          fi
+          
+          # Test chezmoi scripts
+          echo ""
+          echo "Testing chezmoi scripts:"
+          if [ -d "$HOME/.local/share/chezmoi-scripts" ]; then
+            echo "✓ chezmoi-scripts directory exists"
+            [ -f "$HOME/.local/share/chezmoi-scripts/WezTerm-Nvim.applescript" ] && echo "✓ WezTerm-Nvim.applescript exists" || echo "○ WezTerm-Nvim.applescript not found"
+          else
+            echo "○ chezmoi-scripts directory not found"
+          fi
+
+  test-from-url:
+    name: Test Remote Installation
+    runs-on: macos-latest
+
+    steps:
+      - name: Test installation from URL
+        run: |
+          # Create a temporary home directory
+          export TEST_HOME="$(mktemp -d)"
+          export HOME="$TEST_HOME"
+
+          echo "Testing remote installation in: $HOME"
+
+          # Create minimal git config
+          git config --global user.name "Test User"
+          git config --global user.email "test@example.com"
+
+          # Install from GitHub directly (testing the README instructions)
+          curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/${{ github.ref_name }}/install.sh | sh
+
+          # Verify installation
+          if command -v chezmoi >/dev/null 2>&1; then
+            echo "✓ Remote installation successful"
+            chezmoi --version
+          else
+            echo "✗ Remote installation failed"
+            exit 1
+          fi
+
+          # Check managed files
+          echo ""
+          echo "Managed files after remote installation:"
+          chezmoi managed | head -10 || echo "No managed files"
+          
+          # Quick validation of key tool configurations
+          echo ""
+          echo "Validating tool configurations:"
+          [ -f "$HOME/.config/wezterm/wezterm.lua" ] && echo "✓ Wezterm config installed" || echo "✗ Wezterm config missing"
+          [ -f "$HOME/.config/nvim/init.lua" ] && echo "✓ Neovim config installed" || echo "✗ Neovim config missing"
+
+  validate-scripts:
+    name: Validate Scripts
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: brew install shellcheck
+
+      - name: Validate install.sh
+        run: shellcheck install.sh
+
+      - name: Validate test scripts
+        run: |
+          if [ -f "test/test-local.sh" ]; then
+            shellcheck test/test-local.sh || true  # Don't fail on warnings
+          fi
+          
+      - name: Validate tool scripts
+        run: |
+          if [ -f "tools/build-wezterm-nvim-app.sh" ]; then
+            shellcheck tools/build-wezterm-nvim-app.sh || true  # Don't fail on warnings
+          fi

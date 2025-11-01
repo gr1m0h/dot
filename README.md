@@ -52,6 +52,16 @@ chezmoi update
 chezmoi apply
 ```
 
+## Testing
+
+Test the installation without affecting your system:
+```sh
+./test/test-local.sh
+```
+
+This creates a temporary environment to safely test the installation process.
+See [test/README.md](test/README.md) for detailed testing documentation.
+
 ## Requirements
 
 - macOS 14.0+

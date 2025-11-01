@@ -52,7 +52,9 @@ echo ""
 
 # Initialize and apply dotfiles
 echo "Initializing dotfiles from gr1m0h/dot..."
-chezmoi init --apply gr1m0h/dot
+# Use the current branch if available, otherwise use main
+BRANCH="${CHEZMOI_BRANCH:-main}"
+chezmoi init --apply --branch "$BRANCH" gr1m0h/dot
 
 echo ""
 echo "====================================="
