@@ -104,7 +104,7 @@ EXTENSIONS=(
     "sql" "graphql" "proto"
     {{- if hasKey . "extra_extensions" }}
     {{- range .extra_extensions }}
-    "{{ . }}"
+    {{ . | quote }}
     {{- end }}
     {{- end }}
 )
