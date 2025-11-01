@@ -48,8 +48,8 @@ else
 fi
 
 # Simple string replacement instead of chezmoi template processing
-sed -e "s|{{ .wezterm_path | default \"/opt/homebrew/bin/wezterm\" }}|$WEZTERM_PATH|g" \
-    -e "s|{{ .nvim_path | default \"/opt/homebrew/bin/nvim\" }}|$NVIM_PATH|g" \
+sed -e 's|{{ \.wezterm_path | default "/opt/homebrew/bin/wezterm" }}|'"$WEZTERM_PATH"'|g' \
+    -e 's|{{ \.nvim_path | default "/opt/homebrew/bin/nvim" }}|'"$NVIM_PATH"'|g' \
     "$TEMPLATE_FILE" > "$TEMP_DIR/WezTerm-Nvim.applescript"
 
 # Build the application
