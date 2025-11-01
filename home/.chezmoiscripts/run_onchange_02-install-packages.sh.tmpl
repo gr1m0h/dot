@@ -9,9 +9,15 @@ if ! command -v brew &>/dev/null; then
     exit 1
 fi
 
+# Check if Brewfile exists
+if [ ! -f "$HOME/Brewfile" ]; then
+    echo "No Brewfile found at $HOME/Brewfile, skipping Homebrew packages installation"
+    exit 0
+fi
+
 # Install from Brewfile
 # The hash comment ensures this runs when Brewfile changes
 # brewfile hash: {{ include "Brewfile" | sha256sum }}
-brew bundle --file={{ .chezmoi.sourceDir }}/home/Brewfile
+brew bundle --file="$HOME/Brewfile"
 
 echo "Homebrew packages installed successfully!"
