@@ -20,18 +20,37 @@ trap "rm -rf $TEMP_DIR" EXIT
 APPLESCRIPT_TEMPLATE="${HOME}/.local/share/chezmoi-scripts/WezTerm-Nvim.applescript.tmpl"
 APPLESCRIPT_SOURCE="${HOME}/.local/share/chezmoi/home/dot_local/share/chezmoi-scripts/WezTerm-Nvim.applescript.tmpl"
 
+# Activate mise environment to ensure tools are in PATH
+if command -v mise &>/dev/null; then
+    eval "$(mise activate bash)"
+fi
+
+# Detect actual paths of wezterm and nvim
+WEZTERM_PATH=$(command -v wezterm || echo "/opt/homebrew/bin/wezterm")
+NVIM_PATH=$(command -v nvim || echo "/opt/homebrew/bin/nvim")
+
+echo "📍 Detected paths:"
+echo "  WezTerm: $WEZTERM_PATH"
+echo "  Nvim: $NVIM_PATH"
+
+# Create a temporary substituted template without chezmoi template variables
 if [ -f "$APPLESCRIPT_TEMPLATE" ]; then
     echo "📝 Using applied template from $APPLESCRIPT_TEMPLATE"
-    chezmoi execute-template < "$APPLESCRIPT_TEMPLATE" > "$TEMP_DIR/WezTerm-Nvim.applescript"
+    TEMPLATE_FILE="$APPLESCRIPT_TEMPLATE"
 elif [ -f "$APPLESCRIPT_SOURCE" ]; then
     echo "📝 Using source template from $APPLESCRIPT_SOURCE (fallback)"
-    chezmoi execute-template < "$APPLESCRIPT_SOURCE" > "$TEMP_DIR/WezTerm-Nvim.applescript"
+    TEMPLATE_FILE="$APPLESCRIPT_SOURCE"
 else
     echo "❌ AppleScript template not found in either location:"
     echo "  - $APPLESCRIPT_TEMPLATE"
     echo "  - $APPLESCRIPT_SOURCE"
     exit 1
 fi
+
+# Simple string replacement instead of chezmoi template processing
+sed -e "s|{{ .wezterm_path | default \"/opt/homebrew/bin/wezterm\" }}|$WEZTERM_PATH|g" \
+    -e "s|{{ .nvim_path | default \"/opt/homebrew/bin/nvim\" }}|$NVIM_PATH|g" \
+    "$TEMPLATE_FILE" > "$TEMP_DIR/WezTerm-Nvim.applescript"
 
 # Build the application
 echo "📦 Building WezTerm-Nvim.app..."
