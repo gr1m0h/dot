@@ -2,70 +2,23 @@ on open theFiles
     repeat with aFile in theFiles
         set filePath to POSIX path of aFile
         set quotedPath to quoted form of filePath
-        
+
         -- Get the directory of the file
         set fileDir to do shell script "dirname " & quotedPath
-        
+
         -- WezTermでNvimを起動
         tell application "WezTerm"
             activate
         end tell
-        
-        -- WezTerm CLIを使用してNvimを起動
-        set nvimPath to ""
-        set weztermPath to ""
-        
-        -- nvimパスを動的に検索
+
+        -- WezTermでNvimを起動
         try
-            -- まずPATHから検索
-            set nvimPath to do shell script "which nvim"
-        on error
-            try
-                -- Homebrewの標準的な場所を検索
-                set nvimPath to "/opt/homebrew/bin/nvim"
-                do shell script "test -f " & nvimPath
-            on error
-                try
-                    set nvimPath to "/usr/local/bin/nvim"
-                    do shell script "test -f " & nvimPath
-                on error
-                    try
-                        -- miseでインストールされたnvimを動的検索
-                        set homeDir to do shell script "echo $HOME"
-                        set nvimPath to do shell script "find " & quoted form of (homeDir & "/.local/share/mise/installs/neovim") & " -name nvim -type f 2>/dev/null | head -1"
-                        if nvimPath is "" then error "nvim not found in mise"
-                    on error
-                        set nvimPath to "nvim" -- fallback to PATH
-                    end try
-                end try
-            end try
-        end try
-        
-        -- weztermパスを動的に検索
-        try
-            set weztermPath to do shell script "which wezterm"
-        on error
-            try
-                set weztermPath to "/opt/homebrew/bin/wezterm"
-                do shell script "test -f " & weztermPath
-            on error
-                try
-                    set weztermPath to "/usr/local/bin/wezterm"
-                    do shell script "test -f " & weztermPath
-                on error
-                    set weztermPath to "wezterm" -- fallback
-                end try
-            end try
-        end try
-        
-        try
-            set cmd to weztermPath & " cli spawn --cwd " & quoted form of fileDir & " -- " & nvimPath & " " & quotedPath
-            set cmdResult to do shell script cmd
+            launchWezterm(filePath, fileDir)
         on error errorMessage
-            -- 環境変数を確認
-            set pathEnv to do shell script "echo $PATH"
-            set homeEnv to do shell script "echo $HOME"
-            display dialog "Error details:" & return & "PATH: " & pathEnv & return & "HOME: " & homeEnv & return & "nvimPath: " & nvimPath & return & "weztermPath: " & weztermPath & return & "cmd: " & cmd & return & "Error: " & errorMessage
+            -- エラー時の詳細表示
+            display dialog "Error opening file in WezTerm:" & return & return & ¬
+                "File: " & filePath & return & ¬
+                "Error: " & errorMessage buttons {"OK"} default button 1 with icon stop
         end try
     end repeat
 end open
@@ -75,58 +28,71 @@ on run
     tell application "WezTerm"
         activate
     end tell
-    
-    set nvimPath to ""
-    set weztermPath to ""
-    
-    -- nvimパスを動的に検索
+
     try
-        -- まずPATHから検索
-        set nvimPath to do shell script "which nvim"
+        launchWezterm("", "")
+    on error errorMessage
+        display dialog "Error opening WezTerm:" & return & return & ¬
+            "Error: " & errorMessage buttons {"OK"} default button 1 with icon stop
+    end try
+end run
+
+-- WezTermを起動する関数
+on launchWezterm(filePath, fileDir)
+    set homeDir to do shell script "echo $HOME"
+
+    -- nvimのフルパスを検索
+    set nvimPath to ""
+    try
+        -- .zshrcを読み込んでからnvimを検索
+        set nvimPath to do shell script "source " & quoted form of (homeDir & "/.zshrc") & " 2>/dev/null && which nvim"
     on error
+        -- フォールバック：一般的な場所を検索
         try
-            -- Homebrewの標準的な場所を検索
-            set nvimPath to "/opt/homebrew/bin/nvim"
-            do shell script "test -f " & nvimPath
-        on error
-            try
-                set nvimPath to "/usr/local/bin/nvim"
-                do shell script "test -f " & nvimPath
-            on error
-                try
-                    -- miseでインストールされたnvimを動的検索
-                    set homeDir to do shell script "echo $HOME"
-                    set nvimPath to do shell script "find " & quoted form of (homeDir & "/.local/share/mise/installs/neovim") & " -name nvim -type f 2>/dev/null | head -1"
-                    if nvimPath is "" then error "nvim not found in mise"
-                on error
-                    set nvimPath to "nvim" -- fallback to PATH
-                end try
-            end try
+            set nvimPath to do shell script "test -f /opt/homebrew/bin/nvim && echo /opt/homebrew/bin/nvim || echo ''"
+            if nvimPath is "" then
+                set nvimPath to do shell script "test -f /usr/local/bin/nvim && echo /usr/local/bin/nvim || echo ''"
+            end if
+            if nvimPath is "" then
+                -- miseのnvimを検索
+                set nvimPath to do shell script "find " & quoted form of (homeDir & "/.local/share/mise/installs/neovim") & " -name nvim -type f 2>/dev/null | head -1"
+            end if
         end try
     end try
-    
-    -- weztermパスを動的に検索
+
+    if nvimPath is "" then
+        error "Neovim not found. Please install neovim."
+    end if
+
+    -- weztermのフルパスを検索
+    set weztermPath to ""
     try
         set weztermPath to do shell script "which wezterm"
     on error
         try
-            set weztermPath to "/opt/homebrew/bin/wezterm"
-            do shell script "test -f " & weztermPath
-        on error
-            try
-                set weztermPath to "/usr/local/bin/wezterm"
-                do shell script "test -f " & weztermPath
-            on error
-                set weztermPath to "wezterm" -- fallback
-            end try
+            set weztermPath to do shell script "test -f /opt/homebrew/bin/wezterm && echo /opt/homebrew/bin/wezterm || echo ''"
+            if weztermPath is "" then
+                set weztermPath to do shell script "test -f /usr/local/bin/wezterm && echo /usr/local/bin/wezterm || echo ''"
+            end if
         end try
     end try
-    
-    try
-        do shell script weztermPath & " cli spawn -- " & nvimPath
-    on error errorMessage
-        set pathEnv to do shell script "echo $PATH"
-        set homeEnv to do shell script "echo $HOME"
-        display dialog "Error details:" & return & "PATH: " & pathEnv & return & "HOME: " & homeEnv & return & "nvimPath: " & nvimPath & return & "weztermPath: " & weztermPath & return & "Error: " & errorMessage
-    end try
-end run
+
+    if weztermPath is "" then
+        error "WezTerm not found. Please install wezterm."
+    end if
+
+    -- コマンドを構築（シェルを明示的に起動して環境変数を読み込む）
+    if filePath is not "" and fileDir is not "" then
+        -- ファイルを開く場合
+        -- エスケープを簡単にするため、ダブルクォートを使用
+        set innerCmd to "exec " & nvimPath & " " & quoted form of filePath
+        set cmd to weztermPath & " start --cwd " & quoted form of fileDir & " -- /bin/zsh -l -c " & quoted form of innerCmd
+    else
+        -- ファイルなしで起動する場合
+        set innerCmd to "exec " & nvimPath
+        set cmd to weztermPath & " start -- /bin/zsh -l -c " & quoted form of innerCmd
+    end if
+
+    -- バックグラウンドで実行
+    do shell script cmd & " > /dev/null 2>&1 &"
+end launchWezterm
