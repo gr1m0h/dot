@@ -69,11 +69,11 @@ EXTENSIONS=(
     "php" "asp" "jsp"
     # Other
     "sql" "graphql" "proto"
-    {{ if .extra_extensions -}}
-    {{ range .extra_extensions -}}
+    {{- if hasKey . "extra_extensions" }}
+    {{- range .extra_extensions }}
     "{{ . }}"
-    {{ end -}}
-    {{ end -}}
+    {{- end }}
+    {{- end }}
 )
 
 # Add document type
