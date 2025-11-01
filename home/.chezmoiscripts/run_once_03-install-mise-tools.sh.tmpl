@@ -15,7 +15,17 @@ if ! command -v mise &>/dev/null; then
     exit 1
 fi
 
+# Debug mise configuration
+echo "Debug: mise config file locations:"
+echo "  ~/.config/mise/config.toml: $([ -f ~/.config/mise/config.toml ] && echo "exists" || echo "missing")"
+echo "  .mise.toml: $([ -f .mise.toml ] && echo "exists" || echo "missing")"
+echo "Debug: mise config files:"
+mise config || echo "No config found"
+echo "Debug: mise ls-remote:"
+mise ls-remote docker 2>/dev/null | head -5 || echo "Failed to list docker versions"
+
 # Install all mise tools
+echo "Running mise install..."
 mise install
 
 # Activate mise for current shell
