@@ -1,57 +1,56 @@
-# WezTerm-Nvim ファイル関連付け設定
+# WezTerm-Nvim File Association Setup
 
-このセットアップにより、特定の拡張子のファイルをFinderからダブルクリックするだけでWezTermでNvimが開くようになります。
+This setup allows you to open files with specific extensions in WezTerm with Nvim just by double-clicking them in Finder.
 
-## セットアップ方法
+## Setup Method
 
-### chezmoiでの自動セットアップ
+### Automatic Setup with chezmoi
 
 ```bash
-# chezmoiで設定を適用
+# Apply settings with chezmoi
 chezmoi apply
 
-# 初回実行時、以下の質問に答えてください：
+# On first run, answer the following questions:
 # - Path to wezterm binary: /opt/homebrew/bin/wezterm (M1/M2 Mac)
-# - Path to nvim binary: /opt/homebrew/bin/nvim (Homebrew経由インストール)
+# - Path to nvim binary: /opt/homebrew/bin/nvim (Homebrew installation)
 ```
 
-セットアップスクリプトは自動的に以下を実行します：
-- AppleScriptアプリケーション「WezTerm-Nvim.app」を作成
-- `~/Applications/`にインストール
-- ファイル拡張子の関連付けを設定
+The setup script automatically:
+- Creates the AppleScript application "WezTerm-Nvim.app"
+- Installs it in `~/Applications/`
+- Configures file extension associations
 
-### ファイルの関連付け設定
+### File Association Settings
 
-1. Finderで任意のテキストファイル（例：`.txt`、`.md`）を右クリック
-2. 「情報を見る」を選択
-3. 「このアプリケーションで開く」セクションで「WezTerm-Nvim」を選択
-4. 「すべてを変更...」をクリックして、同じ拡張子のファイルすべてに適用
+1. Right-click any text file (e.g., `.txt`, `.md`) in Finder
+2. Select "Get Info"
+3. In the "Open with" section, select "WezTerm-Nvim"
+4. Click "Change All..." to apply to all files with the same extension
 
-### 対応している拡張子
+### Supported Extensions
 
-デフォルトで以下の拡張子に対応しています：
+The following extensions are supported by default:
 
-- **テキスト**: txt, md, markdown, rst
-- **プログラミング言語**: lua, js, ts, py, rb, go, rs, c, cpp, java, sh
-- **設定ファイル**: yml, yaml, json, toml, ini, env, gitignore
+- **Text**: txt, md, markdown, rst
+- **Programming Languages**: lua, js, ts, py, rb, go, rs, c, cpp, java, sh
+- **Configuration Files**: yml, yaml, json, toml, ini, env, gitignore
 - **Web**: html, css, scss, php
-- その他多数
+- And many more
 
+## Customization
 
-## カスタマイズ
+### Adding Extensions
 
-### 拡張子の追加
-
-`.chezmoi.toml`の`extra_extensions`配列に拡張子を追加できます：
+Add extensions to the `extra_extensions` array in `.chezmoi.toml`:
 
 ```toml
 [data]
     extra_extensions = ["log", "conf", "cfg"]
 ```
 
-### パスの変更
+### Changing Paths
 
-Intel Macやカスタムインストール先の場合は、`.chezmoi.toml`を編集：
+For Intel Macs or custom installation locations, edit `.chezmoi.toml`:
 
 ```toml
 [data]
@@ -59,34 +58,34 @@ Intel Macやカスタムインストール先の場合は、`.chezmoi.toml`を�
     nvim_path = "/usr/local/bin/nvim"
 ```
 
-## トラブルシューティング
+## Troubleshooting
 
-### アプリが開かない場合
+### If the app doesn't open
 
-1. セキュリティ設定を確認：
-   - システム環境設定 > セキュリティとプライバシー > 一般
-   - 「WezTerm-Nvim」を許可
+1. Check security settings:
+   - System Preferences > Security & Privacy > General
+   - Allow "WezTerm-Nvim"
 
-2. LaunchServicesデータベースをリセット：
+2. Reset LaunchServices database:
    ```bash
    /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user
    ```
 
-### パスが見つからない場合
+### If paths are not found
 
 ```bash
-# weztermとnvimのパスを確認
+# Check wezterm and nvim paths
 which wezterm
 which nvim
 ```
 
-確認したパスを`.chezmoi.toml`に設定してください。
+Set the confirmed paths in `.chezmoi.toml`.
 
-## 再インストール
+## Reinstall
 
-設定を変更した場合や問題が発生した場合：
+If you've changed settings or encounter issues:
 
 ```bash
-# アプリを再ビルド
+# Rebuild the app
 chezmoi apply --force-refresh-externals
 ```
