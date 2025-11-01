@@ -15,21 +15,36 @@ echo "Debug: Contents of home directory:"
 ls -la "$HOME/" | grep -E "(Brewfile|\.)"
 if [ ! -f "$HOME/Brewfile" ]; then
     echo "No Brewfile found at $HOME/Brewfile"
-    echo "Waiting for chezmoi to apply files (avoiding lock conflicts)..."
+    echo "Diagnosing chezmoi configuration..."
     
-    # Wait up to 30 seconds for Brewfile to appear
-    for i in {1..30}; do
-        if [ -f "$HOME/Brewfile" ]; then
-            echo "Brewfile found after ${i} seconds"
-            break
-        fi
-        echo "Waiting... (${i}/30)"
-        sleep 1
-    done
+    # Debug chezmoi state
+    echo "=== chezmoi Debug Information ==="
+    echo "chezmoi source directory:"
+    ls -la ~/.local/share/chezmoi/ 2>/dev/null || echo "Source directory not found"
     
-    if [ ! -f "$HOME/Brewfile" ]; then
-        echo "Brewfile still not found after 30 seconds, skipping package installation"
-        echo "Note: This may be due to chezmoi configuration issues"
+    echo "chezmoi managed files:"
+    timeout 10 chezmoi managed 2>/dev/null || echo "Failed to get managed files"
+    
+    echo "chezmoi data:"
+    timeout 10 chezmoi data 2>/dev/null || echo "Failed to get chezmoi data"
+    
+    echo "Trying manual apply..."
+    timeout 30 chezmoi apply --dry-run 2>/dev/null || echo "Dry run failed"
+    
+    echo "Checking source files:"
+    find ~/.local/share/chezmoi -name "*Brewfile*" 2>/dev/null || echo "No Brewfile in source"
+    
+    echo "=== End Debug ==="
+    
+    # Try manual copy as fallback
+    if [ -f ~/.local/share/chezmoi/home/Brewfile ]; then
+        echo "Found Brewfile in source, copying manually..."
+        cp ~/.local/share/chezmoi/home/Brewfile "$HOME/Brewfile"
+    elif [ -f ~/.local/share/chezmoi/Brewfile ]; then
+        echo "Found Brewfile in root, copying manually..."
+        cp ~/.local/share/chezmoi/Brewfile "$HOME/Brewfile"
+    else
+        echo "No Brewfile found in chezmoi source, skipping package installation"
         exit 0
     fi
 fi
