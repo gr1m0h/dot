@@ -13,7 +13,7 @@ on open theFiles
         
         -- WezTerm CLIを使用してNvimを起動
         {{ if eq .chezmoi.os "darwin" -}}
-        do shell script "{{ .wezterm_path | default "/opt/homebrew/bin/wezterm" }} cli spawn --cwd " & quoted form of fileDir & " -- {{ .nvim_path | default "/opt/homebrew/bin/nvim" }} " & quotedPath
+        do shell script "{{ if hasKey . "wezterm_path" }}{{ .wezterm_path }}{{ else }}/opt/homebrew/bin/wezterm{{ end }} cli spawn --cwd " & quoted form of fileDir & " -- {{ if hasKey . "nvim_path" }}{{ .nvim_path }}{{ else }}/opt/homebrew/bin/nvim{{ end }} " & quotedPath
         {{- else -}}
         do shell script "/usr/local/bin/wezterm cli spawn --cwd " & quoted form of fileDir & " -- /usr/local/bin/nvim " & quotedPath
         {{- end }}
@@ -27,7 +27,7 @@ on run
     end tell
     
     {{ if eq .chezmoi.os "darwin" -}}
-    do shell script "{{ .wezterm_path | default "/opt/homebrew/bin/wezterm" }} cli spawn -- {{ .nvim_path | default "/opt/homebrew/bin/nvim" }}"
+    do shell script "{{ if hasKey . "wezterm_path" }}{{ .wezterm_path }}{{ else }}/opt/homebrew/bin/wezterm{{ end }} cli spawn -- {{ if hasKey . "nvim_path" }}{{ .nvim_path }}{{ else }}/opt/homebrew/bin/nvim{{ end }}"
     {{- else -}}
     do shell script "/usr/local/bin/wezterm cli spawn -- /usr/local/bin/nvim"
     {{- end }}
