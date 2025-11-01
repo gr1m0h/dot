@@ -1,0 +1,47 @@
+#!/bin/bash
+set -euo pipefail
+
+echo "Setting up Claude MCP Servers..."
+
+# Ensure mise is activated
+if command -v mise &>/dev/null; then
+    eval "$(mise activate bash)"
+fi
+
+# Check if claude command is available
+if ! command -v claude &>/dev/null; then
+    echo "Claude CLI not found. Please ensure mise tools are installed."
+    exit 1
+fi
+
+# Check for .env file
+if [ ! -f "$HOME/.env" ]; then
+    echo "Warning: .env file not found at $HOME/.env"
+    echo "Please create .env with GITHUB_PAT=your_token"
+    exit 1
+fi
+
+# Check if GitHub MCP server already exists
+if claude mcp list 2>/dev/null | grep -q "github"; then
+    echo "GitHub Remote MCP server already configured"
+else
+    echo "Adding GitHub Remote MCP server..."
+    github_token=$(grep GITHUB_PAT "$HOME/.env" | cut -d '=' -f2 | tr -d '"' | tr -d "'")
+    if [ -z "$github_token" ]; then
+        echo "Error: GITHUB_PAT not found in .env file"
+        exit 1
+    fi
+    
+    claude mcp add --transport http github https://api.githubcopilot.com/mcp -H "Authorization: Bearer $github_token" || {
+        echo "Failed to add GitHub Remote MCP server"
+        exit 1
+    }
+fi
+
+echo "Checking MCP server health..."
+claude mcp list || {
+    echo "Failed to list MCP servers"
+    exit 1
+}
+
+echo "MCP servers configured successfully!"

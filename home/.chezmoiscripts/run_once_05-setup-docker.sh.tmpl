@@ -1,0 +1,45 @@
+#!/bin/bash
+set -euo pipefail
+
+echo "Setting up Docker with Colima..."
+
+# Check if mise is available and docker/colima are installed
+if command -v mise &>/dev/null; then
+    # Ensure mise is activated
+    eval "$(mise activate bash)"
+fi
+
+# Check if docker and colima are available
+if ! command -v docker &>/dev/null; then
+    echo "Docker not found. Please ensure mise tools are installed."
+    exit 1
+fi
+
+if ! command -v colima &>/dev/null; then
+    echo "Colima not found. Please ensure mise tools are installed."
+    exit 1
+fi
+
+# Start Colima if not running
+if ! colima status &>/dev/null; then
+    echo "Starting Colima with default configuration..."
+    colima start || {
+        echo "Failed to start Colima. Please check logs with 'colima logs'"
+        exit 1
+    }
+fi
+
+# Configure Docker context
+echo "Setting up docker context to use colima..."
+docker context use colima || {
+    echo "Failed to set docker context to colima"
+    echo "You can set it manually with 'docker context use colima'"
+}
+
+# Create docker socket link (optional, for compatibility)
+if [ -S "$HOME/.config/colima/default/docker.sock" ]; then
+    echo "Docker socket found. Some tools may require a symlink to /var/run/docker.sock"
+    echo "If needed, run: sudo ln -sf $HOME/.config/colima/default/docker.sock /var/run/docker.sock"
+fi
+
+echo "Docker setup completed successfully!"

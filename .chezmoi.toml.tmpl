@@ -1,0 +1,26 @@
+{{- $name := promptStringOnce . "name" "Your full name" -}}
+{{- $email := promptStringOnce . "email" "Your email address" -}}
+{{- $codespaces := env "CODESPACES" | not | not -}}
+{{- $container := env "REMOTE_CONTAINERS_IPC" | not | not -}}
+{{- $wezterm_path := promptStringOnce . "wezterm_path" "Path to wezterm binary" "/opt/homebrew/bin/wezterm" -}}
+{{- $nvim_path := promptStringOnce . "nvim_path" "Path to nvim binary" "/opt/homebrew/bin/nvim" -}}
+
+[data]
+    name = {{ $name | quote }}
+    email = {{ $email | quote }}
+    codespaces = {{ $codespaces }}
+    container = {{ $container }}
+    wezterm_path = {{ $wezterm_path | quote }}
+    nvim_path = {{ $nvim_path | quote }}
+    extra_extensions = []
+
+[merge]
+    command = "nvim"
+    args = ["-d", "{{ "{{ .Destination }}" }}", "{{ "{{ .Source }}" }}", "{{ "{{ .Target }}" }}"]
+
+[diff]
+    exclude = ["scripts"]
+    pager = "bat"
+
+[status]
+    exclude = ["scripts"]

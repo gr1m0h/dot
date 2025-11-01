@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  ubuntu-test:
+    build:
+      context: ..
+      dockerfile: test/Dockerfile
+      target: ubuntu-test
+    container_name: dotfiles-ubuntu-test
+    environment:
+      - GITHUB_USER=gr1m0h
+      - GITHUB_REPO=dot
+    volumes:
+      # Mount the entire repository for testing local changes
+      - ../:/workspace:ro
+    command: |
+      bash -c "
+        echo '=== Testing dotfiles installation on Ubuntu ==='
+        echo 'Current user: $(whoami)'
+        echo 'Home directory: $HOME'
+        echo ''
+        
+        # Test installation from GitHub
+        echo '1. Testing installation from GitHub repository...'
+        curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/install.sh | sh
+        
+        # Verify installation
+        echo ''
+        echo '2. Verifying installation...'
+        ls -la ~ | head -20
+        
+        # Check if chezmoi is installed
+        echo ''
+        echo '3. Checking chezmoi installation...'
+        which chezmoi && chezmoi --version || echo 'chezmoi not found'
+        
+        # List managed files
+        echo ''
+        echo '4. Listing chezmoi managed files...'
+        chezmoi managed || echo 'Failed to list managed files'
+      "
+    stdin_open: true
+    tty: true
+
+  alpine-test:
+    build:
+      context: ..
+      dockerfile: test/Dockerfile
+      target: alpine-test
+    container_name: dotfiles-alpine-test
+    environment:
+      - GITHUB_USER=gr1m0h
+      - GITHUB_REPO=dot
+    volumes:
+      - ../:/workspace:ro
+    command: |
+      sh -c "
+        echo '=== Testing dotfiles installation on Alpine ==='
+        echo 'Current user: $(whoami)'
+        echo 'Home directory: $HOME'
+        echo ''
+        
+        # Test with local install script
+        echo '1. Testing with local install script...'
+        sh /tmp/install.sh
+        
+        # Verify installation
+        echo ''
+        echo '2. Verifying installation...'
+        ls -la ~ | head -20
+        
+        # Check if chezmoi is installed
+        echo ''
+        echo '3. Checking chezmoi installation...'
+        which chezmoi && chezmoi --version || echo 'chezmoi not found'
+      "
+    stdin_open: true
+    tty: true
+
+  # Interactive test container for manual testing
+  interactive:
+    build:
+      context: ..
+      dockerfile: test/Dockerfile
+      target: ubuntu-test
+    container_name: dotfiles-interactive
+    volumes:
+      - ../:/workspace:ro
+    command: /bin/zsh
+    stdin_open: true
+    tty: true
