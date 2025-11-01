@@ -9,22 +9,29 @@ fi
 
 echo "Setting up Docker with Colima..."
 
-# Check if mise is available and docker/colima are installed
-if command -v mise &>/dev/null; then
-    # Ensure mise is activated
-    eval "$(mise activate bash)"
+# Ensure mise is available
+if ! command -v mise &>/dev/null; then
+    echo "Error: mise is not installed. mise tools should be installed by previous script."
+    exit 1
 fi
+
+# Activate mise environment
+eval "$(mise activate bash)"
 
 # Check if docker and colima are available
 if ! command -v docker &>/dev/null; then
-    echo "Docker not found. Please ensure mise tools are installed."
+    echo "Docker not found. Please ensure mise tools are installed properly."
+    echo "Run 'mise install' manually if needed."
     exit 1
 fi
 
 if ! command -v colima &>/dev/null; then
-    echo "Colima not found. Please ensure mise tools are installed."
+    echo "Colima not found. Please ensure mise tools are installed properly."
+    echo "Run 'mise install' manually if needed."
     exit 1
 fi
+
+echo "Docker and Colima found via mise. Proceeding with setup..."
 
 # Start Colima if not running
 if ! colima status &>/dev/null; then
