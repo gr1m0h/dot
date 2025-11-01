@@ -16,12 +16,23 @@ if ! command -v mise &>/dev/null; then
 fi
 
 # Activate mise environment
+echo "Activating mise environment..."
 eval "$(mise activate bash)"
 
+# Debug mise environment
+echo "Debug: mise version: $(mise --version)"
+echo "Debug: PATH after mise activate: $PATH"
+echo "Debug: mise list:"
+mise list || echo "Failed to list mise tools"
+
 # Check if docker and colima are available
+echo "Checking for docker command..."
 if ! command -v docker &>/dev/null; then
-    echo "Docker not found. Please ensure mise tools are installed properly."
-    echo "Run 'mise install' manually if needed."
+    echo "Docker not found. Debugging mise installation..."
+    echo "mise doctor:"
+    mise doctor || echo "mise doctor failed"
+    echo "Contents of ~/.local/share/mise/installs/:"
+    ls -la ~/.local/share/mise/installs/ 2>/dev/null || echo "Directory not found"
     exit 1
 fi
 

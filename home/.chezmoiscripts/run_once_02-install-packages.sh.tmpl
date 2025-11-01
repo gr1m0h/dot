@@ -10,8 +10,13 @@ if ! command -v brew &>/dev/null; then
 fi
 
 # Check if Brewfile exists
+echo "Debug: Looking for Brewfile at $HOME/Brewfile"
+echo "Debug: Contents of home directory:"
+ls -la "$HOME/" | grep -E "(Brewfile|\.)"
 if [ ! -f "$HOME/Brewfile" ]; then
     echo "No Brewfile found at $HOME/Brewfile, skipping Homebrew packages installation"
+    echo "Debug: Checking if chezmoi managed the Brewfile:"
+    chezmoi managed | grep -i brewfile || echo "No Brewfile in chezmoi managed files"
     exit 0
 fi
 
