@@ -243,7 +243,7 @@ EOF
         done
         
         # Check for key Neovim config files
-        local nvim_files=("lazy-lock.json" "lazyvim.json" "stylua.toml")
+        local nvim_files=("lazyvim.json" "stylua.toml")
         for file in "${nvim_files[@]}"; do
             if [ -f "$TEST_DIR/.config/nvim/$file" ]; then
                 echo -e "${GREEN}✓ $file exists${NC}"

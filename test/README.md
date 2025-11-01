@@ -59,7 +59,6 @@ The test scripts verify:
 3. **Neovim configuration**:
    - `.config/nvim/init.lua` - Main configuration
    - `.config/nvim/lua/` - Lua configuration modules
-   - `.config/nvim/lazy-lock.json` - Plugin lock file
    - `.config/nvim/lazyvim.json` - LazyVim configuration
    - `.config/nvim/stylua.toml` - Lua formatter configuration
 

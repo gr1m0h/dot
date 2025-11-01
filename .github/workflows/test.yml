@@ -79,7 +79,7 @@ jobs:
             for dir in "lua" "lua/config" "lua/plugins"; do
               [ -d "$HOME/.config/nvim/$dir" ] && echo "✓ $dir directory exists" || echo "○ $dir directory not found"
             done
-            for file in "lazy-lock.json" "lazyvim.json" "stylua.toml"; do
+            for file in "lazyvim.json" "stylua.toml"; do
               [ -f "$HOME/.config/nvim/$file" ] && echo "✓ $file exists" || echo "○ $file not found"
             done
           else
