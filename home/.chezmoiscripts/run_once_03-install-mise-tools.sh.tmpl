@@ -15,14 +15,28 @@ if ! command -v mise &>/dev/null; then
     exit 1
 fi
 
-# Debug mise configuration
-echo "Debug: mise config file locations:"
-echo "  ~/.config/mise/config.toml: $([ -f ~/.config/mise/config.toml ] && echo "exists" || echo "missing")"
-echo "  .mise.toml: $([ -f .mise.toml ] && echo "exists" || echo "missing")"
-echo "Debug: mise config files:"
-mise config || echo "No config found"
-echo "Debug: mise ls-remote:"
-mise ls-remote docker 2>/dev/null | head -5 || echo "Failed to list docker versions"
+# Wait for mise config to be applied
+echo "Waiting for mise configuration file..."
+for i in {1..30}; do
+    if [ -f "$HOME/.config/mise/config.toml" ]; then
+        echo "mise config found after ${i} seconds"
+        break
+    fi
+    echo "Waiting for ~/.config/mise/config.toml... (${i}/30)"
+    sleep 1
+done
+
+if [ ! -f "$HOME/.config/mise/config.toml" ]; then
+    echo "mise config not found after 30 seconds"
+    echo "Checking if any mise config exists..."
+    mise config || echo "No mise config found"
+    echo "Skipping mise tools installation"
+    exit 0
+fi
+
+echo "mise config found, proceeding with installation"
+echo "Config contents:"
+head -10 "$HOME/.config/mise/config.toml"
 
 # Install all mise tools
 echo "Running mise install..."

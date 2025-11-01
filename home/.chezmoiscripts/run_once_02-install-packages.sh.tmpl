@@ -14,16 +14,22 @@ echo "Debug: Looking for Brewfile at $HOME/Brewfile"
 echo "Debug: Contents of home directory:"
 ls -la "$HOME/" | grep -E "(Brewfile|\.)"
 if [ ! -f "$HOME/Brewfile" ]; then
-    echo "No Brewfile found at $HOME/Brewfile, skipping Homebrew packages installation"
-    echo "Debug: Checking chezmoi status:"
-    chezmoi status || echo "chezmoi status failed"
-    echo "Debug: Checking if chezmoi managed the Brewfile:"
-    chezmoi managed | grep -i brewfile || echo "No Brewfile in chezmoi managed files"
-    echo "Debug: Force applying chezmoi:"
-    chezmoi apply --force || echo "chezmoi apply failed"
-    echo "Debug: Checking again for Brewfile:"
-    ls -la "$HOME/Brewfile" 2>/dev/null || echo "Still no Brewfile after apply"
+    echo "No Brewfile found at $HOME/Brewfile"
+    echo "Waiting for chezmoi to apply files (avoiding lock conflicts)..."
+    
+    # Wait up to 30 seconds for Brewfile to appear
+    for i in {1..30}; do
+        if [ -f "$HOME/Brewfile" ]; then
+            echo "Brewfile found after ${i} seconds"
+            break
+        fi
+        echo "Waiting... (${i}/30)"
+        sleep 1
+    done
+    
     if [ ! -f "$HOME/Brewfile" ]; then
+        echo "Brewfile still not found after 30 seconds, skipping package installation"
+        echo "Note: This may be due to chezmoi configuration issues"
         exit 0
     fi
 fi
