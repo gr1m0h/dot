@@ -13,10 +13,15 @@ on open theFiles
         
         -- WezTerm CLIを使用してNvimを起動
         set nvimPath to ""
-        set cmd to ""
+        set weztermPath to ""
+        
+        -- nvimパスを動的に検索
         try
-            -- nvimパスを複数の場所から検索
+            -- まずPATHから検索
+            set nvimPath to do shell script "which nvim"
+        on error
             try
+                -- Homebrewの標準的な場所を検索
                 set nvimPath to "/opt/homebrew/bin/nvim"
                 do shell script "test -f " & nvimPath
             on error
@@ -25,26 +30,42 @@ on open theFiles
                     do shell script "test -f " & nvimPath
                 on error
                     try
-                        set nvimPath to "/Users/d4rj3311n6/.local/share/mise/installs/neovim/0.11.4/bin/nvim"
-                        do shell script "test -f " & nvimPath
+                        -- miseでインストールされたnvimを動的検索
+                        set homeDir to do shell script "echo $HOME"
+                        set nvimPath to do shell script "find " & quoted form of (homeDir & "/.local/share/mise/installs/neovim") & " -name nvim -type f 2>/dev/null | head -1"
+                        if nvimPath is "" then error "nvim not found in mise"
                     on error
-                        set nvimPath to "nvim" -- fallback
+                        set nvimPath to "nvim" -- fallback to PATH
                     end try
                 end try
             end try
-            
-            set cmd to "/opt/homebrew/bin/wezterm cli spawn --cwd " & quoted form of fileDir & " -- " & nvimPath & " " & quotedPath
+        end try
+        
+        -- weztermパスを動的に検索
+        try
+            set weztermPath to do shell script "which wezterm"
+        on error
+            try
+                set weztermPath to "/opt/homebrew/bin/wezterm"
+                do shell script "test -f " & weztermPath
+            on error
+                try
+                    set weztermPath to "/usr/local/bin/wezterm"
+                    do shell script "test -f " & weztermPath
+                on error
+                    set weztermPath to "wezterm" -- fallback
+                end try
+            end try
+        end try
+        
+        try
+            set cmd to weztermPath & " cli spawn --cwd " & quoted form of fileDir & " -- " & nvimPath & " " & quotedPath
             set cmdResult to do shell script cmd
         on error errorMessage
-            try
-                set cmd to "/usr/local/bin/wezterm cli spawn --cwd " & quoted form of fileDir & " -- " & nvimPath & " " & quotedPath
-                set cmdResult to do shell script cmd
-            on error errorMessage2
-                -- 環境変数を確認
-                set pathEnv to do shell script "echo $PATH"
-                set homeEnv to do shell script "echo $HOME"
-                display dialog "Error details:" & return & "PATH: " & pathEnv & return & "HOME: " & homeEnv & return & "nvimPath: " & nvimPath & return & "cmd: " & cmd & return & "Error1: " & errorMessage & return & "Error2: " & errorMessage2
-            end try
+            -- 環境変数を確認
+            set pathEnv to do shell script "echo $PATH"
+            set homeEnv to do shell script "echo $HOME"
+            display dialog "Error details:" & return & "PATH: " & pathEnv & return & "HOME: " & homeEnv & return & "nvimPath: " & nvimPath & return & "weztermPath: " & weztermPath & return & "cmd: " & cmd & return & "Error: " & errorMessage
         end try
     end repeat
 end open
@@ -56,9 +77,15 @@ on run
     end tell
     
     set nvimPath to ""
+    set weztermPath to ""
+    
+    -- nvimパスを動的に検索
     try
-        -- nvimパスを複数の場所から検索
+        -- まずPATHから検索
+        set nvimPath to do shell script "which nvim"
+    on error
         try
+            -- Homebrewの標準的な場所を検索
             set nvimPath to "/opt/homebrew/bin/nvim"
             do shell script "test -f " & nvimPath
         on error
@@ -67,22 +94,39 @@ on run
                 do shell script "test -f " & nvimPath
             on error
                 try
-                    set nvimPath to "/Users/d4rj3311n6/.local/share/mise/installs/neovim/0.11.4/bin/nvim"
-                    do shell script "test -f " & nvimPath
+                    -- miseでインストールされたnvimを動的検索
+                    set homeDir to do shell script "echo $HOME"
+                    set nvimPath to do shell script "find " & quoted form of (homeDir & "/.local/share/mise/installs/neovim") & " -name nvim -type f 2>/dev/null | head -1"
+                    if nvimPath is "" then error "nvim not found in mise"
                 on error
-                    set nvimPath to "nvim" -- fallback
+                    set nvimPath to "nvim" -- fallback to PATH
                 end try
             end try
         end try
-        
-        do shell script "/opt/homebrew/bin/wezterm cli spawn -- " & nvimPath
-    on error errorMessage
+    end try
+    
+    -- weztermパスを動的に検索
+    try
+        set weztermPath to do shell script "which wezterm"
+    on error
         try
-            do shell script "/usr/local/bin/wezterm cli spawn -- " & nvimPath
-        on error errorMessage2
-            set pathEnv to do shell script "echo $PATH"
-            set homeEnv to do shell script "echo $HOME"
-            display dialog "Error details:" & return & "PATH: " & pathEnv & return & "HOME: " & homeEnv & return & "nvimPath: " & nvimPath & return & "Error1: " & errorMessage & return & "Error2: " & errorMessage2
+            set weztermPath to "/opt/homebrew/bin/wezterm"
+            do shell script "test -f " & weztermPath
+        on error
+            try
+                set weztermPath to "/usr/local/bin/wezterm"
+                do shell script "test -f " & weztermPath
+            on error
+                set weztermPath to "wezterm" -- fallback
+            end try
         end try
+    end try
+    
+    try
+        do shell script weztermPath & " cli spawn -- " & nvimPath
+    on error errorMessage
+        set pathEnv to do shell script "echo $PATH"
+        set homeEnv to do shell script "echo $HOME"
+        display dialog "Error details:" & return & "PATH: " & pathEnv & return & "HOME: " & homeEnv & return & "nvimPath: " & nvimPath & return & "weztermPath: " & weztermPath & return & "Error: " & errorMessage
     end try
 end run
