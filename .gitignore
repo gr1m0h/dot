@@ -52,3 +52,5 @@ typings/
 .yarn-integrity
 .env
 .next
+
+.serena
