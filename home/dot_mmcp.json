@@ -18,6 +18,21 @@
       ],
       "env": {}
     },
+    "gcloud": {
+      "command": "/Users/d4rj3311n6/.local/share/mise/shims/npx",
+      "args": ["-y", "@google-cloud/gcloud-mcp"],
+      "env": {}
+    },
+    "observability": {
+      "command": "/Users/d4rj3311n6/.local/share/mise/shims/npx",
+      "args": ["-y", "@google-cloud/observability-mcp"],
+      "env": {}
+    },
+    "storage": {
+      "command": "/Users/d4rj3311n6/.local/share/mise/shims/npx",
+      "args": ["-y", "@google-cloud/storage-mcp"],
+      "env": {}
+    },
     "playwright": {
       "command": "/Users/d4rj3311n6/.local/share/mise/shims/npx",
       "args": ["-y", "@playwright/mcp@latest"],
