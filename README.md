@@ -9,6 +9,7 @@ curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/install.sh | sh
 ```
 
 This installs:
+
 - chezmoi (if needed)
 - All dotfiles and configurations
 - Homebrew packages
@@ -33,21 +34,25 @@ chezmoi init --apply gr1m0h/dot
 ## Options
 
 ### Preview changes
+
 ```sh
 chezmoi diff
 ```
 
 ### Edit configuration
+
 ```sh
 chezmoi edit <file>
 ```
 
 ### Update from repo
+
 ```sh
 chezmoi update
 ```
 
 ### Apply without downloading
+
 ```sh
 chezmoi apply
 ```
@@ -57,6 +62,7 @@ chezmoi apply
 When you want to modify dotfiles managed by chezmoi, you have two approaches:
 
 ### Method 1: Edit source files directly (Recommended)
+
 ```sh
 # Edit the source file in chezmoi's directory
 chezmoi edit ~/.zshrc
@@ -69,6 +75,7 @@ chezmoi apply
 ```
 
 ### Method 2: Edit local files then add changes
+
 ```sh
 # Edit the file in your home directory
 vim ~/.zshrc
@@ -83,23 +90,28 @@ chezmoi diff
 ### Common operations
 
 #### See which files are managed by chezmoi
+
 ```sh
 chezmoi managed
 ```
 
 #### Navigate to chezmoi source directory
+
 ```sh
 chezmoi cd
 ```
 
 #### Update from remote repository
+
 ```sh
 # Pull latest changes and apply them
 chezmoi update
 ```
 
 ### Working with template files
+
 Some files use chezmoi's templating feature (`.tmpl` extension):
+
 ```sh
 # Edit a template file
 chezmoi edit ~/.config/git/config
@@ -109,6 +121,7 @@ chezmoi edit ~/.config/git/config
 ```
 
 ### Examples
+
 ```sh
 # Edit zsh configuration
 chezmoi edit ~/.zshrc
@@ -121,6 +134,7 @@ chezmoi edit ~/.config/wezterm/wezterm.lua
 ```
 
 ### Important notes
+
 - Always use `chezmoi edit` for files managed by chezmoi to ensure changes are properly tracked
 - Use `chezmoi diff` before applying to preview changes
 - Local edits without `chezmoi add` will be overwritten on next `chezmoi apply`
@@ -131,38 +145,13 @@ chezmoi edit ~/.config/wezterm/wezterm.lua
 The `Brewfile` in this repository is designed for **initial setup only**. It installs all required Homebrew packages during the first run.
 
 ### How it works
+
 1. During initial setup, the script `home/.chezmoiscripts/run_once_02-install-packages.sh.tmpl` runs
 2. It copies `Brewfile` to your home directory and runs `brew bundle`
 3. After successful installation, you can remove the Brewfile:
    ```sh
    rm ~/Brewfile
    ```
-
-### Managing packages after initial setup
-After the initial installation, manage your Homebrew packages directly:
-```sh
-# Install new packages
-brew install <package>
-
-# Remove packages
-brew uninstall <package>
-
-# Update packages
-brew upgrade
-```
-
-### Note
-The Brewfile is not intended for ongoing package management. It's a one-time setup tool to ensure all necessary packages are installed when setting up a new machine.
-
-## Testing
-
-Test the installation without affecting your system:
-```sh
-./test/test-local.sh
-```
-
-This creates a temporary environment to safely test the installation process.
-See [test/README.md](test/README.md) for detailed testing documentation.
 
 ## Documentation
 
