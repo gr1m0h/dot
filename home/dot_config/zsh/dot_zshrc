@@ -1,7 +1,5 @@
 # util
 bindkey -v
-export WORKSPACE=$HOME/Documents/workspace
-export PACKAGES=$HOME/.packages
 setopt no_beep
 setopt auto_cd
 setopt auto_pushd
@@ -65,15 +63,12 @@ export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
 # export CHROME_EXECUTABLE="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
 
 # rust/cargo
-export CARGO_HOME=$PACKAGES/cargo
 export PATH=$CARGO_HOME/bin:$PATH
 
 # go
-export GOPATH=$PACKAGES/go
 export PATH=$GOPATH/bin:$PATH
 
 # npm
-export NPM_CONFIG_PREFIX=$PACKAGES/npm
 export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
 
 # python/pip
