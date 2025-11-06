@@ -77,10 +77,10 @@ local keys = {
 
 return {
   color_scheme = "Dracula (Official)",
-  window_background_image = "/Users/gr1m0h/.config/wezterm/images/wallpaper.png",
-  window_background_image_hsb = {
-    brightness = 0.1,
-  },
+  -- window_background_image = "/Users/gr1m0h/.config/wezterm/images/wallpaper.png",
+  -- window_background_image_hsb = {
+  --   brightness = 0.1,
+  -- },
   keys = keys,
   exit_behavior = "Close",
   font = wezterm.font("HackGen35 Console NF"),
