@@ -52,7 +52,7 @@ export GHQ_SELECTOR=fzf
 zstyle ":completion:*:commands" rehash 1
 
 # Docker
-export DOCKER_HOST="unix://${XDG_CONFIG_HOME}/colima/default/docker.sock"
+export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
 
 # flutter
 if command -v mise &>/dev/null; then
