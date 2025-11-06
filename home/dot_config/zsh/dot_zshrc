@@ -1,6 +1,7 @@
 # util
 bindkey -v
 export WORKSPACE=$HOME/Documents/workspace
+export PACKAGES=$HOME/.packages
 setopt no_beep
 setopt auto_cd
 setopt auto_pushd
@@ -55,12 +56,39 @@ zstyle ":completion:*:commands" rehash 1
 export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
 
 # flutter
-if command -v mise &>/dev/null; then
-    FLUTTER_ROOT="$(mise where flutter 2>/dev/null || echo "")"
-    [ -n "$FLUTTER_ROOT" ] && export FLUTTER_ROOT
-fi
-export PATH=$PATH:$HOME/.pub-cache/bin
-export CHROME_EXECUTABLE="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+# if command -v mise &>/dev/null; then
+#     FLUTTER_ROOT="$(mise where flutter 2>/dev/null || echo "")"
+#     [ -n "$FLUTTER_ROOT" ] && export FLUTTER_ROOT
+# fi
+# export PUB_CACHE=$PACKAGES/flutter
+# export PATH=$PATH:$PUB_CACHE/bin
+# export CHROME_EXECUTABLE="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+
+# rust/cargo
+export CARGO_HOME=$PACKAGES/cargo
+export PATH=$CARGO_HOME/bin:$PATH
+
+# go
+export GOPATH=$PACKAGES/go
+export PATH=$GOPATH/bin:$PATH
+
+# npm
+export NPM_CONFIG_PREFIX=$PACKAGES/npm
+export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
+
+# python/pip
+export PYTHONUSERBASE=$PACKAGES/python
+export PATH=$PYTHONUSERBASE/bin:$PATH
+
+# python/uv
+export UV_CACHE_DIR=$PACKAGES/uv/cache
+export UV_TOOL_DIR=$PACKAGES/uv/tools
+export UV_PYTHON_INSTALL_DIR=$PACKAGES/uv/python
+export PATH=$UV_TOOL_DIR/bin:$PATH
+
+# ruby/gem:
+export GEM_HOME=$PACKAGES/ruby
+export PATH=$GEM_HOME/bin:$PATH
 
 # aliases
 source $ZDOTDIR/.zsh_aliases

@@ -17,6 +17,9 @@ echo "Detected macOS version: $os_version"
 # Create workspace directory
 mkdir -p "$HOME/Documents/workspace"
 
+# Create .packages directory for local packages
+mkdir -p "$HOME/.packages"
+
 # System UI Configuration
 echo "Configuring System UI..."
 defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
