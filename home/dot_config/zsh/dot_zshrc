@@ -67,6 +67,3 @@ source $ZDOTDIR/.zsh_aliases
 
 # completions
 source $ZDOTDIR/.zsh_completions
-
-# corp settings
-# source $ZDOTDIR/.zsh_corp
