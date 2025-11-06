@@ -42,13 +42,52 @@ if ! command -v colima &>/dev/null; then
     exit 1
 fi
 
-echo "Docker and Colima found via mise. Proceeding with setup..."
+# Check for Lima (required by Colima)
+if ! command -v limactl &>/dev/null; then
+    echo "Lima (limactl) not found. Colima requires Lima to function."
+    echo "Checking mise installation..."
+    mise list | grep -E "lima|colima" || echo "Lima/Colima not in mise list"
+    
+    # Try to refresh mise environment
+    echo "Refreshing mise environment..."
+    eval "$(mise activate bash)"
+    
+    if ! command -v limactl &>/dev/null; then
+        echo "ERROR: Lima is not available after mise activation."
+        echo "Please check that Lima is properly installed via mise."
+        exit 1
+    fi
+fi
+
+echo "Docker, Colima, and Lima found via mise. Proceeding with setup..."
 
 # Start Colima if not running
 if ! colima status &>/dev/null; then
     echo "Starting Colima with default configuration..."
+    
+    # Ensure mise environment is properly loaded before starting Colima
+    echo "Re-activating mise environment before starting Colima..."
+    eval "$(mise activate bash)"
+    
+    # Double-check that both tools are available
+    if ! command -v colima &>/dev/null; then
+        echo "ERROR: colima command not found after mise activation"
+        exit 1
+    fi
+    
+    if ! command -v limactl &>/dev/null; then
+        echo "ERROR: limactl command not found after mise activation"
+        echo "Attempting to locate lima installation..."
+        find ~/.local/share/mise -name "limactl" 2>/dev/null || echo "limactl not found in mise directory"
+        exit 1
+    fi
+    
     colima start || {
         echo "Failed to start Colima. Please check logs with 'colima logs'"
+        echo "Debugging information:"
+        echo "- colima version: $(colima --version 2>/dev/null || echo 'unknown')"
+        echo "- limactl version: $(limactl --version 2>/dev/null || echo 'unknown')"
+        echo "- PATH: $PATH"
         exit 1
     }
 fi
