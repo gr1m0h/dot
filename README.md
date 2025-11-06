@@ -52,6 +52,108 @@ chezmoi update
 chezmoi apply
 ```
 
+## Editing Files Managed by chezmoi
+
+When you want to modify dotfiles managed by chezmoi, you have two approaches:
+
+### Method 1: Edit source files directly (Recommended)
+```sh
+# Edit the source file in chezmoi's directory
+chezmoi edit ~/.zshrc
+
+# Preview what changes will be applied
+chezmoi diff
+
+# Apply changes to your home directory
+chezmoi apply
+```
+
+### Method 2: Edit local files then add changes
+```sh
+# Edit the file in your home directory
+vim ~/.zshrc
+
+# Add the changes back to chezmoi
+chezmoi add ~/.zshrc
+
+# Verify the changes were captured
+chezmoi diff
+```
+
+### Common operations
+
+#### See which files are managed by chezmoi
+```sh
+chezmoi managed
+```
+
+#### Navigate to chezmoi source directory
+```sh
+chezmoi cd
+```
+
+#### Update from remote repository
+```sh
+# Pull latest changes and apply them
+chezmoi update
+```
+
+### Working with template files
+Some files use chezmoi's templating feature (`.tmpl` extension):
+```sh
+# Edit a template file
+chezmoi edit ~/.config/git/config
+
+# The source might be a template like:
+# ~/.local/share/chezmoi/home/dot_config/git/config.tmpl
+```
+
+### Examples
+```sh
+# Edit zsh configuration
+chezmoi edit ~/.zshrc
+
+# Edit git configuration
+chezmoi edit ~/.config/git/config
+
+# Edit WezTerm configuration
+chezmoi edit ~/.config/wezterm/wezterm.lua
+```
+
+### Important notes
+- Always use `chezmoi edit` for files managed by chezmoi to ensure changes are properly tracked
+- Use `chezmoi diff` before applying to preview changes
+- Local edits without `chezmoi add` will be overwritten on next `chezmoi apply`
+- Template files (`.tmpl`) are processed during `chezmoi apply`
+
+## Brewfile Management
+
+The `Brewfile` in this repository is designed for **initial setup only**. It installs all required Homebrew packages during the first run.
+
+### How it works
+1. During initial setup, the script `home/.chezmoiscripts/run_once_02-install-packages.sh.tmpl` runs
+2. It copies `Brewfile` to your home directory and runs `brew bundle`
+3. After successful installation, you can remove the Brewfile:
+   ```sh
+   rm ~/Brewfile
+   ```
+
+### Managing packages after initial setup
+After the initial installation, manage your Homebrew packages directly:
+```sh
+# Install new packages
+brew install <package>
+
+# Remove packages
+brew uninstall <package>
+
+# Update packages
+brew upgrade
+```
+
+### Note
+The Brewfile is not intended for ongoing package management. It's a one-time setup tool to ensure all necessary packages are installed when setting up a new machine.
+
 ## Testing
 
 Test the installation without affecting your system:
