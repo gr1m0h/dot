@@ -62,27 +62,12 @@ export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
 # export PATH=$PATH:$PUB_CACHE/bin
 # export CHROME_EXECUTABLE="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
 
-# rust/cargo
-export PATH=$CARGO_HOME/bin:$PATH
-
-# go
+# Programming languages
 export PATH=$GOPATH/bin:$PATH
-
-# npm
 export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
-
-# python/pip
-export PYTHONUSERBASE=$PACKAGES/python
+export PATH=$CARGO_HOME/bin:$PATH
 export PATH=$PYTHONUSERBASE/bin:$PATH
-
-# python/uv
-export UV_CACHE_DIR=$PACKAGES/uv/cache
-export UV_TOOL_DIR=$PACKAGES/uv/tools
-export UV_PYTHON_INSTALL_DIR=$PACKAGES/uv/python
 export PATH=$UV_TOOL_DIR/bin:$PATH
-
-# ruby/gem:
-export GEM_HOME=$PACKAGES/ruby
 export PATH=$GEM_HOME/bin:$PATH
 
 # aliases
