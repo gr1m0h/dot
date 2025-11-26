@@ -35,7 +35,7 @@ gh = "2.68.1"
 kubectl = "1.30.7"
 "go:github.com/takaishi/tfclean/cmd/tfclean" = "latest"
 "npm:sharp-cli" = "latest"
-uv = "0.8.14"
+uv = "0.9.13"
 "npm:mmcp" = "latest"
 "npm:happy-coder" = "latest"
 
