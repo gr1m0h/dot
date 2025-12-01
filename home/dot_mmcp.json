@@ -2,12 +2,12 @@
   "agents": ["claude-code", "claude-desktop"],
   "mcpServers": {
     "context7": {
-      "command": "/Users/d4rj3311n6/.local/share/mise/shims/npx",
+      "command": "/Users/gr1m0h/.local/share/mise/shims/npx",
       "args": ["-y", "@upstash/context7-mcp@latest"],
       "env": {}
     },
     "serena": {
-      "command": "/Users/d4rj3311n6/.local/share/mise/shims/uvx",
+      "command": "/Users/gr1m0h/.local/share/mise/shims/uvx",
       "args": [
         "--from",
         "git+https://github.com/oraios/serena",
@@ -19,22 +19,22 @@
       "env": {}
     },
     "gcloud": {
-      "command": "/Users/d4rj3311n6/.local/share/mise/shims/npx",
+      "command": "/Users/gr1m0h/.local/share/mise/shims/npx",
       "args": ["-y", "@google-cloud/gcloud-mcp"],
       "env": {}
     },
     "observability": {
-      "command": "/Users/d4rj3311n6/.local/share/mise/shims/npx",
+      "command": "/Users/gr1m0h/.local/share/mise/shims/npx",
       "args": ["-y", "@google-cloud/observability-mcp"],
       "env": {}
     },
     "storage": {
-      "command": "/Users/d4rj3311n6/.local/share/mise/shims/npx",
+      "command": "/Users/gr1m0h/.local/share/mise/shims/npx",
       "args": ["-y", "@google-cloud/storage-mcp"],
       "env": {}
     },
     "playwright": {
-      "command": "/Users/d4rj3311n6/.local/share/mise/shims/npx",
+      "command": "/Users/gr1m0h/.local/share/mise/shims/npx",
       "args": ["-y", "@playwright/mcp@latest"],
       "env": {}
     }
