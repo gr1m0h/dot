@@ -15,9 +15,8 @@ alias md='mkdir -p'
 alias docker-compose='docker-cli-plugin-docker-compose'
 alias top='gotop'
 alias cat='bat'
-
-# mise
-alias update-nvim='mise uninstall neovim stable && mise install neovim stable'
+alias imgconv='${ZDOTDIR}/scripts/convert-image.sh'
+alias sre='sreaas-cli'
 
 # claude
 alias git_commit_message_claude="git diff --staged | claude -p 'Write commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Return ONLY plain text, no markdown, no code blocks, no formatting, no backticks.'"
