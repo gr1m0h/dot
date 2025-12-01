@@ -24,6 +24,9 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 # gpg
 export GPG_TTY=$(tty)
 
+# browser
+export CHROME_PATH="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+
 # ssh using 1password
 export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 
