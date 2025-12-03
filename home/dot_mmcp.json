@@ -1,4 +1,5 @@
 {
+  "mode": "replace",
   "agents": ["claude-code", "claude-desktop"],
   "mcpServers": {
     "context7": {
@@ -23,20 +24,16 @@
       "args": ["-y", "@google-cloud/gcloud-mcp"],
       "env": {}
     },
-    "observability": {
-      "command": "/Users/gr1m0h/.local/share/mise/shims/npx",
-      "args": ["-y", "@google-cloud/observability-mcp"],
-      "env": {}
-    },
-    "storage": {
-      "command": "/Users/gr1m0h/.local/share/mise/shims/npx",
-      "args": ["-y", "@google-cloud/storage-mcp"],
-      "env": {}
-    },
-    "playwright": {
-      "command": "/Users/gr1m0h/.local/share/mise/shims/npx",
-      "args": ["-y", "@playwright/mcp@latest"],
-      "env": {}
+    "aws-mcp": {
+      "command": "/Users/gr1m0h/.local/share/mise/shims/uvx",
+      "timeout": 100000,
+      "transport": "stdio",
+      "args": [
+        "mcp-proxy-for-aws@latest",
+        "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--metadata",
+        "AWS_REGION=ap-northeast-1"
+      ]
     }
   }
 }
