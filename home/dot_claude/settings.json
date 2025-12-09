@@ -35,6 +35,7 @@
     ],
     "defaultMode": "acceptEdits"
   },
-  "model": "claude-sonnet-4-5@20250929",
-  "enableAllProjectMcpServers": false
+  "model": "sonnet[1m]",
+  "enableAllProjectMcpServers": false,
+  "alwaysThinkingEnabled": false
 }
