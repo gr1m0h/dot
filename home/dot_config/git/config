@@ -46,7 +46,7 @@
   au = !git add -u && git status
   ap = !git add -p && git status
   ru = remote update -p
-  rup = !git remote update -p && git pull origin main
+  rup = !git remote update -p && git pull origin $(git symbolic-ref refs/remotes/origin/HEAD --short 2>/dev/null | sed 's@^origin/@@' || echo main)
   rb = rebase --interactive
   rbc = rebase --continue
   rv = revert
