@@ -1,18 +1,18 @@
 #!/bin/bash
 
-echo "🚀 Building WezTerm-Nvim.app..."
+echo "🚀 Building Ghostty-Nvim.app..."
 
 # 既存アプリを削除
-if [ -d ~/Applications/WezTerm-Nvim.app ]; then
+if [ -d ~/Applications/Ghostty-Nvim.app ]; then
     echo "🗑️ Removing old version..."
-    rm -rf ~/Applications/WezTerm-Nvim.app
+    rm -rf ~/Applications/Ghostty-Nvim.app
 fi
 
 # AppleScriptアプリケーションをビルド
 echo "📦 Building application..."
-osacompile -o ~/Applications/WezTerm-Nvim.app WezTerm-Nvim.applescript
+osacompile -o ~/Applications/Ghostty-Nvim.app Ghostty-Nvim.applescript
 
-PLIST_PATH=~/Applications/WezTerm-Nvim.app/Contents/Info.plist
+PLIST_PATH=~/Applications/Ghostty-Nvim.app/Contents/Info.plist
 
 # 既存のCFBundleDocumentTypesを削除
 /usr/libexec/PlistBuddy -c "Delete :CFBundleDocumentTypes" "$PLIST_PATH" 2>/dev/null || true
@@ -36,21 +36,21 @@ done
 /usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0:CFBundleTypeRole string 'Editor'" "$PLIST_PATH"
 
 # Bundle Identifierを追加
-/usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string 'com.local.wezterm-nvim'" "$PLIST_PATH" 2>/dev/null || \
-/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier 'com.local.wezterm-nvim'" "$PLIST_PATH"
+/usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string 'com.local.ghostty-nvim'" "$PLIST_PATH" 2>/dev/null || \
+/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier 'com.local.ghostty-nvim'" "$PLIST_PATH"
 
 # Bundle Nameを追加
-/usr/libexec/PlistBuddy -c "Add :CFBundleName string 'WezTerm-Nvim'" "$PLIST_PATH" 2>/dev/null || \
-/usr/libexec/PlistBuddy -c "Set :CFBundleName 'WezTerm-Nvim'" "$PLIST_PATH"
+/usr/libexec/PlistBuddy -c "Add :CFBundleName string 'Ghostty-Nvim'" "$PLIST_PATH" 2>/dev/null || \
+/usr/libexec/PlistBuddy -c "Set :CFBundleName 'Ghostty-Nvim'" "$PLIST_PATH"
 
 # LaunchServicesを更新
 echo "🔄 Updating LaunchServices database..."
-/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f ~/Applications/WezTerm-Nvim.app
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f ~/Applications/Ghostty-Nvim.app
 
-echo "✅ WezTerm-Nvim.app setup complete!"
+echo "✅ Ghostty-Nvim.app setup complete!"
 echo ""
 echo "使い方："
 echo "1. Finderで任意のファイルを右クリック"
 echo "2. 「情報を見る」を選択"
-echo "3. 「このアプリケーションで開く」でWezTerm-Nvimを選択"
+echo "3. 「このアプリケーションで開く」でGhostty-Nvimを選択"
 echo "4. 「すべてを変更」をクリックして、同じ拡張子のファイルすべてに適用"

@@ -6,17 +6,17 @@ on open theFiles
         -- Get the directory of the file
         set fileDir to do shell script "dirname " & quotedPath
 
-        -- WezTermでNvimを起動
-        tell application "WezTerm"
+        -- GhosttyでNvimを起動
+        tell application "Ghostty"
             activate
         end tell
 
-        -- WezTermでNvimを起動
+        -- GhosttyでNvimを起動
         try
-            launchWezterm(filePath, fileDir)
+            launchGhostty(filePath, fileDir)
         on error errorMessage
             -- エラー時の詳細表示
-            display dialog "Error opening file in WezTerm:" & return & return & ¬
+            display dialog "Error opening file in Ghostty:" & return & return & ¬
                 "File: " & filePath & return & ¬
                 "Error: " & errorMessage buttons {"OK"} default button 1 with icon stop
         end try
@@ -25,20 +25,20 @@ end open
 
 -- ドラッグ&ドロップ以外でアプリが起動された場合
 on run
-    tell application "WezTerm"
+    tell application "Ghostty"
         activate
     end tell
 
     try
-        launchWezterm("", "")
+        launchGhostty("", "")
     on error errorMessage
-        display dialog "Error opening WezTerm:" & return & return & ¬
+        display dialog "Error opening Ghostty:" & return & return & ¬
             "Error: " & errorMessage buttons {"OK"} default button 1 with icon stop
     end try
 end run
 
--- WezTermを起動する関数
-on launchWezterm(filePath, fileDir)
+-- Ghosttyを起動する関数
+on launchGhostty(filePath, fileDir)
     set homeDir to do shell script "echo $HOME"
 
     -- nvimのフルパスを検索
@@ -64,35 +64,15 @@ on launchWezterm(filePath, fileDir)
         error "Neovim not found. Please install neovim."
     end if
 
-    -- weztermのフルパスを検索
-    set weztermPath to ""
-    try
-        set weztermPath to do shell script "which wezterm"
-    on error
-        try
-            set weztermPath to do shell script "test -f /opt/homebrew/bin/wezterm && echo /opt/homebrew/bin/wezterm || echo ''"
-            if weztermPath is "" then
-                set weztermPath to do shell script "test -f /usr/local/bin/wezterm && echo /usr/local/bin/wezterm || echo ''"
-            end if
-        end try
-    end try
-
-    if weztermPath is "" then
-        error "WezTerm not found. Please install wezterm."
-    end if
-
-    -- コマンドを構築（シェルを明示的に起動して環境変数を読み込む）
+    -- コマンドを構築
     if filePath is not "" and fileDir is not "" then
         -- ファイルを開く場合
-        -- エスケープを簡単にするため、ダブルクォートを使用
-        set innerCmd to "exec " & nvimPath & " " & quoted form of filePath
-        set cmd to weztermPath & " start --cwd " & quoted form of fileDir & " -- /bin/zsh -l -c " & quoted form of innerCmd
+        set cmd to "open -na Ghostty.app --args --working-directory=" & quoted form of fileDir & " -e " & quoted form of (nvimPath & " " & filePath)
     else
         -- ファイルなしで起動する場合
-        set innerCmd to "exec " & nvimPath
-        set cmd to weztermPath & " start -- /bin/zsh -l -c " & quoted form of innerCmd
+        set cmd to "open -na Ghostty.app --args -e " & quoted form of nvimPath
     end if
 
     -- バックグラウンドで実行
     do shell script cmd & " > /dev/null 2>&1 &"
-end launchWezterm
+end launchGhostty

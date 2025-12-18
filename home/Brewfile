@@ -1,4 +1,3 @@
-tap "wez/wezterm"
 brew "chezmoi"
 brew "curl"
 brew "git"

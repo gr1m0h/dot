@@ -1,0 +1,34 @@
+on open theFiles
+    repeat with aFile in theFiles
+        set filePath to POSIX path of aFile
+        set quotedPath to quoted form of filePath
+
+        -- Get the directory of the file
+        set fileDir to do shell script "dirname " & quotedPath
+
+        -- GhosttyでNvimを起動
+        tell application "Ghostty"
+            activate
+        end tell
+
+        -- GhosttyでNvimを起動
+        {{ if eq .chezmoi.os "darwin" -}}
+        do shell script "open -na Ghostty.app --args --working-directory=" & quoted form of fileDir & " -e '{{ if hasKey . "nvim_path" }}{{ .nvim_path }}{{ else }}/opt/homebrew/bin/nvim{{ end }} " & quotedPath & "'"
+        {{- else -}}
+        do shell script "ghostty --working-directory=" & quoted form of fileDir & " -e '/usr/local/bin/nvim " & quotedPath & "'"
+        {{- end }}
+    end repeat
+end open
+
+-- ドラッグ&ドロップ以外でアプリが起動された場合
+on run
+    tell application "Ghostty"
+        activate
+    end tell
+
+    {{ if eq .chezmoi.os "darwin" -}}
+    do shell script "open -na Ghostty.app --args -e '{{ if hasKey . "nvim_path" }}{{ .nvim_path }}{{ else }}/opt/homebrew/bin/nvim{{ end }}'"
+    {{- else -}}
+    do shell script "ghostty -e '/usr/local/bin/nvim'"
+    {{- end }}
+end run

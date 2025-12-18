@@ -1,6 +1,6 @@
-# WezTerm-Nvim File Association Setup
+# Ghostty-Nvim File Association Setup
 
-This setup allows you to open files with specific extensions in WezTerm with Nvim just by double-clicking them in Finder.
+This setup allows you to open files with specific extensions in Ghostty with Nvim just by double-clicking them in Finder.
 
 ## Setup Method
 
@@ -11,12 +11,11 @@ This setup allows you to open files with specific extensions in WezTerm with Nvi
 chezmoi apply
 
 # On first run, answer the following questions:
-# - Path to wezterm binary: /opt/homebrew/bin/wezterm (M1/M2 Mac)
 # - Path to nvim binary: /opt/homebrew/bin/nvim (Homebrew installation)
 ```
 
 The setup script automatically:
-- Creates the AppleScript application "WezTerm-Nvim.app"
+- Creates the AppleScript application "Ghostty-Nvim.app"
 - Installs it in `~/Applications/`
 - Configures file extension associations
 
@@ -24,7 +23,7 @@ The setup script automatically:
 
 1. Right-click any text file (e.g., `.txt`, `.md`) in Finder
 2. Select "Get Info"
-3. In the "Open with" section, select "WezTerm-Nvim"
+3. In the "Open with" section, select "Ghostty-Nvim"
 4. Click "Change All..." to apply to all files with the same extension
 
 ### Supported Extensions
@@ -54,7 +53,6 @@ For Intel Macs or custom installation locations, edit `.chezmoi.toml`:
 
 ```toml
 [data]
-    wezterm_path = "/usr/local/bin/wezterm"  # Intel Mac
     nvim_path = "/usr/local/bin/nvim"
 ```
 
@@ -64,7 +62,7 @@ For Intel Macs or custom installation locations, edit `.chezmoi.toml`:
 
 1. Check security settings:
    - System Preferences > Security & Privacy > General
-   - Allow "WezTerm-Nvim"
+   - Allow "Ghostty-Nvim"
 
 2. Reset LaunchServices database:
    ```bash
@@ -74,12 +72,11 @@ For Intel Macs or custom installation locations, edit `.chezmoi.toml`:
 ### If paths are not found
 
 ```bash
-# Check wezterm and nvim paths
-which wezterm
+# Check nvim path
 which nvim
 ```
 
-Set the confirmed paths in `.chezmoi.toml`.
+Set the confirmed path in `.chezmoi.toml`.
 
 ## Reinstall
 

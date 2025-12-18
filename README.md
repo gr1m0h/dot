@@ -129,8 +129,8 @@ chezmoi edit ~/.zshrc
 # Edit git configuration
 chezmoi edit ~/.config/git/config
 
-# Edit WezTerm configuration
-chezmoi edit ~/.config/wezterm/wezterm.lua
+# Edit Ghostty configuration
+chezmoi edit ~/.config/ghostty/config
 ```
 
 ### Important notes
@@ -155,7 +155,7 @@ The `Brewfile` in this repository is designed for **initial setup only**. It ins
 
 ## Documentation
 
-- [WezTerm-Nvim File Association Setup](docs/wezterm-nvim-setup.md) - Configure file associations to open files in WezTerm with Nvim
+- [Ghostty-Nvim File Association Setup](docs/ghostty-nvim-setup.md) - Configure file associations to open files in Ghostty with Nvim
 
 ## Requirements
 

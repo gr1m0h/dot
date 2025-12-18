@@ -11,6 +11,6 @@ function toggleApp(appName, key)
   end)
 end
 
-toggleApp("WezTerm", "space")
+toggleApp("Ghostty", "space")
 toggleApp("Slack", "s")
 toggleApp("Brave Browser", "b")
