@@ -1,0 +1,41 @@
+# theme
+theme = Dracula
+
+# font
+font-family = HackGen Console NF Regular
+font-feature = -dlig
+font-size = 13
+
+font-style-bold = false
+font-style-italic = false
+font-style-bold-italic = false
+
+font-thicken = true
+font-thicken-strength = 1
+
+alpha-blending = linear
+
+adjust-cell-width = -1
+adjust-cell-height = 2
+
+# macOS
+macos-titlebar-style = hidden
+macos-window-shadow = false
+
+# window
+window-padding-x = 10
+window-padding-y = 10
+window-padding-balance = true
+
+# shell
+shell-integration-features = no-cursor
+
+# cursor
+cursor-style = block
+cursor-style-blink = false
+cursor-invert-fg-bg = true
+cursor-opacity = 0.8
+
+# other
+mouse-hide-while-typing = true
+resize-overlay = never
