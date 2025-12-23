@@ -18,6 +18,8 @@ alpha-blending = linear
 adjust-cell-width = -1
 adjust-cell-height = 2
 
+background-opacity = 0.9
+
 # macOS
 macos-titlebar-style = hidden
 macos-window-shadow = false
@@ -39,3 +41,4 @@ cursor-opacity = 0.8
 # other
 mouse-hide-while-typing = true
 resize-overlay = never
+keybind = shift+enter=text:\x1b\r
