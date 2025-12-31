@@ -19,13 +19,15 @@ adjust-cell-width = -1
 adjust-cell-height = 2
 
 # macOS
-macos-titlebar-style = hidden
+macos-titlebar-style = tabs
 macos-window-shadow = false
 
 # window
 window-padding-x = 10
 window-padding-y = 10
 window-padding-balance = true
+window-save-state = always
+window-inherit-working-directory = true
 
 # shell
 shell-integration-features = no-cursor
@@ -39,3 +41,4 @@ cursor-opacity = 0.8
 # other
 mouse-hide-while-typing = true
 resize-overlay = never
+keybind = shift+enter=text:\x0d
