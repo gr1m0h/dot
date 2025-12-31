@@ -23,6 +23,7 @@ cask "slack"
 cask "spotify"
 cask "zoom"
 mas "Hidden Bar", id: 1452453066
+mas "LINE", id: 539883307
 mas "Magnet", id: 441258766
 mas "Numbers", id: 409203825
 mas "Skitch", id: 425955336
