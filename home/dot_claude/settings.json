@@ -23,9 +23,11 @@
       "Bash(git commit:*)",
       "Bash(git reset:*)",
       "Bash(git rebase:*)",
+      "Read(.env.*)",
       "Read(id_rsa)",
       "Read(**/*token*)",
       "Read(**/*key*)",
+      "Write(.env*)",
       "Write(**/secrets/**)",
       "Bash(curl:*)",
       "Bash(wget:*)",
@@ -33,7 +35,11 @@
     ],
     "defaultMode": "acceptEdits"
   },
-  "model": "sonnet[1m]",
+  "model": "opus",
   "enableAllProjectMcpServers": false,
-  "alwaysThinkingEnabled": false
+  "alwaysThinkingEnabled": false,
+  "statusLine": {
+    "type": "command",
+    "command": "npx ccusage@latest statusline"
+  }
 }
