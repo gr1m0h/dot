@@ -2,9 +2,9 @@
 theme = Dracula
 
 # font
-font-family = HackGen Console NF Regular
+font-family = "HackGen Console NF Regular""
 font-feature = -dlig
-font-size = 13
+font-size = 12
 
 font-style-bold = false
 font-style-italic = false
@@ -13,23 +13,30 @@ font-style-bold-italic = false
 font-thicken = true
 font-thicken-strength = 1
 
-alpha-blending = linear
-
-adjust-cell-width = -1
-adjust-cell-height = 2
-
-# macOS
-macos-titlebar-style = tabs
-macos-window-shadow = false
+# clipboard
+clipboard-read = ask
+clipboard-trim-trailing-spaces = true
+clipboard-paste-protection = true
+clipboard-paste-bracketed-safe = true
 
 # window
 window-padding-x = 10
 window-padding-y = 10
 window-padding-balance = true
-window-save-state = always
+window-padding-color = background
 window-inherit-working-directory = true
+window-inherit-font-size = true
+window-decoration = auto
+window-title-font-family = "HackGen Console NF"
+window-theme = system
+window-save-state = always
+window-new-tab-position = end
+window-vsync = true
+window-colorspace = srgb
+window-step-resize = false
 
 # shell
+shell-integration = zsh
 shell-integration-features = no-cursor
 
 # cursor
@@ -38,7 +45,26 @@ cursor-style-blink = false
 cursor-invert-fg-bg = true
 cursor-opacity = 0.8
 
+# background
+background-opacity = 0.85
+background-blur = true
+
+# cell
+adjust-cell-width = -1
+adjust-cell-height = 2
+
+# macOS
+macos-titlebar-style = tabs
+macos-window-shadow = false
+
 # other
-mouse-hide-while-typing = true
+alpha-blending = linear
+title-report = false
+click-repeat-interval = 0
+copy-on-select = true
+confirm-close-surface = true
+quit-after-last-window-closed = true
 resize-overlay = never
+unfocused-split-opacity = 0.6
+mouse-hide-while-typing = true
 keybind = shift+enter=text:\x0d
