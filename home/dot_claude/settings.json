@@ -1,6 +1,243 @@
 {
+  "model": "opus",
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(npx *)",
+      "Bash(yarn *)",
+      "Bash(pnpm *)",
+      "Bash(bun *)",
+      "Bash(make *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git branch *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git checkout *)",
+      "Bash(git stash *)",
+      "Bash(git fetch *)",
+      "Bash(gh issue *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr diff *)",
+      "Read(src/**)",
+      "Read(lib/**)",
+      "Read(app/**)",
+      "Read(tests/**)",
+      "Read(test/**)",
+      "Read(spec/**)",
+      "Read(docs/**)",
+      "Read(*.md)",
+      "Read(*.json)",
+      "Read(*.yaml)",
+      "Read(*.yml)",
+      "Edit(src/**)",
+      "Edit(lib/**)",
+      "Edit(app/**)",
+      "Edit(tests/**)",
+      "Edit(test/**)",
+      "Edit(spec/**)"
+    ],
+    "deny": [
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(rm -rf *)",
+      "Bash(rm -r *)",
+      "Bash(sudo *)",
+      "Bash(chmod 777 *)",
+      "Bash(chmod -R 777 *)",
+      "Bash(eval *)",
+      "Bash(exec *)",
+      "Bash(*> /etc/*)",
+      "Bash(*| sh)",
+      "Bash(*| bash)",
+      "Bash(*| zsh)",
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean -fd *)",
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(*.env)",
+      "Read(secrets/**)",
+      "Read(**/*secret*)",
+      "Read(**/*credential*)",
+      "Read(**/*password*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*.p12)",
+      "Read(**/*.pfx)",
+      "Read(**/id_rsa*)",
+      "Read(**/.aws/*)",
+      "Read(**/.ssh/*)",
+      "Write(.env)",
+      "Write(.env.*)",
+      "Write(secrets/**)",
+      "Edit(.env)",
+      "Edit(.env.*)",
+      "Edit(package-lock.json)",
+      "Edit(yarn.lock)",
+      "Edit(pnpm-lock.yaml)",
+      "Edit(bun.lockb)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(gh pr create *)",
+      "Bash(npm publish *)",
+      "Bash(docker *)",
+      "Edit(package.json)",
+      "Edit(tsconfig.json)",
+      "Edit(*.config.*)",
+      "Write(**/*.sql)",
+      "Write(**/*.sh)"
+    ],
+    "defaultMode": "default"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-start.js"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-end.js"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pre-tool-guard.js"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pre-tool-guard.js"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/post-tool-verify.js"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/architecture-guard.js"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/test-runner.js",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/prompt-validator.js"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pre-compact-protector.js"
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/subagent-monitor.js",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/subagent-monitor.js",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/on-failure-recover.js"
+          }
+        ]
+      }
+    ]
+  },
+  "language": "english",
   "cleanupPeriodDays": 30,
+  "autoUpdatesChannel": "stable",
+  "alwaysThinkingEnabled": true,
+  "plansDirectory": "./.claude/plans",
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true,
+    "excludedCommands": ["git", "gh", "docker"],
+    "allowUnsandboxedCommands": false,
+    "network": {
+      "allowLocalBinding": true
+    }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "npx ccusage@latest statusline"
+  },
+  "enableAllProjectMcpServers": true,
+  "includeCoAuthoredBy": false,
   "env": {
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50",
     "DISABLE_AUTOUPDATER": "1",
     "DISABLE_MICROCOMPACT": "1",
     "DISABLE_ERROR_REPORTING": "1",
@@ -10,36 +247,8 @@
     "CLAUDE_CODE_IDE_SKIP_VALID_CHECK": "1",
     "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
-    "MAX_THINKING_TOKENS": "31999"
+    "MAX_THINKING_TOKENS": "31999",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
-  "includeCoAuthoredBy": false,
-  "permissions": {
-    "allow": ["*"],
-    "deny": [
-      "Bash(sudo:*)",
-      "Bash(rm:*)",
-      "Bash(rm -rf:*)",
-      "Bash(git push:*)",
-      "Bash(git commit:*)",
-      "Bash(git reset:*)",
-      "Bash(git rebase:*)",
-      "Read(.env.*)",
-      "Read(id_rsa)",
-      "Read(**/*token*)",
-      "Read(**/*key*)",
-      "Write(.env*)",
-      "Write(**/secrets/**)",
-      "Bash(curl:*)",
-      "Bash(wget:*)",
-      "Bash(nc:*)"
-    ],
-    "defaultMode": "acceptEdits"
-  },
-  "model": "opus",
-  "enableAllProjectMcpServers": false,
-  "alwaysThinkingEnabled": false,
-  "statusLine": {
-    "type": "command",
-    "command": "npx ccusage@latest statusline"
-  }
+  "teammateMode": "in-process"
 }
