@@ -216,7 +216,7 @@
       }
     ]
   },
-  "language": "english",
+  "language": "japanese",
   "cleanupPeriodDays": 30,
   "autoUpdatesChannel": "stable",
   "alwaysThinkingEnabled": true,
