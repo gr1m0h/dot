@@ -11,11 +11,11 @@ Analyze and optimize the current session's context usage and project memory.
 
 ## Dynamic Context
 
-- Session ID: ${CLAUDE_SESSION_ID}
-- Memory files: !`find .claude/memory -type f -name '*.md' 2>/dev/null | head -20 || echo "No memory files found"`
+- Memory files: !`find .claude/memory -type f 2>/dev/null | head -20 || echo "No memory files found"`
 - CLAUDE.md size: !`wc -l .claude/CLAUDE.md 2>/dev/null || echo "Not found"`
-- Agent memory: !`ls .claude/agent-memory/ 2>/dev/null | head -10 || echo "No agent memory"`
 - Rules files: !`find .claude/rules -type f -name '*.md' 2>/dev/null | head -10 || echo "No rules found"`
+- Skills count: !`ls -d .claude/skills/*/ 2>/dev/null | wc -l || echo "0"`
+- Hooks: !`ls .claude/hooks/ 2>/dev/null | head -10 || echo "No hooks"`
 
 ## Tasks
 
@@ -48,13 +48,14 @@ Review and optimize `.claude/memory/` contents:
 - Remove session states older than 7 days
 - Verify high-value memories (architecture, decisions) are accessible
 
-### 4. Agent Memory Cleanup
+### 4. Skills & Hooks Audit
 
-Review `.claude/agent-memory/` contents:
+Review `.claude/skills/` and `.claude/hooks/` health:
 
-- Remove memories from agents no longer in use
-- Consolidate overlapping memories across agents
-- Verify memory scopes are appropriate (user vs project vs local)
+- Verify all SKILL.md frontmatter parses correctly
+- Check that dynamic context commands in skills execute without errors
+- Verify hooks are functional and not producing errors
+- Identify unused or redundant skills
 
 ### 5. Session Recommendations
 

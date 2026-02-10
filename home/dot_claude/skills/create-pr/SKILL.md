@@ -13,7 +13,7 @@ Create a high-quality Pull Request for the current branch.
 ## Dynamic Context
 
 - Current branch: !`git branch --show-current 2>/dev/null`
-- Base branch: !`echo "${0:-main}"`
+- Base branch: !`echo "${ARGUMENTS:-$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo main)}"`
 - Changed files: !`git diff --name-status origin/main...HEAD 2>/dev/null || git diff --name-status origin/master...HEAD 2>/dev/null || echo "N/A"`
 - Commit history: !`git log --oneline origin/main...HEAD 2>/dev/null || git log --oneline origin/master...HEAD 2>/dev/null || echo "N/A"`
 - Diff stats: !`git diff --stat origin/main...HEAD 2>/dev/null || git diff --stat origin/master...HEAD 2>/dev/null || echo "N/A"`

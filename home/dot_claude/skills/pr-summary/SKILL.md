@@ -1,19 +1,18 @@
 ---
 name: pr-summary
 description: Generate a comprehensive Pull Request summary with risk assessment
-context: fork
-agent: Explore
-allowed-tools: Bash(gh *)
+user-invocable: true
+allowed-tools: Read, Grep, Glob, Bash
 argument-hint: "[pr-number]"
 ---
 
 ## Pull Request Context
 
-- PR metadata: !`gh pr view $0 --json title,body,author,baseRefName,headRefName,additions,deletions,changedFiles,labels,reviewRequests 2>/dev/null || echo "Please specify a valid PR number"`
-- PR diff: !`gh pr diff $0 2>/dev/null || echo "No diff available"`
-- PR comments: !`gh pr view $0 --comments 2>/dev/null || echo ""`
-- PR checks: !`gh pr checks $0 2>/dev/null || echo "No checks"`
-- Linked issues: !`gh pr view $0 --json body 2>/dev/null | grep -oE '#[0-9]+' || echo "None"`
+- PR metadata: !`gh pr view $ARGUMENTS --json title,body,author,baseRefName,headRefName,additions,deletions,changedFiles,labels,reviewRequests 2>/dev/null || echo "Please specify a valid PR number"`
+- PR diff: !`gh pr diff $ARGUMENTS 2>/dev/null || echo "No diff available"`
+- PR comments: !`gh pr view $ARGUMENTS --comments 2>/dev/null || echo ""`
+- PR checks: !`gh pr checks $ARGUMENTS 2>/dev/null || echo "No checks"`
+- Linked issues: !`gh pr view $ARGUMENTS --json body 2>/dev/null | grep -oE '#[0-9]+' || echo "None"`
 
 ## Analysis Tasks
 

@@ -34,7 +34,7 @@ Integrate results after all skills have completed
 
 ```
 # Parallel code review
-> /parallel code-reviewer | security-auditor | performance-audit
+> /parallel review-code | security-scan | audit-license
 
 # Parallel investigation
 > /parallel search-memory | tot "solution"

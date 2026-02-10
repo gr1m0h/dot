@@ -9,33 +9,42 @@ allowed-tools: Read, Grep, Glob
 
 Searches the cognitive memory system for information related to $ARGUMENTS.
 
+## Dynamic Context
+
+- Memory structure: !`find .claude/memory -type f 2>/dev/null | head -30 || echo "No memory files found"`
+
 ## Search Hierarchy
 
-### 1. Working Memory (immediate)
+Search order follows cognitive memory architecture (fallback to available directories):
+
+### 1. Working Memory (immediate context)
 
 Most relevant and recent information
 
-- `.claude/memory/working/current-context.json`
+- `.claude/memory/local/session-state.json`
+- `.claude/memory/local/current-task.md`
 
 ### 2. Episodic Memory (related experiences)
 
-Similar past experiences
+Session history and interaction patterns
 
-- `.claude/memory/episodic/sessions/`
-- `.claude/memory/episodic/interactions/`
+- `.claude/memory/local/session-metrics.jsonl`
+- `.claude/memory/local/edit-audit.jsonl`
+- `.claude/memory/local/learnings.md`
 
 ### 3. Semantic Memory (abstract knowledge)
 
-Generalized patterns and knowledge
+Generalized patterns, architecture decisions, and project knowledge
 
-- `.claude/memory/semantic/concepts/`
-- `.claude/memory/semantic/skills/`
+- `.claude/memory/project/architecture.md`
+- `.claude/memory/project/` (all project-level knowledge)
 
 ## Search Strategy
 
-1. **Keyword Matching**: Direct term matching
-2. **Concept Relevance**: Expand related concepts from relationships.json
-3. **Temporal Proximity**: Prioritize recent episodes
+1. **Keyword Matching**: Direct term matching across all memory files
+2. **Scope Priority**: local/ (session) → project/ (cross-session) → CLAUDE.md (global)
+3. **Temporal Proximity**: Prioritize recent entries in JSONL files
+4. **Semantic Expansion**: Follow references between memory files
 
 ## Output Format
 

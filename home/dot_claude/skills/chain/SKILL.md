@@ -17,10 +17,12 @@ Builds and executes chains that run multiple skills sequentially.
 
 ## Predefined Chains
 
+Predefined chains use Task subagent types (launched via Task tool). Custom chains can mix Skills and agents.
+
 ### feature (new feature development)
 
 ```
-task-planner -> architect -> coder -> test-writer -> code-reviewer
+task-planner -> coder -> test-writer -> code-reviewer
 ```
 
 ### bugfix (bug fix)
@@ -32,13 +34,13 @@ debugger -> coder -> test-writer -> code-reviewer
 ### refactor (refactoring)
 
 ```
-code-reviewer -> architect -> refactorer -> test-writer -> code-reviewer
+code-reviewer -> coder -> test-writer -> code-reviewer
 ```
 
 ### security-review (security review)
 
 ```
-security-auditor -> code-reviewer -> coder (fix) -> security-auditor (re-verify)
+security-auditor -> code-reviewer -> coder (fix) -> security-auditor (verify)
 ```
 
 ## Chain Execution Rules
