@@ -72,6 +72,7 @@ export PATH=$CARGO_HOME/bin:$PATH
 export PATH=$PYTHONUSERBASE/bin:$PATH
 export PATH=$UV_TOOL_DIR/bin:$PATH
 export PATH=$GEM_HOME/bin:$PATH
+export PATH=$HOME/.local/bin:$PATH
 
 # aliases
 source $ZDOTDIR/.zsh_aliases
