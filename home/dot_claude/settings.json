@@ -1,5 +1,22 @@
 {
-  "model": "opus",
+  "cleanupPeriodDays": 30,
+  "env": {
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50",
+    "DISABLE_AUTOUPDATER": "1",
+    "DISABLE_MICROCOMPACT": "1",
+    "DISABLE_ERROR_REPORTING": "1",
+    "CLAUDE_CODE_AUTO_CONNECT_IDE": "1",
+    "CLAUDE_CODE_IDE_SKIP_AUTO_INSTALL": "1",
+    "CLAUDE_CODE_IDE_SKIP_VALID_CHECK": "1",
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "MAX_THINKING_TOKENS": "31999",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "ENABLE_TOOL_SEARCH": "auto:8",
+    "MAX_MCP_OUTPUT_TOKENS": "50000",
+    "CLAUDE_CODE_ENABLE_COST_TRACKING": "1"
+  },
+  "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
       "Bash(npm run *)",
@@ -92,6 +109,8 @@
     ],
     "defaultMode": "default"
   },
+  "model": "opus",
+  "enableAllProjectMcpServers": true,
   "hooks": {
     "SessionStart": [
       {
@@ -131,6 +150,15 @@
             "command": "node \"$HOME\"/.claude/hooks/pre-tool-guard.js"
           }
         ]
+      },
+      {
+        "matcher": "WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/ssrf-guard.js"
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -158,6 +186,33 @@
           {
             "type": "command",
             "command": "node \"$HOME\"/.claude/hooks/test-runner.js",
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/cost-monitor.js",
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/telemetry-collector.js",
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/circuit-breaker.js",
             "async": true
           }
         ]
@@ -213,41 +268,57 @@
             "command": "node \"$HOME\"/.claude/hooks/on-failure-recover.js"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/circuit-breaker.js"
+          }
+        ]
+      }
+    ],
+    "TeammateIdle": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/quality-gate.js"
+          }
+        ]
+      }
+    ],
+    "TaskCompleted": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/task-validator.js"
+          }
+        ]
       }
     ]
-  },
-  "language": "japanese",
-  "cleanupPeriodDays": 30,
-  "autoUpdatesChannel": "stable",
-  "alwaysThinkingEnabled": true,
-  "plansDirectory": "./.claude/plans",
-  "sandbox": {
-    "enabled": true,
-    "autoAllowBashIfSandboxed": true,
-    "excludedCommands": ["git", "gh", "docker"],
-    "allowUnsandboxedCommands": false,
-    "network": {
-      "allowLocalBinding": true
-    }
   },
   "statusLine": {
     "type": "command",
     "command": "npx ccusage@latest statusline"
   },
-  "enableAllProjectMcpServers": true,
-  "includeCoAuthoredBy": false,
-  "env": {
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50",
-    "DISABLE_AUTOUPDATER": "1",
-    "DISABLE_MICROCOMPACT": "1",
-    "DISABLE_ERROR_REPORTING": "1",
-    "CLAUDE_CODE_AUTO_CONNECT_IDE": "1",
-    "CLAUDE_CODE_IDE_SKIP_AUTO_INSTALL": "1",
-    "CLAUDE_CODE_IDE_SKIP_VALID_CHECK": "1",
-    "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
-    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
-    "MAX_THINKING_TOKENS": "31999",
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  "language": "japanese",
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true,
+    "allowUnsandboxedCommands": false,
+    "network": {
+      "allowLocalBinding": true
+    },
+    "excludedCommands": [
+      "git",
+      "gh",
+      "docker"
+    ]
   },
+  "alwaysThinkingEnabled": true,
+  "autoUpdatesChannel": "stable",
+  "plansDirectory": "./.claude/plans",
   "teammateMode": "in-process"
 }
