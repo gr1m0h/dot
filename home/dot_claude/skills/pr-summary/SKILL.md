@@ -53,4 +53,47 @@ Identify the most critical files/sections that reviewers should focus on, with s
 
 ## Output Format
 
-Provide the summary in a structured format suitable for posting as a PR comment.
+Output the summary in the following markdown format:
+
+```markdown
+## PR Summary
+
+**Type**: feature / bugfix / refactor / docs / test / chore / security
+**Scope**: [affected modules/components]
+**Size**: S / M / L / XL
+
+### What
+
+[1-2 sentence description of what this PR does]
+
+### Why
+
+[1-2 sentence description of the problem being solved]
+
+### How
+
+[Key implementation decisions and approach taken]
+
+### Risk Assessment
+
+| Risk Factor | Level | Details |
+|------------|-------|---------|
+| Breaking changes | LOW/MED/HIGH | [details] |
+| Security impact | LOW/MED/HIGH | [details] |
+| Performance impact | LOW/MED/HIGH | [details] |
+| Test coverage | LOW/MED/HIGH | [details] |
+| Rollback difficulty | LOW/MED/HIGH | [details] |
+
+### Review Focus Areas
+
+- `path/to/file.ts:L10-L25` - [reason to focus here]
+- `path/to/file.ts:L42` - [reason to focus here]
+
+### Checklist
+
+- [ ] Tests for new/changed behavior
+- [ ] Documentation updates
+- [ ] Migration steps (if breaking)
+- [ ] Error handling for new paths
+- [ ] Logging for observability
+```
