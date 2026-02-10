@@ -19,6 +19,13 @@
       ],
       "env": {}
     },
+    "notion": {
+      "command": "/Users/gr1m0h/.local/share/mise/shims/npx",
+      "args": ["-y", "@notionhq/notion-mcp-server"],
+      "env": {
+        "NOTION_TOKEN": "ntn_XXX"
+      }
+    },
     "gcloud": {
       "command": "/Users/gr1m0h/.local/share/mise/shims/npx",
       "args": ["-y", "@google-cloud/gcloud-mcp"],
