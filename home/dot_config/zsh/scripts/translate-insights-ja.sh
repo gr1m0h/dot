@@ -20,11 +20,11 @@ Usage: $(basename "$0") [Options]
 
 Options:
   --file PATH   Specify the target HTML file ( default: ~/.claude/usage-data/report.html)
-  --in-place    Overwrite the original file directly (default: output as a separate file named 'reportt_ja.html')
+  --in-place    Overwrite the original file directly (default: output as a separate file named 'report_ja.html')
   --dry-run     Preview changes (no file modification)
   --help        Display help
 
-e.g.,:
+e.g.:
   $(basename "$0")              # Output as 'report_ja.html'
   $(basename "$0") --in-place   # Overwrite 'report.html' directly
 EOF
