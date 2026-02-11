@@ -152,6 +152,15 @@
         ]
       },
       {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "prettier --write $CLAUDE_FILE_PATH 2>/dev/null || true"
+          }
+        ]
+      },
+      {
         "matcher": "WebFetch",
         "hooks": [
           {
@@ -159,7 +168,7 @@
             "command": "node \"$HOME\"/.claude/hooks/ssrf-guard.js"
           }
         ]
-      }
+      },
     ],
     "PostToolUse": [
       {
