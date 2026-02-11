@@ -1,5 +1,9 @@
 # Claude Code Config
 
+## Working Style
+- When asked to optimize or update configuration, make changes immediately rather than creating extensive plans first. Avoid excessive planning phases - start implementing after a brief assessment.
+- When a task involves batch editing many files (10+), pause after the first 3-5 edits to confirm the approach with the user before continuing.
+
 ## Rules
 IMPORTANT: @rules/global/security.md
 @rules/global/coding-standards.md
@@ -73,3 +77,12 @@ IMPORTANT: @rules/global/security.md
 - Secret protection: pre-tool-guard on Bash/Edit/Write
 - Architecture enforcement: architecture-guard on Edit/Write
 - Supply chain: `npm audit` / `pip-audit` before dependencies
+
+## Claude Code Skills
+- Skills must use a flat directory layout: `.claude/skills/<skill-name>/SKILL.md`. Do not nest skills in subdirectories beyond one level. Always verify skill recognition after creation.
+
+## Error Handling
+- When no data exists for a requested feature (e.g., telemetry, dashboards), report that clearly and stop. Do not autonomously explore or audit unrelated files.
+
+## Language & Localization
+- All skill and agent instructions should be written in English for best performance. When translating existing Japanese content, translate ALL files in the directory (including .md files), not just code files.
