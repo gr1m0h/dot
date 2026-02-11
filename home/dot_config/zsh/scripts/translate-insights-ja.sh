@@ -93,7 +93,7 @@ Rules:
 
 if [[ "$DRY_RUN" == true ]]; then
   echo "[dry-run] Execute translation in 'claude -p'"
-  echo "[dry-run] Inout: $REPORT → $OUTPUT"
+  echo "[dry-run] Input: $REPORT → $OUTPUT"
   exit 0
 fi
 
