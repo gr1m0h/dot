@@ -19,6 +19,14 @@
       ],
       "env": {}
     },
+    "playwright": {
+      "command": "/Users/gr1m0h/.local/share/mise/shims/npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--executable-path",
+        "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+      ]
+    },
     "notion": {
       "command": "/Users/gr1m0h/.local/share/mise/shims/npx",
       "args": ["-y", "@notionhq/notion-mcp-server"],
