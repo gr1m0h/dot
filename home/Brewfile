@@ -21,10 +21,12 @@ casl "ghostty"
 cask "google-drive"
 cask "hammerspoon"
 cask "opal-composer"
+cask "raycast"
 cask "session-manager-plugin"
 cask "slack"
 cask "spotify"
 cask "steam"
+cask "tailscale-app"
 cask "zoom"
 mas "Hidden Bar", id: 1452453066
 mas "LINE", id: 539883307
