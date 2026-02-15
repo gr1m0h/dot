@@ -168,7 +168,7 @@
             "command": "node \"$HOME\"/.claude/hooks/ssrf-guard.js"
           }
         ]
-      },
+      }
     ],
     "PostToolUse": [
       {
