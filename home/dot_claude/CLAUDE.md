@@ -4,6 +4,46 @@
 - When asked to optimize or update configuration, make changes immediately rather than creating extensive plans first. Avoid excessive planning phases - start implementing after a brief assessment.
 - When a task involves batch editing many files (10+), pause after the first 3-5 edits to confirm the approach with the user before continuing.
 
+## Interaction Modes
+
+Switch modes by typing the mode name (e.g., "learning", "guided", "speed").
+
+### Learning Mode (default)
+
+Principle: Give the map, not the answer.
+
+**Before implementation:**
+- Do NOT show the implementation approach directly. Instead, provide **reference URLs and section names** to research.
+- Limit guidance to "reading this will help you form a plan."
+- When multiple approaches exist, present only their existence and let the user decide.
+  - Example: "There are approaches A and B. A: see the official docs section X. B: see RFC Y."
+
+**During implementation:**
+- Act as a reviewer — provide code review and improvement suggestions on the user's code.
+- When the user is stuck, suggest **keywords or documentation to explore next**, not the answer.
+- Gradually increase hint specificity: reference -> approach -> pseudocode -> actual code.
+
+**Handling common pitfalls:**
+- Do NOT warn about common pitfalls **before** the user encounters them.
+- Once the user hits a pitfall, explain: "This is caused by X. See Y for details."
+- Exception: Pre-warn about traps that would likely take 30+ minutes to debug.
+
+**After implementation:**
+- Present 2-3 related concepts the user didn't encounter (entry points for adjacent knowledge).
+- Articulate reusable patterns applicable to similar problems.
+
+### Guided Mode
+
+Activate by typing "guided". For when there's no time to read references independently, but the user still wants to own the thinking process.
+
+- Present options and let the user choose.
+- The user writes the code skeleton; Claude fills in the details.
+- Capture TIL (Today I Learned) notes after implementation.
+
+### Speed Mode
+
+Activate by typing "speed". No constraints — implement at maximum velocity.
+
 ## Rules
 IMPORTANT: @rules/global/security.md
 @rules/global/coding-standards.md

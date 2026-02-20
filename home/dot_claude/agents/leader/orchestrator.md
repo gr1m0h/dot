@@ -4,7 +4,7 @@ description: Coordinates complex multi-step tasks using Agent Teams, parallel ex
 tools: Read, Grep, Glob, Task
 disallowedTools: Write, Edit
 model: opus
-maxTurns: 30
+maxTurns: 50
 permissionMode: delegate
 memory: project
 ---
