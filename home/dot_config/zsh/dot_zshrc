@@ -34,7 +34,7 @@ export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agen
 if command -v mise &>/dev/null; then
     eval "$(mise activate zsh)"
 fi
-export EDITOR="$(mise where neovim 2>/dev/null)/bin/nvim"
+export EDITOR="$(mise where neovim 2>/dev/null || echo nvim)"
 
 # sheldon
 eval "$(sheldon source)"
@@ -55,15 +55,6 @@ zstyle ":completion:*:commands" rehash 1
 
 # Docker
 export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
-
-# flutter
-# if command -v mise &>/dev/null; then
-#     FLUTTER_ROOT="$(mise where flutter 2>/dev/null || echo "")"
-#     [ -n "$FLUTTER_ROOT" ] && export FLUTTER_ROOT
-# fi
-# export PUB_CACHE=$PACKAGES/flutter
-# export PATH=$PATH:$PUB_CACHE/bin
-# export CHROME_EXECUTABLE="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
 
 # Programming languages
 export PATH=$GOPATH/bin:$PATH
