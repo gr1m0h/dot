@@ -1,231 +1,754 @@
 # Claude Code Configuration
 
-Personal Claude Code configuration for development workflows, security enforcement, and AI-assisted coding.
+A comprehensive guide to the Claude Code setup, agents, skills, rules, and workflows used for software development.
 
-## Directory Structure
+## Table of Contents
 
+1. [Overview](#overview)
+2. [Quick Start](#quick-start)
+3. [Agents](#agents)
+4. [Skills](#skills)
+5. [Rules & Standards](#rules--standards)
+6. [Hooks System](#hooks-system)
+7. [Environment Configuration](#environment-configuration)
+8. [Workflow Examples](#workflow-examples)
+9. [Cost Optimization](#cost-optimization)
+10. [Security Practices](#security-practices)
+
+## Overview
+
+This Claude Code configuration provides a comprehensive system for software development with:
+
+- **39 agents** specialized in different domains (planning, testing, security, QA, IoT, etc.)
+- **58 reusable skills** for common development tasks
+- **18 rule sets** defining coding standards and best practices
+- **16 hooks** for automated validation, testing, and quality checks
+- **14 environment variables** for system configuration
+
+The system is organized by discipline with clear separation of concerns. Agents are orchestrated to work together, skills provide modular workflow execution, and hooks enforce quality gates at critical points.
+
+## Quick Start
+
+### Common Workflows
+
+#### Feature Implementation
+```bash
+/plan
+# (Review plan)
+/tdd
+# (Write tests, implement, verify)
+/review-code
+# (Comprehensive code review)
 ```
-.claude/
-├── CLAUDE.md              # Main instructions & interaction modes
-├── agents/                # 34 specialized agent definitions
-├── skills/                # 52 reusable slash-command skills
-├── rules/                 # 14 policy & guideline documents
-├── hooks/                 # 16 JavaScript automation hooks
-├── memory/                # Persistent knowledge & session state
-└── settings.json          # Claude Code settings
+
+#### Bug Fix
+```bash
+/build-fix
+# (Fix errors incrementally)
+/tdd
+# (Write tests, verify fix)
+/review-code
 ```
 
-## Interaction Modes
+#### Security Audit
+```bash
+/security-scan
+# (Run OWASP Top 10 checks)
+/audit-supply-chain
+# (Check dependencies)
+/review-code
+```
 
-Configured in `CLAUDE.md`. Switch by typing the mode name.
+#### Release
+```bash
+/release
+# (Auto semantic version, changelog, create release)
+```
 
-| Mode | Trigger | Behavior |
-|------|---------|----------|
-| **Learning** (default) | — | Hints & references first, code last |
-| **Guided** | `guided` | Present options, user writes skeleton, Claude fills in |
-| **Speed** | `speed` | Maximum velocity, no constraints |
+### Quick Commands
+
+| Command | Purpose | Model |
+|---------|---------|-------|
+| `/plan` | Create implementation plan | Opus |
+| `/tdd` | Test-driven development workflow | Sonnet |
+| `/review-code` | Multi-dimensional code review | Sonnet |
+| `/quick-fix` | Trivial fixes (typos, renames) | Haiku |
+| `/security-scan` | OWASP 2025 Top 10 audit | Opus |
+| `/release` | Semantic versioning & release | Sonnet |
 
 ## Agents
 
-34 agent definitions organized by domain. Agents are spawned via the `Task` tool with `subagent_type`.
+### Root Agents (9)
 
-### Core (top-level)
+Core agents used for primary development tasks.
 
-| Agent | Purpose |
-|-------|---------|
-| `planner` | Implementation planning for complex features |
-| `architect` | System design & architectural decisions |
-| `tdd-guide` | Test-driven development enforcement |
-| `code-reviewer` | Multi-dimensional code review |
-| `security-reviewer` | Security vulnerability analysis |
-| `build-error-resolver` | Build/type error fixes |
-| `e2e-runner` | Playwright E2E testing |
-| `refactor-cleaner` | Dead code cleanup |
-| `doc-updater` | Documentation maintenance |
+#### 1. **planner.md** - Implementation Planning
+- Decomposes complex features into phases
+- Identifies dependencies and risks
+- Creates step-by-step execution plan
+- **Use when**: Tackling complex features or refactoring
 
-### Specialized (subdirectories)
+#### 2. **architect.md** - System Design
+- Evaluates architectural approaches
+- Ensures scalability and maintainability
+- Reviews technical decisions
+- **Use when**: Making architectural decisions or designing new systems
 
-| Category | Agents |
-|----------|--------|
-| **cognitive/** | confidence-calibrator, context-optimizer, ensemble-reasoner, memory-consolidator |
-| **iot/** | edge-security, firmware-dev, protocol-analyzer |
-| **leader/** | orchestrator, task-planner |
-| **oss/** | license-auditor, oss-contributor, supply-chain-auditor |
-| **planning/** | tot-planner |
-| **qa/** | code-reviewer, debugger, fuzzer, mutation-tester, property-tester, security-auditor |
-| **resilience/** | fallback-handler |
-| **routing/** | model-selector, tool-router |
-| **security/** | reverse-engineer, threat-modeler |
-| **worker/** | coder, test-writer |
+#### 3. **tdd-guide.md** - Test-Driven Development
+- Enforces write-tests-first methodology
+- Guides RED → GREEN → IMPROVE cycle
+- Tracks test coverage (80%+ minimum)
+- **Use when**: Implementing new features or fixing bugs
+
+#### 4. **code-reviewer.md** - Code Review
+- Multi-dimensional analysis:
+  - Functionality & correctness
+  - Security (OWASP 2025)
+  - Performance
+  - Maintainability & readability
+- Provides actionable feedback
+- **Use immediately after**: Writing or modifying code
+
+#### 5. **security-reviewer.md** - Security Analysis
+- Vulnerability detection
+- OWASP Top 10 assessment
+- Remediation recommendations
+- **Use before**: Commits and releases
+
+#### 6. **build-error-resolver.md** - Error Resolution
+- Fixes TypeScript and build errors
+- Creates minimal diffs
+- Provides clear error explanations
+- **Use when**: Build or type errors occur
+
+#### 7. **e2e-runner.md** - End-to-End Testing
+- Manages Playwright test suites
+- Detects and quarantines flaky tests
+- Validates critical user journeys
+- **Use when**: Testing user workflows
+
+#### 8. **doc-updater.md** - Documentation
+- Maintains architecture documentation
+- Syncs docs from source files
+- Generates codemaps
+- **Use when**: Documentation is out of sync
+
+#### 9. **refactor-cleaner.md** - Code Cleanup
+- Identifies dead code (knip, depcheck, ts-prune)
+- Consolidates duplicate logic
+- Removes unused exports
+- **Use when**: Cleaning up codebase
+
+### Cognitive Agents (4)
+
+Specialized for reasoning and knowledge management.
+
+- **confidence-calibrator.md** - Evaluates answer confidence, makes uncertainty explicit
+- **context-optimizer.md** - Optimizes context without losing important information
+- **ensemble-reasoner.md** - Generates multiple reasoning paths, determines answer by vote
+- **memory-consolidator.md** - Converts episodic memory into semantic memory
+
+### IoT/Firmware Agents (3)
+
+For embedded systems development.
+
+- **edge-security.md** - Security audits for IoT and edge firmware
+- **firmware-dev.md** - Firmware development with RTOS, memory constraints, HAL
+- **protocol-analyzer.md** - Communication protocol analysis
+
+### Leader Agents (4)
+
+High-level orchestration for complex tasks.
+
+- **chief-of-staff.md** - Senior orchestrator with phase decomposition and quality gates
+- **loop-operator.md** - Autonomous iteration with circuit breaker (max 10 iterations, 3 errors)
+- **orchestrator.md** - Coordinates multi-step tasks with parallel execution
+- **task-planner.md** - Decomposes requirements into executable task graphs (TDAG)
+
+### OSS Agents (3)
+
+Open source and licensing management.
+
+- **license-auditor.md** - License compliance audit
+- **oss-contributor.md** - Release workflows and changelog generation
+- **supply-chain-auditor.md** - Supply chain security (typosquatting, integrity)
+
+### QA Agents (6)
+
+Quality assurance and testing specialists.
+
+- **debugger.md** - Error investigation with ReAct + Reflexion, root cause analysis
+- **fuzzer.md** - Fuzz testing for edge cases and vulnerabilities
+- **mutation-tester.md** - Test suite quality evaluation via code mutations
+- **property-tester.md** - Property-based testing with randomized inputs
+- **security-auditor.md** - Comprehensive OWASP 2025 + LLM Top 10 audits
+- **code-reviewer.md** - QA-focused code review
+
+### Planning Agents (1)
+
+- **tot-planner.md** - Tree of Thoughts algorithm for exploring multiple solution paths
+
+### Worker Agents (4)
+
+Implementation specialists.
+
+- **coder.md** - Feature implementation with quality checks
+- **database-reviewer.md** - Schema design (3NF), query optimization, migration safety
+- **harness-optimizer.md** - Token efficiency audit, hook quality, permission security
+- **test-writer.md** - Comprehensive test suite design with coverage strategies
+
+### Resilience Agent (1)
+
+- **fallback-handler.md** - Provides alternatives during tool/service failures
+
+### Routing Agents (2)
+
+- **model-selector.md** - Selects optimal model (haiku/sonnet/opus) by task complexity
+- **tool-router.md** - Selects optimal tool and suggests efficient usage
+
+### Security Agents (2)
+
+- **reverse-engineer.md** - Code reverse engineering for security research
+- **threat-modeler.md** - STRIDE threat modeling with DREAD scoring
+
+### Agent Teams
+
+Enable `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` to coordinate multiple agents:
+
+```bash
+orchestrate [task]
+# Launches coordinated multi-agent execution
+```
 
 ## Skills
 
-52 slash-command skills invoked via `/skill-name`. Each lives in `skills/<name>/SKILL.md`.
+58 reusable skills organized by domain.
 
-### Development & Quality
+### Development Workflow (15 skills)
 
-| Skill | Description |
-|-------|-------------|
-| `/plan` | Create implementation plans |
-| `/tdd` | TDD workflow with mutation testing |
-| `/tdd-workflow` | Test-driven development enforcement |
-| `/build-fix` | Incremental TypeScript/build error fixes |
-| `/quick-fix` | Lightweight fixes using haiku model |
-| `/review-code` | Comprehensive code review |
-| `/code-review` | Security-focused review blocking commits |
-| `/refactor-clean` | Dead code removal |
-| `/test-coverage` | Coverage analysis & missing test generation |
-| `/verify` | Codebase verification (quick/full/pre-commit/pre-pr) |
-| `/e2e` | Playwright E2E tests |
+| Skill | Purpose |
+|-------|---------|
+| `build-fix` | Incrementally fix TypeScript and build errors |
+| `chain` | Execute multiple skills sequentially with data passing |
+| `checkpoint` | Create/verify workflow checkpoints with git |
+| `code-review` | Comprehensive security and quality review |
+| `coding-standards` | Universal TS/JS/React/Node best practices |
+| `create-pr` | Analyze changes, generate PR via gh CLI |
+| `fix-issue` | Investigate and fix GitHub Issues |
+| `orchestrate` | Run multi-agent workflows for complex tasks |
+| `parallel` | Execute independent skills in parallel |
+| `plan` | Create step-by-step implementation plans |
+| `pr-summary` | Generate PR summary with risk assessment |
+| `quick-fix` | Lightweight fixes (typos, renames) - Haiku model |
+| `release` | Semantic versioning, changelog, release automation |
+| `review-code` | Multi-dimensional review (security, performance, style) |
+| `verify` | Build, types, lint, tests, security verification |
 
-### Security & Compliance
+### Testing (9 skills)
 
-| Skill | Description |
-|-------|-------------|
-| `/security-scan` | OWASP 2025 Top 10 audit |
-| `/security-review` | Auth, input, secrets checklist |
-| `/threat-model` | STRIDE threat modeling |
-| `/audit-license` | License compliance audit |
-| `/audit-supply-chain` | Supply chain risk analysis |
-| `/firmware-audit` | Firmware security audit |
+| Skill | Purpose |
+|-------|---------|
+| `e2e` | Playwright end-to-end testing |
+| `eval` | Eval-driven development workflow |
+| `eval-harness` | Formal evaluation framework |
+| `fuzz` | Fuzz testing for edge cases |
+| `mutation-test` | Mutation testing quality evaluation |
+| `property-test` | Property-based testing |
+| `tdd` | Test-driven development with mutation testing |
+| `tdd-workflow` | TDD with 80%+ coverage enforcement |
+| `test-coverage` | Coverage analysis and gap finding |
 
-### Analysis & Testing
+### Security (6 skills)
 
-| Skill | Description |
-|-------|-------------|
-| `/fuzz` | Fuzz testing setup |
-| `/mutation-test` | Mutation testing for test quality |
-| `/property-test` | Property-based test design |
-| `/protocol-check` | Protocol implementation analysis |
-| `/reverse-analyze` | Reverse engineering analysis |
-| `/tot` | Tree of Thoughts exploration |
-| `/ensemble-vote` | Ensemble voting for decisions |
+| Skill | Purpose |
+|-------|---------|
+| `audit-license` | License compliance audit |
+| `audit-supply-chain` | Supply chain security analysis |
+| `firmware-audit` | Firmware/embedded security audit |
+| `protocol-check` | Communication protocol analysis |
+| `security-review` | Auth, input, API, secrets checklist |
+| `security-scan` | OWASP 2025 Top 10 audit |
 
-### Database
+### Architecture & Patterns (3 skills)
 
-| Skill | Description |
-|-------|-------------|
-| `/postgres` | PostgreSQL best practices |
-| `/mysql` | MySQL best practices |
-| `/clickhouse-io` | ClickHouse analytics patterns |
+- `backend-patterns` - Backend, API design, database optimization
+- `frontend-patterns` - React, Next.js, state management, performance
+- `project-guidelines-example` - Template for project-specific skills
 
-### Workflow & Automation
+### Database (3 skills)
 
-| Skill | Description |
-|-------|-------------|
-| `/create-pr` | Generate and create PRs |
-| `/pr-summary` | PR summary with risk assessment |
-| `/fix-issue` | Investigate and fix GitHub Issues |
-| `/release` | Semantic versioning & changelog |
-| `/orchestrate` | Multi-agent sequential workflows |
-| `/parallel` | Execute skills in parallel |
-| `/chain` | Execute skills sequentially |
-| `/checkpoint` | Git-based workflow checkpoints |
-| `/eval` | Eval-driven development |
+- `clickhouse-io` - ClickHouse patterns and optimization
+- `mysql` - MySQL best practices
+- `postgres` - PostgreSQL best practices
 
-### Knowledge & Context
+### Documentation (2 skills)
 
-| Skill | Description |
-|-------|-------------|
-| `/update-memory` | Persist knowledge to memory system |
-| `/search-memory` | Retrieve from memory system |
-| `/update-docs` | Sync documentation |
-| `/update-codemaps` | Architecture documentation |
-| `/manage-context` | Context window optimization |
-| `/learn` | Extract reusable patterns |
-| `/continuous-learning` | Auto-extract session patterns |
-| `/reflect` | Structured reflection on completed work |
-| `/strategic-compact` | Manual context compaction |
+- `update-codemaps` - Generate architecture documentation
+- `update-docs` - Sync documentation from sources
 
-### Reference
+### Cost & Context (5 skills)
 
-| Skill | Description |
-|-------|-------------|
-| `/coding-standards` | Universal coding standards |
-| `/frontend-patterns` | React/Next.js patterns |
-| `/backend-patterns` | API/server patterns |
-| `/cost-report` | Token usage & cost estimates |
-| `/dashboard` | Telemetry dashboard |
+| Skill | Purpose |
+|-------|---------|
+| `cost-report` | Token usage and session cost report |
+| `dashboard` | Session performance telemetry |
+| `manage-context` | Context window optimization |
+| `model-route` | Automatic model selection |
+| `prompt-optimize` | System prompt efficiency |
 
-## Rules
+### Learning & Memory (5 skills)
 
-14 policy documents enforced across all sessions.
+| Skill | Purpose |
+|-------|---------|
+| `continuous-learning` | Extract reusable patterns from sessions |
+| `instinct-manage` | View, export, import, evolve patterns |
+| `learn` | Extract patterns from current session |
+| `reflect` | Structured reflection with Reflexion framework |
+| `search-memory` | Search cognitive memory |
 
-| File | Scope |
-|------|-------|
-| `global/security.md` | Secrets, input validation, auth, forbidden patterns |
-| `global/coding-standards.md` | Naming, functions, imports, types |
-| `global/cost-optimization.md` | Model selection, token conservation |
-| `global/supply-chain-security.md` | Dependency auditing, lockfile protection |
-| `git-workflow.md` | Conventional commits, PR workflow, feature workflow |
+### Analysis & Reasoning (5 skills)
+
+| Skill | Purpose |
+|-------|---------|
+| `ensemble-vote` | Ensemble voting with multiple reasoning paths |
+| `harness-audit` | Audit harness configuration for optimization |
+| `loop-control` | Manage autonomous improvement loops |
+| `reverse-analyze` | Reverse engineering and security analysis |
+| `tot` | Tree of Thoughts exploration |
+
+### Refactoring (1 skill)
+
+- `refactor-clean` - Safely remove dead code with test verification
+
+### Threat Modeling (1 skill)
+
+- `threat-model` - STRIDE threat modeling with DREAD scoring
+
+## Rules & Standards
+
+### Root Rules (11)
+
+| Rule | Purpose |
+|------|---------|
+| `agents.md` | Agent orchestration and parallel execution |
 | `coding-style.md` | Immutability, file organization, error handling |
-| `patterns.md` | API response format, hooks, repository pattern |
-| `performance.md` | Model selection strategy, context management |
-| `testing.md` | 80% coverage minimum, TDD mandatory |
-| `agents.md` | Agent orchestration & parallel execution |
-| `hooks.md` | Hook types & auto-accept permissions |
-| `security.md` | Pre-commit checklist, secret management |
-| `frontend/react-patterns.md` | Components, hooks, state, a11y |
-| `backend/api-guidelines.md` | RESTful design, validation, middleware |
-| `cognitive/uncertainty-expression.md` | Confidence-based expression levels |
+| `continuous-learning.md` | Pattern extraction, instinct lifecycle |
+| `git-workflow.md` | Conventional Commits, PR workflow |
+| `hooks.md` | Hook types, current hooks, auto-accept |
+| `multi-agent.md` | Parallel execution, cascade pipelines |
+| `patterns.md` | API response format, custom hooks, repositories |
+| `performance.md` | Model selection (haiku/sonnet/opus) |
+| `security.md` | Secrets, auth, security response protocol |
+| `testing.md` | 80% minimum coverage, TDD workflow |
+| `token-optimization.md` | Model routing, strategic compaction |
 
-## Hooks
+### Global Rules (4)
 
-16 JavaScript hooks for automated enforcement.
+Located in `/Users/gr1m0h/.claude/rules/global/`
 
-### Pre-Tool Guards
+- **coding-standards.md** - Naming conventions, function design, types
+- **cost-optimization.md** - Model selection table, token conservation
+- **security.md** - Secrets, input validation, auth, dependencies
+- **supply-chain-security.md** - Dependency audit, lockfile protection, updates
 
-| Hook | Purpose |
-|------|---------|
-| `pre-tool-guard.js` | Block secrets in Bash/Edit/Write |
-| `ssrf-guard.js` | SSRF protection on WebFetch |
-| `architecture-guard.js` | Enforce architecture rules on Edit/Write |
-| `pre-compact-protector.js` | Protect critical context before compaction |
-| `prompt-validator.js` | Validate prompts |
+### Domain-Specific Rules (3)
 
-### Post-Tool Actions
+- **frontend/react-patterns.md** - Component design, hooks, state, accessibility
+- **backend/api-guidelines.md** - Endpoint design, validation, error format
+- **cognitive/uncertainty-expression.md** - Confidence levels and uncertainty format
 
-| Hook | Purpose |
-|------|---------|
-| `post-tool-verify.js` | Verification after tool execution |
-| `test-runner.js` | Run tests after code changes |
+### Key Standards
 
-### System Monitoring
+#### Naming Conventions
+```typescript
+// Variables and functions: camelCase
+const userName = 'John'
+function getUserEmail() { }
 
-| Hook | Purpose |
-|------|---------|
-| `circuit-breaker.js` | Circuit breaker for failing operations |
-| `cost-monitor.js` | Track and warn on cost thresholds |
-| `quality-gate.js` | Quality enforcement gates |
-| `task-validator.js` | Validate task definitions |
-| `subagent-monitor.js` | Monitor spawned agents |
-| `telemetry-collector.js` | Collect usage telemetry |
+// Classes and types: PascalCase
+class UserService { }
+interface User { }
 
-### Session Lifecycle
-
-| Hook | Purpose |
-|------|---------|
-| `session-start.js` | Session initialization |
-| `session-end.js` | Session cleanup |
-| `on-failure-recover.js` | Recovery on failure |
-
-## Workflow Patterns
-
-Standard workflows combining skills and agents:
-
+// Constants: SCREAMING_SNAKE_CASE
+const MAX_RETRY = 3
 ```
-Feature:  /plan -> planner -> architect -> /tdd -> /review-code
-Bugfix:   /build-fix -> build-error-resolver -> /tdd -> /review-code
-TDD:      /tdd -> tdd-guide -> test-writer -> /review-code
-Security: /security-scan -> security-reviewer -> /review-code
-Refactor: /refactor-clean -> refactor-cleaner -> /review-code
+
+#### Immutability (CRITICAL)
+```typescript
+// CORRECT: Use spread operator
+const updated = { ...user, name: 'New' }
+const newArray = [...items, newItem]
+
+// WRONG: Mutation
+user.name = 'New'       // DON'T
+items.push(newItem)     // DON'T
+```
+
+#### Error Handling
+```typescript
+try {
+  const result = await riskyOperation()
+  return result
+} catch (error) {
+  console.error('Operation failed:', error)
+  throw new Error('User-friendly message')
+}
+```
+
+#### Input Validation
+```typescript
+import { z } from 'zod'
+
+const schema = z.object({
+  email: z.string().email(),
+  age: z.number().int().min(0).max(150)
+})
+
+const validated = schema.parse(input)
+```
+
+## Hooks System
+
+Automated validation and quality checks at critical points.
+
+### Hook Lifecycle Events
+
+| Event | Hooks | Purpose |
+|-------|-------|---------|
+| **SessionStart** | 1 | Initialize session state |
+| **SessionEnd** | 1 | Persist session state |
+| **Stop** | 1 | Final cleanup |
+| **PreToolUse** | 4 | Pre-execution validation (Bash, Edit/Write, Prettier, SSRF) |
+| **PostToolUse** | 6 | Post-execution verification and monitoring |
+| **UserPromptSubmit** | 1 | Validate user input before processing |
+| **PreCompact** | 1 | Protect sensitive context during compaction |
+| **SubagentStart** | 1 | Monitor subagent initialization |
+| **SubagentStop** | 1 | Track subagent completion |
+| **PostToolUseFailure** | 2 | Recovery and circuit breaker |
+| **TeammateIdle** | 1 | Quality gates when idle |
+| **TaskCompleted** | 1 | Validate completed tasks |
+
+### Active Hooks
+
+**Pre-Tool Execution:**
+- `pre-tool-guard.js` (Bash) - Validate bash command safety
+- `pre-tool-guard.js` (Edit/Write) - File operation safety
+- `prettier --write` (Edit) - Auto-format before editing
+- `ssrf-guard.js` (WebFetch) - SSRF protection
+
+**Post-Tool Execution:**
+- `post-tool-verify.js` - Verify file operations
+- `architecture-guard.js` - Enforce architecture patterns
+- `test-runner.js` - Auto-run related tests
+- `cost-monitor.js` - Track session costs
+- `telemetry-collector.js` - Collect usage telemetry
+- `circuit-breaker.js` - Detect cascading failures
+
+**Failure Handling:**
+- `on-failure-recover.js` - Attempt recovery
+- `circuit-breaker.js` - Halt on cascading failures
+
+## Environment Configuration
+
+Configuration variables in `settings.json`:
+
+| Variable | Value | Purpose |
+|----------|-------|---------|
+| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | `50` | Auto-compact at 50% context |
+| `DISABLE_AUTOUPDATER` | `1` | Disable auto-updates |
+| `DISABLE_MICROCOMPACT` | `1` | Disable micro-compaction |
+| `DISABLE_ERROR_REPORTING` | `1` | Disable error reporting |
+| `CLAUDE_CODE_AUTO_CONNECT_IDE` | `1` | Auto-connect to IDE |
+| `CLAUDE_CODE_IDE_SKIP_AUTO_INSTALL` | `1` | Skip IDE auto-install |
+| `CLAUDE_CODE_IDE_SKIP_VALID_CHECK` | `1` | Skip IDE validation |
+| `CLAUDE_CODE_ENABLE_TELEMETRY` | `0` | Disable telemetry |
+| `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` | `1` | Reduce background traffic |
+| `MAX_THINKING_TOKENS` | `31999` | Max extended thinking |
+| `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | `1` | Enable agent team orchestration |
+| `ENABLE_TOOL_SEARCH` | `auto:8` | Tool search with 8 results |
+| `MAX_MCP_OUTPUT_TOKENS` | `50000` | Max MCP output |
+| `CLAUDE_CODE_ENABLE_COST_TRACKING` | `1` | Cost tracking enabled |
+| `CLAUDE_CODE_SUBAGENT_MODEL` | `haiku` | Default subagent model |
+| `ECC_HOOK_PROFILE` | `standard` | Hook profile level |
+| `CLAUDE_CODE_ENABLE_WORKTREE_ISOLATION` | `1` | Git worktree isolation |
+| `CLAUDE_CODE_MAX_SUBAGENT_DEPTH` | `3` | Max nesting depth |
+
+## Workflow Examples
+
+### Complete Feature Implementation
+
+```bash
+# 1. Plan the feature
+/plan
+# Review: phases, dependencies, risks
+
+# 2. Implement with tests
+/tdd
+# RED: Write tests
+# GREEN: Implement
+# IMPROVE: Refactor
+
+# 3. Comprehensive review
+/review-code
+# Functionality, security, performance, style
+
+# 4. Create pull request
+/create-pr
+# Auto-generates summary and test plan
+
+# 5. Release
+/release
+# Semantic versioning, changelog, create release
+```
+
+### Security-First Development
+
+```bash
+# 1. Security planning
+/security-scan
+# OWASP 2025 Top 10 audit
+
+# 2. Threat modeling
+/threat-model
+# STRIDE analysis, DREAD scoring
+
+# 3. Supply chain check
+/audit-supply-chain
+# Dependency security
+
+# 4. License audit
+/audit-license
+# Compliance verification
+
+# 5. Code review with security focus
+/review-code
+```
+
+### Bug Fix Workflow
+
+```bash
+# 1. Fix build errors
+/build-fix
+# Increment through errors
+
+# 2. Reproduce and test
+/tdd
+# Write test for bug
+# Fix bug
+# Verify test passes
+
+# 3. Review
+/review-code
+```
+
+### Database Migration
+
+```bash
+# 1. Design schema
+# (Review existing schema in postgres.md or mysql.md)
+
+# 2. Implement migration
+/tdd
+# Write migration test first
+
+# 3. Database review
+# Use database-reviewer agent
+```
+
+### Refactoring
+
+```bash
+# 1. Plan refactoring
+/plan
+
+# 2. Clean up dead code
+/refactor-clean
+# Uses knip, depcheck, ts-prune
+
+# 3. Verify no regressions
+/verify
+# Build, types, lint, tests, security
+
+# 4. Review
+/review-code
 ```
 
 ## Cost Optimization
 
-- Haiku model for trivial changes (`/quick-fix`)
-- Sonnet for standard development
-- Opus for architecture & security audits
-- `/clear` between major tasks
-- `Glob`/`Grep` preferred over full file reads
-- `Task(Explore)` for open-ended searches
+### Model Selection
+
+Choose the right model for the task:
+
+| Task | Model | Rationale |
+|------|-------|-----------|
+| Typo fixes, simple renames | **Haiku** | Minimal complexity |
+| Code explanation, Q&A | **Haiku/Sonnet** | Reading-focused |
+| Feature implementation | **Sonnet** | Balance of capability/cost |
+| Architecture design | **Opus** | Complex reasoning |
+| Security audits | **Opus** | Thoroughness |
+
+### Token Conservation
+
+**DO:**
+- Use `/clear` after major tasks
+- Prefer `Glob`/`Grep` over reading entire files
+- Request specific line ranges for large files
+- Use `Task(Explore)` for open-ended searches
+- Batch related questions in single prompts
+
+**DON'T:**
+- Read entire codebases "just in case"
+- Keep stale context across unrelated tasks
+- Request verbose explanations for simple operations
+- Run redundant searches for same information
+
+### Session Management
+
+- **Short sessions** (<30 min): Direct work, minimal exploration
+- **Long sessions** (>1 hr): Use `/clear` between phases
+- **Complex projects**: Plan first, then focused bursts
+
+## Security Practices
+
+### Mandatory Before Commit
+
+- [ ] No hardcoded secrets (API keys, passwords, tokens)
+- [ ] All user inputs validated
+- [ ] SQL injection prevention (parameterized queries)
+- [ ] XSS prevention (sanitized HTML)
+- [ ] CSRF protection enabled
+- [ ] Authentication/authorization verified
+- [ ] Rate limiting on all endpoints
+- [ ] Error messages don't leak sensitive data
+
+### Secret Management
+
+```typescript
+// NEVER: Hardcoded secrets
+const apiKey = "sk-proj-xxxxx"
+
+// ALWAYS: Environment variables
+const apiKey = process.env.OPENAI_API_KEY
+if (!apiKey) {
+  throw new Error('OPENAI_API_KEY not configured')
+}
+```
+
+### Dependency Management
+
+Before adding dependencies:
+
+1. **Audit first**
+   ```bash
+   npm audit              # Node.js
+   pip-audit              # Python
+   cargo audit            # Rust
+   ```
+
+2. **Check legitimacy**
+   - Verify package name (typosquatting risk)
+   - Check download counts and maintenance
+   - Review recent commits
+
+3. **Minimize attack surface**
+   - Fewer transitive dependencies
+   - Recent updates (not 2+ years old)
+   - Check Snyk/GitHub Advisory
+
+### Security Response
+
+If a vulnerability is found:
+
+1. **STOP immediately**
+2. **Use security-reviewer agent**
+3. **Fix CRITICAL issues before continuing**
+4. **Rotate exposed secrets**
+5. **Review codebase for similar issues**
+
+## Advanced Features
+
+### Agent Team Orchestration
+
+Enable experimental agent teams:
+```bash
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+```
+
+Launch coordinated multi-agent execution:
+```bash
+orchestrate [complex task]
+```
+
+### Extended Thinking
+
+Use for complex problems requiring deep reasoning:
+```bash
+/ultrathink
+# Enhanced thinking with multiple critique rounds
+```
+
+### Context Optimization
+
+Monitor and optimize context window:
+```bash
+/manage-context
+# Audit and optimize context usage
+```
+
+### Continuous Learning
+
+Extract and persist patterns from sessions:
+```bash
+/continuous-learning
+# Extract reusable patterns
+/instinct-manage
+# View, export, import learned patterns
+```
+
+## File Structure
+
+```
+/Users/gr1m0h/.claude/
+├── README.md              # This file
+├── CLAUDE.md              # User instructions
+├── settings.json          # Configuration
+├── agents/                # 39 specialized agents
+├── skills/                # 58 reusable skills
+├── rules/                 # 18 rule sets
+├── memory/
+│   ├── local/            # Session-local memory
+│   └── semantic/         # Long-term memory
+└── hooks/                # Automation hooks
+```
+
+## Getting Help
+
+### Find Related Documentation
+
+- **Test-driven development**: See `rules/testing.md`
+- **Security guidelines**: See `rules/global/security.md`
+- **API design**: See `rules/backend/api-guidelines.md`
+- **React patterns**: See `rules/frontend/react-patterns.md`
+- **Cost optimization**: See `rules/global/cost-optimization.md`
+
+### Use Specialized Agents
+
+- Complex problems: Use `planner` agent
+- Code review: Use `code-reviewer` agent
+- Security audit: Use `security-reviewer` agent
+- Build errors: Use `build-error-resolver` agent
+
+### Clear Context When Needed
+
+For long sessions, clear context between major phases:
+```bash
+/clear
+```
+
+This resets context while preserving important findings.
+
+---
+
+**Last Updated**: 2026-03-27
+**Model**: Claude Opus 4.6 for heavy tasks, Sonnet 4.5 for main development, Haiku 4.5 for lightweight tasks
+**Total Configuration**: 39 agents + 58 skills + 18 rules + 16 hooks
