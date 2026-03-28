@@ -42,6 +42,9 @@ IMPORTANT: @rules/global/security.md
 @rules/agents.md
 @rules/frontend/react-patterns.md
 @rules/backend/api-guidelines.md
+@rules/backend/ruby-patterns.md
+@rules/backend/php-patterns.md
+@rules/backend/go-patterns.md
 @rules/cognitive/uncertainty-expression.md
 @rules/token-optimization.md
 @rules/multi-agent.md

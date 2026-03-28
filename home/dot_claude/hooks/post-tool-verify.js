@@ -118,6 +118,52 @@ process.stdin.on("end", () => {
       tryExec(`goimports -w "${fp}" 2>/dev/null`, "goimports");
     }
 
+    // ── Ruby ──
+    if (ext === ".rb") {
+      const hasRubocop = (() => {
+        try {
+          execSync("rubocop --version", { stdio: "pipe", timeout: 3000 });
+          return true;
+        } catch {
+          return false;
+        }
+      })();
+      if (hasRubocop) {
+        tryExec(`rubocop -a "${fp}" 2>/dev/null`, "RuboCop");
+      }
+    }
+
+    // ── PHP ──
+    if (ext === ".php") {
+      const hasPhpCsFixer = (() => {
+        try {
+          execSync(
+            "php-cs-fixer --version 2>/dev/null || ./vendor/bin/php-cs-fixer --version 2>/dev/null",
+            { stdio: "pipe", timeout: 3000, shell: true }
+          );
+          return true;
+        } catch {
+          return false;
+        }
+      })();
+      if (hasPhpCsFixer) {
+        tryExec(
+          `php-cs-fixer fix "${fp}" --quiet 2>/dev/null || ./vendor/bin/php-cs-fixer fix "${fp}" --quiet 2>/dev/null`,
+          "PHP-CS-Fixer"
+        );
+      }
+      // PHPStan (if configured)
+      if (
+        fs.existsSync(path.join(projectDir, "phpstan.neon")) ||
+        fs.existsSync(path.join(projectDir, "phpstan.neon.dist"))
+      ) {
+        tryExec(
+          `./vendor/bin/phpstan analyse "${fp}" --no-progress 2>&1 | head -5`,
+          "PHPStan"
+        );
+      }
+    }
+
     // ── Rust ──
     if (ext === ".rs") {
       tryExec(`rustfmt "${fp}"`, "rustfmt");

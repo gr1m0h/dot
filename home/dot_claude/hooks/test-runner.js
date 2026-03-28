@@ -50,6 +50,14 @@ function findTestFile(srcPath) {
     // Python patterns
     srcPath.replace(/^src\//, 'tests/test_'),
     path.join(dir, `test_${base}${ext}`),
+    // Ruby patterns (RSpec)
+    srcPath.replace(/^(app|lib)\//, 'spec/').replace(ext, `_spec${ext}`),
+    path.join(dir.replace('/app/', '/spec/'), `${base}_spec${ext}`),
+    // Ruby patterns (Minitest)
+    srcPath.replace(/^(app|lib)\//, 'test/').replace(ext, `_test${ext}`),
+    // PHP patterns (PHPUnit)
+    srcPath.replace(/^(app|src)\//, 'tests/').replace(ext, `Test${ext}`),
+    path.join(dir.replace(/\/(app|src)\//, '/tests/'), `${base}Test${ext}`),
   ];
 
   for (const candidate of candidates) {
@@ -86,6 +94,22 @@ function detectTestFramework() {
   if (fs.existsSync('Cargo.toml')) return 'cargo-test';
   if (fs.existsSync('go.mod')) return 'go-test';
 
+  if (fs.existsSync('Gemfile')) {
+    try {
+      const gemfile = fs.readFileSync('Gemfile', 'utf8');
+      if (gemfile.includes('rspec')) return 'rspec';
+      return 'minitest';
+    } catch { return 'minitest'; }
+  }
+  if (fs.existsSync('composer.json')) {
+    try {
+      const composer = JSON.parse(fs.readFileSync('composer.json', 'utf8'));
+      const deps = { ...composer['require-dev'], ...composer.require };
+      if (deps['pestphp/pest']) return 'pest';
+      if (deps['phpunit/phpunit']) return 'phpunit';
+    } catch {}
+  }
+
   return null;
 }
 
@@ -99,6 +123,10 @@ function buildTestCommand(framework, testFile) {
     case 'pytest': return `python -m pytest "${relPath}" -v`;
     case 'cargo-test': return `cargo test`;
     case 'go-test': return `go test ./...`;
+    case 'rspec': return `bundle exec rspec "${relPath}" --format documentation`;
+    case 'minitest': return `bundle exec ruby "${relPath}"`;
+    case 'phpunit': return `./vendor/bin/phpunit "${relPath}"`;
+    case 'pest': return `./vendor/bin/pest "${relPath}"`;
     default: return null;
   }
 }

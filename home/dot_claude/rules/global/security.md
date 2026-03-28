@@ -19,7 +19,7 @@ CRITICAL: Mandatory for all code changes.
 - HTTPS only
 
 ## Dependencies
-- Audit before install (`npm audit`/`pip-audit`)
+- Audit before install (`npm audit`/`pip-audit`/`bundle audit`/`composer audit`/`govulncheck`)
 - No critical/high vulnerabilities
 - Pin versions, review source
 
@@ -35,11 +35,42 @@ CRITICAL: Mandatory for all code changes.
 - Secure cookies: HttpOnly, Secure, SameSite=Strict
 
 ## Forbidden
+
+### All Languages
+- Dynamic code execution with untrusted input
+- Insecure deserialization of untrusted data
+- `Math.random()` / `rand()` / `mt_rand()` for security-critical values
+
+### TypeScript / JavaScript
 - `eval()`, `Function()`, `exec()` with dynamic input
 - `dangerouslySetInnerHTML` without sanitization
+
+### Python
 - `pickle.loads()`, `yaml.load()` on untrusted data
 - `shell=True` with user input
-- `Math.random()` for security
+
+### Ruby
+- `eval()`, `send()`, `public_send()` with user input
+- `system()`, `exec()`, backticks, `%x{}` with unsanitized input
+- `Marshal.load()`, `YAML.load()` on untrusted data (use `YAML.safe_load`)
+- `constantize` / `safe_constantize` with user input
+- `render inline:` with user-controlled content
+
+### PHP
+- `eval()`, `assert()` with dynamic input
+- `exec()`, `system()`, `shell_exec()`, `passthru()`, `proc_open()` with user input
+- `unserialize()` on untrusted data (use `json_decode()`)
+- `extract()` on user input (mass assignment)
+- `include()` / `require()` with user-controlled paths (LFI/RFI)
+- `$$variable` (variable variables) with user input
+- `preg_replace()` with `/e` modifier
+
+### Go
+- `unsafe` package without explicit justification
+- `os/exec.Command()` with unsanitized user input
+- `reflect` for dynamic dispatch with user input
+- `cgo` without security review
+- `encoding/gob` for untrusted data (use `encoding/json`)
 
 ## Security Testing
 - Requires documented authorization

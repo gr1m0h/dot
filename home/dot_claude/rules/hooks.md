@@ -9,15 +9,21 @@
 ## Current Hooks (in ~/.claude/settings.json)
 
 ### PreToolUse
-- **tmux reminder**: Suggests tmux for long-running commands (npm, pnpm, yarn, cargo, etc.)
+- **tmux reminder**: Suggests tmux for long-running commands (npm, pnpm, yarn, cargo, bundle, composer, etc.)
 - **git push review**: Opens Zed for review before push
 - **doc blocker**: Blocks creation of unnecessary .md/.txt files
 
 ### PostToolUse
 - **PR creation**: Logs PR URL and GitHub Actions status
-- **Prettier**: Auto-formats JS/TS files after edit
-- **TypeScript check**: Runs tsc after editing .ts/.tsx files
-- **console.log warning**: Warns about console.log in edited files
+- **Auto-format/lint**: Language-aware formatting after edit
+  - JS/TS: Biome or ESLint + Prettier
+  - Python: Ruff or Black + Mypy
+  - Ruby: RuboCop
+  - PHP: PHP-CS-Fixer + PHPStan
+  - Go: gofmt + goimports
+  - Rust: rustfmt
+- **Type check**: Runs language-specific type checker (tsc, mypy, PHPStan)
+- **console.log warning**: Warns about debug output in edited files
 
 ### Stop
 - **console.log audit**: Checks all modified files for console.log before session ends

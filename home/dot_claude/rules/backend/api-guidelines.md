@@ -4,6 +4,10 @@ paths:
     - "src/routes/**/*.ts"
     - "src/server/**/*.ts"
     - "app/api/**/*.ts"
+    - "app/controllers/**/*.rb"
+    - "app/Http/Controllers/**/*.php"
+    - "internal/handler/**/*.go"
+    - "cmd/**/*.go"
 ---
 
 # API Development Rules
@@ -19,7 +23,12 @@ paths:
 ## Input Validation
 
 - Validate **all** input at the controller/handler layer before business logic
-- Use schema validation libraries (Zod, Joi, Yup, Pydantic) — not manual checks
+- Use schema validation libraries — not manual checks
+  - TypeScript: Zod, Joi, Yup
+  - Ruby: dry-validation, ActiveModel::Validations
+  - PHP: Laravel Validation, Respect/Validation
+  - Go: go-playground/validator, ozzo-validation
+  - Python: Pydantic
 - Reject unknown fields (strict mode) to prevent mass assignment
 - Validate path parameters, query parameters, headers, and body
 - Set maximum payload size limits
@@ -56,11 +65,16 @@ All error responses must follow a consistent structure:
 ## Database Access
 
 - Use an ORM or query builder — never raw SQL string concatenation
+  - TypeScript: Prisma, Drizzle, TypeORM
+  - Ruby: ActiveRecord, Sequel
+  - PHP: Eloquent, Doctrine
+  - Go: sqlc, GORM, ent
 - Parameterize all queries — no user input interpolation
 - Use transactions for multi-step operations that must be atomic
 - Paginate list endpoints — never return unbounded result sets
 - Add database indexes for frequently queried fields
 - Use connection pooling — never open/close connections per request
+  - Go: `sql.DB` handles pooling internally; configure `SetMaxOpenConns`/`SetMaxIdleConns`
 
 ## Response Design
 
