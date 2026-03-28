@@ -1,6 +1,6 @@
 ---
 name: threat-model
-description: Perform STRIDE threat modeling on the application architecture. Systematically identify threats, assess risks with DREAD scoring, and recommend mitigations.
+description: Perform STRIDE threat modeling on the application architecture. Use when user says "threat model", "STRIDE analysis", "identify threats", or "security architecture review". Systematically identifies threats, assesses risks with DREAD scoring, and recommends mitigations.
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash
 context: fork

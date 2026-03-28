@@ -1,6 +1,6 @@
 ---
 name: parallel
-description: Execute independent skills in parallel
+description: Execute independent skills in parallel for faster results. Use when user says "run in parallel", "parallel skills", or pipes multiple skill names with "|". Integrates results after all skills complete.
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash
 ---

@@ -1,11 +1,11 @@
 ---
 name: property-test
-description: Design and implement property-based tests for a target module
+description: Design and implement property-based tests that verify invariants across randomized inputs. Use when user says "property test", "invariant test", "fuzz inputs", or wants to discover edge cases that example-based tests miss.
 user-invocable: true
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash
 context: fork
 agent: property-tester
-argument-hint: "<target-module-or-function>"
+argument-hint: "[target-module-or-function]"
 ---
 
 Design and implement property-based tests for the specified target.

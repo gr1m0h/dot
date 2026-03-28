@@ -1,6 +1,6 @@
 ---
 name: firmware-audit
-description: Audit firmware code for security vulnerabilities and embedded best practices
+description: Audit firmware and embedded code for security vulnerabilities and best practices. Use when user says "firmware audit", "embedded security", "IoT security check", or working with C/C++/Rust firmware. Checks for hardcoded credentials, buffer overflows, and insecure boot.
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash
 context: fork

@@ -1,5 +1,6 @@
 ---
-description: Sync documentation from source-of-truth (package.json, .env.example). Generates CONTRIB.md and RUNBOOK.md, identifies stale docs (90+ days).
+name: update-docs
+description: Sync documentation from source-of-truth files (package.json, .env.example). Use when user says "update docs", "sync documentation", "generate CONTRIB", or "find stale docs". Generates CONTRIB.md and RUNBOOK.md, identifies stale docs (90+ days).
 ---
 
 # Update Documentation

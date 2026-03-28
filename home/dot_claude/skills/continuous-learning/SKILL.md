@@ -1,6 +1,6 @@
 ---
 name: continuous-learning
-description: Automatically extract reusable patterns from Claude Code sessions and save them as learned skills for future use.
+description: Automatically extract reusable patterns from Claude Code sessions and save as learned skills. Use when user says "continuous learning", "auto-learn", or at session end to capture debugging techniques, workarounds, and reusable patterns for future use.
 ---
 
 # Continuous Learning Skill

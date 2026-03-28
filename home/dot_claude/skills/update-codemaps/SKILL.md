@@ -1,5 +1,6 @@
 ---
-description: Analyze codebase structure and update architecture documentation. Generates codemaps with diff tracking.
+name: update-codemaps
+description: Analyze codebase structure and generate architecture documentation with diff tracking. Use when user says "update codemaps", "generate architecture docs", "map codebase structure", or after significant structural changes.
 ---
 
 # Update Codemaps

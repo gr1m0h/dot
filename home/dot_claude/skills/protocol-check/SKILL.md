@@ -1,11 +1,11 @@
 ---
 name: protocol-check
-description: Analyze communication protocol implementation for correctness and security
+description: Analyze communication protocol implementation for correctness and security. Use when user says "check protocol", "protocol analysis", "verify protocol", or reviewing HTTP, WebSocket, gRPC, or custom protocol implementations.
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash
 context: fork
 agent: protocol-analyzer
-argument-hint: "<protocol-implementation-file-or-module>"
+argument-hint: "[protocol-implementation-file-or-module]"
 ---
 
 Analyze the protocol implementation for correctness and security.

@@ -1,5 +1,6 @@
 ---
-description: Sequential agent workflow for complex tasks. Supports feature/bugfix/refactor/security/custom workflows with handoff documents.
+name: orchestrate
+description: Run sequential multi-agent workflows for complex tasks. Use when user says "orchestrate", "run workflow", "feature workflow", or "agent pipeline". Supports feature/bugfix/refactor/security/custom workflows with handoff documents.
 ---
 
 # Orchestrate Command

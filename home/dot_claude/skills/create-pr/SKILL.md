@@ -1,6 +1,6 @@
 ---
 name: create-pr
-description: Analyze changes, generate a well-structured PR, and create it via gh CLI
+description: Analyze changes, generate a well-structured PR, and create it via gh CLI. Use when user says "create PR", "open pull request", "submit PR", or after completing a feature branch. Includes summary, risk assessment, and test plan.
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash
 argument-hint: "[base-branch]"

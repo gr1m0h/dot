@@ -1,5 +1,6 @@
 ---
-description: Safely identify and remove dead code with test verification. Uses knip, depcheck, ts-prune for analysis.
+name: refactor-clean
+description: Safely identify and remove dead code with test verification. Use when user says "clean up dead code", "remove unused exports", "find unused dependencies", or "refactor cleanup". Uses knip, depcheck, ts-prune for analysis.
 ---
 
 # Refactor Clean

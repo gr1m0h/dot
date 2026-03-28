@@ -1,3 +1,8 @@
+---
+name: eval-harness
+description: Formal evaluation framework implementing eval-driven development principles. Use when user says "setup eval harness", "eval framework", or "evaluation-driven development". Defines capability/regression evals with pass@k metrics and multiple grader types.
+---
+
 # Eval Harness Skill
 
 A formal evaluation framework for Claude Code sessions, implementing eval-driven development (EDD) principles.

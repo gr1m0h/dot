@@ -1,6 +1,6 @@
 ---
 name: search-memory
-description: Search and retrieve relevant information from the cognitive memory system
+description: Search and retrieve relevant information from the cognitive memory system. Use when user says "search memory", "recall", "what do I know about", or needs to find previously saved learnings, decisions, and patterns.
 user-invocable: true
 allowed-tools: Read, Grep, Glob
 ---

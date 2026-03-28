@@ -1,6 +1,6 @@
 ---
 name: manage-context
-description: Audit and optimize context window usage, memory files, and session efficiency
+description: Audit and optimize context window usage, memory files, and session efficiency. Use when user says "manage context", "context health", "optimize memory", or when session feels slow. Checks CLAUDE.md size, memory staleness, and recommends /clear timing.
 user-invocable: true
 allowed-tools: Read, Write, Grep, Glob, Bash
 ---

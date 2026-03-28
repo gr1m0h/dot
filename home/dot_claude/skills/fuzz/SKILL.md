@@ -1,11 +1,11 @@
 ---
 name: fuzz
-description: Set up and run fuzz testing on target functions or modules
+description: Set up and run fuzz testing to discover crashes, edge cases, and security vulnerabilities. Use when user says "fuzz test", "fuzz this function", "find edge cases", or wants to stress-test input handling with randomized data.
 user-invocable: true
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash
 context: fork
 agent: fuzzer
-argument-hint: "<target-function-or-file> [--iterations N] [--strategy mutation|generation]"
+argument-hint: "[target-function-or-file] [--iterations N] [--strategy mutation|generation]"
 ---
 
 Set up and run fuzz testing for the specified target.

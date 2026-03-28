@@ -1,6 +1,6 @@
 ---
 name: ensemble-vote
-description: Execute ensemble voting for important decisions
+description: Execute ensemble voting with multiple reasoning paths for important decisions. Use when user says "ensemble vote", "multi-perspective analysis", "get multiple opinions", or facing high-risk architectural or design choices.
 user-invocable: true
 allowed-tools: Read, Grep, Glob
 context: fork

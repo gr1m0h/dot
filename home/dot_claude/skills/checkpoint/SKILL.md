@@ -1,5 +1,6 @@
 ---
-description: Create or verify workflow checkpoints with git integration. Logs to .claude/checkpoints.log.
+name: checkpoint
+description: Create, verify, or list workflow checkpoints with git integration. Use when user says "checkpoint", "save progress", "verify checkpoint", or wants to track workflow milestones. Logs to .claude/checkpoints.log.
 ---
 
 # Checkpoint Command

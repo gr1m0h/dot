@@ -1,6 +1,6 @@
 ---
 name: chain
-description: Build chains that execute multiple skills sequentially
+description: Build and execute chains that run multiple skills sequentially with data passing. Use when user says "chain skills", "run sequence", "pipeline", or needs to compose multiple skills into a single workflow.
 user-invocable: true
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash
 ---

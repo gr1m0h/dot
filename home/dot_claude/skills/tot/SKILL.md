@@ -1,6 +1,6 @@
 ---
 name: tot
-description: Find the optimal solution using Tree of Thoughts exploration
+description: Find the optimal solution by exploring multiple reasoning paths using Tree of Thoughts. Use when user says "tree of thoughts", "explore options", "find best approach", or facing complex problems with multiple viable solutions.
 user-invocable: true
 allowed-tools: Read, Grep, Glob
 context: fork

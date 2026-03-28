@@ -1,5 +1,6 @@
 ---
-description: Run comprehensive verification on current codebase state. Supports quick/full/pre-commit/pre-pr arguments.
+name: verify
+description: Run comprehensive verification on current codebase state including build, types, lint, tests, and security checks. Use when user says "verify", "check everything", "is it ready for PR", or "run all checks". Supports quick/full/pre-commit/pre-pr arguments.
 ---
 
 # Verification Command

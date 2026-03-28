@@ -1,5 +1,6 @@
 ---
-description: Manage eval-driven development workflow. Define, check, report, and list evals with pass@k metrics.
+name: eval
+description: Manage eval-driven development workflow with define, check, report, and list commands. Use when user says "define eval", "check evals", "eval report", or "list evals". Tracks pass@k metrics for capability and regression evals.
 ---
 
 # Eval Command

@@ -1,6 +1,6 @@
 ---
 name: reflect
-description: Structured reflection on completed work using Reflexion framework with persistent learnings
+description: Structured reflection on completed work using the Reflexion framework. Use when user says "reflect", "session review", "what did I learn", or after completing a complex task. Extracts persistent learnings and saves reusable patterns.
 user-invocable: true
 allowed-tools: Read, Write, Grep
 ---

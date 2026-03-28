@@ -1,6 +1,6 @@
 ---
 name: mutation-test
-description: Run mutation testing to evaluate test suite quality
+description: Run mutation testing to evaluate test suite quality. Use when user says "mutation test", "test quality", "are my tests strong enough", or "find weak tests". Introduces code mutations and reports mutation score with suggestions for improvement.
 user-invocable: true
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash
 context: fork

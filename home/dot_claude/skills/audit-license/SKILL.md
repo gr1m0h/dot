@@ -1,6 +1,6 @@
 ---
 name: audit-license
-description: Run comprehensive license compliance audit on project dependencies
+description: Run comprehensive license compliance audit on project dependencies. Use when user says "audit licenses", "check license compliance", "dependency licenses", or before releasing open source software. Classifies by risk level and flags violations.
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash
 context: fork

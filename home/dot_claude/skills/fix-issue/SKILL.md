@@ -1,6 +1,6 @@
 ---
 name: fix-issue
-description: Systematically investigate and fix a GitHub Issue with root cause analysis
+description: Systematically investigate and fix a GitHub Issue with root cause analysis. Use when user says "fix issue", "fix #123", "investigate bug", or provides a GitHub issue number. Follows reproduce-diagnose-fix-verify workflow.
 user-invocable: true
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash
 argument-hint: "[issue-number]"

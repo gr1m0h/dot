@@ -1,5 +1,6 @@
 ---
-description: Restate requirements, assess risks, and create step-by-step implementation plan. WAIT for user CONFIRM before touching any code.
+name: plan
+description: Create step-by-step implementation plans with risk assessment before writing code. Use when user says "plan", "design feature", "architect solution", or starting complex features. WAITS for user confirmation before proceeding.
 ---
 
 # Plan Command

@@ -1,5 +1,6 @@
 ---
-description: Generate and run end-to-end tests with Playwright. Creates test journeys, runs tests, captures screenshots/videos/traces, and uploads artifacts.
+name: e2e
+description: Generate and run end-to-end tests with Playwright. Use when user says "run e2e", "end-to-end test", "playwright test", or "test user flow". Creates test journeys, captures screenshots/videos/traces, and detects flaky tests.
 ---
 
 # E2E Command

@@ -1,6 +1,6 @@
 ---
 name: audit-supply-chain
-description: Analyze software supply chain for security risks and vulnerabilities
+description: Analyze software supply chain for security risks and vulnerabilities. Use when user says "audit supply chain", "dependency security", "check for typosquatting", or before adding new dependencies. Checks provenance, signatures, and known vulnerabilities.
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash
 context: fork

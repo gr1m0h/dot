@@ -1,6 +1,6 @@
 ---
 name: release
-description: Automate semantic versioning, changelog generation, and release creation
+description: Automate semantic versioning, changelog generation, and release creation. Use when user says "release", "bump version", "create release", "publish", or preparing a new version for distribution.
 user-invocable: true
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash
 context: fork

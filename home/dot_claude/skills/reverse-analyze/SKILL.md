@@ -1,11 +1,11 @@
 ---
 name: reverse-analyze
-description: Perform reverse engineering analysis on code or binary for security research
+description: Perform reverse engineering analysis on code or binary for security research. Use when user says "reverse engineer", "analyze binary", "decompile", or investigating undocumented systems and legacy code.
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash
 context: fork
 agent: reverse-engineer
-argument-hint: "<target-file-or-directory>"
+argument-hint: "[target-file-or-directory]"
 ---
 
 Perform reverse engineering analysis for security research.

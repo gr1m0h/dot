@@ -1,5 +1,6 @@
 ---
-description: Incrementally fix TypeScript and build errors. One error at a time, stops if same error persists after 3 attempts.
+name: build-fix
+description: Incrementally fix TypeScript and build errors one at a time. Use when user says "build fails", "fix build errors", "tsc errors", "type errors", or when build/compile commands fail. Stops if same error persists after 3 attempts.
 ---
 
 # Build and Fix

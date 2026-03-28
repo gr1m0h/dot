@@ -1,6 +1,6 @@
 ---
 name: pr-summary
-description: Generate a comprehensive Pull Request summary with risk assessment
+description: Generate a comprehensive Pull Request summary with risk assessment. Use when user says "PR summary", "summarize PR", "review pull request", or provides a PR number. Classifies changes, assesses risks, and identifies review focus areas.
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash
 argument-hint: "[pr-number]"
@@ -23,13 +23,17 @@ Categorize this PR:
 - **Scope**: Which modules/components are affected
 - **Size**: S (< 50 lines) / M (50-200) / L (200-500) / XL (500+)
 
-### 2. Change Summary
+### 2. PR Title Generation
+
+Generate a concise, descriptive PR title in English (under 70 characters). Follow Conventional Commits format: `<type>: <description>`.
+
+### 3. Change Summary
 
 - What problem does this PR solve?
 - What approach was taken?
 - What are the key implementation decisions?
 
-### 3. Risk Assessment
+### 4. Risk Assessment
 
 | Risk Factor | Level | Details |
 |------------|-------|---------|
@@ -39,11 +43,11 @@ Categorize this PR:
 | Test coverage | LOW/MED/HIGH | [details] |
 | Rollback difficulty | LOW/MED/HIGH | [details] |
 
-### 4. Review Focus Areas
+### 5. Review Focus Areas
 
 Identify the most critical files/sections that reviewers should focus on, with specific line references and reasoning.
 
-### 5. Missing Items Check
+### 6. Missing Items Check
 
 - [ ] Tests for new/changed behavior
 - [ ] Documentation updates
@@ -53,41 +57,48 @@ Identify the most critical files/sections that reviewers should focus on, with s
 
 ## Output Format
 
-Output the summary in the following markdown format:
+Output the summary directly as rendered markdown (NOT inside a code block). Use the following structure:
 
-```markdown
+---
+
 ## PR Summary
 
-**Type**: feature / bugfix / refactor / docs / test / chore / security
-**Scope**: [affected modules/components]
-**Size**: S / M / L / XL
+**Suggested Title**: `<type>: <English description under 70 chars>`
+
+| Field | Value |
+|-------|-------|
+| Type | feature / bugfix / refactor / docs / test / chore / security |
+| Scope | affected modules/components |
+| Size | S / M / L / XL |
 
 ### What
 
-[1-2 sentence description of what this PR does]
+1-2 sentence description of what this PR does.
 
 ### Why
 
-[1-2 sentence description of the problem being solved]
+1-2 sentence description of the problem being solved.
 
 ### How
 
-[Key implementation decisions and approach taken]
+Key implementation decisions and approach taken.
 
 ### Risk Assessment
 
 | Risk Factor | Level | Details |
-|------------|-------|---------|
-| Breaking changes | LOW/MED/HIGH | [details] |
-| Security impact | LOW/MED/HIGH | [details] |
-| Performance impact | LOW/MED/HIGH | [details] |
-| Test coverage | LOW/MED/HIGH | [details] |
-| Rollback difficulty | LOW/MED/HIGH | [details] |
+|:--|:--|:--|
+| Breaking changes | LOW/MED/HIGH | details |
+| Security impact | LOW/MED/HIGH | details |
+| Performance impact | LOW/MED/HIGH | details |
+| Test coverage | LOW/MED/HIGH | details |
+| Rollback difficulty | LOW/MED/HIGH | details |
 
 ### Review Focus Areas
 
-- `path/to/file.ts:L10-L25` - [reason to focus here]
-- `path/to/file.ts:L42` - [reason to focus here]
+| File | Lines | Reason |
+|:--|:--|:--|
+| `path/to/file.ts` | L10-L25 | reason to focus here |
+| `path/to/file.ts` | L42 | reason to focus here |
 
 ### Checklist
 
@@ -96,4 +107,7 @@ Output the summary in the following markdown format:
 - [ ] Migration steps (if breaking)
 - [ ] Error handling for new paths
 - [ ] Logging for observability
-```
+
+---
+
+IMPORTANT: Output as rendered markdown directly. Do NOT wrap the output in a code fence.

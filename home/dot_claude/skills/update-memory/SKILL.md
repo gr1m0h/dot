@@ -1,6 +1,6 @@
 ---
 name: update-memory
-description: Persist new knowledge, update existing entries, and maintain the cognitive memory system
+description: Persist new knowledge, update existing entries, and maintain the cognitive memory system. Use when user says "update memory", "save learning", "remember this", or "auto" to extract patterns from the current session.
 user-invocable: true
 allowed-tools: Read, Write, Edit, Grep, Glob
 ---

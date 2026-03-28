@@ -1,5 +1,6 @@
 ---
-description: Comprehensive security and quality review of uncommitted changes. Checks for hardcoded credentials, XSS, SQL injection, and blocks commit if CRITICAL/HIGH issues found.
+name: code-review
+description: Comprehensive security and quality review of uncommitted changes. Use when user says "review my code", "check for security issues", "pre-commit review", or before committing. Checks for hardcoded credentials, XSS, SQL injection, and blocks commit if CRITICAL/HIGH issues found.
 ---
 
 # Code Review

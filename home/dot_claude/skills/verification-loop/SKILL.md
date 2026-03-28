@@ -1,3 +1,8 @@
+---
+name: verification-loop
+description: Run comprehensive build, type, lint, test, and security verification phases. Use when user says "verification loop", "run all checks", "pre-PR verification", or after completing a feature. Reports overall readiness status.
+---
+
 # Verification Loop Skill
 
 A comprehensive verification system for Claude Code sessions.

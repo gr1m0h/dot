@@ -1,6 +1,6 @@
 ---
 name: dashboard
-description: Analyze telemetry data and display a dashboard
+description: Analyze telemetry data and display a session performance dashboard. Use when user says "dashboard", "show stats", "session metrics", or "telemetry report". Visualizes tool usage, token consumption, and session efficiency.
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash
 ---

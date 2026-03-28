@@ -1,5 +1,6 @@
 ---
-description: Extract reusable patterns from current session and save as skills. Focuses on error resolution, debugging techniques, and workarounds.
+name: learn
+description: Extract reusable patterns from the current session and save as skills. Use when user says "learn", "extract pattern", "save this technique", or after solving a non-trivial problem. Focuses on error resolution, debugging techniques, and workarounds.
 ---
 
 # /learn - Extract Reusable Patterns

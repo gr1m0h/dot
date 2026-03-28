@@ -1,5 +1,6 @@
 ---
-description: Analyze test coverage and generate missing tests for files below 80% threshold.
+name: test-coverage
+description: Analyze test coverage and generate missing tests for files below 80% threshold. Use when user says "check coverage", "improve coverage", "find untested code", or "coverage report".
 ---
 
 # Test Coverage

@@ -14,7 +14,11 @@
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "ENABLE_TOOL_SEARCH": "auto:8",
     "MAX_MCP_OUTPUT_TOKENS": "50000",
-    "CLAUDE_CODE_ENABLE_COST_TRACKING": "1"
+    "CLAUDE_CODE_ENABLE_COST_TRACKING": "1",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "haiku",
+    "ECC_HOOK_PROFILE": "standard",
+    "CLAUDE_CODE_ENABLE_WORKTREE_ISOLATION": "1",
+    "CLAUDE_CODE_MAX_SUBAGENT_DEPTH": "3"
   },
   "includeCoAuthoredBy": false,
   "permissions": {
@@ -35,8 +39,14 @@
       "Bash(git stash *)",
       "Bash(git fetch *)",
       "Bash(gh issue *)",
-      "Bash(gh pr view *)",
-      "Bash(gh pr diff *)",
+      "Bash(gh pr *)",
+      "Bash(gh api *)",
+      "Bash(cargo *)",
+      "Bash(go *)",
+      "Bash(python3 *)",
+      "Bash(pip *)",
+      "Bash(gh run *)",
+      "Bash(gh workflow *)",
       "Read(src/**)",
       "Read(lib/**)",
       "Read(app/**)",
@@ -44,6 +54,9 @@
       "Read(test/**)",
       "Read(spec/**)",
       "Read(docs/**)",
+      "Read(config/**)",
+      "Read(scripts/**)",
+      "Read(.github/**)",
       "Read(*.md)",
       "Read(*.json)",
       "Read(*.yaml)",
@@ -94,13 +107,20 @@
       "Edit(package-lock.json)",
       "Edit(yarn.lock)",
       "Edit(pnpm-lock.yaml)",
-      "Edit(bun.lockb)"
+      "Edit(bun.lockb)",
+      "Edit(*.lock)",
+      "Bash(*pickle.loads*)",
+      "Bash(*yaml.load*)"
     ],
     "ask": [
       "Bash(git push *)",
+      "Bash(git push --force-with-lease *)",
       "Bash(gh pr create *)",
       "Bash(npm publish *)",
       "Bash(docker *)",
+      "Bash(pip install *)",
+      "Bash(cargo add *)",
+      "Bash(go get *)",
       "Edit(package.json)",
       "Edit(tsconfig.json)",
       "Edit(*.config.*)",
@@ -109,7 +129,6 @@
     ],
     "defaultMode": "default"
   },
-  "model": "opus",
   "enableAllProjectMcpServers": true,
   "hooks": {
     "SessionStart": [
@@ -128,6 +147,17 @@
           {
             "type": "command",
             "command": "node \"$HOME\"/.claude/hooks/session-end.js"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/session-end.js",
+            "async": true
           }
         ]
       }
@@ -314,7 +344,7 @@
   },
   "language": "japanese",
   "sandbox": {
-    "enabled": true,
+    "enabled": false,
     "autoAllowBashIfSandboxed": true,
     "allowUnsandboxedCommands": false,
     "network": {
