@@ -1,4 +1,4 @@
-# util
+ # util
 bindkey -v
 setopt no_beep
 setopt auto_cd
@@ -55,6 +55,8 @@ zstyle ":completion:*:commands" rehash 1
 
 # Docker
 export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
+mkdir -p ~/.docker/cli-plugins
+ln -sfn "$(mise where aqua:docker/compose)/docker-cli-plugin-docker-compose" ~/.docker/cli-plugins/docker-compose
 
 # Programming languages
 export PATH=$GOPATH/bin:$PATH
