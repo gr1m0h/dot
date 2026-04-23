@@ -3,7 +3,6 @@
   "env": {
     "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50",
     "DISABLE_AUTOUPDATER": "1",
-    "DISABLE_MICROCOMPACT": "1",
     "DISABLE_ERROR_REPORTING": "1",
     "CLAUDE_CODE_AUTO_CONNECT_IDE": "1",
     "CLAUDE_CODE_IDE_SKIP_AUTO_INSTALL": "1",
@@ -13,7 +12,7 @@
     "MAX_THINKING_TOKENS": "31999",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "ENABLE_TOOL_SEARCH": "auto:8",
-    "MAX_MCP_OUTPUT_TOKENS": "50000",
+    "MAX_MCP_OUTPUT_TOKENS": "25000",
     "CLAUDE_CODE_ENABLE_COST_TRACKING": "1",
     "CLAUDE_CODE_SUBAGENT_MODEL": "haiku",
     "ECC_HOOK_PROFILE": "standard",
@@ -381,7 +380,9 @@
     ]
   },
   "alwaysThinkingEnabled": true,
+  "effortLevel": "high",
   "autoUpdatesChannel": "stable",
   "plansDirectory": "./.claude/plans",
+  "skipDangerousModePermissionPrompt": true,
   "teammateMode": "in-process"
 }

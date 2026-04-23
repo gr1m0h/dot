@@ -8,6 +8,7 @@ Located in `~/.claude/agents/`:
 |-------|---------|-------------|
 | planner | Implementation planning | Complex features, refactoring |
 | architect | System design | Architectural decisions |
+| evaluator | Skeptical evaluation | After implementation, against success criteria |
 | tdd-guide | Test-driven development | New features, bug fixes |
 | code-reviewer | Code review | After writing code |
 | security-reviewer | Security analysis | Before commits |
@@ -19,25 +20,57 @@ Located in `~/.claude/agents/`:
 ## Immediate Agent Usage
 
 No user prompt needed:
-1. Complex feature requests - Use **planner** agent
-2. Code just written/modified - Use **code-reviewer** agent
-3. Bug fix or new feature - Use **tdd-guide** agent
-4. Architectural decision - Use **architect** agent
+1. Complex feature requests → **planner** agent
+2. Code just written/modified → **code-reviewer** agent
+3. Implementation complete → **evaluator** agent (separate from generator)
+4. Bug fix or new feature → **tdd-guide** agent
+5. Architectural decision → **architect** agent
 
-## Parallel Task Execution
+## Parallel Execution
 
-ALWAYS use parallel Task execution for independent operations:
+ALWAYS parallelize independent operations:
+- Multiple file reads → single message, multiple Read calls
+- Independent searches → parallel Grep/Glob calls
+- Unrelated agent tasks → parallel Task calls
+- Review + security → run code-reviewer and security-reviewer in parallel
 
-```markdown
-# GOOD: Parallel execution
-Launch 3 agents in parallel:
-1. Agent 1: Security analysis of auth.ts
-2. Agent 2: Performance review of cache system
-3. Agent 3: Type checking of utils.ts
+## Iterative Retrieval
 
-# BAD: Sequential when unnecessary
-First agent 1, then agent 2, then agent 3
-```
+Progressive context refinement (never read entire files upfront):
+1. Broad: Glob for file patterns
+2. Narrow: Grep for specific content
+3. Deep: Read targeted file sections
+4. Verify: Cross-reference with related files
+
+## Subagent Strategy
+
+| Task Type | Subagent | Model |
+|-----------|----------|-------|
+| Codebase exploration | Explore | haiku |
+| Implementation plan | planner | sonnet |
+| Architecture review | architect | opus |
+| Code review | code-reviewer | sonnet |
+| Skeptical evaluation | evaluator | sonnet |
+| Security analysis | security-reviewer | opus |
+| Build error fixing | build-error-resolver | sonnet |
+| Multi-step coordination | orchestrator | sonnet |
+
+## Context Isolation
+
+- Use `isolation: "worktree"` for risky file modifications
+- Delegate exploratory work to subagents to preserve main context
+- Chain results between agents via Task resume (agent ID)
+
+## Cascade Pipeline
+
+Standard feature pipeline:
+1. **Plan** (planner) → implementation strategy + success criteria
+2. **Implement** (coder) → write code with tests
+3. **Evaluate** (evaluator) → grade against success criteria
+4. **Review** (code-reviewer) → quality check
+5. **Security** (security-reviewer) → vulnerability scan
+
+Run steps 4 and 5 in parallel. Loop back to 2 if evaluator returns FAIL.
 
 ## Multi-Perspective Analysis
 

@@ -107,10 +107,10 @@ if err != nil {
 
 ## Input Validation
 
-ALWAYS validate user input:
+ALWAYS validate user input. Use schema validation libraries:
 
-### TypeScript (Zod)
 ```typescript
+// TypeScript (Zod)
 import { z } from 'zod'
 
 const schema = z.object({
@@ -121,43 +121,4 @@ const schema = z.object({
 const validated = schema.parse(input)
 ```
 
-### Ruby (dry-validation)
-```ruby
-class UserContract < Dry::Validation::Contract
-  params do
-    required(:email).filled(:string)
-    required(:age).filled(:integer, gt?: 0, lteq?: 150)
-  end
-end
-```
-
-### PHP (Laravel)
-```php
-$validated = $request->validate([
-    'email' => 'required|email',
-    'age' => 'required|integer|min:0|max:150',
-]);
-```
-
-### Go (validator)
-```go
-type UserInput struct {
-    Email string `validate:"required,email"`
-    Age   int    `validate:"required,min=0,max=150"`
-}
-
-validate := validator.New()
-err := validate.Struct(input)
-```
-
-## Code Quality Checklist
-
-Before marking work complete:
-- [ ] Code is readable and well-named
-- [ ] Functions are small (<50 lines)
-- [ ] Files are focused (<800 lines)
-- [ ] No deep nesting (>4 levels)
-- [ ] Proper error handling
-- [ ] No console.log statements
-- [ ] No hardcoded values
-- [ ] No mutation (immutable patterns used)
+See `@rules/backend/api-guidelines.md` for framework-specific validation (Ruby: dry-validation, PHP: Laravel, Go: validator).
