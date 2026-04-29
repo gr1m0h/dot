@@ -68,4 +68,6 @@ vim.opt.termguicolors = true
 
 vim.g.noexpandtab = true
 
+vim.g.mkdp_theme = "light"
+
 vim.loader.enable()
