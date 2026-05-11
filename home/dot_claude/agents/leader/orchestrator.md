@@ -5,7 +5,7 @@ tools: Read, Grep, Glob, Task
 disallowedTools: Write, Edit
 model: opus
 maxTurns: 50
-permissionMode: delegate
+permissionMode: default
 memory: project
 ---
 

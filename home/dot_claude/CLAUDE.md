@@ -7,6 +7,13 @@
 - Architectural changes: full spec-driven with `/plan` and review checkpoint before coding
 - Batch editing 10+ files: pause after first 3-5 edits to confirm approach
 
+## Context Engineering (2026 Core Paradigm)
+
+- Context > Prompt: 構造化されたコンテキスト設計がモデル性能を決定する
+- Progressive Disclosure: ドメイン知識はスキルに格納し、オンデマンドでロード（CLAUDE.md肥大化防止）
+- Skills-first Loading: 共通パターンを毎回ロードせず、トリガー時のみ展開（トークン30-70%削減）
+- Context Rot対策: 1M windowでも300k-400k超でパフォーマンス劣化が始まる
+
 ## Interaction Modes
 
 Switch modes by typing the mode name (e.g., "learning", "guided", "speed").
@@ -32,18 +39,21 @@ Activate by typing "speed". No constraints — implement at maximum velocity.
 ## Rules
 
 IMPORTANT: @rules/global/security.md
+@rules/global/llm-security.md
 @rules/global/coding-standards.md
 @rules/global/cost-optimization.md
 @rules/global/supply-chain-security.md
+@rules/global/context-engineering.md
 @rules/harness-engineering.md
-@rules/git-workflow.md
-@rules/patterns.md
 @rules/performance.md
-@rules/testing.md
-@rules/agents.md
-@rules/coding-style.md
-@rules/continuous-learning.md
-@rules/cognitive/uncertainty-expression.md
+
+On-demand (loaded by skills when triggered, not always):
+- Coding style/patterns → `/coding-standards` skill
+- Testing requirements → `/tdd`, `/tdd-workflow`, `/test-coverage` skills
+- Git workflow / PR creation → `/create-pr`, `/pr-summary`, `/release` skills
+- Continuous learning → `/learn`, `/reflect` skills
+- Uncertainty expression → `/ensemble-vote` skill
+- Agent orchestration → agents auto-discovered from `~/.claude/agents/`
 
 Language/framework rules — add per-project in `.claude/CLAUDE.md`:
 - `@rules/frontend/react-patterns.md` (React/Next.js projects)
@@ -61,6 +71,8 @@ Language/framework rules — add per-project in `.claude/CLAUDE.md`:
 5. **Evaluate**: Use evaluator agent or mechanical checks — never self-assess
 6. **Commit**: Descriptive message; `/compact` at task milestones; `/clear` between unrelated projects
 7. **Exit**: Verify working state, update session state
+
+Context recovery: `/rewind` for failed attempts, `/btw` for side questions without context pollution
 
 ## Evaluation
 

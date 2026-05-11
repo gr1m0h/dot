@@ -44,16 +44,19 @@ Progressive context refinement (never read entire files upfront):
 
 ## Subagent Strategy
 
-| Task Type | Subagent | Model |
-|-----------|----------|-------|
-| Codebase exploration | Explore | haiku |
-| Implementation plan | planner | sonnet |
-| Architecture review | architect | opus |
-| Code review | code-reviewer | sonnet |
-| Skeptical evaluation | evaluator | sonnet |
-| Security analysis | security-reviewer | opus |
-| Build error fixing | build-error-resolver | sonnet |
-| Multi-step coordination | orchestrator | sonnet |
+Haiku 4.5 is now credible for short-context coding (73.3% capability, 3x cheaper).
+
+| Task Type | Subagent | Model | Notes |
+|-----------|----------|-------|-------|
+| Codebase exploration | Explore | haiku | Fresh context per child |
+| Implementation plan | planner | sonnet | Balance of capability/cost |
+| Architecture review | architect | opus | Complex cross-system reasoning |
+| Code review | code-reviewer | sonnet | Standard complexity |
+| Skeptical evaluation | evaluator | sonnet | Independent from generator |
+| Security analysis | security-reviewer | opus | Thoroughness critical |
+| Build error fixing | build-error-resolver | sonnet | Incremental fixing |
+| Multi-step coordination | orchestrator | sonnet | Team coordination |
+| Simple lookups, Q&A | general-purpose | haiku | Cost-efficient |
 
 ## Context Isolation
 

@@ -1,5 +1,7 @@
 # Supply Chain Security
 
+OWASP 2025 A03: Software Supply Chain Failures (NEW — elevated from component-level to ecosystem-level).
+
 Mandatory checks for dependency management.
 
 ## Dependency Installation
@@ -97,6 +99,21 @@ If a compromised dependency is detected:
 2. Audit git history for when vulnerable version was introduced
 3. Check for unexpected file changes or network calls
 4. Report to package maintainers and security databases
+
+## AI/LLM-Specific Supply Chain Risks
+
+- Verify AI-suggested package names (LLM hallucination → typosquatting vector)
+- Audit MCP servers before enabling (review source, permissions, data access)
+- Never install packages solely on AI recommendation — verify on registry first
+- Check provenance of AI-generated dependency lists against actual registry data
+- Monitor for "dependency confusion" in AI-suggested internal package names
+
+## Provenance Verification
+
+- Verify npm package provenance (`npm audit signatures`)
+- Check Sigstore signatures where available
+- Prefer packages with build provenance (GitHub Actions attestation)
+- Verify container image signatures (cosign/notation)
 
 ## Approved Registries
 

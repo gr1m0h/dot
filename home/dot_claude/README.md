@@ -19,13 +19,22 @@ A comprehensive guide to the Claude Code setup, agents, skills, rules, and workf
 
 This Claude Code configuration provides a comprehensive system for software development with:
 
-- **39 agents** specialized in different domains (planning, testing, security, QA, IoT, etc.)
-- **58 reusable skills** for common development tasks
-- **18 rule sets** defining coding standards and best practices
-- **16 hooks** for automated validation, testing, and quality checks
-- **14 environment variables** for system configuration
+- **40 agents** specialized in different domains (planning, testing, security, QA, IoT, etc.)
+- **59 reusable skills** for common development tasks
+- **20 rule sets** defining coding standards and best practices (8 root + 6 global + 4 backend + 1 frontend + 1 cognitive)
+- **18 hooks** for automated validation, testing, and quality checks
+- **18 environment variables** for system configuration
 
 The system is organized by discipline with clear separation of concerns. Agents are orchestrated to work together, skills provide modular workflow execution, and hooks enforce quality gates at critical points.
+
+### 2026 Context Engineering Paradigm
+
+This configuration follows the **Context > Prompt** paradigm:
+
+- **Lean CLAUDE.md**: A navigation map (<200 lines), not an encyclopedia
+- **Progressive Disclosure**: Domain knowledge lives in skills, loaded on-demand
+- **Mechanical Enforcement**: Hooks (zero LLM tokens) > Skills (on-demand) > Rules (always-loaded)
+- **Context Rot Prevention**: Even 1M context windows degrade past ~300k-400k tokens — use `/rewind`, `/btw`, `/compact`, and subagents to manage
 
 ## Quick Start
 
@@ -78,7 +87,7 @@ The system is organized by discipline with clear separation of concerns. Agents 
 
 ## Agents
 
-### Root Agents (9)
+### Root Agents (10)
 
 Core agents used for primary development tasks.
 
@@ -138,6 +147,12 @@ Core agents used for primary development tasks.
 - Consolidates duplicate logic
 - Removes unused exports
 - **Use when**: Cleaning up codebase
+
+#### 10. **evaluator.md** - Skeptical Evaluator
+- Skeptical evaluation against success criteria
+- Separated from generator (avoids self-assessment bias)
+- Mechanical checks preferred (linters, tests, CI)
+- **Use immediately after**: Implementation is complete
 
 ### Cognitive Agents (4)
 
@@ -222,7 +237,7 @@ orchestrate [task]
 
 ## Skills
 
-58 reusable skills organized by domain.
+59 reusable skills organized by domain.
 
 ### Development Workflow (15 skills)
 
@@ -326,7 +341,7 @@ orchestrate [task]
 
 ## Rules & Standards
 
-### Root Rules (11)
+### Root Rules (8)
 
 | Rule | Purpose |
 |------|---------|
@@ -334,27 +349,37 @@ orchestrate [task]
 | `coding-style.md` | Immutability, file organization, error handling |
 | `continuous-learning.md` | Pattern extraction, instinct lifecycle |
 | `git-workflow.md` | Conventional Commits, PR workflow |
-| `hooks.md` | Hook types, current hooks, auto-accept |
-| `multi-agent.md` | Parallel execution, cascade pipelines |
+| `harness-engineering.md` | Session lifecycle, eval-driven development, mechanical enforcement |
 | `patterns.md` | API response format, custom hooks, repositories |
-| `performance.md` | Model selection (haiku/sonnet/opus) |
-| `security.md` | Secrets, auth, security response protocol |
+| `performance.md` | 1M context management, context rot, monorepo optimization |
 | `testing.md` | 80% minimum coverage, TDD workflow |
-| `token-optimization.md` | Model routing, strategic compaction |
 
-### Global Rules (4)
+### Global Rules (6) — Always Loaded
 
-Located in `/Users/gr1m0h/.claude/rules/global/`
+Located in `~/.claude/rules/global/`. These are loaded into every session via `@rules/...` references in `CLAUDE.md`.
 
-- **coding-standards.md** - Naming conventions, function design, types
-- **cost-optimization.md** - Model selection table, token conservation
-- **security.md** - Secrets, input validation, auth, dependencies
-- **supply-chain-security.md** - Dependency audit, lockfile protection, updates
+- **security.md** - OWASP 2025 alignment, secrets, input validation, language-specific forbidden patterns
+- **llm-security.md** - Prompt injection defense, MCP security, agent safety (OWASP LLM01:2025)
+- **coding-standards.md** - Naming conventions, function design, types (TS/Ruby/PHP/Go)
+- **cost-optimization.md** - Model selection table, 1M context management, prompt caching
+- **supply-chain-security.md** - Dependency audit, lockfile protection, AI/LLM-specific risks (OWASP 2025 A03)
+- **context-engineering.md** - Lean system prompt, progressive disclosure, context rot prevention
 
-### Domain-Specific Rules (3)
+### Backend Rules (4) — Per-Project Opt-In
+
+Located in `~/.claude/rules/backend/`. Add to project's `.claude/CLAUDE.md` as needed.
+
+- **api-guidelines.md** - Endpoint design, validation, error format
+- **ruby-patterns.md** - Service Objects, Query Objects, Strong Parameters, RSpec patterns
+- **php-patterns.md** - Laravel conventions, DTOs, Form Requests, Pest/PHPUnit
+- **go-patterns.md** - net/http handlers, error wrapping, concurrency, table-driven tests
+
+### Frontend Rules (1) — Per-Project Opt-In
 
 - **frontend/react-patterns.md** - Component design, hooks, state, accessibility
-- **backend/api-guidelines.md** - Endpoint design, validation, error format
+
+### Cognitive Rules (1)
+
 - **cognitive/uncertainty-expression.md** - Confidence levels and uncertainty format
 
 ### Key Standards
@@ -419,16 +444,17 @@ Automated validation and quality checks at critical points.
 | **SessionEnd** | 1 | Persist session state |
 | **Stop** | 1 | Final cleanup |
 | **PreToolUse** | 4 | Pre-execution validation (Bash, Edit/Write, Prettier, SSRF) |
-| **PostToolUse** | 6 | Post-execution verification and monitoring |
+| **PostToolUse** | 7 | Post-execution verification and monitoring (+ PostToolBatch) |
 | **UserPromptSubmit** | 1 | Validate user input before processing |
 | **PreCompact** | 1 | Protect sensitive context during compaction |
 | **SubagentStart** | 1 | Monitor subagent initialization |
 | **SubagentStop** | 1 | Track subagent completion |
 | **PostToolUseFailure** | 2 | Recovery and circuit breaker |
+| **PermissionDenied** | 1 | Track denied permission requests |
 | **TeammateIdle** | 1 | Quality gates when idle |
 | **TaskCompleted** | 1 | Validate completed tasks |
 
-### Active Hooks
+### Active Hooks (18 total)
 
 **Pre-Tool Execution:**
 - `pre-tool-guard.js` (Bash) - Validate bash command safety
@@ -438,15 +464,25 @@ Automated validation and quality checks at critical points.
 
 **Post-Tool Execution:**
 - `post-tool-verify.js` - Verify file operations
+- `post-tool-batch.js` - Batch post-tool processing
 - `architecture-guard.js` - Enforce architecture patterns
 - `test-runner.js` - Auto-run related tests
 - `cost-monitor.js` - Track session costs
 - `telemetry-collector.js` - Collect usage telemetry
 - `circuit-breaker.js` - Detect cascading failures
 
-**Failure Handling:**
+**Failure & Permission Handling:**
 - `on-failure-recover.js` - Attempt recovery
 - `circuit-breaker.js` - Halt on cascading failures
+- `permission-denied-tracker.js` - Track denied permission patterns
+
+**Session & Lifecycle:**
+- `session-start.js`, `session-end.js` - Session boundary management
+- `prompt-validator.js` - User input validation
+- `pre-compact-protector.js` - Protect sensitive context during compaction
+- `subagent-monitor.js` - Track subagent lifecycle
+- `quality-gate.js` - Idle quality checks
+- `task-validator.js` - Validate completed tasks
 
 ## Environment Configuration
 
@@ -708,17 +744,20 @@ Extract and persist patterns from sessions:
 ## File Structure
 
 ```
-/Users/gr1m0h/.claude/
-├── README.md              # This file
-├── CLAUDE.md              # User instructions
+~/.claude/
+├── README.md              # English documentation (this file)
+├── README_ja.md           # Japanese documentation
+├── CLAUDE.md              # User instructions (lean navigation map)
 ├── settings.json          # Configuration
-├── agents/                # 39 specialized agents
-├── skills/                # 58 reusable skills
-├── rules/                 # 18 rule sets
-├── memory/
-│   ├── local/            # Session-local memory
-│   └── semantic/         # Long-term memory
-└── hooks/                # Automation hooks
+├── agents/                # 40 specialized agents
+├── skills/                # 59 reusable skills (one SKILL.md each)
+├── rules/                 # 20 rule sets
+│   ├── global/           # Always-loaded (6 rules)
+│   ├── backend/          # Per-project opt-in (4 rules: api/ruby/php/go)
+│   ├── frontend/         # Per-project opt-in (1 rule)
+│   └── cognitive/        # Cognitive support (1 rule)
+├── memory/                # Persistent knowledge & session state
+└── hooks/                # 18 automation hooks
 ```
 
 ## Getting Help
@@ -727,9 +766,16 @@ Extract and persist patterns from sessions:
 
 - **Test-driven development**: See `rules/testing.md`
 - **Security guidelines**: See `rules/global/security.md`
+- **LLM/AI security**: See `rules/global/llm-security.md`
+- **Context engineering**: See `rules/global/context-engineering.md`
+- **Harness engineering**: See `rules/harness-engineering.md`
 - **API design**: See `rules/backend/api-guidelines.md`
+- **Ruby/Rails patterns**: See `rules/backend/ruby-patterns.md`
+- **PHP/Laravel patterns**: See `rules/backend/php-patterns.md`
+- **Go patterns**: See `rules/backend/go-patterns.md`
 - **React patterns**: See `rules/frontend/react-patterns.md`
 - **Cost optimization**: See `rules/global/cost-optimization.md`
+- **Supply chain security**: See `rules/global/supply-chain-security.md`
 
 ### Use Specialized Agents
 
@@ -749,6 +795,6 @@ This resets context while preserving important findings.
 
 ---
 
-**Last Updated**: 2026-03-27
-**Model**: Claude Opus 4.6 for heavy tasks, Sonnet 4.5 for main development, Haiku 4.5 for lightweight tasks
-**Total Configuration**: 39 agents + 58 skills + 18 rules + 16 hooks
+**Last Updated**: 2026-05-11
+**Model**: Claude Opus 4.7 for heavy tasks, Sonnet 4.6 for main development, Haiku 4.5 for lightweight tasks (subagents)
+**Total Configuration**: 40 agents + 59 skills + 20 rules + 18 hooks

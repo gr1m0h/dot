@@ -1,6 +1,21 @@
 # Security Policy
 
-CRITICAL: Mandatory for all code changes.
+CRITICAL: Mandatory for all code changes. Aligned with OWASP 2025 Top 10.
+
+## OWASP 2025 Alignment
+
+| Rank | Category | Key Change |
+|------|----------|------------|
+| A01 | Broken Access Control | SSRF consolidated here |
+| A02 | Security Misconfiguration | Moved up from #5 |
+| A03 | Software Supply Chain Failures | **NEW** — see @rules/global/supply-chain-security.md |
+| A04 | Cryptographic Failures | Dropped from #2 |
+| A05 | Injection | Dropped from #3 |
+| A06 | Insecure Design | Dropped from #4 |
+| A07 | Authentication Failures | Renamed |
+| A08 | Software or Data Integrity Failures | Stable |
+| A09 | Security Logging and Monitoring Failures | Stable |
+| A10 | Mishandling of Exceptional Conditions | **NEW** |
 
 ## Secrets
 - Never hardcode/commit/log secrets
@@ -72,8 +87,19 @@ CRITICAL: Mandatory for all code changes.
 - `cgo` without security review
 - `encoding/gob` for untrusted data (use `encoding/json`)
 
+## Exception Handling (A10:2025)
+
+- Never fail open — deny by default on unexpected conditions
+- Handle all error branches explicitly (no bare catch/rescue)
+- Log abnormal conditions for monitoring
+- Validate assumptions at system boundaries
+- Use circuit breakers for external service calls
+
 ## Security Testing
 - Requires documented authorization
 - CTF/own systems: implicitly authorized
 - Follow responsible disclosure
 - Use synthetic data only
+
+## LLM Security
+See @rules/global/llm-security.md for AI-specific security patterns.

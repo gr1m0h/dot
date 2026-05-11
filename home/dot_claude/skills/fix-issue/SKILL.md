@@ -5,14 +5,15 @@ user-invocable: true
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash
 argument-hint: "[issue-number]"
 hooks:
-  - type: command
-    command: |
-      node -e "
-        const { execSync } = require('child_process');
-        try { execSync('gh auth status', { stdio: 'pipe' }); }
-        catch { console.log(JSON.stringify({additionalContext:'WARNING: gh CLI is not authenticated. Run gh auth login before using /fix-issue.'})); }
-      "
-    once: true
+  SessionStart:
+    - hooks:
+        - type: command
+          command: |
+            node -e "
+              const { execSync } = require('child_process');
+              try { execSync('gh auth status', { stdio: 'pipe' }); }
+              catch { console.log(JSON.stringify({additionalContext:'WARNING: gh CLI is not authenticated. Run gh auth login before using /fix-issue.'})); }
+            "
 ---
 
 # Fix Issue: #$ARGUMENTS

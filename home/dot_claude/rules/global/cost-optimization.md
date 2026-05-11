@@ -6,7 +6,7 @@ Efficient resource usage for Claude Code sessions.
 
 | Task Type | Model | Rationale |
 |-----------|-------|-----------|
-| File exploration, lookups | haiku | 80% cost savings |
+| File exploration, lookups | haiku | 80% cost savings, 73.3% capability |
 | Typo fixes, simple renames | haiku | Minimal complexity |
 | Code explanation, Q&A | haiku/sonnet | Reading-focused |
 | Feature implementation | sonnet | Balance of capability/cost |
@@ -16,6 +16,8 @@ Efficient resource usage for Claude Code sessions.
 | Multi-file refactoring | opus | Cross-file reasoning |
 | Subagent workers | haiku | `CLAUDE_CODE_SUBAGENT_MODEL=haiku` |
 
+Haiku 4.5 is now credible for short-context coding tasks — not just fallback.
+
 ## Token Conservation
 
 ### DO
@@ -24,7 +26,9 @@ Efficient resource usage for Claude Code sessions.
 - Request specific line ranges when reading large files
 - Use `Task(Explore)` for exploratory searches (offloads context)
 - Batch related questions in single prompts
-- `/compact` at task milestones (not mid-task)
+- `/compact` at task milestones with targeted summary hints
+- `/rewind` to recover from failed attempts without context loss
+- `/btw` for side questions without polluting conversation history
 
 ### DON'T
 - Read entire codebases "just in case"
@@ -32,8 +36,21 @@ Efficient resource usage for Claude Code sessions.
 - Request verbose explanations for simple operations
 - Run redundant searches for the same information
 - Compact during multi-file refactoring or active debugging
+- Let extended thinking run uncapped (use MAX_THINKING_TOKENS=31999)
 
-## Context Management
+## 1M Context Window Management
+
+### Context Rot
+Performance degrades at ~300k-400k tokens despite 1M available.
+Older irrelevant content actively distracts from current task.
+
+### Strategies (ordered by impact)
+1. **Subagent delegation** — Fresh context per child, only results return
+2. **`/rewind`** — Jump to previous state, preserve learnings, drop failures
+3. **`/compact <hints>`** — Model distills session into dense brief
+4. **`/btw`** — Side questions in dismissible overlay, never enters history
+5. **`/clear`** — Full reset between unrelated tasks
+6. **Checkpoints** — Persist across sessions, support summarize-from
 
 ### Strategic Compaction
 - Auto-compact at 50% (early consolidation > degraded quality)
@@ -49,6 +66,13 @@ Efficient resource usage for Claude Code sessions.
 - Fewer than 10 enabled servers per project
 - Prefer CLI tools (gh, aws) over MCP equivalents when possible
 - Disable unused servers to reduce context overhead
+
+## Prompt Caching Awareness
+
+- TTL is 5 minutes (changed Jan 2026, from 60 min)
+- Place static content first, dynamic last (prefix matching)
+- Batch operations stack discounts (batch 50% + cache hit)
+- Monitor for cache anomalies (March 2026 incident: 10-20x inflation)
 
 ## Tool Usage Efficiency
 
@@ -67,6 +91,7 @@ Efficient resource usage for Claude Code sessions.
 - **Short sessions** (< 30 min): Direct work, minimal exploration
 - **Long sessions** (> 1 hr): Use `/clear` between major phases
 - **Complex projects**: Plan first, then execute in focused bursts
+- **After 2+ failed corrections**: `/clear` + better prompt (not more context)
 
 ## Cost Tracking
 
@@ -84,3 +109,5 @@ Efficient resource usage for Claude Code sessions.
 | Large file writes for small changes | Use Edit tool for targeted changes |
 | Agent Teams for sequential tasks | Use subagents instead |
 | Reading entire files "just in case" | Grep/Glob for specific patterns |
+| Uncapped extended thinking | Set MAX_THINKING_TOKENS=31999 |
+| Bloated CLAUDE.md (>200 lines) | Progressive disclosure via skills |

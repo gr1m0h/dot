@@ -10,29 +10,30 @@ metadata:
   version: "3.0.0"
   updated: "2025-02"
 hooks:
-  - type: command
-    command: |
-      node -e "
-        const { execSync } = require('child_process');
-        const fs = require('fs');
-        const warnings = [];
-        if (fs.existsSync('package.json')) {
-          try { execSync('npx --yes npm-audit-resolver --version', { stdio: 'pipe', timeout: 10000 }); }
-          catch { warnings.push('npm audit available but npm-audit-resolver not found (optional).'); }
-        }
-        if (fs.existsSync('requirements.txt') || fs.existsSync('pyproject.toml')) {
-          try { execSync('pip-audit --version', { stdio: 'pipe', timeout: 5000 }); }
-          catch { warnings.push('pip-audit not installed. Run pip install pip-audit for Python dependency scanning.'); }
-        }
-        if (fs.existsSync('Cargo.toml')) {
-          try { execSync('cargo audit --version', { stdio: 'pipe', timeout: 5000 }); }
-          catch { warnings.push('cargo-audit not installed. Run cargo install cargo-audit for Rust dependency scanning.'); }
-        }
-        if (warnings.length > 0) {
-          console.log(JSON.stringify({additionalContext: 'Audit Tool Warnings:\\n' + warnings.map(w => '- ' + w).join('\\n')}));
-        }
-      "
-    once: true
+  SessionStart:
+    - hooks:
+        - type: command
+          command: |
+            node -e "
+              const { execSync } = require('child_process');
+              const fs = require('fs');
+              const warnings = [];
+              if (fs.existsSync('package.json')) {
+                try { execSync('npx --yes npm-audit-resolver --version', { stdio: 'pipe', timeout: 10000 }); }
+                catch { warnings.push('npm audit available but npm-audit-resolver not found (optional).'); }
+              }
+              if (fs.existsSync('requirements.txt') || fs.existsSync('pyproject.toml')) {
+                try { execSync('pip-audit --version', { stdio: 'pipe', timeout: 5000 }); }
+                catch { warnings.push('pip-audit not installed. Run pip install pip-audit for Python dependency scanning.'); }
+              }
+              if (fs.existsSync('Cargo.toml')) {
+                try { execSync('cargo audit --version', { stdio: 'pipe', timeout: 5000 }); }
+                catch { warnings.push('cargo-audit not installed. Run cargo install cargo-audit for Rust dependency scanning.'); }
+              }
+              if (warnings.length > 0) {
+                console.log(JSON.stringify({additionalContext: 'Audit Tool Warnings:\\n' + warnings.map(w => '- ' + w).join('\\n')}));
+              }
+            "
 ---
 
 # Security Scan

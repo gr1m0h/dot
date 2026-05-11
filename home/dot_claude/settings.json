@@ -1,5 +1,7 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "cleanupPeriodDays": 30,
+  "skillListingBudgetFraction": 0.15,
   "env": {
     "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50",
     "DISABLE_AUTOUPDATER": "1",
@@ -10,14 +12,8 @@
     "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
     "MAX_THINKING_TOKENS": "31999",
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-    "ENABLE_TOOL_SEARCH": "auto:8",
     "MAX_MCP_OUTPUT_TOKENS": "25000",
-    "CLAUDE_CODE_ENABLE_COST_TRACKING": "1",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "haiku",
-    "ECC_HOOK_PROFILE": "standard",
-    "CLAUDE_CODE_ENABLE_WORKTREE_ISOLATION": "1",
-    "CLAUDE_CODE_MAX_SUBAGENT_DEPTH": "3"
+    "CLAUDE_CODE_SUBAGENT_MODEL": "haiku"
   },
   "includeCoAuthoredBy": false,
   "permissions": {
@@ -37,9 +33,15 @@
       "Bash(git checkout *)",
       "Bash(git stash *)",
       "Bash(git fetch *)",
+      "Bash(git merge *)",
+      "Bash(git rebase *)",
+      "Bash(git switch *)",
+      "Bash(git worktree *)",
       "Bash(gh issue *)",
       "Bash(gh pr *)",
       "Bash(gh api *)",
+      "Bash(gh run *)",
+      "Bash(gh workflow *)",
       "Bash(cargo *)",
       "Bash(go *)",
       "Bash(ruby *)",
@@ -53,8 +55,11 @@
       "Bash(phpunit *)",
       "Bash(python3 *)",
       "Bash(pip *)",
-      "Bash(gh run *)",
-      "Bash(gh workflow *)",
+      "Bash(uv *)",
+      "Bash(terraform *)",
+      "Bash(kubectl *)",
+      "Bash(jq *)",
+      "Bash(yq *)",
       "Read(src/**)",
       "Read(lib/**)",
       "Read(app/**)",
@@ -72,6 +77,9 @@
       "Read(*.json)",
       "Read(*.yaml)",
       "Read(*.yml)",
+      "Read(*.toml)",
+      "Read(*.tf)",
+      "Read(*.hcl)",
       "Edit(src/**)",
       "Edit(lib/**)",
       "Edit(app/**)",
@@ -139,6 +147,10 @@
       "Bash(bundle install *)",
       "Bash(composer require *)",
       "Bash(gem install *)",
+      "Bash(terraform apply *)",
+      "Bash(terraform destroy *)",
+      "Bash(kubectl apply *)",
+      "Bash(kubectl delete *)",
       "Edit(package.json)",
       "Edit(tsconfig.json)",
       "Edit(Gemfile)",
@@ -280,6 +292,17 @@
         ]
       }
     ],
+    "PostToolBatch": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/post-tool-batch.js",
+            "async": true
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [
@@ -340,6 +363,17 @@
         ]
       }
     ],
+    "PermissionDenied": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/permission-denied-tracker.js",
+            "async": true
+          }
+        ]
+      }
+    ],
     "TeammateIdle": [
       {
         "hooks": [
@@ -361,6 +395,14 @@
       }
     ]
   },
+  "worktree": {
+    "symlinkDirectories": [
+      "node_modules",
+      ".pnpm",
+      "vendor"
+    ],
+    "baseRef": "fresh"
+  },
   "statusLine": {
     "type": "command",
     "command": "npx ccusage@latest statusline"
@@ -373,6 +415,12 @@
     "network": {
       "allowLocalBinding": true
     },
+    "filesystem": {
+      "allowWrite": [
+        "/tmp/build",
+        "/tmp/claude-*"
+      ]
+    },
     "excludedCommands": [
       "git",
       "gh",
@@ -380,9 +428,15 @@
     ]
   },
   "alwaysThinkingEnabled": true,
-  "effortLevel": "high",
+  "effortLevel": "xhigh",
   "autoUpdatesChannel": "stable",
   "plansDirectory": "./.claude/plans",
+  "tui": "fullscreen",
+  "autoMemoryEnabled": true,
   "skipDangerousModePermissionPrompt": true,
-  "teammateMode": "in-process"
+  "showTurnDuration": true,
+  "terminalProgressBarEnabled": true,
+  "teammateMode": "in-process",
+  "theme": "dark-ansi",
+  "editorMode": "vim"
 }

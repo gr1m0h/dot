@@ -8,20 +8,21 @@ metadata:
   version: "3.0.0"
   updated: "2025-02"
 hooks:
-  - type: command
-    command: |
-      node -e "
-        const fs = require('fs');
-        const found = ['package.json','pytest.ini','pyproject.toml','Cargo.toml','go.mod'].filter(f => { try { fs.accessSync(f); return true; } catch { return false; } });
-        if (found.length === 0) { console.log(JSON.stringify({additionalContext:'WARNING: No test framework config found. Install a test framework before starting TDD.'})); }
-        else if (found.includes('package.json')) {
-          const pkg = JSON.parse(fs.readFileSync('package.json','utf8'));
-          const deps = {...pkg.devDependencies,...pkg.dependencies};
-          const fw = ['vitest','jest','mocha','ava'].find(t => deps && deps[t]);
-          if (!fw) console.log(JSON.stringify({additionalContext:'WARNING: No JS test framework in dependencies. Run npm install -D vitest (or jest) first.'}));
-        }
-      "
-    once: true
+  SessionStart:
+    - hooks:
+        - type: command
+          command: |
+            node -e "
+              const fs = require('fs');
+              const found = ['package.json','pytest.ini','pyproject.toml','Cargo.toml','go.mod'].filter(f => { try { fs.accessSync(f); return true; } catch { return false; } });
+              if (found.length === 0) { console.log(JSON.stringify({additionalContext:'WARNING: No test framework config found. Install a test framework before starting TDD.'})); }
+              else if (found.includes('package.json')) {
+                const pkg = JSON.parse(fs.readFileSync('package.json','utf8'));
+                const deps = {...pkg.devDependencies,...pkg.dependencies};
+                const fw = ['vitest','jest','mocha','ava'].find(t => deps && deps[t]);
+                if (!fw) console.log(JSON.stringify({additionalContext:'WARNING: No JS test framework in dependencies. Run npm install -D vitest (or jest) first.'}));
+              }
+            "
 ---
 
 # Test-Driven Development
