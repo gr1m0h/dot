@@ -15,6 +15,7 @@ cask "1password"
 cask "theboredteam/boring-notch/boring-notch"
 cask "brave-browser"
 cask "choosy"
+cask "claude"
 cask "font-hackgen"
 cask "font-hackgen-nerd"
 casl "ghostty"
@@ -26,11 +27,9 @@ cask "session-manager-plugin"
 cask "slack"
 cask "spotify"
 cask "steam"
-cask "tailscale-app"
 cask "zoom"
 mas "Hidden Bar", id: 1452453066
 mas "LINE", id: 539883307
-mas "Magnet", id: 441258766
 mas "Numbers", id: 409203825
 mas "Skitch", id: 425955336
 # mas "Xcode", id: 497799835  # Commented out for CI - install manually if needed
