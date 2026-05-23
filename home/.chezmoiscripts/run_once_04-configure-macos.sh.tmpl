@@ -90,6 +90,54 @@ defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
 defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 
+# Keyboard Shortcuts (System Settings > Keyboard > Keyboard Shortcuts)
+# Keep enabled:
+#   30  = Save picture of selected area as a file (Shift+Cmd+4)
+#   60  = Select the previous input source (Ctrl+Space)
+#   61  = Select next source in Input menu (Option+Ctrl+Space)
+#   184 = Screenshot and recording options (Shift+Cmd+5)
+# Disable everything else managed by com.apple.symbolichotkeys.
+echo "Configuring Keyboard Shortcuts..."
+SHK_PLIST="$HOME/Library/Preferences/com.apple.symbolichotkeys.plist"
+
+shk_set_enabled() {
+    local id="$1"
+    local flag="$2"
+    /usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:${id}:enabled ${flag}" "$SHK_PLIST" 2>/dev/null \
+        || /usr/libexec/PlistBuddy -c "Add :AppleSymbolicHotKeys:${id}:enabled bool ${flag}" "$SHK_PLIST" 2>/dev/null \
+        || true
+}
+
+shk_disable_ids=(
+    7 8 9 10 11 12 13            # Keyboard navigation focus (menu bar / dock / windows)
+    15 16 17 18 19                # Move focus to next/previous window etc.
+    27 28 29 31                   # Screenshots (keep 30 and 184)
+    32 33 34 35 36                # Mission Control / Application windows / Show Desktop / Dashboard
+    52 53                         # Dock hiding / Look up
+    57                            # Show Launchpad
+    62 63                         # Reserved / spare
+    64 65                         # Spotlight (Cmd+Space, Option+Cmd+Space)
+    79 80 81 82                   # Move left/right a space, switch space
+    118 119 120 121               # Switch to Desktop 1-4
+    159 160 162 163               # Launchpad, Show Desktop, Notification Center
+    175 179                       # Help menu, Quick Note
+    190 191                       # Focus modes
+    222 223                       # Start Dictation, Emoji & Symbols viewer
+)
+
+shk_enable_ids=(30 60 61 184)
+
+for id in "${shk_disable_ids[@]}"; do
+    shk_set_enabled "$id" false
+done
+
+for id in "${shk_enable_ids[@]}"; do
+    shk_set_enabled "$id" true
+done
+
+# Flush cfprefsd so the new plist is reloaded (logout/login required for full effect)
+killall cfprefsd 2>/dev/null || true
+
 # Trackpad
 echo "Configuring Trackpad..."
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
