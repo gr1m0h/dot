@@ -10,11 +10,12 @@ if true then return {} end
 -- * override the configuration of LazyVim plugins
 return {
   -- add gruvbox
-  { "Mofiqul/dracula.nvim" },
+  { "Mofiqul/dracula.nvim", branch = "main" },
 
   -- Configure LazyVim to load gruvbox
   {
     "LazyVim/LazyVim",
+    tag = "v15.15.0",
     opts = {
       colorscheme = "dracula",
     },
@@ -23,6 +24,7 @@ return {
   -- change trouble config
   {
     "folke/trouble.nvim",
+    tag = "v3.7.1",
     -- opts will be merged with the parent spec
     opts = { use_diagnostic_signs = true },
   },
@@ -30,6 +32,7 @@ return {
   -- override nvim-cmp and add cmp-emoji
   {
     "hrsh7th/nvim-cmp",
+    tag = "v0.0.2",
     dependencies = { "hrsh7th/cmp-emoji" },
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
