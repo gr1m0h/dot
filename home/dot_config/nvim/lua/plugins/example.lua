@@ -15,7 +15,7 @@ return {
   -- Configure LazyVim to load gruvbox
   {
     "LazyVim/LazyVim",
-    commit = "fca0af57cc3851b14f96a795a9c9bfafc5096dd1", -- tag: v15.14.0
+    commit = "83d90f339defdb109a6ede333865a66ffc7ef6aa", -- tag: v15.15.0
     opts = {
       colorscheme = "dracula",
     },
@@ -24,7 +24,7 @@ return {
   -- change trouble config
   {
     "folke/trouble.nvim",
-    commit = "bac1d9a9f51eecf4424b6ca8675db5a170fe572b", -- tag: v3.7.0
+    commit = "748ca2789044607f19786b1d837044544c55e80a", -- tag: v3.7.1
     -- opts will be merged with the parent spec
     opts = { use_diagnostic_signs = true },
   },
@@ -32,7 +32,7 @@ return {
   -- override nvim-cmp and add cmp-emoji
   {
     "hrsh7th/nvim-cmp",
-    commit = "983453e32cb35533a119725883c04436d16c0120", -- tag: v0.0.1
+    commit = "8c82d0bd31299dbff7f8e780f5e06d2283de9678", -- tag: v0.0.2
     dependencies = { "hrsh7th/cmp-emoji" },
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
