@@ -2,16 +2,26 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base",
-    "github>aquaproj/aqua-renovate-config#2.7.5"
+    "github>aquaproj/aqua-renovate-config#2.7.5",
+    "github>gr1m0h/vimpin-renovate-config"
   ],
+  "dependencyDashboard": true,
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "schedule": ["before 9am on monday"],
   "packageRules": [
     {
       "managers": ["mise"],
       "updateTypes": ["minor", "patch"],
       "paths": ["mise.toml"],
       "enabled": true
+    },
+    {
+      "matchManagers": ["custom.regex"],
+      "matchFileNames": ["home/dot_config/nvim/**/*.lua"],
+      "groupName": "vimpin-pinned",
+      "addLabels": ["vimpin", "neovim"]
     }
   ],
-
   "automerge": true
 }
