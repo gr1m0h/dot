@@ -43,6 +43,7 @@ return {
   -- change some telescope options and a keymap to browse plugin files
   {
     "nvim-telescope/telescope.nvim",
+    commit = "3333a52ff548ba0a68af6d8da1e54f9cd96e9179", -- tag: v0.2.1
     keys = {
       -- add a keymap to browse plugin files
       -- stylua: ignore
