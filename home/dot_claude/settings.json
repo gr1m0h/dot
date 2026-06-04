@@ -400,8 +400,7 @@
       "node_modules",
       ".pnpm",
       "vendor"
-    ],
-    "baseRef": "fresh"
+    ]
   },
   "statusLine": {
     "type": "command",
@@ -434,9 +433,9 @@
   "tui": "fullscreen",
   "autoMemoryEnabled": true,
   "skipDangerousModePermissionPrompt": true,
+  "theme": "dark-ansi",
+  "editorMode": "vim",
   "showTurnDuration": true,
   "terminalProgressBarEnabled": true,
-  "teammateMode": "in-process",
-  "theme": "dark-ansi",
-  "editorMode": "vim"
+  "teammateMode": "in-process"
 }
