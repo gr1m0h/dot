@@ -1,0 +1,48 @@
+name: vimpin
+
+on:
+  pull_request:
+    paths:
+      - "home/dot_config/nvim/**/*.lua"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gr1m0h/vimpin-action@main
+        with:
+          mode: check
+          paths: home/dot_config/nvim/lua/plugins
+      - uses: gr1m0h/vimpin-action@main
+        with:
+          mode: no-api
+          paths: home/dot_config/nvim/lua/plugins
+      - uses: gr1m0h/vimpin-action@main
+        with:
+          mode: verify-check
+          paths: home/dot_config/nvim/lua/plugins
+
+  update:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gr1m0h/vimpin-action@main
+        id: vimpin
+        with:
+          mode: update
+          paths: home/dot_config/nvim/lua/plugins
+      - if: steps.vimpin.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          title: "chore(deps): vimpin --update"
+          branch: vimpin-update
+          commit-message: "chore(deps): bump pinned commits to latest tags"
