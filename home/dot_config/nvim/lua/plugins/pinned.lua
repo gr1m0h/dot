@@ -23,6 +23,7 @@ return {
   { "qvalentin/helm-ls.nvim", commit = "20df43509b02a3ce3c6b3eee254d6e2bffa9a370" }, -- branch: main
   { "lukas-reineke/indent-blankline.nvim", commit = "d28a3f70721c79e3c5f6693057ae929f3d9c0a03" }, -- branch: master
   { "mistweaverco/kulala.nvim", commit = "a82a20a4f065275b91375744fbff9839db1dffd0" }, -- branch: main
+  { "folke/lazy.nvim", commit = "85c7ff3711b730b4030d03144f6db6375044ae82" }, -- tag: v11.17.5
   { "folke/lazydev.nvim", commit = "ff2cbcba459b637ec3fd165a2be59b7bbaeedf0d" }, -- branch: main
   { "ldelossa/litee.nvim", commit = "4efaf373322d9e71eaff31164abb393417cc6f6a" }, -- branch: main
   { "nvim-lualine/lualine.nvim", commit = "221ce6b2d999187044529f49da6554a92f740a96" }, -- branch: master
