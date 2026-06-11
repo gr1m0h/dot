@@ -27,7 +27,7 @@ on run
 end run
 
 on launchGhostty(filePath, fileDir)
-    set nvimPath to "nvim"
+    set nvimPath to "{{ .chezmoi.homeDir }}/.local/share/mise/shims/nvim"
 
     -- Ghostty (macOS) wraps `-e` commands in `/usr/bin/login -flp <user>`,
     -- so we must pass a single shell command via `zsh -lc '<cmd>'` instead of
