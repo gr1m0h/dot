@@ -2,16 +2,23 @@
 
 This setup allows you to open files with specific extensions in Ghostty with Nvim just by double-clicking them in Finder.
 
+## Prerequisites
+
+- macOS (the setup uses AppleScript and LaunchServices)
+- [Ghostty](https://ghostty.org/) installed at `/Applications/Ghostty.app`
+- Neovim installed via [mise](https://mise.jdx.dev/) (`mise install neovim`)
+
+The AppleScript invokes nvim through the mise shim at
+`~/.local/share/mise/shims/nvim`, which resolves the active version without
+relying on `PATH` (Ghostty wraps `-e` commands in `/usr/bin/login -flp`, which
+does not carry shell-level activations such as `mise activate zsh`).
+
 ## Setup Method
 
 ### Automatic Setup with chezmoi
 
 ```bash
-# Apply settings with chezmoi
 chezmoi apply
-
-# On first run, answer the following questions:
-# - Path to nvim binary: /opt/homebrew/bin/nvim (Homebrew installation)
 ```
 
 The setup script automatically:
@@ -47,15 +54,6 @@ Add extensions to the `extra_extensions` array in `.chezmoi.toml`:
     extra_extensions = ["log", "conf", "cfg"]
 ```
 
-### Changing Paths
-
-For Intel Macs or custom installation locations, edit `.chezmoi.toml`:
-
-```toml
-[data]
-    nvim_path = "/usr/local/bin/nvim"
-```
-
 ## Troubleshooting
 
 ### If the app doesn't open
@@ -69,14 +67,18 @@ For Intel Macs or custom installation locations, edit `.chezmoi.toml`:
    /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user
    ```
 
-### If paths are not found
+### If nvim cannot be found
+
+The AppleScript expects nvim at `~/.local/share/mise/shims/nvim`. Verify the
+shim exists and resolves to a working binary:
 
 ```bash
-# Check nvim path
-which nvim
-```
+ls -l ~/.local/share/mise/shims/nvim
+~/.local/share/mise/shims/nvim --version
 
-Set the confirmed path in `.chezmoi.toml`.
+# If the shim is missing, install nvim under mise:
+mise install neovim
+```
 
 ## Reinstall
 
