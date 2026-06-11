@@ -1,180 +1,21 @@
-#!/bin/bash
-# This script builds and installs the Ghostty-Nvim AppleScript application
+#!/usr/bin/env bash
+# Rebuild Ghostty-Nvim.app whenever the source AppleScript template changes.
 # hash: {{ include "dot_local/share/chezmoi-scripts/Ghostty-Nvim.applescript.tmpl" | sha256sum }}
 
-set -e
+set -euo pipefail
 
-# Skip in CI environment or non-macOS systems
+# Skip in CI or non-macOS environments.
 if [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ] || [ "$(uname)" != "Darwin" ]; then
-    echo "Skipping Ghostty-Nvim.app setup (CI environment or non-macOS)"
+    echo "Skipping Ghostty-Nvim.app setup (CI or non-macOS)"
     exit 0
 fi
 
-echo "🚀 Setting up Ghostty-Nvim.app..."
+APPLESCRIPT="${HOME}/.local/share/chezmoi-scripts/Ghostty-Nvim.applescript"
+BUILD_SCRIPT="{{ .chezmoi.sourceDir }}/../tools/applescript/ghostty-nvim/build-ghostty-nvim-app.sh"
 
-# Create temp directory for building
-TEMP_DIR=$(mktemp -d)
-trap "rm -rf $TEMP_DIR" EXIT
-
-# Generate AppleScript from template
-APPLESCRIPT_TEMPLATE="${HOME}/.local/share/chezmoi-scripts/Ghostty-Nvim.applescript.tmpl"
-APPLESCRIPT_SOURCE="${HOME}/.local/share/chezmoi/home/dot_local/share/chezmoi-scripts/Ghostty-Nvim.applescript.tmpl"
-
-# Activate mise environment to ensure tools are in PATH
-if command -v mise &>/dev/null; then
-    eval "$(mise activate bash)"
-fi
-
-# Detect actual path of nvim
-NVIM_PATH=$(command -v nvim || echo "/opt/homebrew/bin/nvim")
-
-echo "📍 Detected paths:"
-echo "  Nvim: $NVIM_PATH"
-
-# Create a temporary substituted template without chezmoi template variables
-if [ -f "$APPLESCRIPT_TEMPLATE" ]; then
-    echo "📝 Using applied template from $APPLESCRIPT_TEMPLATE"
-    TEMPLATE_FILE="$APPLESCRIPT_TEMPLATE"
-elif [ -f "$APPLESCRIPT_SOURCE" ]; then
-    echo "📝 Using source template from $APPLESCRIPT_SOURCE (fallback)"
-    TEMPLATE_FILE="$APPLESCRIPT_SOURCE"
+if [ ! -x "$BUILD_SCRIPT" ]; then
+    # Fall back to invoking via bash in case the bit isn't set yet.
+    bash "$BUILD_SCRIPT" "$APPLESCRIPT"
 else
-    echo "❌ AppleScript template not found in either location:"
-    echo "  - $APPLESCRIPT_TEMPLATE"
-    echo "  - $APPLESCRIPT_SOURCE"
-    exit 1
+    "$BUILD_SCRIPT" "$APPLESCRIPT"
 fi
-
-# Create processed AppleScript from template
-cat > "$TEMP_DIR/Ghostty-Nvim.applescript" << 'EOF'
-on open theFiles
-    repeat with aFile in theFiles
-        set filePath to POSIX path of aFile
-        set quotedPath to quoted form of filePath
-
-        -- Get the directory of the file
-        set fileDir to do shell script "dirname " & quotedPath
-
-        -- GhosttyでNvimを起動
-        tell application "Ghostty"
-            activate
-        end tell
-
-        -- GhosttyでNvimを起動
-        do shell script "open -na Ghostty.app --args --working-directory=" & quoted form of fileDir & " -e 'NVIM_PATH_PLACEHOLDER " & quotedPath & "'"
-    end repeat
-end open
-
--- ドラッグ&ドロップ以外でアプリが起動された場合
-on run
-    tell application "Ghostty"
-        activate
-    end tell
-
-    do shell script "open -na Ghostty.app --args -e 'NVIM_PATH_PLACEHOLDER'"
-end run
-EOF
-
-# Replace placeholders with actual paths
-sed -i '' \
-    -e "s|NVIM_PATH_PLACEHOLDER|$NVIM_PATH|g" \
-    "$TEMP_DIR/Ghostty-Nvim.applescript"
-
-# Build the application
-echo "📦 Building Ghostty-Nvim.app..."
-osacompile -o "$TEMP_DIR/Ghostty-Nvim.app" "$TEMP_DIR/Ghostty-Nvim.applescript"
-
-# Create Applications directory if it doesn't exist
-mkdir -p "${HOME}/Applications"
-
-# Remove old version if exists
-if [ -d "${HOME}/Applications/Ghostty-Nvim.app" ]; then
-    echo "🗑️  Removing old version..."
-    rm -rf "${HOME}/Applications/Ghostty-Nvim.app"
-fi
-
-# Also remove old WezTerm-Nvim.app if it exists
-if [ -d "${HOME}/Applications/WezTerm-Nvim.app" ]; then
-    echo "🗑️  Removing old WezTerm-Nvim.app..."
-    rm -rf "${HOME}/Applications/WezTerm-Nvim.app"
-fi
-
-# Move app to Applications
-echo "📂 Installing to ~/Applications..."
-mv "$TEMP_DIR/Ghostty-Nvim.app" "${HOME}/Applications/"
-
-# Configure file associations using PlistBuddy
-echo "⚙️  Configuring file associations..."
-APP_PATH="${HOME}/Applications/Ghostty-Nvim.app"
-PLIST_PATH="$APP_PATH/Contents/Info.plist"
-
-# Add CFBundleDocumentTypes if it doesn't exist
-/usr/libexec/PlistBuddy -c "Delete :CFBundleDocumentTypes" "$PLIST_PATH" 2>/dev/null || true
-/usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes array" "$PLIST_PATH"
-
-# Define file extensions to associate
-EXTENSIONS=(
-    # Text files
-    "txt" "md" "markdown" "rst"
-    # Programming languages
-    "lua" "vim" "vimrc"
-    "js" "jsx" "ts" "tsx" "mjs" "cjs"
-    "py" "pyw" "pyi" "pyc"
-    "rb" "rake" "ru" "gemspec"
-    "go" "mod" "sum"
-    "rs" "toml"
-    "c" "h" "cpp" "hpp" "cc" "cxx"
-    "java" "class" "jar"
-    "sh" "bash" "zsh" "fish"
-    # Config files
-    "yml" "yaml" "json" "jsonc" "json5"
-    "xml" "plist" "ini" "cfg" "conf"
-    "env" "gitignore" "gitconfig"
-    "dockerfile" "dockerignore"
-    # Web files
-    "html" "htm" "css" "scss" "sass" "less"
-    "php" "asp" "jsp"
-    # Other
-    "sql" "graphql" "proto"
-    {{- if hasKey . "extra_extensions" }}
-    {{- range .extra_extensions }}
-    {{ . | quote }}
-    {{- end }}
-    {{- end }}
-)
-
-# Add document type
-/usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0 dict" "$PLIST_PATH"
-/usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0:CFBundleTypeExtensions array" "$PLIST_PATH"
-
-# Add all extensions
-for i in "${!EXTENSIONS[@]}"; do
-    ext="${EXTENSIONS[$i]}"
-    /usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0:CFBundleTypeExtensions:$i string '$ext'" "$PLIST_PATH"
-done
-
-# Set document type properties
-/usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0:CFBundleTypeName string 'Text Files'" "$PLIST_PATH"
-/usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0:CFBundleTypeRole string 'Editor'" "$PLIST_PATH"
-/usr/libexec/PlistBuddy -c "Add :CFBundleDocumentTypes:0:CFBundleTypeIconFile string 'AppIcon'" "$PLIST_PATH"
-
-# Add bundle identifier
-/usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string 'com.local.ghostty-nvim'" "$PLIST_PATH" 2>/dev/null || \
-/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier 'com.local.ghostty-nvim'" "$PLIST_PATH"
-
-# Add bundle name
-/usr/libexec/PlistBuddy -c "Add :CFBundleName string 'Ghostty-Nvim'" "$PLIST_PATH" 2>/dev/null || \
-/usr/libexec/PlistBuddy -c "Set :CFBundleName 'Ghostty-Nvim'" "$PLIST_PATH"
-
-# Update LaunchServices database
-echo "🔄 Updating LaunchServices database..."
-/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "${HOME}/Applications/Ghostty-Nvim.app"
-
-echo "✅ Ghostty-Nvim.app setup complete!"
-echo ""
-echo "📝 Usage:"
-echo "  1. Right-click any text file in Finder"
-echo "  2. Select 'Open With' > 'Ghostty-Nvim'"
-echo "  3. Click 'Change All...' to set as default for that file type"
-echo ""
-echo "💡 Tip: You can also drag files onto the app icon to open them"
