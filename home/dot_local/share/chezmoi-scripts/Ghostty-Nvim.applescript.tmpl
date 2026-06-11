@@ -1,5 +1,3 @@
-{{- $nvim := "/opt/homebrew/bin/nvim" -}}
-{{- if hasKey . "nvim_path" }}{{ $nvim = .nvim_path }}{{ end -}}
 on open theFiles
     repeat with aFile in theFiles
         set filePath to POSIX path of aFile
@@ -29,7 +27,7 @@ on run
 end run
 
 on launchGhostty(filePath, fileDir)
-    set nvimPath to "{{ $nvim }}"
+    set nvimPath to "nvim"
 
     -- Ghostty (macOS) wraps `-e` commands in `/usr/bin/login -flp <user>`,
     -- so we must pass a single shell command via `zsh -lc '<cmd>'` instead of
