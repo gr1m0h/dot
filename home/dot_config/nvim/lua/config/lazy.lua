@@ -1,7 +1,10 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  -- Bootstrap pin: clone an immutable semver tag rather than the floating
+  -- `stable` tag. The matching commit pin lives in lua/plugins/pinned.lua so
+  -- subsequent `:Lazy update` cycles cannot drift lazy.nvim itself.
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=v11.17.5", lazyrepo, lazypath })
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
       { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
@@ -17,7 +20,7 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
-    { "LazyVim/LazyVim", import = "lazyvim.plugins" },
+    { "LazyVim/LazyVim", import = "lazyvim.plugins", commit = "c10948c50b18fae7f256433afdef09e432410480" }, -- tag: v16.0.0
     -- import/override with your plugins
     { import = "plugins" },
   },

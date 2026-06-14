@@ -1,34 +1,56 @@
 on open theFiles
     repeat with aFile in theFiles
         set filePath to POSIX path of aFile
-        set quotedPath to quoted form of filePath
+        set fileDir to do shell script "dirname " & quoted form of filePath
 
-        -- Get the directory of the file
-        set fileDir to do shell script "dirname " & quotedPath
+        tell application "Ghostty" to activate
 
-        -- GhosttyでNvimを起動
-        tell application "Ghostty"
-            activate
-        end tell
-
-        -- GhosttyでNvimを起動
-        {{ if eq .chezmoi.os "darwin" -}}
-        do shell script "open -na Ghostty.app --args --working-directory=" & quoted form of fileDir & " -e '{{ if hasKey . "nvim_path" }}{{ .nvim_path }}{{ else }}/opt/homebrew/bin/nvim{{ end }} " & quotedPath & "'"
-        {{- else -}}
-        do shell script "ghostty --working-directory=" & quoted form of fileDir & " -e '/usr/local/bin/nvim " & quotedPath & "'"
-        {{- end }}
+        try
+            launchGhostty(filePath, fileDir)
+        on error errorMessage
+            display dialog "Error opening file in Ghostty:" & return & return & ¬
+                "File: " & filePath & return & ¬
+                "Error: " & errorMessage buttons {"OK"} default button 1 with icon stop
+        end try
     end repeat
 end open
 
--- ドラッグ&ドロップ以外でアプリが起動された場合
 on run
-    tell application "Ghostty"
-        activate
-    end tell
+    tell application "Ghostty" to activate
+
+    try
+        launchGhostty("", "")
+    on error errorMessage
+        display dialog "Error opening Ghostty:" & return & return & ¬
+            "Error: " & errorMessage buttons {"OK"} default button 1 with icon stop
+    end try
+end run
+
+on launchGhostty(filePath, fileDir)
+    set nvimPath to "{{ .chezmoi.homeDir }}/.local/share/mise/shims/nvim"
+
+    -- Ghostty (macOS) wraps `-e` commands in `/usr/bin/login -flp <user>`,
+    -- so we must pass a single shell command via `zsh -lc '<cmd>'` instead of
+    -- passing the program + args as separate tokens (which login(1) misparses).
+    if filePath is "" then
+        set innerCmd to quoted form of nvimPath
+    else
+        set innerCmd to (quoted form of nvimPath) & " " & (quoted form of filePath)
+    end if
 
     {{ if eq .chezmoi.os "darwin" -}}
-    do shell script "open -na Ghostty.app --args -e '{{ if hasKey . "nvim_path" }}{{ .nvim_path }}{{ else }}/opt/homebrew/bin/nvim{{ end }}'"
+    set cmd to "open -na Ghostty.app --args"
+    if fileDir is not "" then
+        set cmd to cmd & " --working-directory=" & quoted form of fileDir
+    end if
+    set cmd to cmd & " -e zsh -lc " & quoted form of innerCmd
     {{- else -}}
-    do shell script "ghostty -e '/usr/local/bin/nvim'"
+    set cmd to "ghostty"
+    if fileDir is not "" then
+        set cmd to cmd & " --working-directory=" & quoted form of fileDir
+    end if
+    set cmd to cmd & " -e zsh -lc " & quoted form of innerCmd
     {{- end }}
-end run
+
+    do shell script cmd
+end launchGhostty
