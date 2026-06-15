@@ -1,11 +1,37 @@
 # Claude Code Config
 
 ## Working Style
+
 - Conventional Commits format (feat: / fix: / refactor: / test: / docs: / chore:)
 - Simple changes (single-file, typo, rename): execute immediately
 - Multi-file features: write a brief spec (what/why/how) before implementation
 - Architectural changes: full spec-driven with `/plan` and review checkpoint before coding
 - Batch editing 10+ files: pause after first 3-5 edits to confirm approach
+
+## Output Format Compliance
+
+- When the user explicitly requests a format (markdown, HTML, Marp, Mermaid, etc.), produce EXACTLY that format
+- Do not silently convert or substitute formats (e.g., markdown→HTML, or vice versa)
+- If the requested format is ambiguous, confirm BEFORE generating rather than guessing
+
+## Verification Before Claims
+
+- Never assert technical facts (AWS IAM behavior, API pricing, tool capabilities, library semantics) without citing official docs or running a check
+- For PR reviews, verify each finding against source code or docs before posting; mark uncited claims as "unverified hypothesis"
+- When the user pushes back on a claim, demand citations from yourself FIRST rather than restating
+
+## Re-read Before Editing
+
+- Always `Read` a file immediately before editing it, especially in long sessions or after the user mentions making manual changes
+- Never act on a stale file snapshot — re-read if more than a few tool calls have passed since the last read
+- After a hook reports a file was modified externally, re-read before any further edit
+
+## Branch & PR Hygiene
+
+- Before creating a new branch or PR, check for existing ones covering the same scope: `gh pr list --search "<keyword> author:@me"`
+- Reuse the existing PR when scope matches; do not open a duplicate
+- Confirm remote branch name with the user before `git push` when it differs from current upstream
+- Never force-push without explicit user approval; check for accidental wipe of files-apply / Renovate auto-commits first
 
 ## Context Engineering (2026 Core Paradigm)
 
@@ -31,9 +57,11 @@ Principle: Give the map, not the answer.
 **After implementation:** Present 2-3 related concepts the user didn't encounter. Articulate reusable patterns applicable to similar problems.
 
 ### Guided Mode
+
 Activate by typing "guided". Present options, user writes skeleton, Claude fills details. Capture TIL notes.
 
 ### Speed Mode
+
 Activate by typing "speed". No constraints — implement at maximum velocity.
 
 ## Rules
@@ -48,6 +76,7 @@ IMPORTANT: @rules/global/security.md
 @rules/performance.md
 
 On-demand (loaded by skills when triggered, not always):
+
 - Coding style/patterns → `/coding-standards` skill
 - Testing requirements → `/tdd`, `/tdd-workflow`, `/test-coverage` skills
 - Git workflow / PR creation → `/create-pr`, `/pr-summary`, `/release` skills
@@ -56,6 +85,7 @@ On-demand (loaded by skills when triggered, not always):
 - Agent orchestration → agents auto-discovered from `~/.claude/agents/`
 
 Language/framework rules — add per-project in `.claude/CLAUDE.md`:
+
 - `@rules/frontend/react-patterns.md` (React/Next.js projects)
 - `@rules/backend/ruby-patterns.md` (Ruby/Rails projects)
 - `@rules/backend/php-patterns.md` (PHP/Laravel projects)
@@ -89,10 +119,12 @@ Context recovery: `/rewind` for failed attempts, `/btw` for side questions witho
 - Re-evaluate harness complexity with each model upgrade
 
 ## Error Handling
+
 - When no data exists for a requested feature, report clearly and stop
 - Do not autonomously explore or audit unrelated files
 - On security issue: stop immediately, invoke security-reviewer, fix before continuing
 
 ## Language
+
 - All skill and agent instructions written in English for best LLM performance
 - When translating Japanese content, translate ALL files in the directory
