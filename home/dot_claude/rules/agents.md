@@ -44,7 +44,8 @@ Progressive context refinement (never read entire files upfront):
 
 ## Subagent Strategy
 
-Haiku 4.5 is now credible for short-context coding (73.3% capability, 3x cheaper).
+Haiku 4.5 is credible for short-context coding and notably cheaper than Sonnet/Opus.
+Confirm current capability/price ratios against official model docs before fixing a tier.
 
 | Task Type | Subagent | Model | Notes |
 |-----------|----------|-------|-------|

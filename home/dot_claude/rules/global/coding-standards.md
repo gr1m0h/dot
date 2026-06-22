@@ -8,41 +8,14 @@
 
 ## Naming
 
-Follow the convention of the project language:
+Follow the project language's standard convention. In short:
+- **TS/JS, PHP**: camelCase vars/funcs, PascalCase types, SCREAMING_SNAKE constants, `is/has/can` booleans
+- **Ruby**: snake_case methods, PascalCase classes, `?` predicates, `!` destructive
+- **Go**: PascalCase exported / camelCase unexported, lowercase packages, `-er` interfaces
 
-### TypeScript / JavaScript
-| Element | Style | Example |
-|---------|-------|---------|
-| vars/funcs | camelCase | `getUserName` |
-| classes/types | PascalCase | `UserService` |
-| constants | SCREAMING_SNAKE | `MAX_RETRY` |
-| booleans | is/has/can prefix | `isActive` |
-
-### Ruby
-| Element | Style | Example |
-|---------|-------|---------|
-| vars/methods | snake_case | `get_user_name` |
-| classes/modules | PascalCase | `UserService` |
-| constants | SCREAMING_SNAKE | `MAX_RETRY` |
-| predicates | ? suffix | `active?` |
-| destructive | ! suffix | `save!` |
-
-### PHP
-| Element | Style | Example |
-|---------|-------|---------|
-| vars/funcs | camelCase | `getUserName` |
-| classes/interfaces | PascalCase | `UserService` |
-| constants | SCREAMING_SNAKE | `MAX_RETRY` |
-| booleans | is/has/can prefix | `$isActive` |
-
-### Go
-| Element | Style | Example |
-|---------|-------|---------|
-| exported | PascalCase | `GetUserName` |
-| unexported | camelCase | `getUserName` |
-| packages | lowercase | `userservice` |
-| constants | PascalCase or SCREAMING_SNAKE | `MaxRetry` |
-| interfaces | -er suffix (single method) | `Reader`, `Writer` |
+Full per-language naming + style detail lives in the on-demand language pattern
+files (`@rules/backend/go-patterns.md`, `ruby-patterns.md`, `php-patterns.md`,
+`@rules/frontend/react-patterns.md`).
 
 ## Functions
 - Single responsibility, ≤3 params (use options object)
@@ -62,24 +35,7 @@ Follow the convention of the project language:
 
 ## Types
 
-### TypeScript
-- No `any` (use `unknown` + guards)
-- Explicit return types, discriminated unions
-- Prefer `readonly`/`const`
-
-### Ruby
-- Use Sorbet (`sig` annotations) or RBS for type checking
-- Prefer `T.nilable` over implicit nil
-- Use `T::Struct` for typed data objects
-
-### PHP
-- Use `declare(strict_types=1)` in every file
-- PHPStan/Psalm level max for static analysis
-- Type-hint all parameters and return types
-- Use union types (`string|int`) over mixed
-
-### Go
-- Use strong typing (no `interface{}` / `any` without reason)
-- Prefer concrete types, use interfaces at consumer side
-- Define custom types for domain concepts (`type UserID string`)
-- Use generics (1.18+) for type-safe collections
+Strong typing everywhere; avoid escape hatches (`any`/`interface{}`/`mixed`).
+Type all params and returns. Per-language specifics (Sorbet/RBS, `strict_types`,
+PHPStan level max, Go generics, discriminated unions) → see the on-demand
+language pattern files.

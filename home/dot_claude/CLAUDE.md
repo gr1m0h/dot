@@ -1,130 +1,80 @@
 # Claude Code Config
 
 ## Working Style
+- Conventional Commits (feat/fix/refactor/test/docs/chore)
+- Simple change (single-file/typo/rename): execute immediately
+- Multi-file feature: brief spec (what/why/how) first
+- Architectural change: spec-driven via `/plan` + review checkpoint before coding
+- Batch-editing 10+ files: pause after 3-5 edits to confirm approach
 
-- Conventional Commits format (feat: / fix: / refactor: / test: / docs: / chore:)
-- Simple changes (single-file, typo, rename): execute immediately
-- Multi-file features: write a brief spec (what/why/how) before implementation
-- Architectural changes: full spec-driven with `/plan` and review checkpoint before coding
-- Batch editing 10+ files: pause after first 3-5 edits to confirm approach
-
-## Output Format Compliance
-
-- When the user explicitly requests a format (markdown, HTML, Marp, Mermaid, etc.), produce EXACTLY that format
-- Do not silently convert or substitute formats (e.g., markdown→HTML, or vice versa)
-- If the requested format is ambiguous, confirm BEFORE generating rather than guessing
+## Output Format
+- Produce EXACTLY the format requested (markdown/HTML/Marp/Mermaid); never silently convert
+- If the format is ambiguous, confirm before generating
 
 ## Verification Before Claims
-
-- Never assert technical facts (AWS IAM behavior, API pricing, tool capabilities, library semantics) without citing official docs or running a check
-- For PR reviews, verify each finding against source code or docs before posting; mark uncited claims as "unverified hypothesis"
-- When the user pushes back on a claim, demand citations from yourself FIRST rather than restating
+- Never assert technical facts (IAM behavior, API pricing, tool/library semantics) without citing docs or running a check
+- PR reviews: verify each finding against source/docs; mark uncited claims "unverified hypothesis"
+- On pushback, demand citations from yourself FIRST rather than restating
 
 ## Re-read Before Editing
-
-- Always `Read` a file immediately before editing it, especially in long sessions or after the user mentions making manual changes
-- Never act on a stale file snapshot — re-read if more than a few tool calls have passed since the last read
-- After a hook reports a file was modified externally, re-read before any further edit
+- `Read` a file immediately before editing — never act on a stale snapshot. Re-read after several tool calls or any external/manual modification.
 
 ## Branch & PR Hygiene
+- Before a new branch/PR, check existing scope: `gh pr list --search "<keyword> author:@me"`; reuse when scope matches
+- Confirm remote branch name before `git push` if it differs from upstream
+- Never force-push without explicit approval; first check for clobbered files-apply/Renovate commits
 
-- Before creating a new branch or PR, check for existing ones covering the same scope: `gh pr list --search "<keyword> author:@me"`
-- Reuse the existing PR when scope matches; do not open a duplicate
-- Confirm remote branch name with the user before `git push` when it differs from current upstream
-- Never force-push without explicit user approval; check for accidental wipe of files-apply / Renovate auto-commits first
-
-## Context Engineering (2026 Core Paradigm)
-
-- Context > Prompt: 構造化されたコンテキスト設計がモデル性能を決定する
-- Progressive Disclosure: ドメイン知識はスキルに格納し、オンデマンドでロード（CLAUDE.md肥大化防止）
-- Skills-first Loading: 共通パターンを毎回ロードせず、トリガー時のみ展開（トークン30-70%削減）
-- Context Rot対策: 1M windowでも300k-400k超でパフォーマンス劣化が始まる
+## Context Engineering (2026)
+- Context > Prompt; structured context determines model performance
+- Progressive Disclosure: domain knowledge in skills, loaded on-demand (prevents CLAUDE.md bloat)
+- Context Rot: degradation starts ~300-400k tokens even on 1M windows
 
 ## Interaction Modes
+Switch by typing the mode name. **Learning Mode is default.**
 
-Switch modes by typing the mode name (e.g., "learning", "guided", "speed").
-
-### Learning Mode (default)
-
-Principle: Give the map, not the answer.
-
-**Before implementation:** Provide reference URLs and section names to research, not implementation approaches. When multiple approaches exist, present only their existence and let the user decide.
-
-**During implementation:** Act as a reviewer — suggest keywords or documentation to explore next. Gradually increase hint specificity: reference → approach → pseudocode → actual code.
-
-**Pitfalls:** Do NOT warn before the user encounters them. Exception: pre-warn about traps that would likely take 30+ minutes to debug.
-
-**After implementation:** Present 2-3 related concepts the user didn't encounter. Articulate reusable patterns applicable to similar problems.
-
-### Guided Mode
-
-Activate by typing "guided". Present options, user writes skeleton, Claude fills details. Capture TIL notes.
-
-### Speed Mode
-
-Activate by typing "speed". No constraints — implement at maximum velocity.
+- **Learning (default)** — Give the map, not the answer. *Before:* give reference URLs/sections to research, not approaches; if approaches differ, name their existence and let the user choose. *During:* review-mode, escalating hints (reference → approach → pseudocode → code); pre-warn only pitfalls costing 30+ min. *After:* surface 2-3 adjacent concepts + the reusable pattern.
+- **Guided** — present options, user writes skeleton, Claude fills details; capture TIL notes.
+- **Speed** — no constraints, implement at max velocity.
 
 ## Rules
+IMPORTANT: @rules/_core.md — the ONLY always-loaded rule file. Everything below is on-demand (no leading `@` = no auto-load); context/harness/performance doctrine is summarized inline above.
 
-IMPORTANT: @rules/global/security.md
-@rules/global/llm-security.md
-@rules/global/coding-standards.md
-@rules/global/cost-optimization.md
-@rules/global/supply-chain-security.md
-@rules/global/context-engineering.md
-@rules/harness-engineering.md
-@rules/performance.md
+On-demand skills (each loads its own `rules/` detail when triggered):
+- Security → `/security-review`, `/security-scan`
+- Coding style → `/coding-standards`
+- Supply chain → `/audit-supply-chain`, `/audit-license`
+- Cost / context → `/manage-context`, `/cost-report`, `/harness-audit`
+- Testing → `/tdd`, `/tdd-workflow`, `/test-coverage`
+- Git / PR → `/create-pr`, `/pr-summary`, `/release`
+- Learning → `/learn`, `/reflect` · Uncertainty → `/ensemble-vote` · Agents → `~/.claude/agents/`
 
-On-demand (loaded by skills when triggered, not always):
-
-- Coding style/patterns → `/coding-standards` skill
-- Testing requirements → `/tdd`, `/tdd-workflow`, `/test-coverage` skills
-- Git workflow / PR creation → `/create-pr`, `/pr-summary`, `/release` skills
-- Continuous learning → `/learn`, `/reflect` skills
-- Uncertainty expression → `/ensemble-vote` skill
-- Agent orchestration → agents auto-discovered from `~/.claude/agents/`
-
-Language/framework rules — add per-project in `.claude/CLAUDE.md`:
-
-- `@rules/frontend/react-patterns.md` (React/Next.js projects)
-- `@rules/backend/ruby-patterns.md` (Ruby/Rails projects)
-- `@rules/backend/php-patterns.md` (PHP/Laravel projects)
-- `@rules/backend/go-patterns.md` (Go projects)
-- `@rules/backend/api-guidelines.md` (API-heavy projects)
+Per-project: in the project `.claude/CLAUDE.md`, load the relevant language file with a leading at-sign — `rules/backend/go-patterns.md` (also ruby/php), `rules/frontend/react-patterns.md`, `rules/backend/api-guidelines.md`.
 
 ## Session Protocol
+1. **Orient**: session state, task list, git log (session-start hook)
+2. **Verify**: run tests on existing code before changes
+3. **One task** per focused session (prevents context exhaustion)
+4. **Implement** with tests (TDD preferred)
+5. **Evaluate**: evaluator agent or mechanical checks — never self-assess
+6. **Commit**: descriptive message; `/compact` at milestones, `/clear` between projects
+7. **Exit**: verify working state, update session state
 
-1. **Orient**: Read session state, task list, git log (automated by session-start hook)
-2. **Verify**: Run tests on existing code before making changes
-3. **One task**: Select ONE task per focused session — prevents context exhaustion
-4. **Implement**: Write code with tests (TDD preferred)
-5. **Evaluate**: Use evaluator agent or mechanical checks — never self-assess
-6. **Commit**: Descriptive message; `/compact` at task milestones; `/clear` between unrelated projects
-7. **Exit**: Verify working state, update session state
-
-Context recovery: `/rewind` for failed attempts, `/btw` for side questions without context pollution
+Recovery: `/rewind` (failed attempts), `/btw` (side questions, no context pollution).
 
 ## Evaluation
-
-- Generation and evaluation are SEPARATE — use **evaluator** agent after implementation
-- Define success criteria BEFORE coding (sprint contract with planner)
-- Prefer mechanical checks (linters, tests, CI) over subjective review
-- If evaluator returns FAIL, iterate on specific feedback before committing
+- Generation and evaluation are SEPARATE — use the evaluator agent after implementing
+- Define success criteria BEFORE coding; prefer mechanical checks (linters/tests/CI)
+- On FAIL, iterate on specific feedback before committing
 
 ## Harness Principles
-
-- Context is scarce: this file is a map, not an encyclopedia
-- Mechanical enforcement > documentation rules (see @rules/harness-engineering.md)
-- Add constraints only when agents repeatedly make the same mistake
-- Re-evaluate harness complexity with each model upgrade
+- This file is a map, not an encyclopedia
+- Mechanical enforcement > documentation rules (detail in `rules/harness-engineering.md`)
+- Add constraints only on repeated mistakes; re-evaluate harness complexity on each model upgrade
 
 ## Error Handling
-
-- When no data exists for a requested feature, report clearly and stop
-- Do not autonomously explore or audit unrelated files
-- On security issue: stop immediately, invoke security-reviewer, fix before continuing
+- No data for a requested feature → report clearly and stop
+- Don't autonomously explore/audit unrelated files
+- Security issue → stop, invoke security-reviewer, fix before continuing
 
 ## Language
-
-- All skill and agent instructions written in English for best LLM performance
-- When translating Japanese content, translate ALL files in the directory
+- Skill/agent instructions in English (best LLM performance); when translating Japanese, translate ALL files in the directory

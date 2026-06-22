@@ -79,16 +79,32 @@ process.stdin.on("end", () => {
       ];
 
       const allPatterns = [
-        { patterns: destructive, label: "Destructive command" },
-        { patterns: rce, label: "Remote code execution risk" },
-        { patterns: leaks, label: "Secret leak risk" },
-        { patterns: malware, label: "Malware/mining pattern" },
+        {
+          patterns: destructive,
+          label: "Destructive command",
+          hint: "Fix: scope the path explicitly (no `/` or `~` roots), drop `--force`/`--hard`, or ask the user to run it manually if truly intended.",
+        },
+        {
+          patterns: rce,
+          label: "Remote code execution risk",
+          hint: "Fix: download to a file and inspect it before executing — never pipe curl/wget straight into a shell or interpreter.",
+        },
+        {
+          patterns: leaks,
+          label: "Secret leak risk",
+          hint: "Fix: don't read/print/exfiltrate secret files or env vars. Reference secrets by name via a secrets manager instead.",
+        },
+        {
+          patterns: malware,
+          label: "Malware/mining pattern",
+          hint: "Fix: this pattern is not permitted. If this is authorized security research, document authorization and ask the user to confirm.",
+        },
       ];
 
-      for (const { patterns, label } of allPatterns) {
+      for (const { patterns, label, hint } of allPatterns) {
         for (const p of patterns) {
           if (p.test(cmd)) {
-            console.error(`BLOCKED: ${label}`);
+            console.error(`BLOCKED: ${label}\n${hint}`);
             process.exit(2);
           }
         }
@@ -96,7 +112,9 @@ process.stdin.on("end", () => {
 
       // sudo ガード（明示的に許可されていない限りブロック）
       if (/^\s*sudo\s/i.test(cmd)) {
-        console.error("BLOCKED: sudo requires explicit user approval");
+        console.error(
+          "BLOCKED: sudo requires explicit user approval\nFix: re-run without sudo, or ask the user to execute the privileged command themselves.",
+        );
         process.exit(2);
       }
     }
@@ -131,7 +149,9 @@ process.stdin.on("end", () => {
 
       for (const p of protectedPaths) {
         if (p.test(fp)) {
-          console.error(`BLOCKED: Protected file: ${fp}`);
+          console.error(
+            `BLOCKED: Protected file: ${fp}\nFix: this path holds secrets/lockfiles/VCS internals. Edit the intended source file instead, or ask the user to change it manually.`,
+          );
           process.exit(2);
         }
       }
@@ -140,7 +160,11 @@ process.stdin.on("end", () => {
       const secrets = [
         { p: /AKIA[0-9A-Z]{16}/, l: "AWS Access Key" },
         { p: /ASIA[0-9A-Z]{16}/, l: "AWS STS Key" },
-        { p: /[0-9a-zA-Z/+]{40}(?=\s|$|")/, l: "AWS Secret Key (possible)" },
+        // 文脈付きでのみ検出（裸の40文字base64は誤検知が多いため除外）
+        {
+          p: /aws.{0,20}(secret|access).{0,20}['"=:\s][0-9a-zA-Z/+]{40}(?![0-9a-zA-Z/+])/i,
+          l: "AWS Secret Key (possible)",
+        },
         { p: /sk-[a-zA-Z0-9]{20,}T3BlbkFJ[a-zA-Z0-9]+/, l: "OpenAI API Key" },
         { p: /sk-(?:proj-)?[a-zA-Z0-9-]{40,}/, l: "OpenAI/API Key" },
         { p: /sk-ant-[a-zA-Z0-9-]{90,}/, l: "Anthropic API Key" },
@@ -163,7 +187,9 @@ process.stdin.on("end", () => {
 
       for (const { p, l } of secrets) {
         if (p.test(content)) {
-          console.error(`BLOCKED: ${l} detected in content`);
+          console.error(
+            `BLOCKED: ${l} detected in content\nFix: remove the hardcoded secret. Load it from an env var or secrets manager and reference it by name. If this is a false positive (e.g. a placeholder/test fixture), ask the user to confirm.`,
+          );
           process.exit(2);
         }
       }

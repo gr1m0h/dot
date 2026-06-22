@@ -58,6 +58,10 @@ export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
 mkdir -p ~/.docker/cli-plugins
 ln -sfn "$(mise where aqua:docker/compose)/docker-cli-plugin-docker-compose" ~/.docker/cli-plugins/docker-compose
 
+# Datadog
+## FiT
+export DD_SITE="ap1.datadoghq.com"
+
 # Programming languages
 export PATH=$GOPATH/bin:$PATH
 export PATH=$NPM_CONFIG_PREFIX/bin:$PATH

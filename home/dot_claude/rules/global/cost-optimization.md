@@ -6,7 +6,7 @@ Efficient resource usage for Claude Code sessions.
 
 | Task Type | Model | Rationale |
 |-----------|-------|-----------|
-| File exploration, lookups | haiku | 80% cost savings, 73.3% capability |
+| File exploration, lookups | haiku | Cheapest; strong for short-context retrieval |
 | Typo fixes, simple renames | haiku | Minimal complexity |
 | Code explanation, Q&A | haiku/sonnet | Reading-focused |
 | Feature implementation | sonnet | Balance of capability/cost |
@@ -16,7 +16,8 @@ Efficient resource usage for Claude Code sessions.
 | Multi-file refactoring | opus | Cross-file reasoning |
 | Subagent workers | haiku | `CLAUDE_CODE_SUBAGENT_MODEL=haiku` |
 
-Haiku 4.5 is now credible for short-context coding tasks — not just fallback.
+Haiku 4.5 is credible for short-context coding tasks — not just fallback.
+Re-evaluate the tier table on each model upgrade; capability/price ratios shift.
 
 ## Token Conservation
 
@@ -38,29 +39,11 @@ Haiku 4.5 is now credible for short-context coding tasks — not just fallback.
 - Compact during multi-file refactoring or active debugging
 - Let extended thinking run uncapped (use MAX_THINKING_TOKENS=31999)
 
-## 1M Context Window Management
+## Context Window Management
 
-### Context Rot
-Performance degrades at ~300k-400k tokens despite 1M available.
-Older irrelevant content actively distracts from current task.
-
-### Strategies (ordered by impact)
-1. **Subagent delegation** — Fresh context per child, only results return
-2. **`/rewind`** — Jump to previous state, preserve learnings, drop failures
-3. **`/compact <hints>`** — Model distills session into dense brief
-4. **`/btw`** — Side questions in dismissible overlay, never enters history
-5. **`/clear`** — Full reset between unrelated tasks
-6. **Checkpoints** — Persist across sessions, support summarize-from
-
-### Strategic Compaction
-- Auto-compact at 50% (early consolidation > degraded quality)
-- Manual `/compact` with targeted summary prompt is preferred
-- `/clear` between unrelated projects
-
-### Subagent Delegation
-- Offload exploration to subagents (keeps main context clean)
-- Subagent results are summarized, not dumped into context
-- Max subagent depth: 3 (prevent recursion)
+Context-rot, recovery tooling (`/rewind`, `/btw`, `/compact`, `/clear`), and
+subagent delegation are covered in `@rules/performance.md` and the
+`/manage-context` skill — not repeated here to keep always-loaded budget lean.
 
 ### MCP Server Budget
 - Fewer than 10 enabled servers per project
@@ -69,10 +52,11 @@ Older irrelevant content actively distracts from current task.
 
 ## Prompt Caching Awareness
 
-- TTL is 5 minutes (changed Jan 2026, from 60 min)
+- Verify current cache TTL and pricing against official docs before relying on it
+  (TTL/pricing have changed; do not hardcode assumptions)
 - Place static content first, dynamic last (prefix matching)
-- Batch operations stack discounts (batch 50% + cache hit)
-- Monitor for cache anomalies (March 2026 incident: 10-20x inflation)
+- Batch operations stack discounts with cache hits
+- Monitor billing for cache-cost anomalies; reconcile against expected usage
 
 ## Tool Usage Efficiency
 

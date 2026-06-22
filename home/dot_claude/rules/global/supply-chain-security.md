@@ -8,15 +8,8 @@ Mandatory checks for dependency management.
 
 ### Before Adding Dependencies
 
-1. **Audit first**
-   ```bash
-   npm audit              # Node.js
-   pip-audit              # Python
-   cargo audit            # Rust
-   bundle audit           # Ruby (bundler-audit gem)
-   composer audit         # PHP
-   govulncheck ./...      # Go
-   ```
+1. **Audit first** — run the ecosystem auditor before install:
+   `npm audit` / `pip-audit` / `cargo audit` / `bundle audit` / `composer audit` / `govulncheck ./...`
 
 2. **Check package legitimacy**
    - Verify package name (typosquatting risk)
@@ -62,25 +55,9 @@ Mandatory checks for dependency management.
 - Typosquatted names (e.g., `lodahs` instead of `lodash`)
 
 ### Required Checks
-```bash
-# Check for install scripts
-npm show <package> scripts
-
-# View package contents before install
-npm pack <package> && tar -tf <package>-*.tgz
-
-# Check package provenance
-npm audit signatures
-
-# Ruby: Check for install hooks
-gem contents <gem> | head -20
-
-# PHP: Check for post-install scripts
-composer show <package> --all
-
-# Go: Check module info
-go mod graph | grep <module>
-```
+Before installing an unfamiliar package, inspect install scripts, package
+contents, and provenance signatures. The `/audit-supply-chain` skill runs the
+full per-ecosystem check sequence (npm/gem/composer/go) on demand.
 
 ## CI/CD Integration
 

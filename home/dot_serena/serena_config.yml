@@ -1,10 +1,9 @@
-gui_log_window: false
+
 # whether to open a graphical window with Serena's logs.
 # This is mainly supported on Windows and (partly) on Linux; not available on macOS.
-# If you want to see the logs in a web browser, use the `web_dashboard` option instead.
-# Limitations: doesn't seem to work with the community version of Claude Desktop for Linux
-# Might also cause problems with some MCP clients - if you have any issues, try disabling this
-
+# If you prefer a browser-based tool, use the `web_dashboard` option instead.
+# Further information: https://oraios.github.io/serena/02-usage/060_dashboard.html
+#
 # Being able to inspect logs is useful both for troubleshooting and for monitoring the tool calls,
 # especially when using the agno playground, since the tool calls are not always shown,
 # and the input params are never shown in the agno UI.
