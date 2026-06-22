@@ -451,5 +451,6 @@
   "editorMode": "vim",
   "showTurnDuration": true,
   "terminalProgressBarEnabled": true,
-  "teammateMode": "in-process"
+  "teammateMode": "in-process",
+  "remoteControlAtStartup": true
 }
