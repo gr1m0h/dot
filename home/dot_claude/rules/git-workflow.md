@@ -21,6 +21,11 @@ When creating PRs:
 4. Include test plan with TODOs
 5. Push with `-u` flag if new branch
 
+### Editing / updating PRs
+- Prefer `gh api` (REST) for PR edits/updates. `gh pr edit` often fails due to the
+  GraphQL projects-classic deprecation — use the REST API as the primary method.
+  e.g. `gh api -X PATCH repos/{owner}/{repo}/pulls/{number} -f body=@body.md`
+
 ## Feature Implementation Workflow
 
 1. **Plan First**
