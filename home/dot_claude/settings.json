@@ -406,6 +406,20 @@
     "type": "command",
     "command": "npx ccusage@latest statusline"
   },
+  "enabledPlugins": {
+    "sreaas@topotal": true,
+    "case-reflect@topotal": true,
+    "proposal-review@topotal": true,
+    "brainstorming@topotal": true
+  },
+  "extraKnownMarketplaces": {
+    "topotal": {
+      "source": {
+        "source": "github",
+        "repo": "topotal/skills"
+      }
+    }
+  },
   "language": "japanese",
   "sandbox": {
     "enabled": false,
@@ -437,5 +451,6 @@
   "editorMode": "vim",
   "showTurnDuration": true,
   "terminalProgressBarEnabled": true,
-  "teammateMode": "in-process"
+  "teammateMode": "in-process",
+  "remoteControlAtStartup": true
 }

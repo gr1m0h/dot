@@ -1,36 +1,16 @@
 # Performance Optimization
 
-## 1M Context Window Management
+## Context Window Management
 
-### Context Rot
-1M tokens available ≠ use all 1M tokens.
-- Performance degrades at ~300k-400k tokens (varies by task)
-- Older content actively distracts model from current task
-- Autocompaction is safety net, not strategy
+Context-rot doctrine and the recovery toolkit (`/rewind`, `/btw`, `/compact`,
+`/clear`, subagents, checkpoints) are the canonical content of
+`@rules/global/context-engineering.md`. Performance-specific notes only:
 
-### Recovery Toolkit
-
-| Tool | When | Impact |
-|------|------|--------|
-| `/rewind` | Failed attempt, wrong direction | Jumps back, preserves learnings |
-| `/btw` | Quick side question | Overlay response, no history |
-| `/compact <hints>` | Mid-task milestone | Distills session, frees context |
-| `/clear` | Between unrelated tasks | Full reset |
-| Subagent | Exploratory investigation | Fresh context, results only |
-| Checkpoints | Complex multi-phase work | Persist across sessions |
-
-### Session Rewind
-- `Esc + Esc` or `/rewind` opens rewind menu
-- Options: restore conversation only, code only, or both
-- Summarize-from: condenses forward, keeps history
-- Not simple undo — recovers learning while discarding failure
-
-### Context Discipline
-Even with 1M:
-- Load only relevant files (Glob/Grep, not cat *)
-- Use sparse checkout for monorepos
-- Lean CLAUDE.md (<200 lines, <500 tokens ideal)
-- Skills-first loading (on-demand, not always)
+- 1M tokens available ≠ use all 1M; degradation starts ~300k–400k (autocompaction
+  is a safety net, not a strategy)
+- Load only relevant files (Glob/Grep, not `cat *`); sparse checkout for monorepos
+- `Esc Esc` / `/rewind` recovers learning while discarding the failed attempt
+  (restore conversation, code, or both)
 
 ## Ultrathink + Plan Mode
 

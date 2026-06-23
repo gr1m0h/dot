@@ -22,26 +22,13 @@ Generation and evaluation are SEPARATE concerns:
 - Weight evaluation toward agent weaknesses: design completeness, edge cases, feature fidelity
 - Evaluator should be tuned to be skeptical — it's easier to calibrate a standalone evaluator than to make a generator self-critical
 
-## Context Engineering (2026 Paradigm)
+## Context Engineering
 
-Context > Prompt. The structure of what enters the context window matters more than wording.
-
-### Progressive Disclosure (Skills-first Loading)
-- CLAUDE.md: lean navigation map (<200 lines), universal rules only
-- Skills: domain knowledge loaded on-demand when triggered (30-70% token reduction)
-- Hooks: mechanical enforcement, zero LLM tokens consumed
-- Promotion path: CLAUDE.md rule → Skill (on-demand) → Hook (mechanical)
-
-### Context Rot Prevention
-- 1M window available but performance degrades at ~300k-400k tokens
-- Older irrelevant content actively distracts from current task
-- Use `/rewind` (failed attempts), `/btw` (side questions), `/compact` (milestone), `/clear` (task switch)
-- Subagent delegation: fresh context per child, only results return to parent
-
-### Always-Loaded Budget
-- CLAUDE.md + @rules: kept under ~2k tokens total
-- Every additional always-loaded rule competes with working memory
-- If a rule can be a skill, make it a skill. If a rule can be a hook, make it a hook.
+Context > Prompt. Full doctrine (progressive disclosure, context-rot, always-loaded
+<2k-token budget, promotion ladder) lives in `@rules/global/context-engineering.md`.
+Harness-specific corollary: the promotion path is CLAUDE.md rule → Skill (on-demand)
+→ Hook (mechanical, zero LLM tokens). If a rule can be a skill, make it a skill;
+if it can be a hook, make it a hook.
 
 ## Mechanical Enforcement Priority
 
