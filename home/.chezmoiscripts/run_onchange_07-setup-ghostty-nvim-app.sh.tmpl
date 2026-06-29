@@ -11,7 +11,7 @@ if [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ] || [ "$(uname)" != "Darwin" 
 fi
 
 APPLESCRIPT="${HOME}/.local/share/chezmoi-scripts/Ghostty-Nvim.applescript"
-BUILD_SCRIPT="{{ .chezmoi.sourceDir }}/../tools/applescript/ghostty-nvim/build-ghostty-nvim-app.sh"
+BUILD_SCRIPT="{{ .chezmoi.sourceDir }}/../scripts/applescript/ghostty-nvim/build-ghostty-nvim-app.sh"
 
 if [ ! -x "$BUILD_SCRIPT" ]; then
     # Fall back to invoking via bash in case the bit isn't set yet.
