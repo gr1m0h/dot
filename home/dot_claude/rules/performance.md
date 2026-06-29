@@ -11,6 +11,7 @@ Context-rot doctrine and the recovery toolkit (`/rewind`, `/btw`, `/compact`,
 - Load only relevant files (Glob/Grep, not `cat *`); sparse checkout for monorepos
 - `Esc Esc` / `/rewind` recovers learning while discarding the failed attempt
   (restore conversation, code, or both)
+- For bulk file operations prefer shell tools (cp/sed/mv) over reading large files into context; use targeted reads (ranges/grep) over full-file reads to avoid autocompaction
 
 ## Ultrathink + Plan Mode
 

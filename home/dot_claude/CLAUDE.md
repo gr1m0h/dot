@@ -23,6 +23,7 @@
 - Before a new branch/PR, check existing scope: `gh pr list --search "<keyword> author:@me"`; reuse when scope matches
 - Confirm remote branch name before `git push` if it differs from upstream
 - Never force-push without explicit approval; first check for clobbered files-apply/Renovate commits
+- Treat lockfile deletion and bulk file deletion as destructive: confirm before deleting any lockfile — never assume a bot (e.g. tfaction-bot) will auto-regenerate it
 
 ## Context Engineering (2026)
 - Context > Prompt; structured context determines model performance
