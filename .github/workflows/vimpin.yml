@@ -22,7 +22,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.24"
+          go-version: "1.26"
 
       - name: Install vimpin
         run: go install github.com/gr1m0h/vimpin/cmd/vimpin@v0.1.0
