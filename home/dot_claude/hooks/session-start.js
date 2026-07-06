@@ -168,6 +168,26 @@ try {
     }
   }
 
+  // 4.5 SREaaS batch briefing — surface queued/unreported work every session
+  try {
+    const home = process.env.HOME || "";
+    const inbox = path.join(home, "batch/inbox.md");
+    if (fs.existsSync(inbox)) {
+      const queued = (fs.readFileSync(inbox, "utf8").match(/^- \[ \] /gm) || [])
+        .length;
+      if (queued > 0) {
+        ctx.push(`BATCH_QUEUE: ${queued} task(s) in ~/batch/inbox.md — /morning-batch で発注可能`);
+      }
+    }
+    const unreported = path.join(home, "batch/unreported.md");
+    if (fs.existsSync(unreported)) {
+      const n = (fs.readFileSync(unreported, "utf8").match(/^- /gm) || []).length;
+      if (n > 0) {
+        ctx.push(`UNREPORTED_SESSIONS: ${n} tracked-org session(s) ended without a report — see ~/batch/unreported.md`);
+      }
+    }
+  } catch {}
+
   // 5. Persist env via CLAUDE_ENV_FILE
   if (envFile) {
     const vars = [];

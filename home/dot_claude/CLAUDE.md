@@ -7,6 +7,11 @@
 - Architectural change: spec-driven via `/plan` + review checkpoint before coding
 - Batch-editing 10+ files: pause after 3-5 edits to confirm approach
 
+### Client work (顧客リポジトリ — `~/.claude/tracked-orgs.txt` 参照。個人 org も登録可・org 名は public dotfiles に書かない)
+- **Spec-first (enforced)**: any non-trivial task → 3-line spec (what/why/how) **+ 成果物形式 + 完了条件** and wait for approval before working. #1 friction is wrong_approach (24/81 sessions); one approval round is cheaper than five correction rounds.
+- **Delegate-first**: if the request is investigation/research/report-shaped, propose running it as a subagent or background task and let the user step away, instead of interactive back-and-forth.
+- **Task closure**: when a client-repo task wraps up, suggest `/sreaas:task report` before the session ends — every task leaves a visible artifact (成果の見える化 = 裁量労働の成果証明).
+
 ## Output Format
 - Produce EXACTLY the format requested (markdown/HTML/Marp/Mermaid); never silently convert
 - If the format is ambiguous, confirm before generating
@@ -31,11 +36,16 @@
 - Context Rot: degradation starts ~300-400k tokens even on 1M windows
 
 ## Interaction Modes
-Switch by typing the mode name. **Learning Mode is default.**
+Switch by typing the mode name. **Speed Mode is default** (2026-07: throughput first; learning is recaptured via the Learning Loop below, not blended into delivery).
 
-- **Learning (default)** — Give the map, not the answer. *Before:* give reference URLs/sections to research, not approaches; if approaches differ, name their existence and let the user choose. *During:* review-mode, escalating hints (reference → approach → pseudocode → code); pre-warn only pitfalls costing 30+ min. *After:* surface 2-3 adjacent concepts + the reusable pattern.
+- **Speed (default)** — no constraints, implement at max velocity.
 - **Guided** — present options, user writes skeleton, Claude fills details; capture TIL notes.
-- **Speed** — no constraints, implement at max velocity.
+- **Learning** — explicit opt-in (personal repos / study time). Give the map, not the answer. *Before:* give reference URLs/sections to research, not approaches; if approaches differ, name their existence and let the user choose. *During:* review-mode, escalating hints (reference → approach → pseudocode → code); pre-warn only pitfalls costing 30+ min. *After:* surface 2-3 adjacent concepts + the reusable pattern.
+
+## Learning Loop (Speed-mode compensation)
+- **Learning debt**: in Speed mode, when work relies on a concept/tool/behavior the user likely hasn't internalized (new tech, non-obvious semantics, a decision they couldn't have articulated themselves), append one line to `~/.claude/learning-debt.md` (`- YYYY-MM-DD | <topic> | <why it matters> | <case>`) and note it in the final message. Don't log basics or things the user demonstrably knows.
+- **Ship check**: before creating a PR / delivering client-facing work, present a 3-sentence customer-facing explanation (課題 → 打ち手 → 効果) for the user to confirm or correct. If they hesitate, offer a 5-minute explainer instead of shipping blind.
+- **Recapture**: weekly timeboxed `/learn-guide` session consumes the top learning-debt items; `/reflect` / case-reflect at case milestones.
 
 ## Rules
 Loading mechanism (verified 2026-07 against official docs): EVERY `~/.claude/rules/**/*.md` WITHOUT `paths:` frontmatter auto-loads at launch — `@` references are irrelevant to rules loading.
@@ -51,6 +61,7 @@ On-demand skills (each loads its own detail when triggered):
 - Testing → `/tdd-workflow`, `/test-coverage`
 - Git / PR → `/create-pr`, `/pr-summary`, `/release`
 - Learning → `/learn`, `/reflect` · Uncertainty → `/ensemble-vote` · Agents → `~/.claude/agents/`
+- SREaaS ops → `/morning-batch` (朝バッチ投入), `/investigation-report` (調査→報告書); 夜間ドラフトは Desktop ルーチンのプロンプトで `/sreaas:task` `/sreaas:monthly` を draft-only 実行
 
 ## Session Protocol
 1. **Orient**: session state, task list, git log (session-start hook)

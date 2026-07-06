@@ -51,6 +51,7 @@ ITEMS=(
   skills
   CLAUDE.md
   settings.json
+  statusline.sh
   README.md
   README_ja.md
 )
