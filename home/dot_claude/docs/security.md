@@ -8,7 +8,7 @@ CRITICAL: Mandatory for all code changes. Aligned with OWASP 2025 Top 10.
 |------|----------|------------|
 | A01 | Broken Access Control | SSRF consolidated here |
 | A02 | Security Misconfiguration | Moved up from #5 |
-| A03 | Software Supply Chain Failures | **NEW** — see @rules/global/supply-chain-security.md |
+| A03 | Software Supply Chain Failures | **NEW** — see ~/.claude/docs/supply-chain-security.md |
 | A04 | Cryptographic Failures | Dropped from #2 |
 | A05 | Injection | Dropped from #3 |
 | A06 | Insecure Design | Dropped from #4 |
@@ -55,7 +55,7 @@ CRITICAL: Mandatory for all code changes. Aligned with OWASP 2025 Top 10.
 - `Math.random()` / `rand()` / `mt_rand()` for security-critical values
 
 Per-language forbidden API lists (TS/JS, Python, Ruby, PHP, Go) live in
-`@rules/global/forbidden-apis.md` (on-demand) and are also enforced by
+`~/.claude/docs/forbidden-apis.md` (on-demand) and are also enforced by
 `hooks/pre-tool-guard.js`.
 
 ## Exception Handling (A10:2025)
@@ -73,4 +73,4 @@ Per-language forbidden API lists (TS/JS, Python, Ruby, PHP, Go) live in
 - Use synthetic data only
 
 ## LLM Security
-See @rules/global/llm-security.md for AI-specific security patterns.
+See ~/.claude/docs/llm-security.md for AI-specific security patterns.

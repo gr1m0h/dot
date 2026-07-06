@@ -1,3 +1,9 @@
+---
+paths:
+  - "**/*.php"
+  - "**/composer.json"
+---
+
 # PHP / Laravel Patterns
 
 ## Code Style

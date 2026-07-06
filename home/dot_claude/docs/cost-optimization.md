@@ -37,12 +37,12 @@ Re-evaluate the tier table on each model upgrade; capability/price ratios shift.
 - Request verbose explanations for simple operations
 - Run redundant searches for the same information
 - Compact during multi-file refactoring or active debugging
-- Let extended thinking run uncapped (use MAX_THINKING_TOKENS=31999)
+- Micro-manage thinking budget on Fable 5+ — `effortLevel` is the control (MAX_THINKING_TOKENS removed 2026-07 as legacy)
 
 ## Context Window Management
 
 Context-rot, recovery tooling (`/rewind`, `/btw`, `/compact`, `/clear`), and
-subagent delegation are covered in `@rules/performance.md` and the
+subagent delegation are covered in `~/.claude/docs/performance.md` and the
 `/manage-context` skill — not repeated here to keep always-loaded budget lean.
 
 ### MCP Server Budget
@@ -93,5 +93,5 @@ subagent delegation are covered in `@rules/performance.md` and the
 | Large file writes for small changes | Use Edit tool for targeted changes |
 | Agent Teams for sequential tasks | Use subagents instead |
 | Reading entire files "just in case" | Grep/Glob for specific patterns |
-| Uncapped extended thinking | Set MAX_THINKING_TOKENS=31999 |
+| Fighting the thinking budget manually | Tune `effortLevel` (low/medium/high/xhigh) instead |
 | Bloated CLAUDE.md (>200 lines) | Progressive disclosure via skills |

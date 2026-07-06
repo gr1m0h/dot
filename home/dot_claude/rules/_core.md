@@ -1,6 +1,6 @@
 # Core Rules (always-loaded)
 
-Distilled universals; per-domain detail loads on-demand via the skills/files mapped in CLAUDE.md → Rules. Critical security rules here are also enforced mechanically by `hooks/pre-tool-guard.js` / `ssrf-guard.js`.
+Distilled universals — the ONLY unscoped (always-loaded) rules file; keep it that way. Language/testing detail is path-scoped in `rules/`, doctrine detail lives in `~/.claude/docs/` (on-demand). Critical security rules here are also enforced mechanically by `hooks/pre-tool-guard.js` / `ssrf-guard.js`.
 
 ## Security (OWASP 2025 — mandatory every change)
 
@@ -36,6 +36,10 @@ Distilled universals; per-domain detail loads on-demand via the skills/files map
 - Severity → action: Critical/High = BLOCK (High needs explicit approval); Medium = warn+document; Low = allow+monitor
 - Verify package name (typosquatting); **verify AI-suggested packages on the real registry before install** (hallucination → typosquat vector)
 - Never edit lockfiles manually
+
+## Uncertainty
+
+- Express confidence explicitly: 0.8+ assertive · 0.5–0.8 "probably/likely" · 0.3–0.5 "needs verification" · <0.3 "hypothesis". Never "definitely/absolutely" without evidence. (detail: `~/.claude/docs/uncertainty-expression.md`)
 
 ## Cost / Model Routing
 

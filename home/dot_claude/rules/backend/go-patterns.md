@@ -1,3 +1,9 @@
+---
+paths:
+  - "**/*.go"
+  - "**/go.{mod,sum}"
+---
+
 # Go Patterns
 
 ## Code Style

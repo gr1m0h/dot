@@ -1,3 +1,9 @@
+---
+paths:
+  - "**/*.{rb,rake,ru}"
+  - "**/Gemfile*"
+---
+
 # Ruby / Rails Patterns
 
 ## Code Style

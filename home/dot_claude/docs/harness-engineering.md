@@ -25,7 +25,7 @@ Generation and evaluation are SEPARATE concerns:
 ## Context Engineering
 
 Context > Prompt. Full doctrine (progressive disclosure, context-rot, always-loaded
-<2k-token budget, promotion ladder) lives in `@rules/global/context-engineering.md`.
+<2k-token budget, promotion ladder) lives in `~/.claude/docs/context-engineering.md`.
 Harness-specific corollary: the promotion path is CLAUDE.md rule → Skill (on-demand)
 → Hook (mechanical, zero LLM tokens). If a rule can be a skill, make it a skill;
 if it can be a hook, make it a hook.

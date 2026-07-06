@@ -192,10 +192,14 @@ process.stdin.on("end", () => {
       fs.appendFileSync(auditFile, JSON.stringify(entry) + "\n");
     } catch {}
 
-    // 問題があれば報告
+    // 問題があれば報告 — asyncRewake 前提: exit 2 で stderr が system reminder として Claude に届く
     if (results.length > 0) {
-      console.log("POST_EDIT_ISSUES:");
-      results.forEach((r) => console.log(`  ${r}`));
+      process.stderr.write(
+        "POST_EDIT_ISSUES (auto-fix already attempted; fix the remaining issues in the edited file):\n" +
+          results.map((r) => `  ${r}`).join("\n") +
+          "\n"
+      );
+      process.exit(2);
     }
   } catch (e) {
     process.stderr.write(`post-tool-verify: ${e.message}\n`);

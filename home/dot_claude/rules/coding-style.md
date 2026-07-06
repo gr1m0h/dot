@@ -1,3 +1,11 @@
+---
+paths:
+  - "**/*.{ts,tsx,js,jsx,mjs,cjs}"
+  - "**/*.{rb,rake}"
+  - "**/*.php"
+  - "**/*.go"
+---
+
 # Coding Style
 
 ## Immutability (CRITICAL)
@@ -121,4 +129,4 @@ const schema = z.object({
 const validated = schema.parse(input)
 ```
 
-See `@rules/backend/api-guidelines.md` for framework-specific validation (Ruby: dry-validation, PHP: Laravel, Go: validator).
+See `rules/backend/api-guidelines.md` for framework-specific validation (Ruby: dry-validation, PHP: Laravel, Go: validator).

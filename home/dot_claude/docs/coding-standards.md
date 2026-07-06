@@ -14,8 +14,8 @@ Follow the project language's standard convention. In short:
 - **Go**: PascalCase exported / camelCase unexported, lowercase packages, `-er` interfaces
 
 Full per-language naming + style detail lives in the on-demand language pattern
-files (`@rules/backend/go-patterns.md`, `ruby-patterns.md`, `php-patterns.md`,
-`@rules/frontend/react-patterns.md`).
+files (`rules/backend/go-patterns.md`, `ruby-patterns.md`, `php-patterns.md`,
+`rules/frontend/react-patterns.md`).
 
 ## Functions
 - Single responsibility, ≤3 params (use options object)

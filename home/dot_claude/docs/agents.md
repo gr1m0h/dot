@@ -56,7 +56,7 @@ Confirm current capability/price ratios against official model docs before fixin
 | Skeptical evaluation | evaluator | sonnet | Independent from generator |
 | Security analysis | security-reviewer | opus | Thoroughness critical |
 | Build error fixing | build-error-resolver | sonnet | Incremental fixing |
-| Multi-step coordination | orchestrator | sonnet | Team coordination |
+| Multi-step coordination | Workflow tool (native) | — | Deterministic fan-out/pipeline |
 | Simple lookups, Q&A | general-purpose | haiku | Cost-efficient |
 
 ## Context Isolation
@@ -69,7 +69,7 @@ Confirm current capability/price ratios against official model docs before fixin
 
 Standard feature pipeline:
 1. **Plan** (planner) → implementation strategy + success criteria
-2. **Implement** (coder) → write code with tests
+2. **Implement** (main loop) → write code with tests
 3. **Evaluate** (evaluator) → grade against success criteria
 4. **Review** (code-reviewer) → quality check
 5. **Security** (security-reviewer) → vulnerability scan

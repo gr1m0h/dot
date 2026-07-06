@@ -4,7 +4,7 @@
 
 Context-rot doctrine and the recovery toolkit (`/rewind`, `/btw`, `/compact`,
 `/clear`, subagents, checkpoints) are the canonical content of
-`@rules/global/context-engineering.md`. Performance-specific notes only:
+`~/.claude/docs/context-engineering.md`. Performance-specific notes only:
 
 - 1M tokens available ≠ use all 1M; degradation starts ~300k–400k (autocompaction
   is a safety net, not a strategy)

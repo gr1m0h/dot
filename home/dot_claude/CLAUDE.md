@@ -38,18 +38,19 @@ Switch by typing the mode name. **Learning Mode is default.**
 - **Speed** — no constraints, implement at max velocity.
 
 ## Rules
-IMPORTANT: @rules/_core.md — the ONLY always-loaded rule file. Everything below is on-demand (no leading `@` = no auto-load); context/harness/performance doctrine is summarized inline above.
+Loading mechanism (verified 2026-07 against official docs): EVERY `~/.claude/rules/**/*.md` WITHOUT `paths:` frontmatter auto-loads at launch — `@` references are irrelevant to rules loading.
+- Always-loaded: `rules/_core.md` ONLY. Never add another unscoped file to `rules/`.
+- Path-scoped (auto-activate when matching files are touched): `coding-style.md`, `testing.md`, `backend/{go,ruby,php}-patterns.md`, `backend/api-guidelines.md`, `frontend/react-patterns.md`.
+- On-demand doctrine lives in `~/.claude/docs/` (agents, patterns, git-workflow, harness-engineering, context-engineering, cost-optimization, security, forbidden-apis, llm-security, supply-chain-security, coding-standards, performance, continuous-learning, uncertainty-expression). Read on demand; never move back into `rules/`.
 
-On-demand skills (each loads its own `rules/` detail when triggered):
+On-demand skills (each loads its own detail when triggered):
 - Security → `/security-review`, `/security-scan`
 - Coding style → `/coding-standards`
 - Supply chain → `/audit-supply-chain`, `/audit-license`
 - Cost / context → `/manage-context`, `/cost-report`, `/harness-audit`
-- Testing → `/tdd`, `/tdd-workflow`, `/test-coverage`
+- Testing → `/tdd-workflow`, `/test-coverage`
 - Git / PR → `/create-pr`, `/pr-summary`, `/release`
 - Learning → `/learn`, `/reflect` · Uncertainty → `/ensemble-vote` · Agents → `~/.claude/agents/`
-
-Per-project: in the project `.claude/CLAUDE.md`, load the relevant language file with a leading at-sign — `rules/backend/go-patterns.md` (also ruby/php), `rules/frontend/react-patterns.md`, `rules/backend/api-guidelines.md`.
 
 ## Session Protocol
 1. **Orient**: session state, task list, git log (session-start hook)
@@ -69,13 +70,28 @@ Recovery: `/rewind` (failed attempts), `/btw` (side questions, no context pollut
 
 ## Harness Principles
 - This file is a map, not an encyclopedia
-- Mechanical enforcement > documentation rules (detail in `rules/harness-engineering.md`)
+- Mechanical enforcement > documentation rules (detail in `~/.claude/docs/harness-engineering.md`)
 - Add constraints only on repeated mistakes; re-evaluate harness complexity on each model upgrade
 
 ## Error Handling
 - No data for a requested feature → report clearly and stop
 - Don't autonomously explore/audit unrelated files
 - Security issue → stop, invoke security-reviewer, fix before continuing
+
+## PR / Issue Communication Boundary (CRITICAL — user-directive, 2026-07)
+- **Never post comments to PRs or Issues autonomously**, including after `git push`. This applies to every session; no exception.
+- Prohibited without an EXPLICIT user request in the current turn:
+  - `gh pr comment` / `gh issue comment`
+  - `gh pr review` (any variant that writes a body)
+  - `gh api .../pulls/*/comments` (POST) — inline review comments
+  - `gh api .../pulls/*/comments/*/replies` (POST) — reply-to-review
+  - `gh api .../issues/*/comments` (POST) — issue comments
+- Allowed without asking:
+  - `git push` itself
+  - PR body edits (`gh api -X PATCH .../pulls/N`) when the user asked to update description
+  - PR title / label / assignee edits when explicitly requested
+- **Also enforced mechanically** in `~/.claude/settings.json` `permissions.deny` (see `Bash(gh pr comment*)` etc.).
+- Rationale: The user manages review conversations directly. Auto-posting reply-to-review, "対応しました" comments, or status updates creates noise and misrepresents human back-and-forth.
 
 ## Language
 - Skill/agent instructions in English (best LLM performance); when translating Japanese, translate ALL files in the directory

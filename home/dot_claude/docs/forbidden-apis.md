@@ -4,7 +4,7 @@ On-demand reference. Loaded by security skills (`/security-review`, `/security-s
 and when working in a specific language — NOT always-loaded.
 The critical patterns here are also enforced mechanically by `hooks/pre-tool-guard.js`.
 
-Universal rules live in `@rules/global/security.md`:
+Universal rules live in `~/.claude/docs/security.md`:
 dynamic code execution with untrusted input, insecure deserialization of
 untrusted data, and `Math.random()`/`rand()`/`mt_rand()` for security-critical values.
 

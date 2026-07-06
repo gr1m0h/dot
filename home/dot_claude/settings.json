@@ -11,7 +11,6 @@
     "CLAUDE_CODE_IDE_SKIP_VALID_CHECK": "1",
     "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
-    "MAX_THINKING_TOKENS": "31999",
     "MAX_MCP_OUTPUT_TOKENS": "25000",
     "CLAUDE_CODE_SUBAGENT_MODEL": "haiku"
   },
@@ -133,7 +132,13 @@
       "Edit(*.lock)",
       "Edit(vendor/**)",
       "Bash(*pickle.loads*)",
-      "Bash(*yaml.load*)"
+      "Bash(*yaml.load*)",
+      "Bash(gh pr comment*)",
+      "Bash(gh pr review*)",
+      "Bash(gh api*/comments *-X POST*)",
+      "Bash(gh api*/comments *--method POST*)",
+      "Bash(gh api*/replies *-X POST*)",
+      "Bash(gh api*/replies *--method POST*)"
     ],
     "ask": [
       "Bash(git push *)",
@@ -164,7 +169,8 @@
     ],
     "defaultMode": "default"
   },
-  "enableAllProjectMcpServers": true,
+  "model": "opus",
+  "enableAllProjectMcpServers": false,
   "hooks": {
     "SessionStart": [
       {
@@ -199,29 +205,11 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "Bash",
+        "matcher": "Bash|Edit|Write",
         "hooks": [
           {
             "type": "command",
             "command": "node \"$HOME\"/.claude/hooks/pre-tool-guard.js"
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME\"/.claude/hooks/pre-tool-guard.js"
-          }
-        ]
-      },
-      {
-        "matcher": "Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "prettier --write $CLAUDE_FILE_PATH 2>/dev/null || true"
           }
         ]
       },
@@ -241,7 +229,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME\"/.claude/hooks/post-tool-verify.js"
+            "command": "node \"$HOME\"/.claude/hooks/post-tool-verify.js",
+            "asyncRewake": true
           }
         ]
       },
@@ -404,7 +393,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "npx ccusage@latest statusline"
+    "command": "npx -y ccusage statusline"
   },
   "enabledPlugins": {
     "sreaas@topotal": true,
