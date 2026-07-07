@@ -61,7 +61,7 @@ On-demand skills (each loads its own detail when triggered):
 - Testing → `/tdd-workflow`, `/test-coverage`
 - Git / PR → `/create-pr`, `/pr-summary`, `/release`
 - Learning → `/learn`, `/reflect` · Uncertainty → `/ensemble-vote` · Agents → `~/.claude/agents/`
-- SREaaS ops → `/morning-batch` (朝バッチ投入), `/investigation-report` (調査→報告書); 夜間ドラフトは Desktop ルーチンのプロンプトで `/sreaas:task` `/sreaas:monthly` を draft-only 実行
+- SREaaS ops → `/batch` (朝バッチ投入), `/investigation-report` (調査→報告書); 夜間ドラフトは Desktop ルーチンのプロンプトで `/sreaas:task` `/sreaas:monthly` を draft-only 実行
 
 ## Session Protocol
 1. **Orient**: session state, task list, git log (session-start hook)

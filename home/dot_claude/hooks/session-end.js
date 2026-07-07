@@ -6,7 +6,7 @@
  * - Git状態の記録
  * - セッションメトリクスの追記（JSONL）
  * - エラーログのローテーション（100行上限）
- * - 顧客repoセッションが sreaas report なしで終了した場合に ~/batch/unreported.md へ記録
+ * - 顧客repoセッションが sreaas report なしで終了した場合に ~/.claude/batch/unreported.md へ記録
  */
 const fs = require("fs");
 const path = require("path");
@@ -89,7 +89,7 @@ try {
 }
 
 // 5. Track sessions in tracked orgs that ended without leaving a report
-//    (surfaced next morning by /morning-batch and the statusline ⚠ indicator)
+//    (surfaced next morning by /batch and the statusline ⚠ indicator)
 try {
   // 追跡 org は非追跡ファイル ~/.claude/tracked-orgs.txt で管理
   // （dotfiles は public のため org 名をコミットしない）。
@@ -137,7 +137,7 @@ try {
       } catch {}
     }
     if (size > MIN_TRANSCRIPT_BYTES && !reported) {
-      const batchDir = path.join(process.env.HOME || "", "batch");
+      const batchDir = path.join(process.env.HOME || "", ".claude/batch");
       if (!fs.existsSync(batchDir)) fs.mkdirSync(batchDir, { recursive: true });
       const line = `- ${new Date().toISOString()} | ${cwd} | ${path.basename(transcript)} | missing: ${entry.markers.join(",")}\n`;
       fs.appendFileSync(path.join(batchDir, "unreported.md"), line);
