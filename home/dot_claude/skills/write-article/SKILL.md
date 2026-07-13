@@ -25,14 +25,18 @@ Articles MUST follow the structure, headings, tone, and templates defined below.
    - コンセプト説明型: medium-long (concept → background → impl → outlook)
    - 登壇予告型: short (highlights only)
 
-## Input sources & quick-capture mode (learn_cycle.md)
+## Input sources & quick-capture mode (learning cycle)
 
-This skill writes the **personal blog** in `~/learn_cycle.md` — 案件中・小粒度・鮮度重視・学習の定着装置.
+This skill writes the **personal blog** of the learning cycle — 案件中・小粒度・鮮度重視・学習の定着装置.
 Keep it distinct from `/company-blog` (案件単位の資産化・機密確認込み・team voice). When both
 apply, the personal post is the small fresh angle; the full case asset goes to `/company-blog`.
 
 **Source material — use if the user points to it (else just take the topic):**
-- A `/learn-guide` guide or hands-on notes → turn what was just learned into a small fresh post
+- A `/learn-map` map + `~/learn/<topic-slug>/STRUGGLE_LOG.md` → turn what was just
+  learned into a small fresh post. STRUGGLE_LOG entries are the PRIMARY source:
+  lead with the wrong hypotheses and the 転機 (first-person narrative), use the
+  map only for terminology and context. A post that could have been written by
+  reading the map alone is a rejection signal — ask for the struggle log entry.
 - A case-reflect record (`~/cases/*.md`) → extract ONE small, publishable, non-confidential angle
   (do not dump case specifics; the full generalized asset is `/company-blog`'s job)
 - A `/insights` finding, the current session, or rough notes the user pastes

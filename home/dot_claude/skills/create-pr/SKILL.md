@@ -29,7 +29,7 @@ Create a high-quality Pull Request for the current branch.
 
 ### 2. Generate PR Title
 
-Conventional Commits format, under 72 characters:
+Conventional Commits format, in English, under 70 characters:
 
 - `feat: Add user authentication flow`
 - `fix: Resolve race condition in payment processing`
@@ -37,40 +37,54 @@ Conventional Commits format, under 72 characters:
 
 ### 3. Generate PR Body
 
+Same structure as the `/pr-summary` output (keep the two skills aligned — if one template changes, update the other):
+
 ```markdown
-## Summary
+| Field | Value |
+|-------|-------|
+| Type | feature / bugfix / refactor / docs / test / chore / security |
+| Scope | affected modules/components |
+| Size | S (< 50 lines) / M (50-200) / L (200-500) / XL (500+) |
 
-<!-- 1-3 bullet points describing WHY this change was made -->
+## What
 
-## Changes
+1-2 sentence description of what this PR does.
 
-<!-- Grouped by category with file references -->
+## Why
 
-### Added
+1-2 sentence description of the problem being solved.
 
-- `path/file.ts`: Description
+## How
 
-### Modified
+Key implementation decisions and approach taken.
 
-- `path/file.ts`: Description
+## Risk Assessment
 
-## Breaking Changes
+| Risk Factor | Level | Details |
+|:--|:--|:--|
+| Breaking changes | LOW/MED/HIGH | details (with migration steps if any) |
+| Security impact | LOW/MED/HIGH | details |
+| Performance impact | LOW/MED/HIGH | details |
+| Test coverage | LOW/MED/HIGH | details |
+| Rollback difficulty | LOW/MED/HIGH | details |
 
-<!-- List any breaking changes with migration steps, or "None" -->
+## Review Focus Areas
 
-## Test Plan
+| File | Lines | Reason |
+|:--|:--|:--|
+| `path/to/file.ts` | L10-L25 | reason to focus here |
 
-- [ ] Unit tests added/updated
-- [ ] Integration tests verified
-- [ ] Manual testing steps documented
+## Checklist
 
-## Security Considerations
-
-<!-- Any security implications, or "None identified" -->
+- [ ] Tests for new/changed behavior
+- [ ] Documentation updates
+- [ ] Migration steps (if breaking)
+- [ ] Error handling for new paths
+- [ ] Logging for observability
 
 ## Related Issues
 
-<!-- Closes #123, Fixes #456 -->
+<!-- Closes #123, Fixes #456, or "None" -->
 ```
 
 ### 4. Create PR

@@ -45,7 +45,7 @@ Switch by typing the mode name. **Speed Mode is default** (2026-07: throughput f
 ## Learning Loop (Speed-mode compensation)
 - **Learning debt**: in Speed mode, when work relies on a concept/tool/behavior the user likely hasn't internalized (new tech, non-obvious semantics, a decision they couldn't have articulated themselves), append one line to `~/.claude/learning-debt.md` (`- YYYY-MM-DD | <topic> | <why it matters> | <case>`) and note it in the final message. Don't log basics or things the user demonstrably knows.
 - **Ship check**: before creating a PR / delivering client-facing work, present a 3-sentence customer-facing explanation (課題 → 打ち手 → 効果) for the user to confirm or correct. If they hesitate, offer a 5-minute explainer instead of shipping blind.
-- **Recapture**: weekly timeboxed `/learn-guide` session consumes the top learning-debt items; `/reflect` / case-reflect at case milestones.
+- **Recapture**: weekly timeboxed `/learn-map` session consumes the top learning-debt items; `/reflect` / case-reflect at case milestones.
 
 ## Rules
 Loading mechanism (verified 2026-07 against official docs): EVERY `~/.claude/rules/**/*.md` WITHOUT `paths:` frontmatter auto-loads at launch — `@` references are irrelevant to rules loading.
@@ -57,7 +57,7 @@ On-demand skills (each loads its own detail when triggered):
 - Security → `/security-review`, `/security-scan`
 - Coding style → `/coding-standards`
 - Supply chain → `/audit-supply-chain`, `/audit-license`
-- Cost / context → `/manage-context`, `/cost-report`, `/harness-audit`
+- Cost / context → `/manage-context`, `/dashboard`, `/harness-audit`
 - Testing → `/tdd-workflow`, `/test-coverage`
 - Git / PR → `/create-pr`, `/pr-summary`, `/release`
 - Learning → `/learn`, `/reflect` · Uncertainty → `/ensemble-vote` · Agents → `~/.claude/agents/`

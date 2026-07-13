@@ -1,6 +1,6 @@
 ---
 name: company-blog
-description: Turn a finished case (case-reflect / sreaas report output) into a generalized, confidentiality-scrubbed company tech-blog draft. Use when the user says "会社ブログ", "テックブログ", "案件を記事化", "company blog", or wants to asset-ify case outcomes for public publishing. Realizes the company-blog stage of learn_cycle.md.
+description: Turn a finished case (case-reflect / sreaas report output) into a generalized, confidentiality-scrubbed company tech-blog draft. Use when the user says "会社ブログ", "テックブログ", "案件を記事化", "company blog", or wants to asset-ify case outcomes for public publishing. Realizes the company-blog stage of the learning cycle.
 triggers: ["会社ブログ", "テックブログ", "案件を記事化", "company blog", "案件をブログに", "成果を一般化"]
 user-invocable: true
 allowed-tools: Read, Write, Edit, Grep, Glob, WebFetch, WebSearch
@@ -11,7 +11,7 @@ allowed-tools: Read, Write, Edit, Grep, Glob, WebFetch, WebSearch
 Bridge a completed case into a publishable **company** tech-blog draft: take the case's
 internal record, **strip customer-confidential details**, generalize the specifics into
 reusable technical knowledge, and draft it in good Japanese. This is the company-blog stage
-of `~/learn_cycle.md` (案件単位・成果の資産化・機密確認込み).
+of the learning cycle (案件単位・成果の資産化・機密確認込み).
 
 Personal blog (small, fresh, during-case) is `/write-article`'s job — keep the two distinct:
 company blog = case asset, generalized, team voice; personal blog = freshness, small scope.
@@ -52,7 +52,7 @@ This aligns with the user's security rules — treat confidentiality as deny-by-
 - Write the draft to a file (ask for path, else `~/cases/blog-drafts/<slug>.md`).
 - Append a **機密レビュー・チェックリスト** the user MUST sign off before publishing:
   list every scrubbed/generalized item and any residual risk you are unsure about.
-- State clearly: this is a draft requiring (a) the user's confidentiality review and, per
-  learn_cycle.md, (b) customer confirmation where the case is customer-specific. Never publish.
+- State clearly: this is a draft requiring (a) the user's confidentiality review and
+  (b) customer confirmation where the case is customer-specific. Never publish.
 - Suggest the next cycle step: customer confirmation → publish; and that a smaller, fresher
   angle can become a personal-blog post via `/write-article`.

@@ -165,11 +165,17 @@
       "Edit(composer.lock)",
       "Edit(*.config.*)",
       "Write(**/*.sql)",
-      "Write(**/*.sh)"
+      "Write(**/*.sh)",
+      "Bash(tofu apply *)",
+      "Bash(tofu destroy *)",
+      "Bash(tofu state *)",
+      "Bash(terraform state *)",
+      "Bash(tofu import *)",
+      "Bash(terraform import *)"
     ],
     "defaultMode": "default"
   },
-  "model": "opus",
+  "model": "fable",
   "enableAllProjectMcpServers": false,
   "hooks": {
     "SessionStart": [

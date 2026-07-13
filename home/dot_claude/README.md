@@ -284,11 +284,10 @@ orchestrate [task]
 | `security-review` | Auth, input, API, secrets checklist |
 | `security-scan` | OWASP 2025 Top 10 audit |
 
-### Architecture & Patterns (3 skills)
+### Architecture & Patterns (2 skills)
 
 - `backend-patterns` - Backend, API design, database optimization
 - `frontend-patterns` - React, Next.js, state management, performance
-- `project-guidelines-example` - Template for project-specific skills
 
 ### Database (3 skills)
 
@@ -301,15 +300,13 @@ orchestrate [task]
 - `update-codemaps` - Generate architecture documentation
 - `update-docs` - Sync documentation from sources
 
-### Cost & Context (5 skills)
+### Cost & Context (3 skills)
 
 | Skill | Purpose |
 |-------|---------|
-| `cost-report` | Token usage and session cost report |
 | `dashboard` | Session performance telemetry |
 | `manage-context` | Context window optimization |
 | `model-route` | Automatic model selection |
-| `prompt-optimize` | System prompt efficiency |
 
 ### Learning & Memory (5 skills)
 

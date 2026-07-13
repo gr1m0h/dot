@@ -1,7 +1,7 @@
 ---
 name: harness-audit
-description: Audit Claude Code harness configuration for optimization opportunities
-triggers: ["harness audit", "audit harness", "check setup", "optimize harness"]
+description: Audit Claude Code harness configuration for optimization opportunities, including system-prompt/token efficiency of CLAUDE.md and rules (absorbed the former prompt-optimize skill)
+triggers: ["harness audit", "audit harness", "check setup", "optimize harness", "prompt optimize", "optimize prompt", "slim prompt", "reduce tokens"]
 ---
 
 # Harness Audit
@@ -30,10 +30,16 @@ Comprehensive audit of Claude Code configuration quality.
    - Workflow coverage (skills, agents, commands for common tasks)
    - Hook quality (performance, error handling, coverage)
 
-3. **Generate Report**
+3. **Prompt/Token Optimization** (formerly the `prompt-optimize` skill — run this pass when CLAUDE.md exceeds ~3000 tokens, rules/ has 15+ files, or startup feels slow)
+   - Measure: token counts of CLAUDE.md, rules files, agent/skill definitions → total system-prompt overhead
+   - Identify waste: redundant instructions across files, prose that could be tables, rules overlapping Claude defaults, unused references
+   - Optimize: merge similar rules, convert prose to tables/lists, delete default-behavior instructions, prefer cross-references over inline content
+   - Targets: <2000 tokens for CLAUDE.md, <500 tokens per rule file; tables ≈ 3x more token-efficient than prose
+
+4. **Generate Report**
    - Overall score with letter grade
    - Per-dimension breakdown
-   - Prioritized recommendations
+   - Prioritized recommendations (incl. before/after token counts when step 3 ran)
    - Quick wins highlighted
 
 ## Output Format
