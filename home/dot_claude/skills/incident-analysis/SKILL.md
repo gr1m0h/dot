@@ -432,9 +432,8 @@ After analysis, generate a reusable verification script (`run-verification.sh`) 
 
 ## Related Skills
 
-- [threat-model](/threat-model) - System-level threat modeling
-- [security-scan](/security-scan) - Automated vulnerability scanning
-- [review-code](/review-code) - Code-level review for identified issues
+- [security-scan](/security-scan) - Automated vulnerability scanning + STRIDE threat modeling mode
+- [code-review](/code-review) - Code-level review for identified issues
 
 ## Resources
 

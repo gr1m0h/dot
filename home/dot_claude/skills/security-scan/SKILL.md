@@ -1,11 +1,11 @@
 ---
 name: security-scan
-description: Comprehensive security audit based on OWASP 2025 Top 10 with automated checks. Scans for vulnerabilities, insecure patterns, hardcoded secrets, and dependency risks.
+description: Comprehensive security audit based on OWASP 2025 Top 10 with automated checks, plus STRIDE threat modeling mode. Scans for vulnerabilities, insecure patterns, hardcoded secrets, and dependency risks. Also use when user says "threat model", "STRIDE analysis", "identify threats", or "security architecture review" — pass "threat-model" as the argument for architecture-level modeling with DREAD scoring.
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash
 context: fork
 agent: security-auditor
-argument-hint: "[target-dir]"
+argument-hint: "[target-dir | threat-model [component|'full']]"
 metadata:
   version: "3.0.0"
   updated: "2025-02"
@@ -58,6 +58,20 @@ Perform a comprehensive security audit on $ARGUMENTS.
 - Project type: !`ls package.json requirements.txt Cargo.toml go.mod pyproject.toml 2>/dev/null | head -3 || echo "Unknown"`
 - Environment files: !`find . -name '.env*' -o -name '*.env' 2>/dev/null | head -5 || echo "None"`
 
+## Threat modeling mode (STRIDE)
+
+When invoked with `threat-model` (or the user asks for STRIDE / threat modeling /
+security architecture review), skip the code scan and model instead:
+
+1. Identify the system scope and assets
+2. Create a Data Flow Diagram (DFD) and identify trust boundaries
+3. Apply STRIDE to each component and data flow
+4. Assess risk severity using DREAD
+5. Prioritize and recommend mitigations
+
+Load the detail from `references/threat-modeling/` (STRIDE categories, DREAD scoring,
+DFD notation/report template, architecture-specific focus areas).
+
 ## References
 
 | Topic | Reference | Use for |
@@ -66,12 +80,15 @@ Perform a comprehensive security audit on $ARGUMENTS.
 | Secret Detection | [references/secret-detection.md](references/secret-detection.md) | Regex patterns for detecting hardcoded secrets and credentials |
 | Output Format | [references/output-format.md](references/output-format.md) | Report template, severity classification (CVSS 3.1) |
 | Scanning Tools | [references/scanning-tools.md](references/scanning-tools.md) | Automated tool commands and selection guide |
+| STRIDE Framework | [references/threat-modeling/stride-framework.md](references/threat-modeling/stride-framework.md) | S/T/R/I/D/E categories with attack vectors, mitigations, audit questions |
+| DREAD Assessment | [references/threat-modeling/dread-assessment.md](references/threat-modeling/dread-assessment.md) | Risk scoring methodology, score guides, example calculations |
+| Threat Report Format | [references/threat-modeling/output-format.md](references/threat-modeling/output-format.md) | DFD notation, threat report template, attack trees |
+| Architecture Patterns | [references/threat-modeling/architecture-patterns.md](references/threat-modeling/architecture-patterns.md) | Microservices, serverless, SPA threat focus areas |
 
 ## Related Skills
 
-- [review-code](/review-code) - General code review
-- [threat-model](/threat-model) - STRIDE threat modeling
-- [audit-supply-chain](/audit-supply-chain) - Dependency analysis
+- [code-review](/code-review) - General code review
+- [audit-supply-chain](/audit-supply-chain) - Dependency and license analysis
 
 ## Resources
 
@@ -79,6 +96,8 @@ Perform a comprehensive security audit on $ARGUMENTS.
 - [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/)
 - [CWE Top 25](https://cwe.mitre.org/top25/)
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
+- [STRIDE Threat Model](https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-threats)
+- [MITRE ATT&CK](https://attack.mitre.org/)
 
 ## Guardrails
 - Prefer measured evidence over blanket rules of thumb.
