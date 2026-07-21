@@ -1,0 +1,32 @@
+# <target-repo>/.github/workflows/security.yml
+name: security
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+
+jobs:
+  npm-audit:
+    uses: gr1m0h/.github/.github/workflows/npm-audit.yml@1f6a4f599b6bb9f33af15e746888ca93303562cf
+  osv-scanner:
+    uses: gr1m0h/.github/.github/workflows/osv-scanner.yml@1f6a4f599b6bb9f33af15e746888ca93303562cf
+    permissions:
+      contents: read
+      security-events: write
+  gitleaks:
+    uses: gr1m0h/.github/.github/workflows/gitleaks.yml@1f6a4f599b6bb9f33af15e746888ca93303562cf
+  dependency-review:
+    if: github.event_name == 'pull_request'
+    uses: gr1m0h/.github/.github/workflows/dependency-review.yml@1f6a4f599b6bb9f33af15e746888ca93303562cf
+    permissions:
+      contents: read
+      pull-requests: write
+  codeql:
+    uses: gr1m0h/.github/.github/workflows/codeql-typescript.yml@1f6a4f599b6bb9f33af15e746888ca93303562cf
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+  actions-pin-lint:
+    uses: gr1m0h/.github/.github/workflows/actions-pin-lint.yml@1f6a4f599b6bb9f33af15e746888ca93303562cf
