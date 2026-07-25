@@ -17,13 +17,18 @@ Articles MUST follow the structure, headings, tone, and templates defined below.
 
 ## Pre-flight checks (ask user if missing)
 
-1. **Article type**: 技術解説 / 課題解決 / 登壇報告 / 組織紹介
+1. **Article type**: 技術解説 / 課題解決 / 登壇報告 / 組織紹介 / **エッセイ・ポエム**
 2. **Topic / thesis**: what the article is about
 3. **For 登壇報告**: event date, event name, slide URL
 4. **Length tier**:
    - 実装詳細型: very long (4+ H2 sections, multiple H3 each)
    - コンセプト説明型: medium-long (concept → background → impl → outlook)
    - 登壇予告型: short (highlights only)
+   - エッセイ・ポエム型: short-medium (内省的な語り、パターンDを使用)
+
+**エッセイ・ポエム型の判定**: キャリア論・価値観・心境・振り返りなど、技術解説ではなく
+内省的・随筆的な内容のとき、または user が「ポエム」「エッセイ」「気持ちを書く」と言ったとき。
+この場合は技術テンプレ（パターンA/B/C）ではなく、後述のパターンD（内省的随筆文体）で書く。
 
 ## Input sources & quick-capture mode (learning cycle)
 
@@ -52,12 +57,15 @@ apply, the personal post is the small fresh angle; the full case asset goes to `
 ## Execution procedure
 
 1. Resolve type/topic/length via questions above
-2. Select structure pattern (A/B/C) from the style guide below
+2. Select structure pattern (A/B/C/D) from the style guide below
 3. Propose 2-3 title candidates → user picks one
 4. Propose H2/H3 outline → user confirms
 5. Draft the article body following the style guide
 6. Self-check against the checklist; append results at the end
 7. Output as markdown (prefer artifact for easy copy)
+8. **Propose はてなブログ向け SEO/SNS メタ情報** (see 【SEO/SNSメタ情報】 below):
+   記事の概要（メタディスクリプション）、検索エンジン向けタイトル、SNS向けタイトルを
+   それぞれ複数案、本文とは別ブロックで提案する。各案に推奨理由を一言添える。
 
 ## Hard rules
 
@@ -69,6 +77,7 @@ apply, the personal post is the small fresh angle; the full case asset goes to `
 - **Headings: H1, H2, H3 only** (no H4+)
 - Do NOT invent URLs, slide links, dates, or "採用案内" boilerplate — ask the user
 - Represent figures/screenshots as placeholders: `[ここに図: 〜の概念図]`
+- **本文ドラフト後、はてなブログの「記事の概要」「タイトル」「SNSシェア」欄向けに、SEO/SNSメタ情報（記事の概要・検索エンジン向けタイトル・SNS向けタイトル）を必ず提案する**（【SEO/SNSメタ情報】節を参照）
 
 ---
 
@@ -151,7 +160,41 @@ The following rules govern the **content of the article you produce**, not this 
 - **H2: [主要トピック3]**
 - **H2: 今後の展望**
 
-**各セクションの段落構成**
+#### パターンD: エッセイ・ポエム型（内省的随筆文体）
+
+キャリア論・価値観・心境・振り返りなど、内省的・随筆的な内容で使う。
+技術解説のテンプレ（はじめに/本編/さいごに の定型）には**従わない**。
+ですます調・一人称「私」・断定回避といったぐりもおスタイルの基本ルールは維持しつつ、
+語りの構造を次のように組む。読者の予想を裏切る一人称タイトル、違和感の差し込み、
+冒頭の問いを結びで回収する構成を特徴とする随筆文体を下敷きにする。
+
+**構造**
+
+- **H1 タイトル**: 読者の予想を裏切る一人称の述懐にする。
+  例: 「私は未来を計画したことがない」「私はマネージャーになりたいわけではなかった」。
+  ぐりもおの技術タイトル定型（「〜する時の考え方」等）は使わない。
+- **書き出し（H2なしの導入数段落）**: よく聞かれる問い、世間の通説、自分が言われた言葉などを置き、
+  そのあと「でも」「ただ」で自分の違和感を差し込む。この違和感が記事全体の伏線になる。
+- **本編 H2（2〜4個）**: 各 H2 は反語的・述懐的な一文にする。
+  例: 「起点には野望なんてなかった」「軸は、設計した覚えがないのに残っていた」。
+  ただし見出しで結論そのものを言い切ってオチを潰さない（k16shikano 規範を優先）。
+  問いや述懐の入口にとどめ、答えは本文で開く。
+- **各段落のリズム**: 経験や観察を一度述べ、「でも」「ただ」「むしろ」で揺り戻す。
+  心理状態と具体的な行動（職務経歴書を更新する、図にする等）を並べて説得力を出す。
+  過去形の内省（「〜でした」「〜だったと思います」「〜のです」）を基調にする。
+- **さいごに（H2「さいごに」）**: 冒頭で置いた違和感を回収する。
+  「結局、〜ではなかったのかもしれません」のように、最初の問いへの答えを控えめに置いて閉じる。
+
+**パターンD 固有の上書きルール（A/B/Cの規定より優先）**
+
+- 下記「各セクションの段落構成」（導入文→説明→具体例→まとめ文の定型）は**適用しない**。
+  エッセイは定型より語りのリズムを優先する。
+- 「資料は以下です」「採用案内」などの技術記事テンプレ文は入れない。
+- 専門用語の初出解説（「XX (以下、XX)」形式）は、エッセイの流れを切る場合は省いてよい。
+- 体言止めの H2 ルール（5〜15文字）は適用しない。述懐の一文を許す。
+- 断定回避は維持するが、内省の核心では「〜のだと思います」と一度だけ静かに言い切ってよい。
+
+**各セクションの段落構成（パターンA/B/C向け。パターンDには適用しない）**
 
 1. 導入文（1〜2文）: このセクションで何を説明するか
 2. 説明段落（2〜4文）: 概念や背景の説明
@@ -432,6 +475,61 @@ The following rules govern the **content of the article you produce**, not this 
 
 ---
 
+# 【SEO/SNSメタ情報】はてなブログ向け提案（本文とは別に出力）
+
+本文ドラフトの後に、はてなブログの編集サイドバーに貼り付けられる形で次の3種を提案する。
+本文の直後に「---」で区切った別ブロックとして出力し、記事本体には含めない。
+各項目は複数案を出し、推奨案を先頭に置いて「（推奨）」と理由を一言添える。
+
+## 記事の概要（メタディスクリプション）
+
+- はてなブログの「記事の概要」欄、検索結果のスニペット、SNSのOGP説明文に使われる。
+- 長さ: 全角110〜120文字程度（検索結果で切れない範囲）。
+- 冒頭に記事の核心（読者の悩み・結論）を置く。重要語を前半に寄せる。
+- 本文の語り口（ですます調・一人称）に合わせるが、煽りや誇張はしない。
+- 2案出す。共感訴求型（悩みに寄り添う）とノウハウ訴求型（得られるものを明示）を1つずつ。
+
+## 検索エンジン向けタイトル
+
+- 検索流入を狙う。読者が検索するであろう悩みワード・キーワードを前半に置く。
+- 長さ: 全角30字前後（検索結果で切れにくい範囲）。
+- 必要なら区切り（｜や全角スペース）でキーワードと補足を分ける。
+  この欄に限り、地の文の禁則（ダッシュ等）より検索最適化を優先してよい。
+- 専門用語（SRE、SLO、IoT等）は検索ボリュームに資する場合のみ含める。
+- 3案出し、狙うキーワードを各案に併記する。
+
+## SNS向けタイトル
+
+- X（旧Twitter）等での拡散・クリックを狙う。感情フックや一人称の述懐を効かせる。
+- 本文がエッセイ・ポエム型（パターンD）の場合は、本文タイトルの予想を裏切る述懐をそのまま活かす。
+- 技術記事の場合は、得られる学び・意外性を短く立てる。
+- 過度な煽り（「衝撃」「絶対」等）は使わない。ぐりもおの落ち着いたトーンを保つ。
+- 3案出す。
+
+## 出力フォーマット例
+
+```
+---
+
+## SEO/SNS メタ情報（はてなブログ設定用）
+
+### 記事の概要（メタディスクリプション）
+1.（推奨・共感訴求型）〜〜〜
+2.（ノウハウ訴求型）〜〜〜
+
+### 検索エンジン向けタイトル
+1.（推奨）〜〜〜　← 狙うキーワード: 〜
+2. 〜〜〜　← 狙うキーワード: 〜
+3. 〜〜〜　← 狙うキーワード: 〜
+
+### SNS向けタイトル
+1.（推奨）〜〜〜
+2. 〜〜〜
+3. 〜〜〜
+```
+
+---
+
 # Self-check checklist (append result to article)
 
 After drafting, verify each item and output the result table at the end of the article:
@@ -450,6 +548,8 @@ After drafting, verify each item and output the result table at the end of the a
 - [ ] イタリック未使用
 - [ ] 一人称「私」、チーム「私たち」
 - [ ] 登壇報告の場合: 「資料だけでは口頭での説明が漏れてしまい〜」テンプレート含有
+- [ ] 本文とは別に SEO/SNS メタ情報（記事の概要・検索エンジン向けタイトル・SNS向けタイトル）を提案している
+- [ ] 記事の概要は全角110〜120字程度で、重要語を前半に寄せている
 
 ## k16shikano 規範由来のチェック項目
 

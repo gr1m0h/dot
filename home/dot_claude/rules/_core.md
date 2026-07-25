@@ -43,6 +43,6 @@ Distilled universals — the ONLY unscoped (always-loaded) rules file; keep it t
 
 ## Cost / Model Routing
 
-- haiku: exploration, lookups, simple edits, subagent workers · sonnet: implementation, review, tests · opus: architecture, security audits, multi-file refactoring
-- Re-evaluate the tier table on each model upgrade; verify model facts against official docs
+- haiku: lookups & bulk simple transforms · sonnet: default subagent worker (investigation, implementation, review, tests) · fable/opus: main loop — architecture, security audits, long-horizon agentic runs
+- Lineup 2026-07: Fable 5 (`claude-fable-5`, top tier) / Opus 5 (`claude-opus-5`) / Sonnet 5 / Haiku 4.5. Effort: `high` is the recommended default on Opus 5+/Fable 5; `xhigh` only for long autonomous runs; lower effort for speed. Re-evaluate on each model upgrade; verify model facts against official docs
 - Glob/Grep before Read; delegate exploration to subagents (fresh context, results only); `/clear` between unrelated tasks

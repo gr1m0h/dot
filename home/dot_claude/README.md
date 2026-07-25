@@ -1,797 +1,199 @@
-# Claude Code Configuration
+# Claude Code 設定
 
-A comprehensive guide to the Claude Code setup, agents, skills, rules, and workflows used for software development.
+個人用 Claude Code ハーネス（`~/.claude/`）。chezmoi により `home/dot_claude/` から管理する。
+設計原則: **CLAUDE.md は地図であり百科事典ではない** — 常時ロードは最小限、ドメイン知識はオンデマンド（skills / docs）、品質ゲートは機械的に強制（hooks）。
 
-## Table of Contents
+インベントリ（2026-07）: **8 rules · 14 docs · 16 agents · 39 skills · 18 hooks**
 
-1. [Overview](#overview)
-2. [Quick Start](#quick-start)
-3. [Agents](#agents)
-4. [Skills](#skills)
-5. [Rules & Standards](#rules--standards)
-6. [Hooks System](#hooks-system)
-7. [Environment Configuration](#environment-configuration)
-8. [Workflow Examples](#workflow-examples)
-9. [Cost Optimization](#cost-optimization)
-10. [Security Practices](#security-practices)
+> ユースケース別ガイド: [docs/claude-skills-by-usecase.html](../../docs/claude-skills-by-usecase.html)
 
-## Overview
+## 構成
 
-This Claude Code configuration provides a comprehensive system for software development with:
+| パス | 役割 | ロード |
+|---|---|---|
+| `CLAUDE.md` | ナビゲーションマップ: 作業スタイル・委譲方針・セッションプロトコル | 常時 |
+| `rules/_core.md` | 普遍ルールの蒸留（セキュリティ・コーディング・サプライチェーン・不確実性・モデルルーティング） | 常時 |
+| `rules/**`（path-scoped） | `paths:` frontmatter 付きの言語/ドメイン別ルール | 該当ファイルを触ったとき |
+| `docs/` | オンデマンドの詳細ドクトリン（自動ロードされない） | 必要時 |
+| `agents/` | subagent 定義（委譲先） | 呼び出し時 |
+| `skills/` | スラッシュコマンド型ワークフロー（`/name`） | 呼び出し時 |
+| `hooks/` | 決定論的なガード・自動化（LLM トークン消費ゼロ） | イベント発火時 |
+| `settings.json` | モデル・effort・権限・hook 配線・sandbox・プラグイン | 起動時 |
+| `statusline.sh` | カスタムステータスライン | 常時 |
+| `tracked-orgs.txt` | クライアント業務ルールが参照する org 一覧（org 名は public dotfiles に書かない） | 必要時 |
 
-- **40 agents** specialized in different domains (planning, testing, security, QA, IoT, etc.)
-- **59 reusable skills** for common development tasks
-- **20 rule sets** defining coding standards and best practices (8 root + 6 global + 4 backend + 1 frontend + 1 cognitive)
-- **18 hooks** for automated validation, testing, and quality checks
-- **18 environment variables** for system configuration
+## settings.json の要点
 
-The system is organized by discipline with clear separation of concerns. Agents are orchestrated to work together, skills provide modular workflow execution, and hooks enforce quality gates at critical points.
+- `model: fable`（Fable 5、最上位ティア）· `effortLevel: high`（Opus 5+/Fable 5 世代の公式推奨デフォルト。`xhigh` は長時間自律実行専用）
+- `CLAUDE_CODE_SUBAGENT_MODEL: sonnet` — subagent は調査・実装・レビューの実務を担うため
+- 権限: allow 約70（開発ツールチェーン）/ deny 約50（破壊的操作・secrets・PR/Issue 自動コメント禁止）/ ask 約30（push・デプロイ・依存追加）
+- hooks は 14 種のイベントに配線（[Hooks](#hooks) 参照）
+- プラグイン（topotal marketplace）: `sreaas` · `case-reflect` · `proposal-review` · `brainstorming`
 
-### 2026 Context Engineering Paradigm
+## Rules
 
-This configuration follows the **Context > Prompt** paradigm:
+ロード機構: `paths:` frontmatter の**ない** `rules/**/*.md` は起動時に全て自動ロードされる。
+unscoped は `_core.md` のみ — 追加してはならない。
 
-- **Lean CLAUDE.md**: A navigation map (<200 lines), not an encyclopedia
-- **Progressive Disclosure**: Domain knowledge lives in skills, loaded on-demand
-- **Mechanical Enforcement**: Hooks (zero LLM tokens) > Skills (on-demand) > Rules (always-loaded)
-- **Context Rot Prevention**: Even 1M context windows degrade past ~300k-400k tokens — use `/rewind`, `/btw`, `/compact`, and subagents to manage
+| ファイル | スコープ | 内容 |
+|---|---|---|
+| `_core.md` | 常時 | OWASP 2025 + LLM セキュリティ、コーディング原則、サプライチェーン（A03）、不確実性表現、コスト/モデルルーティング |
+| `coding-style.md` | path-scoped | 汎用コーディングスタイル規約 |
+| `testing.md` | path-scoped | テスト標準 |
+| `backend/api-guidelines.md` | path-scoped | API 設計ガイドライン |
+| `backend/go-patterns.md` | path-scoped | Go のイディオム・パターン |
+| `backend/ruby-patterns.md` | path-scoped | Ruby / Rails パターン |
+| `backend/php-patterns.md` | path-scoped | PHP パターン |
+| `frontend/react-patterns.md` | path-scoped | React パターン |
 
-## Quick Start
+## docs/（オンデマンドドクトリン）
 
-### Common Workflows
+`agents` · `coding-standards` · `context-engineering` · `continuous-learning` · `cost-optimization` ·
+`forbidden-apis` · `git-workflow` · `harness-engineering` · `llm-security` · `patterns` ·
+`performance` · `security` · `supply-chain-security` · `uncertainty-expression`
 
-#### Feature Implementation
-```bash
-/plan
-# (Review plan)
-/tdd
-# (Write tests, implement, verify)
-/review-code
-# (Comprehensive code review)
-```
-
-#### Bug Fix
-```bash
-/build-fix
-# (Fix errors incrementally)
-/tdd
-# (Write tests, verify fix)
-/review-code
-```
-
-#### Security Audit
-```bash
-/security-scan
-# (Run OWASP Top 10 checks)
-/audit-supply-chain
-# (Check dependencies)
-/review-code
-```
-
-#### Release
-```bash
-/release
-# (Auto semantic version, changelog, create release)
-```
-
-### Quick Commands
-
-| Command | Purpose | Model |
-|---------|---------|-------|
-| `/plan` | Create implementation plan | Opus |
-| `/tdd` | Test-driven development workflow | Sonnet |
-| `/review-code` | Multi-dimensional code review | Sonnet |
-| `/quick-fix` | Trivial fixes (typos, renames) | Haiku |
-| `/security-scan` | OWASP 2025 Top 10 audit | Opus |
-| `/release` | Semantic versioning & release | Sonnet |
+話題に上がったときに読む。`rules/` に戻さない（全セッションが肥大化するため）。
 
 ## Agents
 
-### Root Agents (10)
+Agent ツールから呼び出す subagent 定義。デフォルトの worker モデルは sonnet（`CLAUDE_CODE_SUBAGENT_MODEL`）。
 
-Core agents used for primary development tasks.
-
-#### 1. **planner.md** - Implementation Planning
-- Decomposes complex features into phases
-- Identifies dependencies and risks
-- Creates step-by-step execution plan
-- **Use when**: Tackling complex features or refactoring
-
-#### 2. **architect.md** - System Design
-- Evaluates architectural approaches
-- Ensures scalability and maintainability
-- Reviews technical decisions
-- **Use when**: Making architectural decisions or designing new systems
-
-#### 3. **tdd-guide.md** - Test-Driven Development
-- Enforces write-tests-first methodology
-- Guides RED → GREEN → IMPROVE cycle
-- Tracks test coverage (80%+ minimum)
-- **Use when**: Implementing new features or fixing bugs
-
-#### 4. **code-reviewer.md** - Code Review
-- Multi-dimensional analysis:
-  - Functionality & correctness
-  - Security (OWASP 2025)
-  - Performance
-  - Maintainability & readability
-- Provides actionable feedback
-- **Use immediately after**: Writing or modifying code
-
-#### 5. **security-reviewer.md** - Security Analysis
-- Vulnerability detection
-- OWASP Top 10 assessment
-- Remediation recommendations
-- **Use before**: Commits and releases
-
-#### 6. **build-error-resolver.md** - Error Resolution
-- Fixes TypeScript and build errors
-- Creates minimal diffs
-- Provides clear error explanations
-- **Use when**: Build or type errors occur
-
-#### 7. **e2e-runner.md** - End-to-End Testing
-- Manages Playwright test suites
-- Detects and quarantines flaky tests
-- Validates critical user journeys
-- **Use when**: Testing user workflows
-
-#### 8. **doc-updater.md** - Documentation
-- Maintains architecture documentation
-- Syncs docs from source files
-- Generates codemaps
-- **Use when**: Documentation is out of sync
-
-#### 9. **refactor-cleaner.md** - Code Cleanup
-- Identifies dead code (knip, depcheck, ts-prune)
-- Consolidates duplicate logic
-- Removes unused exports
-- **Use when**: Cleaning up codebase
-
-#### 10. **evaluator.md** - Skeptical Evaluator
-- Skeptical evaluation against success criteria
-- Separated from generator (avoids self-assessment bias)
-- Mechanical checks preferred (linters, tests, CI)
-- **Use immediately after**: Implementation is complete
-
-### Cognitive Agents (4)
-
-Specialized for reasoning and knowledge management.
-
-- **confidence-calibrator.md** - Evaluates answer confidence, makes uncertainty explicit
-- **context-optimizer.md** - Optimizes context without losing important information
-- **ensemble-reasoner.md** - Generates multiple reasoning paths, determines answer by vote
-- **memory-consolidator.md** - Converts episodic memory into semantic memory
-
-### IoT/Firmware Agents (3)
-
-For embedded systems development.
-
-- **edge-security.md** - Security audits for IoT and edge firmware
-- **firmware-dev.md** - Firmware development with RTOS, memory constraints, HAL
-- **protocol-analyzer.md** - Communication protocol analysis
-
-### Leader Agents (4)
-
-High-level orchestration for complex tasks.
-
-- **chief-of-staff.md** - Senior orchestrator with phase decomposition and quality gates
-- **loop-operator.md** - Autonomous iteration with circuit breaker (max 10 iterations, 3 errors)
-- **orchestrator.md** - Coordinates multi-step tasks with parallel execution
-- **task-planner.md** - Decomposes requirements into executable task graphs (TDAG)
-
-### OSS Agents (3)
-
-Open source and licensing management.
-
-- **license-auditor.md** - License compliance audit
-- **oss-contributor.md** - Release workflows and changelog generation
-- **supply-chain-auditor.md** - Supply chain security (typosquatting, integrity)
-
-### QA Agents (6)
-
-Quality assurance and testing specialists.
-
-- **debugger.md** - Error investigation with ReAct + Reflexion, root cause analysis
-- **fuzzer.md** - Fuzz testing for edge cases and vulnerabilities
-- **mutation-tester.md** - Test suite quality evaluation via code mutations
-- **property-tester.md** - Property-based testing with randomized inputs
-- **security-auditor.md** - Comprehensive OWASP 2025 + LLM Top 10 audits
-- **code-reviewer.md** - QA-focused code review
-
-### Planning Agents (1)
-
-- **tot-planner.md** - Tree of Thoughts algorithm for exploring multiple solution paths
-
-### Worker Agents (4)
-
-Implementation specialists.
-
-- **coder.md** - Feature implementation with quality checks
-- **database-reviewer.md** - Schema design (3NF), query optimization, migration safety
-- **harness-optimizer.md** - Token efficiency audit, hook quality, permission security
-- **test-writer.md** - Comprehensive test suite design with coverage strategies
-
-### Resilience Agent (1)
-
-- **fallback-handler.md** - Provides alternatives during tool/service failures
-
-### Routing Agents (2)
-
-- **model-selector.md** - Selects optimal model (haiku/sonnet/opus) by task complexity
-- **tool-router.md** - Selects optimal tool and suggests efficient usage
-
-### Security Agents (2)
-
-- **reverse-engineer.md** - Code reverse engineering for security research
-- **threat-modeler.md** - STRIDE threat modeling with DREAD scoring
-
-### Agent Teams
-
-Enable `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` to coordinate multiple agents:
-
-```bash
-orchestrate [task]
-# Launches coordinated multi-agent execution
-```
+| Agent | 用途 |
+|---|---|
+| `architect` | システム設計・スケーラビリティ・技術意思決定（新機能設計・大規模リファクタ時） |
+| `planner` | 複雑な機能/リファクタをフェーズ分割し、リスク付き計画に落とす |
+| `tdd-guide` | テストファースト強制（RED → GREEN → IMPROVE）、カバレッジ 80%+ |
+| `code-reviewer` | 多面的レビュー: 正当性・セキュリティ（OWASP 2025）・パフォーマンス・保守性 |
+| `security-reviewer` | 入力処理・認証・API・機密データを触るコードの脆弱性検出と修正 |
+| `evaluator` | 成功基準に対する懐疑的評価（明示的に求められたときのみ — Opus 5+/Fable 5 は自己検証するため常用しない） |
+| `build-error-resolver` | ビルド/型エラーの最小差分修正に特化（アーキテクチャ変更はしない） |
+| `refactor-cleaner` | デッドコード削除・重複統合（knip / depcheck / ts-prune） |
+| `doc-updater` | codemap とドキュメントの同期（`/update-codemaps` `/update-docs`） |
+| `e2e-runner` | Playwright E2E: ジャーニー管理・アーティファクト・flaky 検疫 |
+| `batch-worker` | `/batch` 専用の制限付きバックグラウンドワーカー: branch + diff + 検証 + 推奨を用意し、publish は絶対にしない |
+| `cognitive/ensemble-reasoner` | 独立した複数の推論パス + 多数決（高リスク判断用） |
+| `oss/oss-contributor` | OSS リリースワークフロー・changelog 生成・コミュニティ標準準拠 |
+| `oss/supply-chain-auditor` | 依存の脆弱性・typosquatting・完全性検証 |
+| `qa/security-auditor` | OWASP 2025 Top 10 + LLM Top 10 に基づく包括監査 |
+| `worker/database-reviewer` | DB スキーマ・クエリ・マイグレーションのレビュー |
 
 ## Skills
 
-59 reusable skills organized by domain.
-
-### Development Workflow (15 skills)
-
-| Skill | Purpose |
-|-------|---------|
-| `build-fix` | Incrementally fix TypeScript and build errors |
-| `chain` | Execute multiple skills sequentially with data passing |
-| `checkpoint` | Create/verify workflow checkpoints with git |
-| `code-review` | Comprehensive security and quality review |
-| `coding-standards` | Universal TS/JS/React/Node best practices |
-| `create-pr` | Analyze changes, generate PR via gh CLI |
-| `fix-issue` | Investigate and fix GitHub Issues |
-| `orchestrate` | Run multi-agent workflows for complex tasks |
-| `parallel` | Execute independent skills in parallel |
-| `plan` | Create step-by-step implementation plans |
-| `pr-summary` | Generate PR summary with risk assessment |
-| `quick-fix` | Lightweight fixes (typos, renames) - Haiku model |
-| `release` | Semantic versioning, changelog, release automation |
-| `review-code` | Multi-dimensional review (security, performance, style) |
-| `verify` | Build, types, lint, tests, security verification |
-
-### Testing (9 skills)
-
-| Skill | Purpose |
-|-------|---------|
-| `e2e` | Playwright end-to-end testing |
-| `eval` | Eval-driven development workflow |
-| `eval-harness` | Formal evaluation framework |
-| `fuzz` | Fuzz testing for edge cases |
-| `mutation-test` | Mutation testing quality evaluation |
-| `property-test` | Property-based testing |
-| `tdd` | Test-driven development with mutation testing |
-| `tdd-workflow` | TDD with 80%+ coverage enforcement |
-| `test-coverage` | Coverage analysis and gap finding |
-
-### Security (6 skills)
-
-| Skill | Purpose |
-|-------|---------|
-| `audit-license` | License compliance audit |
-| `audit-supply-chain` | Supply chain security analysis |
-| `firmware-audit` | Firmware/embedded security audit |
-| `protocol-check` | Communication protocol analysis |
-| `security-review` | Auth, input, API, secrets checklist |
-| `security-scan` | OWASP 2025 Top 10 audit |
-
-### Architecture & Patterns (2 skills)
-
-- `backend-patterns` - Backend, API design, database optimization
-- `frontend-patterns` - React, Next.js, state management, performance
-
-### Database (3 skills)
-
-- `clickhouse-io` - ClickHouse patterns and optimization
-- `mysql` - MySQL best practices
-- `postgres` - PostgreSQL best practices
-
-### Documentation (2 skills)
-
-- `update-codemaps` - Generate architecture documentation
-- `update-docs` - Sync documentation from sources
-
-### Cost & Context (3 skills)
-
-| Skill | Purpose |
-|-------|---------|
-| `dashboard` | Session performance telemetry |
-| `manage-context` | Context window optimization |
-| `model-route` | Automatic model selection |
-
-### Learning & Memory (5 skills)
-
-| Skill | Purpose |
-|-------|---------|
-| `continuous-learning` | Extract reusable patterns from sessions |
-| `instinct-manage` | View, export, import, evolve patterns |
-| `learn` | Extract patterns from current session |
-| `reflect` | Structured reflection with Reflexion framework |
-| `search-memory` | Search cognitive memory |
-
-### Analysis & Reasoning (5 skills)
-
-| Skill | Purpose |
-|-------|---------|
-| `ensemble-vote` | Ensemble voting with multiple reasoning paths |
-| `harness-audit` | Audit harness configuration for optimization |
-| `loop-control` | Manage autonomous improvement loops |
-| `reverse-analyze` | Reverse engineering and security analysis |
-| `tot` | Tree of Thoughts exploration |
-
-### Refactoring (1 skill)
-
-- `refactor-clean` - Safely remove dead code with test verification
-
-### Threat Modeling (1 skill)
-
-- `threat-model` - STRIDE threat modeling with DREAD scoring
-
-## Rules & Standards
-
-### Root Rules (8)
-
-| Rule | Purpose |
-|------|---------|
-| `agents.md` | Agent orchestration and parallel execution |
-| `coding-style.md` | Immutability, file organization, error handling |
-| `continuous-learning.md` | Pattern extraction, instinct lifecycle |
-| `git-workflow.md` | Conventional Commits, PR workflow |
-| `harness-engineering.md` | Session lifecycle, eval-driven development, mechanical enforcement |
-| `patterns.md` | API response format, custom hooks, repositories |
-| `performance.md` | 1M context management, context rot, monorepo optimization |
-| `testing.md` | 80% minimum coverage, TDD workflow |
-
-### Global Rules (6) — Always Loaded
-
-Located in `~/.claude/rules/global/`. These are loaded into every session via `@rules/...` references in `CLAUDE.md`.
-
-- **security.md** - OWASP 2025 alignment, secrets, input validation, language-specific forbidden patterns
-- **llm-security.md** - Prompt injection defense, MCP security, agent safety (OWASP LLM01:2025)
-- **coding-standards.md** - Naming conventions, function design, types (TS/Ruby/PHP/Go)
-- **cost-optimization.md** - Model selection table, 1M context management, prompt caching
-- **supply-chain-security.md** - Dependency audit, lockfile protection, AI/LLM-specific risks (OWASP 2025 A03)
-- **context-engineering.md** - Lean system prompt, progressive disclosure, context rot prevention
-
-### Backend Rules (4) — Per-Project Opt-In
-
-Located in `~/.claude/rules/backend/`. Add to project's `.claude/CLAUDE.md` as needed.
-
-- **api-guidelines.md** - Endpoint design, validation, error format
-- **ruby-patterns.md** - Service Objects, Query Objects, Strong Parameters, RSpec patterns
-- **php-patterns.md** - Laravel conventions, DTOs, Form Requests, Pest/PHPUnit
-- **go-patterns.md** - net/http handlers, error wrapping, concurrency, table-driven tests
-
-### Frontend Rules (1) — Per-Project Opt-In
-
-- **frontend/react-patterns.md** - Component design, hooks, state, accessibility
-
-### Cognitive Rules (1)
-
-- **cognitive/uncertainty-expression.md** - Confidence levels and uncertainty format
-
-### Key Standards
-
-#### Naming Conventions
-```typescript
-// Variables and functions: camelCase
-const userName = 'John'
-function getUserEmail() { }
-
-// Classes and types: PascalCase
-class UserService { }
-interface User { }
-
-// Constants: SCREAMING_SNAKE_CASE
-const MAX_RETRY = 3
-```
-
-#### Immutability (CRITICAL)
-```typescript
-// CORRECT: Use spread operator
-const updated = { ...user, name: 'New' }
-const newArray = [...items, newItem]
-
-// WRONG: Mutation
-user.name = 'New'       // DON'T
-items.push(newItem)     // DON'T
-```
-
-#### Error Handling
-```typescript
-try {
-  const result = await riskyOperation()
-  return result
-} catch (error) {
-  console.error('Operation failed:', error)
-  throw new Error('User-friendly message')
-}
-```
-
-#### Input Validation
-```typescript
-import { z } from 'zod'
-
-const schema = z.object({
-  email: z.string().email(),
-  age: z.number().int().min(0).max(150)
-})
-
-const validated = schema.parse(input)
-```
-
-## Hooks System
-
-Automated validation and quality checks at critical points.
-
-### Hook Lifecycle Events
-
-| Event | Hooks | Purpose |
-|-------|-------|---------|
-| **SessionStart** | 1 | Initialize session state |
-| **SessionEnd** | 1 | Persist session state |
-| **Stop** | 1 | Final cleanup |
-| **PreToolUse** | 4 | Pre-execution validation (Bash, Edit/Write, Prettier, SSRF) |
-| **PostToolUse** | 7 | Post-execution verification and monitoring (+ PostToolBatch) |
-| **UserPromptSubmit** | 1 | Validate user input before processing |
-| **PreCompact** | 1 | Protect sensitive context during compaction |
-| **SubagentStart** | 1 | Monitor subagent initialization |
-| **SubagentStop** | 1 | Track subagent completion |
-| **PostToolUseFailure** | 2 | Recovery and circuit breaker |
-| **PermissionDenied** | 1 | Track denied permission requests |
-| **TeammateIdle** | 1 | Quality gates when idle |
-| **TaskCompleted** | 1 | Validate completed tasks |
-
-### Active Hooks (18 total)
-
-**Pre-Tool Execution:**
-- `pre-tool-guard.js` (Bash) - Validate bash command safety
-- `pre-tool-guard.js` (Edit/Write) - File operation safety
-- `prettier --write` (Edit) - Auto-format before editing
-- `ssrf-guard.js` (WebFetch) - SSRF protection
-
-**Post-Tool Execution:**
-- `post-tool-verify.js` - Verify file operations
-- `post-tool-batch.js` - Batch post-tool processing
-- `architecture-guard.js` - Enforce architecture patterns
-- `test-runner.js` - Auto-run related tests
-- `cost-monitor.js` - Track session costs
-- `telemetry-collector.js` - Collect usage telemetry
-- `circuit-breaker.js` - Detect cascading failures
-
-**Failure & Permission Handling:**
-- `on-failure-recover.js` - Attempt recovery
-- `circuit-breaker.js` - Halt on cascading failures
-- `permission-denied-tracker.js` - Track denied permission patterns
-
-**Session & Lifecycle:**
-- `session-start.js`, `session-end.js` - Session boundary management
-- `prompt-validator.js` - User input validation
-- `pre-compact-protector.js` - Protect sensitive context during compaction
-- `subagent-monitor.js` - Track subagent lifecycle
-- `quality-gate.js` - Idle quality checks
-- `task-validator.js` - Validate completed tasks
-
-## Environment Configuration
-
-Configuration variables in `settings.json`:
-
-| Variable | Value | Purpose |
-|----------|-------|---------|
-| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | `50` | Auto-compact at 50% context |
-| `DISABLE_AUTOUPDATER` | `1` | Disable auto-updates |
-| `DISABLE_MICROCOMPACT` | `1` | Disable micro-compaction |
-| `DISABLE_ERROR_REPORTING` | `1` | Disable error reporting |
-| `CLAUDE_CODE_AUTO_CONNECT_IDE` | `1` | Auto-connect to IDE |
-| `CLAUDE_CODE_IDE_SKIP_AUTO_INSTALL` | `1` | Skip IDE auto-install |
-| `CLAUDE_CODE_IDE_SKIP_VALID_CHECK` | `1` | Skip IDE validation |
-| `CLAUDE_CODE_ENABLE_TELEMETRY` | `0` | Disable telemetry |
-| `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` | `1` | Reduce background traffic |
-| `MAX_THINKING_TOKENS` | `31999` | Max extended thinking |
-| `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | `1` | Enable agent team orchestration |
-| `ENABLE_TOOL_SEARCH` | `auto:8` | Tool search with 8 results |
-| `MAX_MCP_OUTPUT_TOKENS` | `50000` | Max MCP output |
-| `CLAUDE_CODE_ENABLE_COST_TRACKING` | `1` | Cost tracking enabled |
-| `CLAUDE_CODE_SUBAGENT_MODEL` | `haiku` | Default subagent model |
-| `ECC_HOOK_PROFILE` | `standard` | Hook profile level |
-| `CLAUDE_CODE_ENABLE_WORKTREE_ISOLATION` | `1` | Git worktree isolation |
-| `CLAUDE_CODE_MAX_SUBAGENT_DEPTH` | `3` | Max nesting depth |
-
-## Workflow Examples
-
-### Complete Feature Implementation
-
-```bash
-# 1. Plan the feature
-/plan
-# Review: phases, dependencies, risks
-
-# 2. Implement with tests
-/tdd
-# RED: Write tests
-# GREEN: Implement
-# IMPROVE: Refactor
-
-# 3. Comprehensive review
-/review-code
-# Functionality, security, performance, style
-
-# 4. Create pull request
-/create-pr
-# Auto-generates summary and test plan
-
-# 5. Release
-/release
-# Semantic versioning, changelog, create release
-```
-
-### Security-First Development
-
-```bash
-# 1. Security planning
-/security-scan
-# OWASP 2025 Top 10 audit
-
-# 2. Threat modeling
-/threat-model
-# STRIDE analysis, DREAD scoring
-
-# 3. Supply chain check
-/audit-supply-chain
-# Dependency security
-
-# 4. License audit
-/audit-license
-# Compliance verification
-
-# 5. Code review with security focus
-/review-code
-```
-
-### Bug Fix Workflow
-
-```bash
-# 1. Fix build errors
-/build-fix
-# Increment through errors
-
-# 2. Reproduce and test
-/tdd
-# Write test for bug
-# Fix bug
-# Verify test passes
-
-# 3. Review
-/review-code
-```
-
-### Database Migration
-
-```bash
-# 1. Design schema
-# (Review existing schema in postgres.md or mysql.md)
-
-# 2. Implement migration
-/tdd
-# Write migration test first
-
-# 3. Database review
-# Use database-reviewer agent
-```
-
-### Refactoring
-
-```bash
-# 1. Plan refactoring
-/plan
-
-# 2. Clean up dead code
-/refactor-clean
-# Uses knip, depcheck, ts-prune
-
-# 3. Verify no regressions
-/verify
-# Build, types, lint, tests, security
-
-# 4. Review
-/review-code
-```
-
-## Cost Optimization
-
-### Model Selection
-
-Choose the right model for the task:
-
-| Task | Model | Rationale |
-|------|-------|-----------|
-| Typo fixes, simple renames | **Haiku** | Minimal complexity |
-| Code explanation, Q&A | **Haiku/Sonnet** | Reading-focused |
-| Feature implementation | **Sonnet** | Balance of capability/cost |
-| Architecture design | **Opus** | Complex reasoning |
-| Security audits | **Opus** | Thoroughness |
-
-### Token Conservation
-
-**DO:**
-- Use `/clear` after major tasks
-- Prefer `Glob`/`Grep` over reading entire files
-- Request specific line ranges for large files
-- Use `Task(Explore)` for open-ended searches
-- Batch related questions in single prompts
-
-**DON'T:**
-- Read entire codebases "just in case"
-- Keep stale context across unrelated tasks
-- Request verbose explanations for simple operations
-- Run redundant searches for same information
-
-### Session Management
-
-- **Short sessions** (<30 min): Direct work, minimal exploration
-- **Long sessions** (>1 hr): Use `/clear` between phases
-- **Complex projects**: Plan first, then focused bursts
-
-## Security Practices
-
-### Mandatory Before Commit
-
-- [ ] No hardcoded secrets (API keys, passwords, tokens)
-- [ ] All user inputs validated
-- [ ] SQL injection prevention (parameterized queries)
-- [ ] XSS prevention (sanitized HTML)
-- [ ] CSRF protection enabled
-- [ ] Authentication/authorization verified
-- [ ] Rate limiting on all endpoints
-- [ ] Error messages don't leak sensitive data
-
-### Secret Management
-
-```typescript
-// NEVER: Hardcoded secrets
-const apiKey = "sk-proj-xxxxx"
-
-// ALWAYS: Environment variables
-const apiKey = process.env.OPENAI_API_KEY
-if (!apiKey) {
-  throw new Error('OPENAI_API_KEY not configured')
-}
-```
-
-### Dependency Management
-
-Before adding dependencies:
-
-1. **Audit first**
-   ```bash
-   npm audit              # Node.js
-   pip-audit              # Python
-   cargo audit            # Rust
-   ```
-
-2. **Check legitimacy**
-   - Verify package name (typosquatting risk)
-   - Check download counts and maintenance
-   - Review recent commits
-
-3. **Minimize attack surface**
-   - Fewer transitive dependencies
-   - Recent updates (not 2+ years old)
-   - Check Snyk/GitHub Advisory
-
-### Security Response
-
-If a vulnerability is found:
-
-1. **STOP immediately**
-2. **Use security-reviewer agent**
-3. **Fix CRITICAL issues before continuing**
-4. **Rotate exposed secrets**
-5. **Review codebase for similar issues**
-
-## Advanced Features
-
-### Agent Team Orchestration
-
-Enable experimental agent teams:
-```bash
-export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
-```
-
-Launch coordinated multi-agent execution:
-```bash
-orchestrate [complex task]
-```
-
-### Extended Thinking
-
-Use for complex problems requiring deep reasoning:
-```bash
-/ultrathink
-# Enhanced thinking with multiple critique rounds
-```
-
-### Context Optimization
-
-Monitor and optimize context window:
-```bash
-/manage-context
-# Audit and optimize context usage
-```
-
-### Continuous Learning
-
-Extract and persist patterns from sessions:
-```bash
-/continuous-learning
-# Extract reusable patterns
-/instinct-manage
-# View, export, import learned patterns
-```
-
-## File Structure
-
-```
-~/.claude/
-├── README.md              # English documentation (this file)
-├── README_ja.md           # Japanese documentation
-├── CLAUDE.md              # User instructions (lean navigation map)
-├── settings.json          # Configuration
-├── agents/                # 40 specialized agents
-├── skills/                # 59 reusable skills (one SKILL.md each)
-├── rules/                 # 20 rule sets
-│   ├── global/           # Always-loaded (6 rules)
-│   ├── backend/          # Per-project opt-in (4 rules: api/ruby/php/go)
-│   ├── frontend/         # Per-project opt-in (1 rule)
-│   └── cognitive/        # Cognitive support (1 rule)
-├── memory/                # Persistent knowledge & session state
-└── hooks/                # 18 automation hooks
-```
-
-## Getting Help
-
-### Find Related Documentation
-
-- **Test-driven development**: See `rules/testing.md`
-- **Security guidelines**: See `rules/global/security.md`
-- **LLM/AI security**: See `rules/global/llm-security.md`
-- **Context engineering**: See `rules/global/context-engineering.md`
-- **Harness engineering**: See `rules/harness-engineering.md`
-- **API design**: See `rules/backend/api-guidelines.md`
-- **Ruby/Rails patterns**: See `rules/backend/ruby-patterns.md`
-- **PHP/Laravel patterns**: See `rules/backend/php-patterns.md`
-- **Go patterns**: See `rules/backend/go-patterns.md`
-- **React patterns**: See `rules/frontend/react-patterns.md`
-- **Cost optimization**: See `rules/global/cost-optimization.md`
-- **Supply chain security**: See `rules/global/supply-chain-security.md`
-
-### Use Specialized Agents
-
-- Complex problems: Use `planner` agent
-- Code review: Use `code-reviewer` agent
-- Security audit: Use `security-reviewer` agent
-- Build errors: Use `build-error-resolver` agent
-
-### Clear Context When Needed
-
-For long sessions, clear context between major phases:
-```bash
-/clear
-```
-
-This resets context while preserving important findings.
-
----
-
-**Last Updated**: 2026-05-11
-**Model**: Claude Opus 4.7 for heavy tasks, Sonnet 4.6 for main development, Haiku 4.5 for lightweight tasks (subagents)
-**Total Configuration**: 40 agents + 59 skills + 20 rules + 18 hooks
+`/name` で呼び出す（説明文にマッチする発言でも自動起動する）。
+
+### 運用・SREaaS
+
+| Skill | 用途 |
+|---|---|
+| `batch` | 朝バッチ投入: `~/.claude/batch/inbox.md` のタスクを spec contract に整えて案件ごとに background subagent へファンアウト |
+| `investigation-report` | 顧客調査 → 検証済み・Issue 貼り付け可能な Markdown 報告書（成果物契約を先に固定） |
+| `incident-analysis` | 障害調査の横断収集（AWS CLI・Datadog・リポジトリ）→ タイムライン・根本原因・対策 |
+| `dashboard` | セッションメトリクス: ツール使用・トークン・コスト推定（cost-report を吸収） |
+| `harness-audit` | 本ハーネス設定の監査。CLAUDE.md/rules のトークン効率も採点（prompt-optimize を吸収） |
+| `manage-context` | コンテキスト/メモリ健全性: CLAUDE.md サイズ・メモリ鮮度・`/clear` タイミング |
+| `insights-apply` | `/insights` レポート → 日本語 HTML 化 + 推奨事項を 1 件ずつ確認しながら設定に反映 |
+
+### Git・PR
+
+| Skill | 用途 |
+|---|---|
+| `create-pr` | 変更分析 → サマリ・リスク評価・テストプラン付き PR を gh で作成 |
+| `pr-summary` | PR のリスク評価付きサマリとレビュー注視点 |
+| `pr-review-respond` | レビュー指摘を確信度スコア付きで評価 → working tree に修正適用 + 返信ドラフト生成（**自動投稿は絶対にしない**） |
+| `fix-issue` | GitHub Issue → 体系的な根本原因分析 → 修正 |
+| `release` | semver 判定・changelog 生成・リリース作成の自動化 |
+
+### 品質・テスト
+
+| Skill | 用途 |
+|---|---|
+| `plan` | リスク評価付きの実装計画を提示し、承認を待ってから着手 |
+| `tdd-workflow` | TDD 強制。カバレッジ 80%+（unit / integration / E2E） |
+| `test-coverage` | カバレッジ分析 + 閾値未満のファイルに不足テストを生成 |
+| `mutation-test` | ミューテーションテストでテストスイートの検出力をスコア化 |
+| `property-test` | ランダム入力に対する不変条件検証（プロパティベーステスト） |
+| `fuzz` | ファズテストでクラッシュ・エッジケース・脆弱性を発見 |
+| `e2e` | Playwright E2E の生成・実行・flaky 検出 |
+| `eval` | eval 駆動開発: define / check / report、pass@k 追跡 |
+| `refactor-clean` | テスト検証付きの安全なデッドコード削除 |
+| `coding-standards` | TS/JS/React/Node の汎用標準リファレンス |
+
+### セキュリティ・サプライチェーン
+
+| Skill | 用途 |
+|---|---|
+| `security-scan` | OWASP 2025 Top 10 監査 + STRIDE 脅威モデリングモード（`threat-model` 引数） |
+| `audit-supply-chain` | サプライチェーンセキュリティ + ライセンスコンプライアンス（来歴・署名・脆弱性・typosquatting） |
+
+### データベース
+
+| Skill | 用途 |
+|---|---|
+| `postgres` | PostgreSQL ベストプラクティス・クエリ最適化・トラブルシュート |
+| `mysql` | MySQL スキーマ・インデックス・クエリ・トランザクションのベストプラクティス |
+| `clickhouse-io` | ClickHouse MergeTree 設計・分析クエリ・materialized view |
+
+### ドキュメント・ナレッジ
+
+| Skill | 用途 |
+|---|---|
+| `update-codemaps` | アーキテクチャドキュメント生成（差分追跡付き） |
+| `update-docs` | source-of-truth からのドキュメント同期。90 日以上更新なしの陳腐化検出 |
+| `update-memory` | 知見をメモリシステムに永続化 |
+| `search-memory` | 保存済みの学び・決定・パターンを検索 |
+
+### モード切替
+
+CLAUDE.md の Interaction Modes 本体。Speed（デフォルト）は skill 不要、切替時のみ詳細指示がロードされる。
+
+| Skill | 用途 |
+|---|---|
+| `mode` | `/mode learning`（地図を渡し答えは書かない）への切替。基準は「時間と場所」— 仕事 = Speed / 学習時間 = learning。learn-map / learn-coach との使い分け表も内包。「Speed」でデフォルト復帰 |
+
+### 学習・執筆
+
+| Skill | 用途 |
+|---|---|
+| `learn-map` | 学習マップ + ISUCON/CTF 風演習問題の生成 — 答えは絶対に出さない（学習サイクルの「before」段階） |
+| `learn-coach` | 最小介入コーチ: 段階制ヒント（L1 言語化 → L4 答え）、詰まりポイントを STRUGGLE_LOG.md に記録 |
+| `learn` | セッションから再利用可能なパターンを抽出して skill 化 |
+| `reflect` | Reflexion フレームワークによる構造化振り返り |
+| `write-article` | 「ぐりもお (@gr1m0h)」voice の技術記事（日本語スタイルガイド厳守） |
+| `company-blog` | 完了した案件 → 機密除去 + 一般化した会社テックブログドラフト |
+
+### 意思決定支援
+
+| Skill | 用途 |
+|---|---|
+| `ensemble-vote` | 複数の独立推論パス + 多数決で高リスクな選択を決める |
+
+## Hooks
+
+settings.json に配線された決定論的強制（トークン消費ゼロ）。
+
+| Hook | イベント | 用途 |
+|---|---|---|
+| `session-start.js` | SessionStart | 前回セッション状態の復元とオリエンテーション文脈の注入 |
+| `session-end.js` | SessionEnd / Stop | 次回セッション向けの状態スナップショット保存 |
+| `pre-tool-guard.js` | PreToolUse (Bash/Edit/Write) | 危険コマンド（破壊・情報漏洩・RCE）と保護ファイル書き込みのブロック |
+| `ssrf-guard.js` | PreToolUse (WebFetch) | 内部ネットワークアクセスの遮断（SSRF 防止） |
+| `prompt-validator.js` | UserPromptSubmit | プロンプトの明確さを検証し、問題があればガイダンスを注入 |
+| `post-tool-verify.js` | PostToolUse (Edit/Write) | 編集後の linter 自動実行（ESLint/Biome・ruff・gofmt・rustfmt 等） |
+| `architecture-guard.js` | PostToolUse (Edit/Write) | コード変更後のアーキテクチャ違反検出 |
+| `test-runner.js` | PostToolUse (Edit/Write, async) | ソース変更に関連するテストの自動実行 |
+| `cost-monitor.js` | PostToolUse (async) | トークン使用量・ツール呼び出し回数の記録 |
+| `telemetry-collector.js` | PostToolUse (async) | OpenTelemetry 互換のトレース/メトリクス収集 |
+| `circuit-breaker.js` | PostToolUse / PostToolUseFailure | 失敗を追跡し、閾値超過でサーキットを開く |
+| `post-tool-batch.js` | PostToolBatch | 並列バッチ操作後の整合性検証（競合編集の検出） |
+| `on-failure-recover.js` | PostToolUseFailure | エラー分類（構文/ランタイム/権限/ネットワーク等）と復旧提案 |
+| `permission-denied-tracker.js` | PermissionDenied | 拒否されたツール呼び出しを記録し、権限リストのギャップを特定 |
+| `pre-compact-protector.js` | PreCompact | コンパクション前に重要コンテキストを保護 |
+| `subagent-monitor.js` | SubagentStart / SubagentStop | subagent ライフサイクルのメトリクス収集 |
+| `quality-gate.js` | TeammateIdle | チームメイトがアイドルになる前の品質チェック |
+| `task-validator.js` | TaskCompleted | タスク完了条件の検証 |
+
+## 運用モデル
+
+- **メインセッション = 司令塔**（仕様・レビュー・意思決定）。実行はバックグラウンド subagent / worktree / workflow にファンアウトする。詳細は `CLAUDE.md` → Delegation & Parallelism。
+- **朝**: タスクをキューに積んで `/batch`。**調査形の依頼** → `/investigation-report`。**タスクの締め** → `/sreaas:task report`（プラグイン）。
+- 委譲された各トラックはレビュー可能な成果物（diff + 検証 + 推奨）で終わる。自動公開はしない — PR/Issue へのコメント投稿は権限レベルで拒否される。

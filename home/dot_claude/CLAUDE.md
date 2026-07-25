@@ -15,6 +15,7 @@
 ## Output Format
 - Produce EXACTLY the format requested (markdown/HTML/Marp/Mermaid); never silently convert
 - If the format is ambiguous, confirm before generating
+- Written deliverables: match length to what the task needs — no filler sections, redundant summaries, or boilerplate
 
 ## Verification Before Claims
 - Never assert technical facts (IAM behavior, API pricing, tool/library semantics) without citing docs or running a check
@@ -36,11 +37,8 @@
 - Context Rot: degradation starts ~300-400k tokens even on 1M windows
 
 ## Interaction Modes
-Switch by typing the mode name. **Speed Mode is default** (2026-07: throughput first; learning is recaptured via the Learning Loop below, not blended into delivery).
-
-- **Speed (default)** — no constraints, implement at max velocity.
-- **Guided** — present options, user writes skeleton, Claude fills details; capture TIL notes.
-- **Learning** — explicit opt-in (personal repos / study time). Give the map, not the answer. *Before:* give reference URLs/sections to research, not approaches; if approaches differ, name their existence and let the user choose. *During:* review-mode, escalating hints (reference → approach → pseudocode → code); pre-warn only pitfalls costing 30+ min. *After:* surface 2-3 adjacent concepts + the reusable pattern.
+**Speed is default** — no constraints, implement at max velocity (throughput first; learning is recaptured via the Learning Loop below, not blended into delivery).
+Only other mode: `/mode learning` (map not answers). Switching criterion is time-and-place — client work = Speed, study time (personal repos / `~/learn/`) = learning — never task type. Collaborative styles during work ("I'll write the skeleton") are ad-hoc instructions, not a mode. Details + learn-map/learn-coach routing live in the skill.
 
 ## Learning Loop (Speed-mode compensation)
 - **Learning flag**: in Speed mode, when work relies on a concept/tool/behavior the user likely hasn't internalized (new tech, non-obvious semantics, a decision they couldn't have articulated themselves), flag it in one line in the final message. No log file — the user picks up flagged topics via `/learn-map` when they choose. Don't flag basics or things the user demonstrably knows.
@@ -63,20 +61,27 @@ On-demand skills (each loads its own detail when triggered):
 - Learning → `/learn`, `/reflect` · Uncertainty → `/ensemble-vote` · Agents → `~/.claude/agents/`
 - SREaaS ops → `/batch` (朝バッチ投入), `/investigation-report` (調査→報告書); 夜間ドラフトは Desktop ルーチンのプロンプトで `/sreaas:task` `/sreaas:monthly` を draft-only 実行
 
+## Delegation & Parallelism
+- Main session = 司令塔 (spec, review, decisions). Execution fans out to background subagents / worktrees / workflows.
+- Delegate: investigation, report drafting, batch fixes, independent multi-file tracks. Morning queue → `/batch`; investigation-shaped → `/investigation-report`; multi-phase fan-out → Workflow (opt-in).
+- Do NOT delegate: work finishable in a handful of tool calls; verification of your own work (the model self-verifies). One subagent when one suffices; keep spawn counts low (Opus 5 guide, 2026-07).
+- Parallel tracks use `isolation: worktree`; every track ends in a reviewable artifact (diff + verification + recommendation) — never auto-published.
+- While agents run, the user reviews finished artifacts instead of watching progress — throughput comes from review bandwidth, not typing speed.
+
 ## Session Protocol
 1. **Orient**: session state, task list, git log (session-start hook)
 2. **Verify**: run tests on existing code before changes
 3. **One task** per focused session (prevents context exhaustion)
 4. **Implement** with tests (TDD preferred)
-5. **Evaluate**: evaluator agent or mechanical checks — never self-assess
+5. **Evaluate**: mechanical checks (linters/tests/CI) — the model self-verifies; no extra verification passes
 6. **Commit**: descriptive message; `/compact` at milestones, `/clear` between projects
 7. **Exit**: verify working state, update session state
 
 Recovery: `/rewind` (failed attempts), `/btw` (side questions, no context pollution).
 
 ## Evaluation
-- Generation and evaluation are SEPARATE — use the evaluator agent after implementing
 - Define success criteria BEFORE coding; prefer mechanical checks (linters/tests/CI)
+- Opus 5+ / Fable 5 self-verify: do NOT add "verify with a subagent" / "double-check" steps — over-verification wastes tokens with no quality gain (official prompting guide, 2026-07)
 - On FAIL, iterate on specific feedback before committing
 
 ## Harness Principles
