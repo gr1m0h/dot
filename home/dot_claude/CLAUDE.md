@@ -31,11 +31,6 @@
 - Never force-push without explicit approval; first check for clobbered files-apply/Renovate commits
 - Treat lockfile deletion and bulk file deletion as destructive: confirm before deleting any lockfile — never assume a bot (e.g. tfaction-bot) will auto-regenerate it
 
-## Context Engineering (2026)
-- Context > Prompt; structured context determines model performance
-- Progressive Disclosure: domain knowledge in skills, loaded on-demand (prevents CLAUDE.md bloat)
-- Context Rot: degradation starts ~300-400k tokens even on 1M windows
-
 ## Interaction Modes
 **Speed is default** — no constraints, implement at max velocity (throughput first; learning is recaptured via the Learning Loop below, not blended into delivery).
 Only other mode: `/mode learning` (map not answers). Switching criterion is time-and-place — client work = Speed, study time (personal repos / `~/learn/`) = learning — never task type. Collaborative styles during work ("I'll write the skeleton") are ad-hoc instructions, not a mode. Details + learn-map/learn-coach routing live in the skill.
@@ -51,15 +46,9 @@ Loading mechanism (verified 2026-07 against official docs): EVERY `~/.claude/rul
 - Path-scoped (auto-activate when matching files are touched): `coding-style.md`, `testing.md`, `backend/{go,ruby,php}-patterns.md`, `backend/api-guidelines.md`, `frontend/react-patterns.md`.
 - On-demand doctrine lives in `~/.claude/docs/` (agents, patterns, git-workflow, harness-engineering, context-engineering, cost-optimization, security, forbidden-apis, llm-security, supply-chain-security, coding-standards, performance, continuous-learning, uncertainty-expression). Read on demand; never move back into `rules/`.
 
-On-demand skills (each loads its own detail when triggered):
-- Security → `/security-review`, `/security-scan`
-- Coding style → `/coding-standards`
-- Supply chain → `/audit-supply-chain` (license compliance 込み)
-- Cost / context → `/manage-context`, `/dashboard`, `/harness-audit`
-- Testing → `/tdd-workflow`, `/test-coverage`
-- Git / PR → `/create-pr`, `/pr-summary`, `/release`
-- Learning → `/learn`, `/reflect` · Uncertainty → `/ensemble-vote` · Agents → `~/.claude/agents/`
+On-demand skills trigger from their own descriptions; non-obvious routing only:
 - SREaaS ops → `/batch` (朝バッチ投入), `/investigation-report` (調査→報告書); 夜間ドラフトは Desktop ルーチンのプロンプトで `/sreaas:task` `/sreaas:monthly` を draft-only 実行
+- `/audit-supply-chain` は license compliance 込み · Agents → `~/.claude/agents/`
 
 ## Delegation & Parallelism
 - Main session = 司令塔 (spec, review, decisions). Execution fans out to background subagents / worktrees / workflows.
@@ -95,19 +84,9 @@ Recovery: `/rewind` (failed attempts), `/btw` (side questions, no context pollut
 - Security issue → stop, invoke security-reviewer, fix before continuing
 
 ## PR / Issue Communication Boundary (CRITICAL — user-directive, 2026-07)
-- **Never post comments to PRs or Issues autonomously**, including after `git push`. This applies to every session; no exception.
-- Prohibited without an EXPLICIT user request in the current turn:
-  - `gh pr comment` / `gh issue comment`
-  - `gh pr review` (any variant that writes a body)
-  - `gh api .../pulls/*/comments` (POST) — inline review comments
-  - `gh api .../pulls/*/comments/*/replies` (POST) — reply-to-review
-  - `gh api .../issues/*/comments` (POST) — issue comments
-- Allowed without asking:
-  - `git push` itself
-  - PR body edits (`gh api -X PATCH .../pulls/N`) when the user asked to update description
-  - PR title / label / assignee edits when explicitly requested
-- **Also enforced mechanically** in `~/.claude/settings.json` `permissions.deny` (see `Bash(gh pr comment*)` etc.).
-- Rationale: The user manages review conversations directly. Auto-posting reply-to-review, "対応しました" comments, or status updates creates noise and misrepresents human back-and-forth.
+- **Never post comments to PRs or Issues autonomously**, including after `git push`. Every session; no exception. Prohibited without an EXPLICIT user request in the current turn: `gh pr comment` / `gh issue comment` / `gh pr review` (body-writing variants) / `gh api` POST to `*/comments` or `*/replies`.
+- Allowed without asking: `git push` itself; PR body/title/label/assignee edits when explicitly requested.
+- Also enforced mechanically in `settings.json` `permissions.deny`. Rationale: the user manages review conversations directly — auto-posted replies and status comments create noise and misrepresent human back-and-forth.
 
 ## Language
 - Skill/agent instructions in English (best LLM performance); when translating Japanese, translate ALL files in the directory

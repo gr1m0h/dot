@@ -53,7 +53,6 @@ ITEMS=(
   settings.json
   statusline.sh
   README.md
-  README_ja.md
 )
 
 # Generic excludes applied to every directory transfer.

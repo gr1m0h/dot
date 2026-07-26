@@ -3,9 +3,9 @@
 個人用 Claude Code ハーネス（`~/.claude/`）。chezmoi により `home/dot_claude/` から管理する。
 設計原則: **CLAUDE.md は地図であり百科事典ではない** — 常時ロードは最小限、ドメイン知識はオンデマンド（skills / docs）、品質ゲートは機械的に強制（hooks）。
 
-インベントリ（2026-07）: **8 rules · 14 docs · 16 agents · 39 skills · 18 hooks**
+インベントリ（2026-07）: **8 rules · 15 docs · 16 agents · 40 skills · 18 hooks**
 
-> ユースケース別ガイド: [docs/claude-skills-by-usecase.html](../../docs/claude-skills-by-usecase.html)
+> 状況別逆引きチートシート: [docs/claude-skills-by-usecase.md](../../docs/claude-skills-by-usecase.md)
 
 ## 構成
 
@@ -26,7 +26,7 @@
 
 - `model: fable`（Fable 5、最上位ティア）· `effortLevel: high`（Opus 5+/Fable 5 世代の公式推奨デフォルト。`xhigh` は長時間自律実行専用）
 - `CLAUDE_CODE_SUBAGENT_MODEL: sonnet` — subagent は調査・実装・レビューの実務を担うため
-- 権限: allow 約70（開発ツールチェーン）/ deny 約50（破壊的操作・secrets・PR/Issue 自動コメント禁止）/ ask 約30（push・デプロイ・依存追加）
+- 権限: allow 70（開発ツールチェーン）/ deny 57（破壊的操作・secrets・PR/Issue 自動コメント禁止 — `gh api` のコメント POST はフラグ順序・`-f body=` 形式まで網羅）/ ask 32（push・デプロイ・依存追加・`npx` = 任意リモートパッケージ実行のため）
 - hooks は 14 種のイベントに配線（[Hooks](#hooks) 参照）
 - プラグイン（topotal marketplace）: `sreaas` · `case-reflect` · `proposal-review` · `brainstorming`
 
@@ -48,9 +48,9 @@ unscoped は `_core.md` のみ — 追加してはならない。
 
 ## docs/（オンデマンドドクトリン）
 
-`agents` · `coding-standards` · `context-engineering` · `continuous-learning` · `cost-optimization` ·
-`forbidden-apis` · `git-workflow` · `harness-engineering` · `llm-security` · `patterns` ·
-`performance` · `security` · `supply-chain-security` · `uncertainty-expression`
+`agents` · `batch-permissions` · `coding-standards` · `context-engineering` · `continuous-learning` ·
+`cost-optimization` · `forbidden-apis` · `git-workflow` · `harness-engineering` · `llm-security` ·
+`patterns` · `performance` · `security` · `supply-chain-security` · `uncertainty-expression`
 
 話題に上がったときに読む。`rules/` に戻さない（全セッションが肥大化するため）。
 
@@ -160,6 +160,7 @@ CLAUDE.md の Interaction Modes 本体。Speed（デフォルト）は skill 不
 | `reflect` | Reflexion フレームワークによる構造化振り返り |
 | `write-article` | 「ぐりもお (@gr1m0h)」voice の技術記事（日本語スタイルガイド厳守） |
 | `company-blog` | 完了した案件 → 機密除去 + 一般化した会社テックブログドラフト |
+| `slide-deck` | Topotal Design System 準拠の登壇スライドデッキ生成（HTML/PDF + 台本 + プレゼンターモード） |
 
 ### 意思決定支援
 
