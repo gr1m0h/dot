@@ -1,0 +1,29 @@
+# Convenience entry points for tools shipped with this dotfiles repo.
+# Run from the repository root: `mise run <task>` (list with `mise tasks`).
+
+[tasks.apply]
+description = "chezmoi apply (sync all dotfiles)"
+run = "chezmoi apply"
+
+# Reflect the live ~/.claude config back into this repo's home/dot_claude/.
+# Does not commit — review with `git diff` afterwards.
+[tasks.sync-claude]
+description = "reflect live ~/.claude config into home/dot_claude/"
+run = "bash scripts/sync-claude.sh"
+
+[tasks.sync-claude-dry]
+description = "dry run of sync-claude (show changes, write nothing)"
+run = "bash scripts/sync-claude.sh -n"
+
+# Render the AppleScript template into the destination via chezmoi, then
+# rebuild the .app bundle. The build script is also wired into
+# home/.chezmoiscripts/run_onchange_07-..., so `chezmoi apply` keeps it in sync
+# automatically; this task is for one-shot rebuilds during local development.
+[tasks.ghostty-nvim]
+description = "render the AppleScript via chezmoi and rebuild ~/Applications/Ghostty-Nvim.app"
+run = """
+set -euo pipefail
+dest="$HOME/.local/share/chezmoi-scripts/Ghostty-Nvim.applescript"
+chezmoi apply "$dest"
+bash scripts/applescript/ghostty-nvim/build-ghostty-nvim-app.sh "$dest"
+"""
