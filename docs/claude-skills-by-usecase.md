@@ -2,7 +2,7 @@
 
 明示的に呼んで速くする。`home/dot_claude/skills`（38 skills）+ plugins を「いつ・何を・どう呼ぶか」で整理。
 
-最終更新: 2026-07-25 · 凡例: **[標準]** Claude Code 同梱 / **[自作]** ~/.claude/skills / **[plugin]** 名前空間つき
+最終更新: 2026-08-05 · 凡例: **[標準]** Claude Code 同梱 / **[自作]** ~/.claude/skills / **[plugin]** 名前空間つき
 
 ## 0. 使い方の原則
 
@@ -27,6 +27,14 @@
 昼: /batch status → 軌道修正
 夕: /batch status → レビュー → /batch publish（採用分）→ /sreaas:task report
 ```
+
+**batch タスクのライフサイクル**（inbox の行の状態遷移）:
+
+1. `[ ]` queued — `/batch add` 直後。行に積まれただけで何も走らない
+2. `[~]` dispatched — `/batch` で background subagent へ発注。agent は調査・ブランチ準備・機械検証まで行い `~/.claude/batch/out/` に 6 セクション契約のレポートを書く。**外部への書き込み（push/PR/コメント/apply）は一切しない**
+3. `[x]` done — `/batch status` で回収、行は当日 log へ。ここで人間がレポートを読み「判断が要る点」に答える
+4. 公開・記録 — 採用したものだけ外に出す。コード系は `/batch publish`（**PR は本文なし・タイトルのみ** — レポート由来の機微情報が PR description に混入する事故の防止。本文は人間が書く）、調査系は Issue/Notion へ人間が記入 + `/sreaas:task report` で社内記録
+5. 掃除 — 反映済みレポートは out/ から削除（repo に残す価値があれば案件 repo の `reports/` へ移動）。**不変条件: out/ が空 = やり残しゼロ**。残数は session-start hook が `BATCH_REVIEW` として毎セッション表示するので消し忘れは検知される
 
 ## 2. 調査・レポート（SREaaS の主戦場）
 
