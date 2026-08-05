@@ -68,6 +68,11 @@ process.stdin.on("end", () => {
         /rsync\s+.*\.(env|pem|key)/i,
       ];
 
+      // lockfile 削除（Edit/Write 側の保護と対: Bash 経由の rm/git rm もブロック）
+      const lockfileDelete = [
+        /\brm\s+[^|;&]*(package-lock\.json|yarn\.lock|pnpm-lock\.yaml|bun\.lockb|Gemfile\.lock|composer\.lock|Cargo\.lock|poetry\.lock|uv\.lock|go\.sum|flake\.lock|\.terraform\.lock\.hcl)\b/i,
+      ];
+
       // クリプトマイナー・マルウェア
       const malware = [
         /xmrig/i,
@@ -93,6 +98,11 @@ process.stdin.on("end", () => {
           patterns: leaks,
           label: "Secret leak risk",
           hint: "Fix: don't read/print/exfiltrate secret files or env vars. Reference secrets by name via a secrets manager instead.",
+        },
+        {
+          patterns: lockfileDelete,
+          label: "Lockfile deletion",
+          hint: "Fix: lockfile deletion is destructive — never assume a bot (e.g. tfaction-bot) will regenerate it. Ask the user to confirm and delete it manually if truly intended.",
         },
         {
           patterns: malware,

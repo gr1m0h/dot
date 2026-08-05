@@ -7,7 +7,7 @@
 - Architectural change: spec-driven via `/plan` + review checkpoint before coding
 - Batch-editing 10+ files: pause after 3-5 edits to confirm approach
 
-### Client work (顧客リポジトリ — `~/.claude/tracked-orgs.txt` 参照。個人 org も登録可・org 名は public dotfiles に書かない)
+### Client work (顧客リポジトリ = 個人 org 以外の org 配下 — org-leak-guard が ghq 兄弟 org を自動識別。登録ファイルは廃止済み 2026-08・org 名は public dotfiles に書かない)
 - **Spec-first (enforced)**: any non-trivial task → 3-line spec (what/why/how) **+ 成果物形式 + 完了条件** and wait for approval before working. #1 friction is wrong_approach (24/81 sessions); one approval round is cheaper than five correction rounds.
 - **Delegate-first**: if the request is investigation/research/report-shaped, propose running it as a subagent or background task and let the user step away, instead of interactive back-and-forth.
 - **Task closure**: when a client-repo task wraps up, suggest `/sreaas:task report` before the session ends — every task leaves a visible artifact (成果の見える化 = 裁量労働の成果証明).
@@ -16,6 +16,7 @@
 - Produce EXACTLY the format requested (markdown/HTML/Marp/Mermaid); never silently convert
 - If the format is ambiguous, confirm before generating
 - Written deliverables: match length to what the task needs — no filler sections, redundant summaries, or boilerplate
+- Show drafted outbound content (comments, PR bodies, report text) in full BEFORE any post/publish/confirm step
 
 ## Verification Before Claims
 - Never assert technical facts (IAM behavior, API pricing, tool/library semantics) without citing docs or running a check
@@ -24,12 +25,13 @@
 
 ## Re-read Before Editing
 - `Read` a file immediately before editing — never act on a stale snapshot. Re-read after several tool calls or any external/manual modification.
+- Verify the working directory/path before trusting search results — a wrong cwd invalidates the whole search
 
 ## Branch & PR Hygiene
-- Before a new branch/PR, check existing scope: `gh pr list --search "<keyword> author:@me"`; reuse when scope matches
 - Confirm remote branch name before `git push` if it differs from upstream
 - Never force-push without explicit approval; first check for clobbered files-apply/Renovate commits
-- Treat lockfile deletion and bulk file deletion as destructive: confirm before deleting any lockfile — never assume a bot (e.g. tfaction-bot) will auto-regenerate it
+- PR creation & push only on explicit user request in the current task — draft first (also ask-gated in permissions; scope-check lives in the create-pr skill)
+- Bulk file deletion is destructive: confirm first (lockfile deletion is hook-blocked by pre-tool-guard)
 
 ## Interaction Modes
 **Speed is default** — no constraints, implement at max velocity (throughput first; learning is recaptured via the Learning Loop below, not blended into delivery).
@@ -38,7 +40,7 @@ Only other mode: `/mode learning` (map not answers). Switching criterion is time
 ## Learning Loop (Speed-mode compensation)
 - **Learning flag**: in Speed mode, when work relies on a concept/tool/behavior the user likely hasn't internalized (new tech, non-obvious semantics, a decision they couldn't have articulated themselves), flag it in one line in the final message. No log file — the user picks up flagged topics via `/learn-map` when they choose. Don't flag basics or things the user demonstrably knows.
 - **Ship check**: before creating a PR / delivering client-facing work, present a 3-sentence customer-facing explanation (課題 → 打ち手 → 効果) for the user to confirm or correct. If they hesitate, offer a 5-minute explainer instead of shipping blind.
-- **Recapture**: `/learn-map` sessions on demand for flagged topics; `/reflect` / case-reflect at case milestones.
+- **Recapture (mechanized 2026-08)**: learn skill owns the human-learning lifecycle (`~/learn/BACKLOG.md`; verbs = add 捕捉 / review 選別 / start 変換 / done 定着, no-arg = status); /batch is execution only. Hook auto-queues `personal: retro-learn` when 7 days past `last-retro:` and surfaces `LEARN_BACKLOG` / retro state every session. Session-pattern skill-ification (→ `skills/learned/`) moved to `/reflect` (absorbed old /learn default). `/reflect` / case-reflect at case milestones.
 
 ## Rules
 Loading mechanism (verified 2026-07 against official docs): EVERY `~/.claude/rules/**/*.md` WITHOUT `paths:` frontmatter auto-loads at launch — `@` references are irrelevant to rules loading.
@@ -85,7 +87,7 @@ Recovery: `/rewind` (failed attempts), `/btw` (side questions, no context pollut
 
 ## PR / Issue Communication Boundary (CRITICAL — user-directive, 2026-07)
 - **Never post comments to PRs or Issues autonomously**, including after `git push`. Every session; no exception. Prohibited without an EXPLICIT user request in the current turn: `gh pr comment` / `gh issue comment` / `gh pr review` (body-writing variants) / `gh api` POST to `*/comments` or `*/replies`.
-- Allowed without asking: `git push` itself; PR body/title/label/assignee edits when explicitly requested.
+- Allowed when explicitly requested (no extra confirmation beyond the permission prompt): `git push`; PR body/title/label/assignee edits.
 - Also enforced mechanically in `settings.json` `permissions.deny`. Rationale: the user manages review conversations directly — auto-posted replies and status comments create noise and misrepresent human back-and-forth.
 
 ## Language

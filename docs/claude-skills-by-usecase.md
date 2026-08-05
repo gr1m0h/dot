@@ -2,7 +2,7 @@
 
 明示的に呼んで速くする。`home/dot_claude/skills`（38 skills）+ plugins を「いつ・何を・どう呼ぶか」で整理。
 
-最終更新: 2026-08-05 · 凡例: **[標準]** Claude Code 同梱 / **[自作]** ~/.claude/skills / **[plugin]** 名前空間つき
+最終更新: 2026-08-06 · 凡例: **[標準]** Claude Code 同梱 / **[自作]** ~/.claude/skills / **[plugin]** 名前空間つき
 
 ## 0. 使い方の原則
 
@@ -35,6 +35,8 @@
 3. `[x]` done — `/batch status` で回収、行は当日 log へ。ここで人間がレポートを読み「判断が要る点」に答える
 4. 公開・記録 — 採用したものだけ外に出す。コード系は `/batch publish`（**PR は本文なし・タイトルのみ** — レポート由来の機微情報が PR description に混入する事故の防止。本文は人間が書く）、調査系は Issue/Notion へ人間が記入 + `/sreaas:task report` で社内記録
 5. 掃除 — 反映済みレポートは out/ から削除（repo に残す価値があれば案件 repo の `reports/` へ移動）。**不変条件: out/ が空 = やり残しゼロ**。残数は session-start hook が `BATCH_REVIEW` として毎セッション表示するので消し忘れは検知される
+
+> **自動投入される行がある:** inbox に `personal: retro-learn` が勝手に積まれていることがある — session-start hook が7日周期で自動追加する学習ループの収穫タスク（§11）。手で書き足す必要はなく、普通に dispatch に含めればよい。
 
 ## 2. 調査・レポート（SREaaS の主戦場）
 
@@ -169,16 +171,30 @@ brainstorming（曖昧なら）→ /plan（承認待ち）→ /tdd-workflow
 | 状況 | 呼ぶ | 起きること・コツ |
 |---|---|---|
 | 学習時間に入る（個人 repo / ~/learn） | `/mode learning` [自作] | セッションの構えを切替 — 答えを書かず地図を渡す。基準は「時間と場所」（仕事 = Speed、学習時間 = learning）、タスク種別ではない。「Speed」で復帰 |
-| 新技術を学びたい | `/learn-map` [自作] | 学習マップ + ISUCON/CTF 風演習問題を生成。**答えは絶対に出ない**設計。Speed モード中に learning flag された話題を随時消化（learning-debt.md は廃止） |
+| 学習ループの現在地を知りたい | `/learn` [自作] | 引数なし = status。backlog 未着手/演習中、retro 鮮度、レビュー待ちを要約し次の一手を推奨 |
+| 学びたいことを思いついた（今すぐ） | `/learn add <topic>` [自作] | backlog に1行追記するだけの都度の口。週次 retro を待たない。dispatch も learn-map も走らない |
+| retro-learn のレポートが届いた | `/learn review` [自作] | 題材候補を番号提示 → **選ぶだけ**。BACKLOG.md 追記 + `last-retro:` 更新 + レポート削除まで全部セッションがやる |
+| 学習時間に入る | `/learn start [topic]` [自作] | backlog から番号選択（指定も可）→ learn-map を起動して演習環境を生成。learn-map/learn-coach は独立 skill のまま（教材生成・コーチング規約が大きいため） |
 | 演習で詰まった | `/learn-coach` [自作] | 段階ヒント（L1 言語化 → L4 答え、1ターン1レベル）。ギブアップ宣言か30分格闘まで L4 は開かない |
-| いいパターンを再利用したい | `/learn` [自作] | セッションからパターンを抽出して skill 化。非自明な問題を解いた直後に |
+| 演習が終わった | `/learn done` [自作] | STRUGGLE_LOG から弱点を要約（繰り返す弱点は add 候補に）→ backlog を `[x]` に。パターンが出たら /reflect へハンドオフ |
+| いいパターンを再利用したい | `/reflect` [自作] | **旧 /learn を統合（2026-08）**: 非自明な問題を解いた直後に呼ぶと Reflexion 振り返り + 再利用パターンを skills/learned/ に skill 化。打ち忘れても週次 retro-learn が transcript から拾う（安全網） |
 | 大きめの仕事を終えた | `/reflect` [自作] | Reflexion 框組の構造化振り返り。永続化すべき学びを抽出 |
 | 過去の知見を探す | `/search-memory` [自作] | 認知メモリから検索。着手前に一度 |
 | 覚えさせたい | `/update-memory` [自作] or 「覚えて」 | 自作認知メモリへ保存。ネイティブ auto-memory と二重管理なのは既知の課題 |
 | 構造変更後のアーキテクチャ文書更新 | `/update-codemaps` [自作] | コードベース構造を解析して docs/CODEMAPS/* を diff 追跡つきで再生成 |
 | README/CONTRIB が古い気がする | `/update-docs` [自作] | package.json 等の source-of-truth から同期。90 日以上更新なしの陳腐化ドキュメントを検出 |
 
-役割分担: `/mode learning` = セッションの構え / `/learn-map` = 教材生成（before）/ `/learn-coach` = 演習中の専門コーチ（during、ヒント段階制が優先）。仕事中に協働スタイルにしたいときはモードでなく「骨格は自分で書く」等のその場指示で。
+**学習ループのライフサイクル**（2026-08 機械化 — 覚えておくことはゼロ）:
+
+1. 捕捉 — 業務中（Speed）の learning flag は transcript に堆積するだけ。ログ不要。**今すぐ残したいものは `/learn add <topic>`**（都度の口）
+2. 収穫 — `~/learn/BACKLOG.md` の `last-retro:` から7日経過すると session-start hook が `personal: retro-learn` を batch inbox に**自動投入** → いつもの `/batch` で走る（§1。batch にとってはただのタスクの1つ）
+3. 選別 — `/learn review` で題材候補から番号選択 → BACKLOG.md 追記 + `last-retro:` 更新 + レポート削除まで自動。**完了するまで hook が「レビュー待ち」を出し続ける**
+4. 変換・実践 — 学習時間に `/learn start`（backlog から番号選択 → learn-map が演習環境を生成）→ `/mode learning` + `/learn-coach`。入口は hook の `LEARN_BACKLOG` 表示
+5. 定着 — `/learn done` で STRUGGLE_LOG の弱点を回収（繰り返す弱点は次の題材候補へ）+ backlog を `[x]`。パターンが出たら `/reflect` が skills/learned/ に skill 化 → 次の業務セッションで発火し、業務が次の flag を生んで 1 に還流
+
+学びのドメイン（BACKLOG.md・last-retro・レビュー手順）の**所有者は learn skill で、verb がそのままライフサイクル**（add 捕捉 / review 選別 / start 変換 / done 定着、引数なし = status）。batch は実行基盤、hook は表示と自動投入のみ、learn-map は backlog の消費者、パターンの skill 化は `/reflect`（旧 /learn の抽出動作を統合）。
+
+役割分担: `/learn` = 人間の学習ライフサイクルの関節（add/review/start/done）/ `/mode learning` = セッションの構え / `/learn-map` = 教材生成（before）/ `/learn-coach` = 演習中の専門コーチ（during、ヒント段階制が優先）/ `/reflect` = ハーネスの記憶（セッション振り返り + パターン skill 化、旧 /learn 統合）。case-reflect は別軸（案件の節目駆動、対象は仕事の判断とストーリー）。仕事中に協働スタイルにしたいときはモードでなく「骨格は自分で書く」等のその場指示で。
 
 ## 12. コンテンツ制作
 

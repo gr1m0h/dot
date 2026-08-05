@@ -1,9 +1,9 @@
 ---
 name: batch
-description: Batch dispatch — read queued tasks from ~/.claude/batch/inbox.md, fix each task's spec contract, fan them out to background subagents per case, and leave the user free until review time. Also surfaces unreported client sessions (~/.claude/batch/unreported.md). Use when the user says "batch", "morning batch", "朝バッチ", "タスク投入", "/batch", "/morning-batch", or at the start of a work day with queued tasks.
+description: Batch dispatch — read queued tasks from ~/.claude/batch/inbox.md, fix each task's spec contract, fan them out to background subagents per case, and leave the user free until review time. Use when the user says "batch", "morning batch", "朝バッチ", "タスク投入", "/batch", "/morning-batch", or at the start of a work day with queued tasks.
 user-invocable: true
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Agent, Skill
-argument-hint: "[dispatch (default) | status | publish <task> | add <case>: <task>]"
+argument-hint: "[dispatch (default) · status · publish <task> · add <case>: <task> | <deliverable> | <done-criteria>]"
 ---
 
 # batch
@@ -35,7 +35,7 @@ Every dispatched task writes ONE Markdown file to `~/.claude/batch/out/YYYY-MM-D
 3. **成果物** — for code: branch name + diff summary (prepared locally, NOT pushed). For investigation: the report body.
 4. **機械検証** — commands run + output. A deliverable without verification output is **incomplete**. Use the checks the agent *can* run autonomously (test / lint / `tofu fmt`/`validate` / `tofu plan` via the read-only plan role / config validators). State explicitly what could not be verified and why.
 5. **判断が要る点（人間の関門）** — every open decision, each with: options, trade-offs, and a **推奨 (recommendation)**. This is where 🟡/🔴 decisions live. Empty for clean 🟢 tasks.
-6. **公開手順（あれば）** — the exact `publish` action proposed (branch, PR title, draft?), phrased so the human can approve at a glance.
+6. **公開手順（あれば）** — the exact `publish` action proposed (branch, PR title — never a PR body, draft?), phrased so the human can approve at a glance.
 
 ## Verb: `dispatch` (default)
 
@@ -48,12 +48,13 @@ Every dispatched task writes ONE Markdown file to `~/.claude/batch/out/YYYY-MM-D
    - Model routing: `Explore`+haiku for lookups/inventory, sonnet for implementation/report drafting; reserve the inherited model for judgment-heavy analysis.
    - Independent tasks → single message (parallel). Same repo working tree → `isolation: "worktree"` or sequential.
 4. Mark dispatched tasks `- [~]` in inbox with agent IDs; append to `~/.claude/batch/log-YYYY-MM-DD.md` (task → agent ID → artifact path → triage color).
-5. If `~/.claude/batch/unreported.md` is non-empty, list entries and propose `/sreaas:task report` (or `report all`).
-6. Final message: dispatch table (case / task / triage / agent ID / artifact) + "レビューは昼と夕方に". Then stop — don't babysit; use `status` later.
+5. Final message: dispatch table (case / task / triage / agent ID / artifact) + "レビューは昼と夕方に". Then stop — don't babysit; use `status` later.
 
 ## Verb: `status`
 
 Check artifacts under `~/.claude/batch/out/` (and TaskOutput). Per task: done (artifact path + a one-line "判断が要る点" count) / running / failed (reason + whether partial output exists). Mark finished tasks `- [x]`, move their line to the day's log. For failed/stalled agents, note it and suggest re-dispatch as smaller sub-tasks.
+
+**Artifact lifecycle**: once a deliverable has been reviewed and its outcome landed (published via `publish`, recorded via `/sreaas:task report`, pasted into an Issue/Notion by the user), delete the file from `~/.claude/batch/out/` — or move it into the case repo's `reports/` if it should live with the repo. Invariant: **out/ empty = nothing pending**. The session-start hook surfaces the remaining count (`BATCH_REVIEW`) every session, so leftovers are never silent. During `status`, propose deletion for any artifact whose outcome has already landed.
 
 ## Verb: `publish <task>` (human-gated writes)
 
@@ -61,7 +62,7 @@ The only path that performs GitHub/infra writes. Runs in the MAIN session (human
 
 1. Read the task's deliverable. Confirm 機械検証 passed and 判断が要る点 are resolved (if any 🔴 decision is unresolved, stop and surface it — do not publish).
 2. **Before every write action, state in plain language what it will do and why** (e.g., "energy 23テナントの再apply用に、23 dir に無害なコメントを足した内容を `topotal/reapply-566` ブランチとして push し、draft PR を作成します。infra は変更しません"). Never present a bare shell/gh command for approval without this natural-language intent line.
-3. Execute the prepared branch push + `create-pr` (draft unless told otherwise). Report the PR URL.
+3. Execute the prepared branch push + PR creation, **with NO PR description**: `gh pr create --title "..." --body ""` (draft unless told otherwise) — do NOT use the create-pr skill or auto-generate a body from the deliverable. Rationale: deliverables carry internal analysis and cross-case context; auto-copying any of it into a client-visible PR body is an information-leak vector. The user writes the body themselves afterwards (or dictates it explicitly in the current turn). Report the PR URL.
 4. Never auto-close others' PRs, comment on PRs/Issues, or run `apply`/state ops — those stay explicit human actions.
 
 ## Verb: `add <case>: <task>`
@@ -76,6 +77,7 @@ Append to `## Queue` in inbox (with 成果物/完了条件 inline if given). No 
 
 ## Notes
 
-- Friday variant: after dispatch, remind the user to queue next week's tasks (金曜仕込み).
+- Friday variant: after dispatch, remind the user to queue next week's tasks (金曜仕込み). The weekly `personal: retro-learn` task is auto-queued by the session-start hook when due (7 days since `last-retro:` in `~/learn/BACKLOG.md`) — do not add it manually; if it sits in the queue undispatched, just include it in the next dispatch.
+- retro-learn is just another task to this skill: dispatch it like the rest. Its artifact review has its own procedure owned by the learn skill — when a retro-learn report shows up during `status`, hand off with "レビューは /learn review で" instead of processing it here.
 - Never dispatch more than 6 concurrent background agents; queue the rest and say so.
 - Stall handling: if an agent produced no artifact, treat as failed; re-dispatch decomposed (e.g. "collect logs" → "diagnose" → "prepare fix") — smaller tasks stall less and leave partial value.

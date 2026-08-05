@@ -20,6 +20,11 @@ Create a high-quality Pull Request for the current branch.
 
 ## Process
 
+### 0. Scope Check (avoid duplicate PRs)
+
+- Search for an existing PR covering the same scope: `gh pr list --search "<keyword> author:@me"`
+- If an open PR matches, propose updating that PR (push to its branch / edit its body) instead of creating a new one, and wait for the user's choice
+
 ### 1. Analyze Changes
 
 - Read all diffs and commit messages thoroughly
@@ -89,6 +94,7 @@ Key implementation decisions and approach taken.
 
 ### 4. Create PR
 
+- Show the drafted title and body to the user in full before running `gh pr create` (global rule: draft first)
 - Push current branch to remote if not already pushed
 - Run `gh pr create` with the generated title and body
 - Set labels based on change type (feature, bugfix, etc.)

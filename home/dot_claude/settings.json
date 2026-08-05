@@ -145,7 +145,13 @@
       "Bash(gh api*/comments *-f body=*)",
       "Bash(gh api*/comments *-F body=*)",
       "Bash(gh api*/replies *-f body=*)",
-      "Bash(gh api*/replies *-F body=*)"
+      "Bash(gh api*/replies *-F body=*)",
+      "Bash(gh api*/pulls *-X POST*)",
+      "Bash(gh api*/pulls *--method POST*)",
+      "Bash(gh api *-X POST*/pulls*)",
+      "Bash(gh api *--method POST*/pulls*)",
+      "Bash(gh api*/pulls *-f title=*)",
+      "Bash(gh api*/pulls *-F title=*)"
     ],
     "ask": [
       "Bash(npx *)",
@@ -233,6 +239,15 @@
           {
             "type": "command",
             "command": "node \"$HOME\"/.claude/hooks/ssrf-guard.js"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|mcp__.*[Gg]it[Hh]ub.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/org-leak-guard.js"
           }
         ]
       }

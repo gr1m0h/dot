@@ -5,7 +5,7 @@
 
 インベントリ（2026-07）: **8 rules · 15 docs · 16 agents · 40 skills · 18 hooks**
 
-> 状況別逆引きチートシート: [docs/claude-skills-by-usecase.md](../../docs/claude-skills-by-usecase.md)
+> ユースケース別ガイド: [docs/claude-skills-by-usecase.html](../../docs/claude-skills-by-usecase.html)
 
 ## 構成
 

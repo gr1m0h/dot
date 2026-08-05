@@ -1,6 +1,6 @@
 ---
 name: reflect
-description: Structured reflection on completed work using the Reflexion framework. Use when user says "reflect", "session review", "what did I learn", or after completing a complex task. Extracts persistent learnings and saves reusable patterns.
+description: Structured reflection on completed work using the Reflexion framework. Use when user says "reflect", "session review", "what did I learn", "extract pattern", "save this technique", or after completing a complex task / solving a non-trivial problem. Extracts persistent learnings, and skill-ifies reusable patterns to ~/.claude/skills/learned/ (absorbed the former /learn default verb, 2026-08).
 user-invocable: true
 allowed-tools: Read, Write, Grep
 ---
@@ -71,6 +71,35 @@ Append new learnings to `.claude/memory/local/learnings.md`, merging with existi
 - Remove learnings contradicted by new evidence
 - Keep the file under 100 entries (archive oldest LOW confidence items)
 
+### 6. Skill-ify Reusable Patterns (absorbed from the former /learn, 2026-08)
+
+For learnings that should AUTO-FIRE in future sessions (error resolutions, debugging
+techniques, workarounds, integration patterns — not one-time issues or trivial fixes),
+additionally create a skill file at `~/.claude/skills/learned/[pattern-name].md`:
+
+```markdown
+# [Descriptive Pattern Name]
+
+**Extracted:** [Date]
+**Context:** [Brief description of when this applies]
+
+## Problem
+[What problem this solves - be specific]
+
+## Solution
+[The pattern/technique/workaround]
+
+## Example
+[Code example if applicable]
+
+## When to Use
+[Trigger conditions - what should activate this skill]
+```
+
+Rules: one pattern per file; ask user to confirm before saving; client-repo sessions must
+be generalized (no customer names / private repo names). This is also the canonical format
+for pattern candidates harvested by the weekly retro-learn task (saved via `/learn review`).
+
 ## Output
 
-Provide a concise reflection summary and confirm which learnings were persisted.
+Provide a concise reflection summary and confirm which learnings were persisted (memory entries and/or skills/learned/ files).

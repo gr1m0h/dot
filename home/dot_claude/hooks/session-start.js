@@ -168,7 +168,7 @@ try {
     }
   }
 
-  // 4.5 SREaaS batch briefing — surface queued/unreported work every session
+  // 4.5 SREaaS batch briefing — surface queued work every session
   try {
     const home = process.env.HOME || "";
     const inbox = path.join(home, ".claude/batch/inbox.md");
@@ -179,11 +179,62 @@ try {
         ctx.push(`BATCH_QUEUE: ${queued} task(s) in ~/.claude/batch/inbox.md — /batch で発注可能`);
       }
     }
-    const unreported = path.join(home, ".claude/batch/unreported.md");
-    if (fs.existsSync(unreported)) {
-      const n = (fs.readFileSync(unreported, "utf8").match(/^- /gm) || []).length;
-      if (n > 0) {
-        ctx.push(`UNREPORTED_SESSIONS: ${n} tracked-org session(s) ended without a report — see ~/.claude/batch/unreported.md`);
+    const outDir = path.join(home, ".claude/batch/out");
+    if (fs.existsSync(outDir)) {
+      const reports = fs
+        .readdirSync(outDir)
+        .filter((f) => f.endsWith(".md")).length;
+      if (reports > 0) {
+        ctx.push(`BATCH_REVIEW: ${reports} report(s) in ~/.claude/batch/out — レビュー・反映後に削除（確認は /batch status）`);
+      }
+    }
+  } catch {}
+
+  // 4.6 Learning loop briefing — backlog count + retro-learn freshness
+  try {
+    const home = process.env.HOME || "";
+    const backlog = path.join(home, "learn/BACKLOG.md");
+    if (fs.existsSync(backlog)) {
+      const content = fs.readFileSync(backlog, "utf8");
+      const topics = (content.match(/^- \[ \] /gm) || []).length;
+      const wip = (content.match(/^- \[~\] /gm) || []).length;
+      if (topics > 0 || wip > 0) {
+        ctx.push(
+          `LEARN_BACKLOG: ${topics} topic(s) 未着手${wip > 0 ? ` + ${wip} 演習中` : ""} in ~/learn/BACKLOG.md — 学習時間に /learn start で1件着手`,
+        );
+      }
+      const m = content.match(/^last-retro:\s*(\d{4}-\d{2}-\d{2})/m);
+      const days = m
+        ? Math.floor((Date.now() - new Date(m[1]).getTime()) / 86400000)
+        : null;
+      if (days === null || days >= 7) {
+        // due — auto-queue retro-learn into the batch inbox (idempotent)
+        const since = m ? m[1] : "未実施";
+        const inbox = path.join(home, ".claude/batch/inbox.md");
+        const outDir = path.join(home, ".claude/batch/out");
+        const alreadyQueued =
+          fs.existsSync(inbox) &&
+          /^- \[[ ~]\] personal: retro-learn/m.test(fs.readFileSync(inbox, "utf8"));
+        const awaitingReview =
+          fs.existsSync(outDir) &&
+          fs.readdirSync(outDir).some((f) => f.includes("retro-learn"));
+        if (alreadyQueued) {
+          ctx.push(
+            `RETRO_LEARN: inbox に投入済み（前回 retro: ${since}）— 次の /batch で dispatch される`,
+          );
+        } else if (awaitingReview) {
+          ctx.push(
+            `RETRO_LEARN: レポートがレビュー待ち（~/.claude/batch/out）— /learn review で処理（BACKLOG.md 追記 + last-retro 更新まで）`,
+          );
+        } else if (fs.existsSync(inbox)) {
+          const taskLine = `- [ ] personal: retro-learn — 前回 retro（${since}）以降の Claude transcripts（~/.claude/projects/**/*.jsonl）を走査し、(1) learning flag 一覧 (2) 再利用パターン候補（skills/learned/ の種）(3) learn-map 題材候補 を抽出。顧客名・プライベート repo 名・機微情報は落として一般化すること | markdown レポート（フラグ一覧 + パターン候補 + 学習題材候補、優先度付き） | 各候補が「承認するだけで skills/learned/ 保存 or /learn-map 起動に進める」状態になっていること\n`;
+          try {
+            fs.appendFileSync(inbox, taskLine);
+            ctx.push(
+              `RETRO_LEARN_QUEUED: due（前回 retro: ${since}）のため retro-learn を inbox に自動追加した — 次の /batch で dispatch`,
+            );
+          } catch {}
+        }
       }
     }
   } catch {}

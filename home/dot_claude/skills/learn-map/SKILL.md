@@ -21,6 +21,12 @@ copy-pasting from your output must be cut.
 
 ## 1. Scope the map (ask if missing)
 - **Topic**: the technology/concept to learn (e.g. "eBPF", "Pulumi", "OpenTelemetry traces").
+  - **No topic given?** Read `~/learn/BACKLOG.md` and present the unchecked (`- [ ]`) topics as a
+    numbered list (with 出所/メモ). The user picks a number; if they ask "どれがいい？", recommend
+    one — prefer the topic most likely to recur in current work (出所の頻度・直近性), smallest first
+    on a tie. After generating the map, flip that line to `- [~]` in BACKLOG.md.
+  - Topic given directly (`/learn-map <topic>`) works as before; if it matches a backlog line,
+    still flip it to `- [~]`.
 - **Goal / why now**: shipping a feature, a case need, general depth — shapes scope.
 - **Current level**: assume the user's background (SRE / インフラ / Go・Ruby・PHP・TS,
   Terraform/AWS/Kubernetes) unless told otherwise; calibrate prerequisites accordingly.
