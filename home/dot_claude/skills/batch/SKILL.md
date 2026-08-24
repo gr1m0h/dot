@@ -10,6 +10,14 @@ argument-hint: "[dispatch (default) · status · publish <task> · add <case>: <
 
 Turns the working day into "invest 15 min in the morning, review at noon and evening". The user is dispatcher/reviewer, not implementer.
 
+## Scope: rubber-stamp-reviewable work only (READ FIRST)
+
+batch is the **horizontal fan-out engine for tasks whose review is a rubber-stamp** — mechanical changes, prepared-diff-then-approve, drafted-message-then-send. Its whole model (dispatch N, come back, review a pile) only holds when each review is shallow.
+
+**Deep-engagement tasks do NOT belong here.** If a task requires the human to *read → investigate → understand → hands-on* (review is itself deep work that can't be rubber-stamped), route it to **`/deepwork`** (serial pull, WIP=1). Rationale: fanning deep tasks out horizontally forces the human to hold N deep contexts at once — context-switch tax + attention residue kill the throughput the fan-out was supposed to buy. Parallelism belongs to the machine; seriality belongs to the human. See `skills/deepwork/SKILL.md`.
+
+The routing axis is **review depth, not task size**: a large-but-mechanical task stays here; a small-but-judgement-heavy one goes to deepwork.
+
 ## Operating model (READ FIRST)
 
 The goal is **"dispatch → go do other work → come back to a decision-ready package"**, NOT "come back to something half-done that keeps interrupting you". To make that real:
@@ -26,6 +34,8 @@ The goal is **"dispatch → go do other work → come back to a decision-ready p
 
 The mistake is loading 🔴/🟡 tasks and expecting 🟢 hands-off behavior. Triage first; most friction is a mis-triaged task.
 
+**But the deeper mis-triage is routing a deep-engagement task into batch at all.** 🟡/🔴 here means "review is a rubber-stamp of a prepared package" (glance at the diff and approve; send the drafted message). If the human must genuinely *understand and get hands-on* before they can judge it, that is a deepwork task, not a batch task — hand it to `/deepwork`. When unsure: can the review be a rubber-stamp? yes → batch. no → deepwork.
+
 ## Deliverable contract (mandatory)
 
 Every dispatched task writes ONE Markdown file to `~/.claude/batch/out/YYYY-MM-DD-<case>-<slug>.md` with these sections:
@@ -40,10 +50,12 @@ Every dispatched task writes ONE Markdown file to `~/.claude/batch/out/YYYY-MM-D
 ## Verb: `dispatch` (default)
 
 1. Read `~/.claude/batch/inbox.md`. If empty, say so and stop (do not invent work).
+   **Review-WIP gate (dispatch throttle)**: the real throughput limit is the human's review bandwidth, not agent execution — so cap dispatch by *unreviewed* artifacts, not just concurrency. `out/` now holds only 🟢 rubber-stamp artifacts (deep tasks live in deepwork, not here), so this gate paces shallow-review throughput. Count files in `~/.claude/batch/out/` (= `BATCH_REVIEW` residual). Dispatch at most `6 − residual` tasks this run. If residual ≥ 6, dispatch nothing and say "レビューが N 件溜まっています。まず `status`（ダイジェスト）で消化を" — a full out/ means today's job is review, not more dispatch. Queue-adding (`add`) is never throttled; only dispatch is.
 2. **Contract + triage check**: fill missing 成果物/完了条件 when obvious; assign a triage color. Collect ALL genuinely-blocking open questions into ONE AskUserQuestion round (batched — never one per task). Do NOT ask about things the agent can investigate itself — those become deliverable sections.
 3. **Dispatch**: spawn a background subagent (`run_in_background: true`) per task. Prefer the restricted `batch-worker` agent type when available (see permissions doc); else `general-purpose` / `Explore`.
    - Prompt = task + full deliverable contract (the 6 sections above) + artifact path.
    - For code tasks: "work in the case repo, prepare a branch + diff, **run mechanical checks and attach output**, do NOT push / open PRs / comment — ever."
+   - **Git dispatch hygiene (learned 2026-08-06)**: (a) tell the agent to `cd` into the worktree and use **plain** git subcommands (`git worktree add …`, `git commit …`) — NOT the `git -C <repo> …` form, which fails the allowlist's prefix match (`Bash(git worktree *)` etc.) and gets auto-denied in headless agents. (b) Add: "if git is unavailable to you (permission-denied), do NOT edit the main working tree as a fallback — stop and report the intended diff in the deliverable instead." A broken half-edit in the main tree is worse than a report.
    - For 🔴 tasks: "do not attempt to complete; produce the options analysis and a ready-to-send client/stakeholder confirmation message draft in the 判断が要る点 section."
    - Model routing: `Explore`+haiku for lookups/inventory, sonnet for implementation/report drafting; reserve the inherited model for judgment-heavy analysis.
    - Independent tasks → single message (parallel). Same repo working tree → `isolation: "worktree"` or sequential.
@@ -79,5 +91,5 @@ Append to `## Queue` in inbox (with 成果物/完了条件 inline if given). No 
 
 - Friday variant: after dispatch, remind the user to queue next week's tasks (金曜仕込み). The weekly `personal: retro-learn` task is auto-queued by the session-start hook when due (7 days since `last-retro:` in `~/learn/BACKLOG.md`) — do not add it manually; if it sits in the queue undispatched, just include it in the next dispatch.
 - retro-learn is just another task to this skill: dispatch it like the rest. Its artifact review has its own procedure owned by the learn skill — when a retro-learn report shows up during `status`, hand off with "レビューは /learn review で" instead of processing it here.
-- Never dispatch more than 6 concurrent background agents; queue the rest and say so.
+- Never dispatch more than 6 concurrent background agents; queue the rest and say so. (See also the Review-WIP gate in `dispatch` step 1: dispatch is further capped by `6 − out/ residual` so unreviewed artifacts don't pile up.)
 - Stall handling: if an agent produced no artifact, treat as failed; re-dispatch decomposed (e.g. "collect logs" → "diagnose" → "prepare fix") — smaller tasks stall less and leave partial value.

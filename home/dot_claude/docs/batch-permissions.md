@@ -33,6 +33,8 @@ The enforcement is layered (most reliable first):
   (`renovate-config-validator`), and `tofu plan` **via the read-only plan role** (below).
 - Write **local artifacts only**: the deliverable under `~/.claude/batch/out/`, and a prepared
   branch + commit in a worktree (commit is local; push is blocked).
+  Enforced by `Write/Edit(~/.claude/batch/out/**)` in `permissions.allow` (added 2026-08-06 —
+  without it, `defaultMode: "default"` prompts on Write and headless agents are auto-denied).
 
 ## What background agents MUST NOT do
 

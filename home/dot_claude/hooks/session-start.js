@@ -185,7 +185,32 @@ try {
         .readdirSync(outDir)
         .filter((f) => f.endsWith(".md")).length;
       if (reports > 0) {
-        ctx.push(`BATCH_REVIEW: ${reports} report(s) in ~/.claude/batch/out — レビュー・反映後に削除（確認は /batch status）`);
+        ctx.push(`BATCH_REVIEW: ${reports} 🟢 report(s) in ~/.claude/batch/out — ラバースタンプ確認・反映後に削除（確認は /batch status）`);
+      }
+    }
+  } catch {}
+
+  // 4.55 deepwork WIP — surface the ONE active serial deep task (WIP=1) + warmed prefetches
+  try {
+    const home = process.env.HOME || "";
+    const active = path.join(home, ".claude/deepwork/active.md");
+    if (fs.existsSync(active)) {
+      const c = fs.readFileSync(active, "utf8");
+      const task = (c.match(/^task:\s*(.+)$/m) || [])[1] || "(active)";
+      const phase = (c.match(/^phase:\s*(.+)$/m) || [])[1] || "?";
+      ctx.push(
+        `DEEPWORK_WIP: ${task} [phase: ${phase}] — 深堀り中の1件（WIP=1）。完了は /deepwork done、状況は /deepwork status`,
+      );
+    }
+    const pfDir = path.join(home, ".claude/deepwork/prefetch");
+    if (fs.existsSync(pfDir)) {
+      const pf = fs
+        .readdirSync(pfDir)
+        .filter((f) => f.endsWith(".md")).length;
+      if (pf > 0) {
+        ctx.push(
+          `DEEPWORK_PREFETCH: ${pf} 件の温めレポート待機 — 次は /deepwork pull で温かい状態から着手`,
+        );
       }
     }
   } catch {}

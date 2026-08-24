@@ -86,7 +86,9 @@
       "Edit(internal/**)",
       "Edit(cmd/**)",
       "Edit(pkg/**)",
-      "Edit(spec/**)"
+      "Edit(spec/**)",
+      "Write(~/.claude/batch/out/**)",
+      "Edit(~/.claude/batch/out/**)"
     ],
     "deny": [
       "Bash(curl *)",
@@ -189,7 +191,7 @@
     ],
     "defaultMode": "default"
   },
-  "model": "fable",
+  "model": "opus",
   "enableAllProjectMcpServers": false,
   "hooks": {
     "SessionStart": [

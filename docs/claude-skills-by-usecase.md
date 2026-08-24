@@ -1,8 +1,8 @@
 # Claude Skills — 状況別逆引きチートシート
 
-明示的に呼んで速くする。`home/dot_claude/skills`（38 skills）+ plugins を「いつ・何を・どう呼ぶか」で整理。
+明示的に呼んで速くする。`home/dot_claude/skills`（39 skills）+ plugins を「いつ・何を・どう呼ぶか」で整理。
 
-最終更新: 2026-08-06 · 凡例: **[標準]** Claude Code 同梱 / **[自作]** ~/.claude/skills / **[plugin]** 名前空間つき
+最終更新: 2026-08-24 · 凡例: **[標準]** Claude Code 同梱 / **[自作]** ~/.claude/skills / **[plugin]** 名前空間つき
 
 ## 0. 使い方の原則
 
@@ -11,22 +11,31 @@
 - **締めは必ず report。** 顧客タスクはどのフローでも終点が `/sreaas:task report`。忘れても unreported 検知が拾うが、その場で締めるのが最安。
 - **迷ったら「放置で回せないか」を先に考える**（§5）。対話で潰すのは、対話でしか進まないタスクだけ。
 - **メインセッション = 司令塔。** 仕様・レビュー・意思決定だけを手元に残し、実行は background subagent / worktree にファンアウトする。スループットはタイピング速度でなくレビュー帯域から生まれる。
+- **並列は機械に、直列は人間に（2026-08 二車線化）。** レビューがラバースタンプで済む🟢仕事は `/batch` で水平ファンアウト、read→understand→hands-on が要る深い仕事は `/deepwork` で直列プル（WIP=1）。深い作業は人間の中で真に並列できない（切替税+注意残余）ので、機械の並列は「今から触る 1 タスクを温める（prefetch）」だけに閉じる。振り分け軸は**レビューの深さ、タスク規模ではない**。§1・§5 参照。
 
-## 1. 朝・昼・夕ルーチン
+## 1. 週の背骨（深い案件）と日次の🟢ルーチン
+
+週 10 人日は「人間を並列化」しては出ない。**深い案件は `/deepwork` で 1 件ずつ直列に押し込み（WIP=1）、機械の並列は次タスクの prefetch に閉じる**。daily batch（朝投入→夕レビュー）が破綻したのは、深いタスクを水平投入して人間に N 件同時レビューを強いていたため。深い仕事の throughput は「温かい開始 + タスク内加速」で出す。
 
 | 状況 | 呼ぶ | 起きること・コツ |
 |---|---|---|
-| 朝イチ、今日やることを流す | `/batch` [自作] | inbox.md のタスクを background subagent へ並列発注（15分）。各 worker は branch + diff + 検証 + 推奨まで用意して待つ（publish はしない）。空なら何もしない — 前日/金曜に仕込んでおく |
-| タスクを思いついた（今やらない） | `/batch add case: タスク` [自作] | inbox に追記だけ。成果物・完了条件は dispatch 時に補完される |
-| 昼・夕の回収 | `/batch status` [自作] | done（成果物パス）/ running / failed を要約。レビュー→採用なら `/batch publish <task>`（採否判断は人間） |
+| 今週の深い案件タスクに着手 | `/deepwork pull` [自作] | 🟡🔴の大きめタスクを**1件だけ**引く。intake grill で spec 固定（wrong_approach を投入前に潰す）→ 単一タスクを prefetch で温める → 温かいレポートから深堀り。**WIP=1**（2件目 pull は拒否） |
+| 現タスクが 8 割、次を仕込む | `/deepwork prefetch <task>` [自作] | 次タスクのレポートを裏で温める（**WIP は取らない**）。人間は現タスクに集中したまま、機械の準備だけ先行させる JIT |
+| 深い作業の状況・完了 | `/deepwork status` / `/deepwork done` [自作] | status=WIP 表示（滞留も検知）、done=成功基準確認 → WIP 解放 → 次を pull（or prefetch 済みを pull） |
+| 朝イチ、🟢の雑務を流す | `/batch` [自作] | 🟢ラバースタンプ・タスクのみ。inbox.md を background subagent へ並列発注（15分）。各 worker は branch + diff + 検証 + 推奨まで用意して待つ（publish はしない）。深いタスクはここに入れず deepwork へ |
+| タスクを思いついた（今やらない） | `/batch add 🟢 case: タスク` [自作] | inbox に追記だけ。**triage 色を先頭に**（🟢=batch / 🟡🔴=deepwork へ）。成果物・完了条件は dispatch 時に補完 |
+| 昼・夕の回収（🟢） | `/batch status` [自作] | done（成果物パス）/ running / failed を要約。レビュー→採用なら `/batch publish <task>`（採否判断は人間） |
 | タスクが一段落した | `/sreaas:task report` [plugin] | 現セッションの成果物を topotal/SRE_* Issue に記録し close/carry over 判定。**タスク完了の直後に打つ** |
 | ターミナルの ⚠ が点いている | `/sreaas:task report <issue>` | unreported.md に溜まった未報告セッションの消化。放置すると成果が消える |
 
 ```
-朝: statusline 確認（📥 queued / ⚠ unreported）→ /batch → 日中は判断業務
-昼: /batch status → 軌道修正
-夕: /batch status → レビュー → /batch publish（採用分）→ /sreaas:task report
+週の背骨（深い案件）: /deepwork pull（1件・WIP=1）→ grill → prefetch → 深堀り → /deepwork done → 次を pull
+   合間に /deepwork prefetch <next> で次を温めておく（機械の並列 × 人間の現集中を重ねる。人間自身は重ねない）
+日次の🟢: 朝 /batch（水平発注）→ 昼夕 /batch status → レビュー → /batch publish（採用分）→ /sreaas:task report
+statusline: 📥 BATCH_QUEUE / 🟢 BATCH_REVIEW / DEEPWORK_WIP（深堀り中の1件）/ DEEPWORK_PREFETCH（温め済み）
 ```
+
+> **intake grill = wrong_approach 予防:** `/deepwork pull` は着手前に必ず短い grill（scope / 成功条件 / 制約 / 落とし穴）を通す（既存 `brainstorming` を内包 — grill-me を単体スキル化はしていない）。#1 friction の wrong_approach は投入前に潰すのが最安。1 回の承認ラウンド < 5 回の手戻り。
 
 **batch タスクのライフサイクル**（inbox の行の状態遷移）:
 
@@ -94,7 +103,9 @@ brainstorming（曖昧なら）→ /plan（承認待ち）→ /tdd-workflow
 
 ## 5. 放置で回す — goal / batch / loop / background
 
-「どの装置で手離れさせるか」の使い分けが生産性の核心。**直列の粘りは /goal、並列の発注は /batch、定期の見張りは /loop**。
+「どの装置で手離れさせるか」の使い分けが生産性の核心。**自律の粘りは /goal、並列の発注は /batch、定期の見張りは /loop**。
+
+> **`/deepwork` はここ（放置装置）ではない。** deepwork は人間が張り付く**直列の深い作業**（§1）で、理解と判断を人間が担い機械は温めるだけ。混同しない: `/goal` = 機械が完了条件まで自律的に押し切る（人間は離れる）/ `/deepwork` = 人間が主役で機械は prefetch で加速するだけ。「放置で回せないか」を先に考える対象は🟢仕事であって、深い案件ではない。
 
 | 状況 | 呼ぶ | 起きること・コツ |
 |---|---|---|

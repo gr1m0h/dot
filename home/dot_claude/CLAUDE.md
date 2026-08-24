@@ -49,15 +49,17 @@ Loading mechanism (verified 2026-07 against official docs): EVERY `~/.claude/rul
 - On-demand doctrine lives in `~/.claude/docs/` (agents, patterns, git-workflow, harness-engineering, context-engineering, cost-optimization, security, forbidden-apis, llm-security, supply-chain-security, coding-standards, performance, continuous-learning, uncertainty-expression). Read on demand; never move back into `rules/`.
 
 On-demand skills trigger from their own descriptions; non-obvious routing only:
-- SREaaS ops → `/batch` (朝バッチ投入), `/investigation-report` (調査→報告書); 夜間ドラフトは Desktop ルーチンのプロンプトで `/sreaas:task` `/sreaas:monthly` を draft-only 実行
+- SREaaS ops → `/deepwork` (大きめ案件タスクの直列プル: intake grill→prefetch→深堀り, WIP=1), `/batch` (🟢機械/ラバースタンプの水平投入), `/investigation-report` (調査→報告書); 夜間ドラフトは Desktop ルーチンのプロンプトで `/sreaas:task` `/sreaas:monthly` を draft-only 実行
 - `/audit-supply-chain` は license compliance 込み · Agents → `~/.claude/agents/`
 
 ## Delegation & Parallelism
+- **並列は機械に、直列は人間に (WIP=1 for deep work).** The human holds ONE deep task at a time; machine parallelism is confined to *warming that single task*, never spread across tasks the human must juggle. Deep work (read→understand→hands-on) can't be rubber-stamped or truly parallelised in one head — context-switch tax + attention residue erase the gain. Parallelism is a property of the machine, seriality a property of the human.
+- **Route by review depth, not task size**: review can be a rubber-stamp → `/batch` (horizontal fan-out, 🟢). Review is itself deep (must understand + hands-on) → `/deepwork` (serial pull, WIP=1, JIT `prefetch` of the next task). On deep work, throughput comes from *warm starts + within-task acceleration*, NOT from parallelising the human.
 - Main session = 司令塔 (spec, review, decisions). Execution fans out to background subagents / worktrees / workflows.
-- Delegate: investigation, report drafting, batch fixes, independent multi-file tracks. Morning queue → `/batch`; investigation-shaped → `/investigation-report`; multi-phase fan-out → Workflow (opt-in).
+- Delegate: investigation, report drafting, batch fixes, independent multi-file tracks. Rubber-stamp queue → `/batch`; deep client tasks → `/deepwork`; investigation-shaped → `/investigation-report`; multi-phase fan-out → Workflow (opt-in).
 - Do NOT delegate: work finishable in a handful of tool calls; verification of your own work (the model self-verifies). One subagent when one suffices; keep spawn counts low (Opus 5 guide, 2026-07).
 - Parallel tracks use `isolation: worktree`; every track ends in a reviewable artifact (diff + verification + recommendation) — never auto-published.
-- While agents run, the user reviews finished artifacts instead of watching progress — throughput comes from review bandwidth, not typing speed.
+- While agents run, the user reviews finished artifacts (batch) or does the one deep task warmed for them (deepwork) — throughput comes from review bandwidth on shallow work and warm-start depth on deep work, never from typing speed.
 
 ## Session Protocol
 1. **Orient**: session state, task list, git log (session-start hook)
