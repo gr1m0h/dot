@@ -1,13 +1,29 @@
 ---
-description: Write technical blog articles in "ぐりもお (@gr1m0h)" voice. Use when user says "記事を書く", "ブログを書く", "write article", "登壇報告ブログ", or requests article drafts following the established Japanese style guide. Outputs markdown with strict structure (title format, required sections, tone, terminology).
+description: Assist human-written technical blog articles in "ぐりもお (@gr1m0h)" voice at AI Influence Level (AIL) 1 or 2, then run an independent proofreading review. Use when user says "記事を書く", "ブログを書く", "write article", "登壇報告ブログ", or hands over their own draft/notes to polish following the established Japanese style guide. Outputs markdown with strict structure (title format, required sections, tone, terminology).
 user-invocable: true
-allowed-tools: Read, Write, Edit
+allowed-tools: Read, Write, Edit, Agent
 ---
 
 # Write Article (ぐりもお style)
 
-Write Japanese technical blog articles in the established voice of engineer "ぐりもお (@gr1m0h)".
-Articles MUST follow the structure, headings, tone, and templates defined below.
+Assist the human-authored Japanese technical blog of engineer "ぐりもお (@gr1m0h)".
+The human is the author; this skill operates at **AIL 1 or 2** (see below) and then hands the
+result to an **independent reviewer** for a proofreading pass.
+All output MUST follow the structure, headings, tone, and templates defined below.
+
+## AIL (AI Influence Level) — this skill's operating range
+
+出典: Daniel Miessler, "AI Influence Level (AIL)" (https://danielmiessler.com/blog/ai-influence-level-ail).
+
+- **AIL 0**: 人間が全て書き AI 不関与
+- **AIL 1**: 人間が書いた原稿に AI が最小限だけ手を入れる（誤字脱字・文法・文構造の修正、文体規範チェック）。加筆はしない
+- **AIL 2**: 人間が書いた原稿を AI が大きく補強する（加筆・段落の展開・構成の並べ替え）。ただし人間が書いていない主張・事実・体験を創作しない
+- **AIL 3〜5**: AI 主導の生成（構造だけ人間 / アイデアだけ人間 / ほぼ AI）。**このスキルでは行わない**
+
+**このスキルは AIL 1 または 2 でのみ動く。** 人間の原稿（自分の言葉で書いた散文）が入力の前提。
+トピックや箇条書きメモだけから本文を丸ごと起草すること（AIL 3 以上）はしない。
+原稿がまだ散文になっていない（箇条書き・断片のみ）ときは、まず人間に散文の叩き台を書いてもらうか、
+その旨を伝えて AIL 2 の範囲を超えることを明示する。
 
 ## When to trigger
 
@@ -17,10 +33,15 @@ Articles MUST follow the structure, headings, tone, and templates defined below.
 
 ## Pre-flight checks (ask user if missing)
 
-1. **Article type**: 技術解説 / 課題解決 / 登壇報告 / 組織紹介 / **エッセイ・ポエム**
-2. **Topic / thesis**: what the article is about
-3. **For 登壇報告**: event date, event name, slide URL
-4. **Length tier**:
+0. **AIL level (必ず最初に確認)**: この記事を AIL 1 か AIL 2 のどちらで支援するか毎回ユーザーに尋ねる。
+   - **AIL 1**: ユーザーの原稿は概ね完成している。誤字脱字・文法・文構造・文体規範の修正だけ行う。加筆・段落の展開はしない
+   - **AIL 2**: ユーザーの叩き台を大きく補強する。加筆・段落の展開・構成の並べ替えまで行う。ただし人間が書いていない主張・事実・体験は創作しない
+   - どちらでも入力に**人間が自分の言葉で書いた散文の原稿**が要る。原稿がなくトピックだけのときは、AIL 3 以上になり本スキルの範囲外である旨を伝え、まず散文の叩き台を書いてもらう
+1. **人間の原稿**: ユーザーの原稿本文（AIL 1 はほぼ完成稿、AIL 2 は叩き台）。テキストかファイルパスで受け取る
+2. **Article type**: 技術解説 / 課題解決 / 登壇報告 / 組織紹介 / **エッセイ・ポエム**
+3. **Topic / thesis**: what the article is about（原稿から読み取れれば確認のみ）
+4. **For 登壇報告**: event date, event name, slide URL
+5. **Length tier**:
    - 実装詳細型: very long (4+ H2 sections, multiple H3 each)
    - コンセプト説明型: medium-long (concept → background → impl → outlook)
    - 登壇予告型: short (highlights only)
@@ -32,43 +53,73 @@ Articles MUST follow the structure, headings, tone, and templates defined below.
 
 ## Input sources & quick-capture mode (learning cycle)
 
-This skill writes the **personal blog** of the learning cycle — 案件中・小粒度・鮮度重視・学習の定着装置.
+This skill assists the **personal blog** of the learning cycle — 案件中・小粒度・鮮度重視・学習の定着装置.
 Keep it distinct from `/company-blog` (案件単位の資産化・機密確認込み・team voice). When both
 apply, the personal post is the small fresh angle; the full case asset goes to `/company-blog`.
 
-**Source material — use if the user points to it (else just take the topic):**
-- A `/learn-map` map + `~/learn/<topic-slug>/STRUGGLE_LOG.md` → turn what was just
-  learned into a small fresh post. STRUGGLE_LOG entries are the PRIMARY source:
-  lead with the wrong hypotheses and the 転機 (first-person narrative), use the
-  map only for terminology and context. A post that could have been written by
-  reading the map alone is a rejection signal — ask for the struggle log entry.
-- A case-reflect record (`~/cases/*.md`) → extract ONE small, publishable, non-confidential angle
-  (do not dump case specifics; the full generalized asset is `/company-blog`'s job)
+**AIL の原則との整合**: 本文の一次著者は人間である。下記の素材は、人間が自分の言葉で叩き台を書くときの
+参照材料として使う。素材から AI が本文を丸ごと起こすこと（AIL 3 以上）はしない。
+
+**Reference material — use if the user points to it:**
+- A `/learn-map` map + `~/learn/<topic-slug>/STRUGGLE_LOG.md` → 人間が STRUGGLE_LOG の
+  誤った仮説と 転機（一人称の語り）を核に叩き台を書く。map は用語と文脈の参照に使う。
+  map だけから書けてしまう内容は却下シグナルであり、struggle log の記述を求める。
+- A case-reflect record (`~/cases/*.md`) → 公開可能・非機密の小さな切り口を1つ、人間が自分の言葉で書く
+  （案件固有情報のダンプはしない。一般化した資産化は `/company-blog` の役割）
 - A `/insights` finding, the current session, or rough notes the user pastes
 
 **Quick-capture mode (個人ブログの主用途):**
-- Trigger when the user gives rough notes / a fragment mid-case, or says 「軽く」「メモから」「小ネタ」.
-- Draft a SHORT, single-topic post at technical granularity — freshness over completeness.
-  Skip the long 実装詳細型 structure: tight はじめに → 本編 H2 を1〜2個 → さいごに.
-- Still ぐりもお voice + the k16shikano 文章規範 below. Confirm the scope is small before drafting.
+- Trigger when the user gives a short rough draft / a fragment mid-case, or says 「軽く」「メモから」「小ネタ」.
+- この場合は多くが **AIL 2**（人間の短い叩き台を補強）になる。人間の散文が最低限あることを前提にし、
+  加筆で不足を埋める。単なる箇条書きメモしかないときは散文の叩き台を先に書いてもらう。
+- 短い単一トピックに保つ。長い実装詳細型に膨らませない: tight はじめに → 本編 H2 を1〜2個 → さいごに.
+- Still ぐりもお voice + the k16shikano 文章規範 below. Confirm the scope is small before working.
 - Confidentiality: even personal posts must not leak customer/internal specifics — generalize or
   omit (deny-by-default, same as `/company-blog`).
 
 ## Execution procedure
 
-1. Resolve type/topic/length via questions above
-2. Select structure pattern (A/B/C/D) from the style guide below
-3. Propose 2-3 title candidates → user picks one
-4. Propose H2/H3 outline → user confirms
-5. Draft the article body following the style guide
-6. Self-check against the checklist; append results at the end
-7. Output as markdown (prefer artifact for easy copy)
-8. **Propose はてなブログ向け SEO/SNS メタ情報** (see 【SEO/SNSメタ情報】 below):
-   記事の概要（メタディスクリプション）、検索エンジン向けタイトル、SNS向けタイトルを
-   それぞれ複数案、本文とは別ブロックで提案する。各案に推奨理由を一言添える。
+全体は2フェーズ。**Phase 1 で AIL 1/2 の範囲で人間の原稿を支援し、Phase 2 で独立したレビュー担当が
+校正レビューする。** 書き手（Phase 1）と校正者（Phase 2）を分離するのが今回の運用の要点である。
+
+### Phase 1 — AIL 1/2 assist（人間の原稿を支援）
+
+1. Resolve AIL level / 人間の原稿 / type / topic / length via the pre-flight questions above
+2. Select structure pattern (A/B/C/D) from the style guide below（原稿の内容に合わせる）
+3. **AIL 1 の場合**: 原稿の主張・構成・体験はそのまま保ち、誤字脱字・文法・文構造・文体規範
+   （下記スタイルガイドと k16shikano 規範）への適合だけを直す。加筆・段落の展開はしない。
+   タイトルや見出しの提案は「原稿に既にある語の言い換え候補」にとどめる
+4. **AIL 2 の場合**: 叩き台を補強する。不足する説明の加筆・段落の展開・構成の並べ替え・
+   タイトルや H2/H3 案の提示を行う。ただし人間が書いていない主張・事実・体験は創作しない。
+   大きく変える前に title 候補（2〜3案）と H2/H3 outline をユーザーに確認する
+5. スタイルガイドに沿って本文を整える。原稿由来の文と AI が加筆した箇所の区別が付くよう、
+   AIL 2 で加筆した段落は作業メモとして書き手に伝える（本文には残さない）
+6. この時点の成果を **Phase 1 ドラフト** として出力（まだ self-check 表は付けない）
+
+### Phase 2 — 独立レビュー担当による校正レビュー
+
+7. Phase 1 ドラフトを、**Agent ツールで別のレビュー担当サブエージェントに渡して校正レビューさせる**。
+   書き手と校正者を分離するため、Phase 1 を書いた文脈をレビュー担当に引き継がず、
+   ドラフト本文とスタイルガイド／k16shikano 規範／self-check チェックリストだけを渡す。
+   レビュー担当への指示は【校正レビュー担当への指示】節のテンプレートを使う
+8. レビュー担当は次を返す:
+   - **指摘リスト**: 該当箇所・規範違反の種類・修正提案（各指摘に確信度を添える）
+   - **修正差分**: 明確な誤り（誤字脱字・文法・規範違反）への具体的な直し
+   - **AIL 逸脱チェック**: AIL 1 なのに加筆されていないか、AIL 2 で人間が書いていない主張を
+     創作していないかの判定
+9. レビュー結果をユーザーに提示し、採否を確認してから本文へ反映する（自動確定しない）
+10. 反映後の最終稿に self-check チェックリストの結果表を付けて出力（prefer artifact for easy copy）
+11. **Propose はてなブログ向け SEO/SNS メタ情報** (see 【SEO/SNSメタ情報】 below):
+    記事の概要（メタディスクリプション）、検索エンジン向けタイトル、SNS向けタイトルを
+    それぞれ複数案、本文とは別ブロックで提案する。各案に推奨理由を一言添える。
 
 ## Hard rules
 
+- **AIL 1 または 2 でのみ動く。** 人間の散文原稿を入力の前提とし、トピックだけから本文を丸ごと起草しない。
+- **AIL 1 では加筆しない。** 誤字脱字・文法・文構造・文体規範の修正だけを行う。
+- **AIL 2 でも創作しない。** 加筆・展開・並べ替えはしてよいが、人間が書いていない主張・事実・体験は足さない。
+- **校正レビューは独立したレビュー担当（別サブエージェント）が行う。** 書き手と校正者を分離する。
+- **レビュー結果は自動確定しない。** 指摘・差分をユーザーに提示し、採否を確認してから反映する。
 - **All article output is in Japanese.** This skill writes Japanese content; only this SKILL.md is in English for procedure clarity.
 - **Use です・ます調 throughout**, never だ・である調
 - **First person**: 「私」 (self), 「私たち」 (team)
@@ -542,10 +593,50 @@ The following rules govern the **content of the article you produce**, not this 
 
 ---
 
+# 【校正レビュー担当への指示】Phase 2 で Agent に渡すテンプレート
+
+Phase 2 では、下記のプロンプトを組み立てて Agent ツールで独立したレビュー担当に渡す。
+書き手の文脈は引き継がず、ドラフト本文と規範だけを渡すことで第三者視点を確保する。
+`agentType` は `general-purpose`（または校正に適した汎用エージェント）を使う。
+
+```
+あなたはブログ記事の独立した校正レビュー担当です。以下のドラフトを、添付のスタイルガイド
+（ぐりもおスタイル / k16shikano 文章規範 / self-check チェックリスト）に照らして校正レビューし、
+次の3点を返してください。書き手ではないので、加筆で内容を膨らませることはしません。
+
+1. 指摘リスト
+   - 各指摘に「該当箇所（引用）／規範違反の種類／修正提案／確信度（高・中・低）」を付ける
+   - 誤字脱字・文法・文構造・文体（ですます統一・断定回避・一人称）・見出し階層・
+     太字過多・LLM っぽい表現・冗長・一文一トピック などを対象にする
+2. 修正差分
+   - 明確な誤り（誤字脱字・文法・規範違反）に限り、before → after の具体的な直しを示す
+   - 判断が要る箇所（構成・トーン）は指摘リストにとどめ、差分にはしない
+3. AIL 逸脱チェック
+   - 指定 AIL レベル: {AIL 1 か 2 を明記}
+   - AIL 1 なら「加筆されていないか（原稿にない主張・段落が増えていないか）」
+   - AIL 2 なら「人間が書いていない主張・事実・体験を創作していないか」
+   - 逸脱があれば該当箇所を挙げる
+
+--- ドラフト本文 ---
+{Phase 1 ドラフト}
+
+--- スタイルガイド・規範・チェックリスト ---
+{このファイルの Style Guide / k16shikano 規範 / Self-check checklist を渡す}
+```
+
+レビュー担当の返答は自動で本文に反映せず、ユーザーに提示して採否を確認する。
+
+---
+
 # Self-check checklist (append result to article)
 
 After drafting, verify each item and output the result table at the end of the article:
 
+- [ ] 支援した AIL レベル（1 または 2）を明記している
+- [ ] AIL 1 の場合: 加筆せず、誤字脱字・文法・文構造・文体規範の修正だけに留めている
+- [ ] AIL 2 の場合: 人間が書いていない主張・事実・体験を創作していない
+- [ ] Phase 2 で独立したレビュー担当（別サブエージェント）の校正レビューを通している
+- [ ] レビュー指摘の採否をユーザーに確認してから本文へ反映している
 - [ ] 「はじめに」で背景・動機を2〜3段落で説明
 - [ ] 見出しは3階層まで（H1, H2, H3のみ）
 - [ ] H2見出しは5〜15文字の体言止め

@@ -41,6 +41,39 @@ Distilled universals — the ONLY unscoped (always-loaded) rules file; keep it t
 
 - Express confidence explicitly: 0.8+ assertive · 0.5–0.8 "probably/likely" · 0.3–0.5 "needs verification" · <0.3 "hypothesis". Never "definitely/absolutely" without evidence. (detail: `~/.claude/docs/uncertainty-expression.md`)
 
+## Output Style (slop-less)
+
+日本語出力を矯正する規則。冗長・比喩・水増しを排し字義どおりに書く。
+
+- **語彙・表現**
+  - 比喩を使わず平易で直接的な動詞で書く
+  - 動詞は口語・慣用でなく字義どおりの語を選ぶ
+  - 移動や位置を表す動詞を動作や責任の記述に流用しない
+  - 効果や結果は「何がどう変わるか」を書く
+  - 定着した英語表記がある概念は訳語でなく英語表記を使う
+- **応答の範囲**
+  - 依頼された工程の範囲で答える
+  - 依頼内容に答え結論で終える
+  - 要件や設計の議論中は議論に必要な範囲だけを書く
+  - どの工程の話か判断できないときは進める前に確認する
+  - 前提が足りないときは足りない前提を挙げる
+- **箇条書き**
+  - 一項目に一文だけ書く
+  - 箇条書き中に句読点を含めない
+  - 複数の文になる場合はネストする
+  - 肯定・否定の表現を揃える
+  - 説明が名詞句で終わるなら半角コロンと半角空白で一行に収める
+  - 説明が述語で終わる文になるならネストする
+  - 上限を超える項目はネストして分割する
+  - 親項目は助詞と述語を付けず名詞で止める
+  - 子項目で親項目の語を主語として繰り返さない
+- **幅・句読点**
+  - 文中の句読点の数を抑える
+  - 全角を2・半角を1として幅を数える
+  - マーカーとインデントを含めた行全体の幅を80までにする
+- **統一**
+  - コンテンツ全体で「だ・である」か「です・ます」調を揃える
+
 ## Cost / Model Routing
 
 - haiku: lookups & bulk simple transforms · sonnet: default subagent worker (investigation, implementation, review, tests) · fable/opus: main loop — architecture, security audits, long-horizon agentic runs
