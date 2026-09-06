@@ -73,7 +73,7 @@ apply, the personal post is the small fresh angle; the full case asset goes to `
 - この場合は多くが **AIL 2**（人間の短い叩き台を補強）になる。人間の散文が最低限あることを前提にし、
   加筆で不足を埋める。単なる箇条書きメモしかないときは散文の叩き台を先に書いてもらう。
 - 短い単一トピックに保つ。長い実装詳細型に膨らませない: tight はじめに → 本編 H2 を1〜2個 → さいごに.
-- Still ぐりもお voice + the k16shikano 文章規範 below. Confirm the scope is small before working.
+- Still ぐりもお voice + the 文章規範 below. Confirm the scope is small before working.
 - Confidentiality: even personal posts must not leak customer/internal specifics — generalize or
   omit (deny-by-default, same as `/company-blog`).
 
@@ -87,7 +87,7 @@ apply, the personal post is the small fresh angle; the full case asset goes to `
 1. Resolve AIL level / 人間の原稿 / type / topic / length via the pre-flight questions above
 2. Select structure pattern (A/B/C/D) from the style guide below（原稿の内容に合わせる）
 3. **AIL 1 の場合**: 原稿の主張・構成・体験はそのまま保ち、誤字脱字・文法・文構造・文体規範
-   （下記スタイルガイドと k16shikano 規範）への適合だけを直す。加筆・段落の展開はしない。
+   （下記スタイルガイドと 文章規範）への適合だけを直す。加筆・段落の展開はしない。
    タイトルや見出しの提案は「原稿に既にある語の言い換え候補」にとどめる
 4. **AIL 2 の場合**: 叩き台を補強する。不足する説明の加筆・段落の展開・構成の並べ替え・
    タイトルや H2/H3 案の提示を行う。ただし人間が書いていない主張・事実・体験は創作しない。
@@ -100,7 +100,7 @@ apply, the personal post is the small fresh angle; the full case asset goes to `
 
 7. Phase 1 ドラフトを、**Agent ツールで別のレビュー担当サブエージェントに渡して校正レビューさせる**。
    書き手と校正者を分離するため、Phase 1 を書いた文脈をレビュー担当に引き継がず、
-   ドラフト本文とスタイルガイド／k16shikano 規範／self-check チェックリストだけを渡す。
+   ドラフト本文とスタイルガイド／文章規範／self-check チェックリストだけを渡す。
    レビュー担当への指示は【校正レビュー担当への指示】節のテンプレートを使う
 8. レビュー担当は次を返す:
    - **指摘リスト**: 該当箇所・規範違反の種類・修正提案（各指摘に確信度を添える）
@@ -228,7 +228,7 @@ The following rules govern the **content of the article you produce**, not this 
   そのあと「でも」「ただ」で自分の違和感を差し込む。この違和感が記事全体の伏線になる。
 - **本編 H2（2〜4個）**: 各 H2 は反語的・述懐的な一文にする。
   例: 「起点には野望なんてなかった」「軸は、設計した覚えがないのに残っていた」。
-  ただし見出しで結論そのものを言い切ってオチを潰さない（k16shikano 規範を優先）。
+  ただし見出しで結論そのものを言い切ってオチを潰さない（文章規範を優先）。
   問いや述懐の入口にとどめ、答えは本文で開く。
 - **各段落のリズム**: 経験や観察を一度述べ、「でも」「ただ」「むしろ」で揺り戻す。
   心理状態と具体的な行動（職務経歴書を更新する、図にする等）を並べて説得力を出す。
@@ -373,16 +373,16 @@ The following rules govern the **content of the article you produce**, not this 
 
 ---
 
-# 日本語技術文書の文章規範 (k16shikano 由来)
+# 日本語技術文書の文章規範
 
-出典: k16shikano による gist 「日本語技術文書の文章規範」。
+公開されている「日本語技術文書の文章規範」をまとめた gist を下敷きにする。
 
 ぐりもおスタイル（声・構造・語彙）はそのまま守りつつ、以下の規範を追加レイヤーとして適用する。
 両者が衝突する場合の優先順位は次のとおり。
 
 1. ぐりもおスタイルの「ですます調」「一人称」「断定を避ける弱い述語（〜と思います / 〜と考えています）」は維持する。
-   k16shikano 規範の「根拠なき弱い述語は削る」は、語調を整えるための緩和まで削れと求めるものではない（規範本文も「語調を整えるための意図的な緩和は許す」と明記）。
-2. 太字の使用頻度はぐりもおスタイル側（小見出し・重要概念で適度に太字）よりも k16shikano 規範（一節に一、二箇所まで）を優先する。
+   文章規範の「根拠なき弱い述語は削る」は、語調を整えるための緩和まで削れと求めるものではない（規範本文も「語調を整えるための意図的な緩和は許す」と明記）。
+2. 太字の使用頻度はぐりもおスタイル側（小見出し・重要概念で適度に太字）よりも 文章規範（一節に一、二箇所まで）を優先する。
    既存テンプレ中の「重要概念は太字」は「術語の初出と論理の要所のみ」と読み替える。
 3. 「重要なのは〜である」「本章では〜を扱う」「まとめると」など LLM らしい型表現は、ぐりもおの語彙に含まれていても使わない。
 
@@ -601,7 +601,7 @@ Phase 2 では、下記のプロンプトを組み立てて Agent ツールで�
 
 ```
 あなたはブログ記事の独立した校正レビュー担当です。以下のドラフトを、添付のスタイルガイド
-（ぐりもおスタイル / k16shikano 文章規範 / self-check チェックリスト）に照らして校正レビューし、
+（ぐりもおスタイル / 文章規範 / self-check チェックリスト）に照らして校正レビューし、
 次の3点を返してください。書き手ではないので、加筆で内容を膨らませることはしません。
 
 1. 指摘リスト
@@ -621,7 +621,7 @@ Phase 2 では、下記のプロンプトを組み立てて Agent ツールで�
 {Phase 1 ドラフト}
 
 --- スタイルガイド・規範・チェックリスト ---
-{このファイルの Style Guide / k16shikano 規範 / Self-check checklist を渡す}
+{このファイルの Style Guide / 文章規範 / Self-check checklist を渡す}
 ```
 
 レビュー担当の返答は自動で本文に反映せず、ユーザーに提示して採否を確認する。
@@ -654,7 +654,7 @@ After drafting, verify each item and output the result table at the end of the a
 - [ ] 本文とは別に SEO/SNS メタ情報（記事の概要・検索エンジン向けタイトル・SNS向けタイトル）を提案している
 - [ ] 記事の概要は全角110〜120字程度で、重要語を前半に寄せている
 
-## k16shikano 規範由来のチェック項目
+## 文章規範由来のチェック項目
 
 - [ ] 一文ごとに改行している
 - [ ] ダッシュ（em ダッシュ、horizontal bar）を地の文・見出しで使っていない
