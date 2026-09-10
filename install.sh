@@ -1,53 +1,48 @@
 #!/bin/sh
 #
-# Minimal installer for gr1m0h/dot using chezmoi
+# Minimal installer for gr1m0h/dot using mise dotfiles
 #
 set -e
 
 echo ""
 echo "====================================="
-echo "    gr1m0h/dot chezmoi installer"
+echo "    gr1m0h/dot mise installer"
 echo "====================================="
 echo ""
 
-# Check if chezmoi is installed
-if ! command -v chezmoi >/dev/null 2>&1; then
-    echo "Installing chezmoi..."
-    
-    # Install chezmoi on macOS
-    # Try to use Homebrew if available
+# Install mise if missing
+if ! command -v mise >/dev/null 2>&1; then
+    echo "Installing mise..."
     if command -v brew >/dev/null 2>&1; then
-        brew install chezmoi
+        brew install mise
     else
-        # Install using the official script
-        sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/bin"
-        export PATH="$HOME/bin:$PATH"
+        curl https://mise.run | sh
+        export PATH="$HOME/.local/bin:$PATH"
     fi
 fi
 
-# Verify chezmoi is available
-if ! command -v chezmoi >/dev/null 2>&1; then
-    echo "Error: chezmoi installation failed"
+if ! command -v mise >/dev/null 2>&1; then
+    echo "Error: mise installation failed"
     exit 1
 fi
 
-echo "chezmoi is installed at: $(which chezmoi)"
+echo "mise is installed at: $(command -v mise)"
 echo ""
 
-# Initialize and apply dotfiles
-echo "Initializing dotfiles from gr1m0h/dot..."
-# Use the current branch if available, otherwise use main
-BRANCH="${CHEZMOI_BRANCH:-main}"
-chezmoi init --apply --branch "$BRANCH" gr1m0h/dot
+# NOTE: provide per-PC secrets BEFORE adopting (see README "Secrets"):
+#   ~/.config/mise/config.local.toml  ->  [env] NOTION_TOKEN = "..."
+
+# Adopt dotfiles from the mise branch, then run full machine setup.
+echo "Adopting dotfiles from gr1m0h/dot (mise branch)..."
+mise bootstrap --adopt ssh://git@github.com/gr1m0h/dot.git
+
+echo "Running machine setup (Homebrew, packages, macOS, Docker, MCP)..."
+mise bootstrap
 
 echo ""
 echo "====================================="
 echo "    Installation completed!"
 echo "====================================="
 echo ""
-echo "Your dotfiles have been installed. You may need to:"
-echo "  1. Restart your terminal for all changes to take effect"
-echo ""
-echo "To update your dotfiles later, run:"
-echo "  chezmoi update"
-echo ""
+echo "Restart your terminal for all changes to take effect."
+echo "To sync later:   mise bootstrap dotfiles sync && mise bootstrap dotfiles pull"

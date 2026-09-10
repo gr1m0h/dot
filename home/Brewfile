@@ -1,6 +1,4 @@
 tap "theboredteam/boring-notch", "https://github.com/TheBoredTeam/homebrew-boring-notch"
-# Manage your dotfiles across multiple diverse machines, securely
-brew "chezmoi"
 # Get a file from an HTTP, HTTPS or FTP server
 brew "curl"
 # Distributed revision control system
