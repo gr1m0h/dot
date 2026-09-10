@@ -1,0 +1,14 @@
+{
+  "format": 1,
+  "enrollment": [
+    {
+      "path": "home/.config/bat/config",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    }
+  ],
+  "exclude": [],
+  "recipients": [],
+  "permissions": {}
+}
