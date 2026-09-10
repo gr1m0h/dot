@@ -1,0 +1,74 @@
+ # util
+bindkey -v
+setopt no_beep
+setopt auto_cd
+setopt auto_pushd
+autoload -U compinit
+compinit
+
+# history
+HISTFILE=$ZDOTDIR/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt hist_ignore_all_dups
+setopt hist_ignore_dups
+setopt share_history
+setopt append_history
+setopt inc_append_history
+setopt hist_no_store
+setopt hist_reduce_blanks
+
+# Set PATH, MANPATH, etc., for Homebrew
+eval "$(cd /opt/homebrew && /opt/homebrew/bin/brew shellenv)"
+
+# gpg
+export GPG_TTY=$(tty)
+
+# browser
+export CHROME_PATH="$HOME/.local/share/chrome-for-testing/chrome/mac_arm-151.0.7922.34/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"
+
+# ssh using 1password
+export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+
+# mise
+if command -v mise &>/dev/null; then
+    eval "$(mise activate zsh)"
+fi
+export EDITOR="$(mise where neovim 2>/dev/null || echo nvim)"
+
+# sheldon
+eval "$(sheldon source)"
+
+# starship
+export STARSHIP_CONFIG=$XDG_CONFIG_HOME/starship/starship.toml
+eval "$(starship init zsh)"
+
+# fzf
+export FZF_DEFAULT_OPTS=' --color=fg:#f8f8f2,bg:#32324b,hl:#8be9fd --color=fg+:#f8f8f2,bg+:#616175,hl+:#8be9fd --color=info:#8be9fd,prompt:#a8ffde,pointer:#f1fa8c --color=marker:#f1fa8c,spinner:#8be9fd,header:#a8ffde'
+
+# ghq
+export GHQ_ROOT_DIR=$WORKSPACE
+export GHQ_SELECTOR=fzf
+
+# Instantly recognize newly installed commands
+zstyle ":completion:*:commands" rehash 1
+
+# Docker
+export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
+mkdir -p ~/.docker/cli-plugins
+ln -sfn "$(mise where aqua:docker/compose)/docker-cli-plugin-docker-compose" ~/.docker/cli-plugins/docker-compose
+
+# Programming languages
+export PATH=$GOPATH/bin:$PATH
+export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
+export PATH=$CARGO_HOME/bin:$PATH
+export PATH=$PYTHONUSERBASE/bin:$PATH
+export PATH=$UV_TOOL_DIR/bin:$PATH
+export PATH=$GEM_HOME/bin:$PATH
+export PATH=$HOME/.local/bin:$PATH
+
+# aliases
+source $ZDOTDIR/.zsh_aliases
+
+# completions
+source $ZDOTDIR/.zsh_completions

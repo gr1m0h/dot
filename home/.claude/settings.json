@@ -1,0 +1,476 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "cleanupPeriodDays": 30,
+  "skillListingBudgetFraction": 0.15,
+  "env": {
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50",
+    "DISABLE_AUTOUPDATER": "1",
+    "DISABLE_ERROR_REPORTING": "1",
+    "CLAUDE_CODE_AUTO_CONNECT_IDE": "1",
+    "CLAUDE_CODE_IDE_SKIP_AUTO_INSTALL": "1",
+    "CLAUDE_CODE_IDE_SKIP_VALID_CHECK": "1",
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "MAX_MCP_OUTPUT_TOKENS": "25000",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+  },
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(yarn *)",
+      "Bash(pnpm *)",
+      "Bash(bun *)",
+      "Bash(make *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git branch *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git checkout *)",
+      "Bash(git stash *)",
+      "Bash(git fetch *)",
+      "Bash(git merge *)",
+      "Bash(git rebase *)",
+      "Bash(git switch *)",
+      "Bash(git worktree *)",
+      "Bash(gh issue *)",
+      "Bash(gh pr *)",
+      "Bash(gh api *)",
+      "Bash(gh run *)",
+      "Bash(gh workflow *)",
+      "Bash(cargo *)",
+      "Bash(go *)",
+      "Bash(ruby *)",
+      "Bash(bundle *)",
+      "Bash(rake *)",
+      "Bash(rails *)",
+      "Bash(rspec *)",
+      "Bash(php *)",
+      "Bash(composer *)",
+      "Bash(artisan *)",
+      "Bash(phpunit *)",
+      "Bash(python3 *)",
+      "Bash(pip *)",
+      "Bash(uv *)",
+      "Bash(terraform *)",
+      "Bash(kubectl *)",
+      "Bash(jq *)",
+      "Bash(yq *)",
+      "Read(src/**)",
+      "Read(lib/**)",
+      "Read(app/**)",
+      "Read(tests/**)",
+      "Read(test/**)",
+      "Read(spec/**)",
+      "Read(docs/**)",
+      "Read(internal/**)",
+      "Read(cmd/**)",
+      "Read(pkg/**)",
+      "Read(config/**)",
+      "Read(scripts/**)",
+      "Read(.github/**)",
+      "Read(*.md)",
+      "Read(*.json)",
+      "Read(*.yaml)",
+      "Read(*.yml)",
+      "Read(*.toml)",
+      "Read(*.tf)",
+      "Read(*.hcl)",
+      "Edit(src/**)",
+      "Edit(lib/**)",
+      "Edit(app/**)",
+      "Edit(tests/**)",
+      "Edit(test/**)",
+      "Edit(internal/**)",
+      "Edit(cmd/**)",
+      "Edit(pkg/**)",
+      "Edit(spec/**)",
+      "Write(~/.claude/batch/out/**)",
+      "Edit(~/.claude/batch/out/**)"
+    ],
+    "deny": [
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(rm -rf *)",
+      "Bash(rm -r *)",
+      "Bash(sudo *)",
+      "Bash(chmod 777 *)",
+      "Bash(chmod -R 777 *)",
+      "Bash(eval *)",
+      "Bash(exec *)",
+      "Bash(*> /etc/*)",
+      "Bash(*| sh)",
+      "Bash(*| bash)",
+      "Bash(*| zsh)",
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean -fd *)",
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(*.env)",
+      "Read(secrets/**)",
+      "Read(**/*secret*)",
+      "Read(**/*credential*)",
+      "Read(**/*password*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*.p12)",
+      "Read(**/*.pfx)",
+      "Read(**/id_rsa*)",
+      "Read(**/.aws/*)",
+      "Read(**/.ssh/*)",
+      "Write(.env)",
+      "Write(.env.*)",
+      "Write(secrets/**)",
+      "Edit(.env)",
+      "Edit(.env.*)",
+      "Edit(package-lock.json)",
+      "Edit(yarn.lock)",
+      "Edit(pnpm-lock.yaml)",
+      "Edit(bun.lockb)",
+      "Edit(*.lock)",
+      "Edit(vendor/**)",
+      "Bash(*pickle.loads*)",
+      "Bash(*yaml.load*)",
+      "Bash(gh pr comment*)",
+      "Bash(gh pr review*)",
+      "Bash(gh api*/comments *-X POST*)",
+      "Bash(gh api*/comments *--method POST*)",
+      "Bash(gh api*/replies *-X POST*)",
+      "Bash(gh api*/replies *--method POST*)",
+      "Bash(gh api *-X POST*/comments*)",
+      "Bash(gh api *--method POST*/comments*)",
+      "Bash(gh api *-X POST*/replies*)",
+      "Bash(gh api *--method POST*/replies*)",
+      "Bash(gh api*/comments *-f body=*)",
+      "Bash(gh api*/comments *-F body=*)",
+      "Bash(gh api*/replies *-f body=*)",
+      "Bash(gh api*/replies *-F body=*)",
+      "Bash(gh api*/pulls *-X POST*)",
+      "Bash(gh api*/pulls *--method POST*)",
+      "Bash(gh api *-X POST*/pulls*)",
+      "Bash(gh api *--method POST*/pulls*)",
+      "Bash(gh api*/pulls *-f title=*)",
+      "Bash(gh api*/pulls *-F title=*)"
+    ],
+    "ask": [
+      "Bash(npx *)",
+      "Bash(git push *)",
+      "Bash(git push --force-with-lease *)",
+      "Bash(gh pr create *)",
+      "Bash(npm publish *)",
+      "Bash(docker *)",
+      "Bash(pip install *)",
+      "Bash(cargo add *)",
+      "Bash(go get *)",
+      "Bash(bundle install *)",
+      "Bash(composer require *)",
+      "Bash(gem install *)",
+      "Bash(terraform apply *)",
+      "Bash(terraform destroy *)",
+      "Bash(kubectl apply *)",
+      "Bash(kubectl delete *)",
+      "Edit(package.json)",
+      "Edit(tsconfig.json)",
+      "Edit(Gemfile)",
+      "Edit(composer.json)",
+      "Edit(go.mod)",
+      "Edit(Gemfile.lock)",
+      "Edit(composer.lock)",
+      "Edit(*.config.*)",
+      "Write(**/*.sql)",
+      "Write(**/*.sh)",
+      "Bash(tofu apply *)",
+      "Bash(tofu destroy *)",
+      "Bash(tofu state *)",
+      "Bash(terraform state *)",
+      "Bash(tofu import *)",
+      "Bash(terraform import *)"
+    ],
+    "defaultMode": "default"
+  },
+  "model": "opus[1m]",
+  "enableAllProjectMcpServers": false,
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/session-start.js"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/session-end.js"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/session-end.js",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/pre-tool-guard.js"
+          }
+        ]
+      },
+      {
+        "matcher": "WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/ssrf-guard.js"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|mcp__.*[Gg]it[Hh]ub.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/org-leak-guard.js"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/post-tool-verify.js",
+            "asyncRewake": true
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/architecture-guard.js"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/test-runner.js",
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/cost-monitor.js",
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/telemetry-collector.js",
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/circuit-breaker.js",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolBatch": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/post-tool-batch.js",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/prompt-validator.js"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/pre-compact-protector.js"
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/subagent-monitor.js",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/subagent-monitor.js",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/on-failure-recover.js"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/circuit-breaker.js"
+          }
+        ]
+      }
+    ],
+    "PermissionDenied": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/permission-denied-tracker.js",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "TeammateIdle": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/quality-gate.js"
+          }
+        ]
+      }
+    ],
+    "TaskCompleted": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME\"/.claude/hooks/task-validator.js"
+          }
+        ]
+      }
+    ]
+  },
+  "worktree": {
+    "symlinkDirectories": [
+      "node_modules",
+      ".pnpm",
+      "vendor"
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "\"$HOME\"/.claude/statusline.sh"
+  },
+  "enabledPlugins": {
+    "sreaas@topotal": true,
+    "case-reflect@topotal": true,
+    "proposal-review@topotal": true,
+    "brainstorming@topotal": true
+  },
+  "extraKnownMarketplaces": {
+    "topotal": {
+      "source": {
+        "source": "github",
+        "repo": "topotal/skills"
+      }
+    }
+  },
+  "language": "japanese",
+  "sandbox": {
+    "enabled": false,
+    "autoAllowBashIfSandboxed": true,
+    "allowUnsandboxedCommands": false,
+    "network": {
+      "allowLocalBinding": true
+    },
+    "filesystem": {
+      "allowWrite": [
+        "/tmp/build",
+        "/tmp/claude-*"
+      ]
+    },
+    "excludedCommands": [
+      "git",
+      "gh",
+      "docker"
+    ]
+  },
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "high",
+  "autoUpdatesChannel": "stable",
+  "plansDirectory": "./.claude/plans",
+  "tui": "fullscreen",
+  "autoMemoryEnabled": true,
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark-ansi",
+  "editorMode": "vim",
+  "showTurnDuration": true,
+  "terminalProgressBarEnabled": true,
+  "teammateMode": "in-process",
+  "remoteControlAtStartup": true
+}
