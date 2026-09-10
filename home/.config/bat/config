@@ -1,3 +1,4 @@
 --theme=Dracula
 --style=plain
 --paging=never
+--wrap=never
