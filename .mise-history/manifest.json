@@ -8,6 +8,12 @@
       "variants": []
     },
     {
+      "path": "home/.Brewfile",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
       "path": "home/.claude/CLAUDE.md",
       "autosave": true,
       "encrypt": false,

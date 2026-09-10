@@ -312,11 +312,7 @@ depends = ["setup-homebrew", "setup-packages", "setup-macos", "setup-docker", "s
 builtin = "history-watch"
 
 [dotfiles]
-# mmcp: render from a placeholder template; real token comes from env
-# (config.local.toml, machine-local). The template source is tracked (safe to
-# publish); the rendered ~/.mmcp.json with the real token is NOT tracked.
-"~/.mmcp.json" = { mode = "template", source = "~/.dotfiles/.mmcp.json" }
-"~/.dotfiles/.mmcp.json" = { mode = "track" }
+"~/.Brewfile" = { mode = "track" }
 "~/.claude/CLAUDE.md" = { mode = "track" }
 "~/.claude/README.md" = { mode = "track" }
 "~/.claude/agents" = { mode = "track" }
@@ -338,7 +334,12 @@ builtin = "history-watch"
 "~/.config/zsh/.zsh_completions" = { mode = "track" }
 "~/.config/zsh/.zshrc" = { mode = "track" }
 "~/.config/zsh/scripts" = { mode = "track" }
+"~/.dotfiles/.mmcp.json" = { mode = "track" }
 "~/.editorconfig" = { mode = "track" }
 "~/.hammerspoon/init.lua" = { mode = "track" }
+# mmcp: render from a placeholder template; real token comes from env
+# (config.local.toml, machine-local). The template source is tracked (safe to
+# publish); the rendered ~/.mmcp.json with the real token is NOT tracked.
+"~/.mmcp.json" = { mode = "template", source = "~/.dotfiles/.mmcp.json" }
 "~/.serena/serena_config.yml" = { mode = "track" }
 "~/.zshenv" = { mode = "track" }
