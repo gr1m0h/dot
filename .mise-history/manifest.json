@@ -134,12 +134,6 @@
       "variants": []
     },
     {
-      "path": "home/.dotfiles/.mmcp.json",
-      "autosave": true,
-      "encrypt": false,
-      "variants": []
-    },
-    {
       "path": "home/.editorconfig",
       "autosave": true,
       "encrypt": false,

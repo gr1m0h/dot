@@ -302,10 +302,16 @@ fi
 echo "MCP setup completed!"
 '''
 
+[tasks.setup-ghostty]
+description = "Build Ghostty-Nvim.app from the rendered AppleScript"
+sources = ["~/.local/share/ghostty-nvim/Ghostty-Nvim.applescript", "~/.local/share/ghostty-nvim/build-ghostty-nvim-app.sh"]
+outputs = ["~/Applications/Ghostty-Nvim.app/Contents/Info.plist"]
+run = "bash ~/.local/share/ghostty-nvim/build-ghostty-nvim-app.sh ~/.local/share/ghostty-nvim/Ghostty-Nvim.applescript"
+
 # Named `bootstrap` so `mise bootstrap` runs it automatically in the final phase.
 [tasks.bootstrap]
-description = "Full machine setup (Homebrew, packages, macOS, Docker, MCP)"
-depends = ["setup-homebrew", "setup-packages", "setup-macos", "setup-docker", "setup-mcp"]
+description = "Full machine setup (Homebrew, packages, macOS, Docker, MCP, Ghostty-Nvim)"
+depends = ["setup-homebrew", "setup-packages", "setup-macos", "setup-docker", "setup-mcp", "setup-ghostty"]
 
 # --- Bootstrap services: keep dotfile history saved automatically ---
 [bootstrap.services.mise-history]
@@ -334,7 +340,6 @@ builtin = "history-watch"
 "~/.config/zsh/.zsh_completions" = { mode = "track" }
 "~/.config/zsh/.zshrc" = { mode = "track" }
 "~/.config/zsh/scripts" = { mode = "track" }
-"~/.dotfiles/.mmcp.json" = { mode = "track" }
 "~/.editorconfig" = { mode = "track" }
 "~/.hammerspoon/init.lua" = { mode = "track" }
 # mmcp: render from a placeholder template; real token comes from env
