@@ -1,0 +1,54 @@
+{
+  "mode": "replace",
+  "agents": ["claude-code"],
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "env": {}
+    },
+    "serena": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide-assistant"
+      ],
+      "env": {}
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--executable-path",
+        "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+      ]
+    },
+    "notion": {
+      "command": "npx",
+      "args": ["-y", "@notionhq/notion-mcp-server"],
+      "env": {
+        "NOTION_TOKEN": "{{ env.NOTION_TOKEN }}"
+      }
+    },
+    "gcloud": {
+      "command": "npx",
+      "args": ["-y", "@google-cloud/gcloud-mcp"],
+      "env": {}
+    },
+    "aws-mcp": {
+      "command": "uvx",
+      "args": [
+        "mcp-proxy-for-aws@latest",
+        "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--metadata",
+        "AWS_REGION=ap-northeast-1"
+      ],
+      "timeout": 100000,
+      "transport": "stdio"
+    }
+  }
+}
