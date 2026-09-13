@@ -48,6 +48,7 @@ opentofu = "latest"
 "aqua:newrelic/newrelic-cli" = "latest"
 "go:github.com/go-delve/delve/cmd/dlv" = "latest"
 "github:datadog-labs/pup" = "latest"
+stylua = "latest"
 
 [settings]
 experimental = true
