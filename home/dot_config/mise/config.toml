@@ -48,6 +48,306 @@ opentofu = "latest"
 "aqua:newrelic/newrelic-cli" = "latest"
 "go:github.com/go-delve/delve/cmd/dlv" = "latest"
 "github:datadog-labs/pup" = "latest"
+stylua = "latest"
 
 [settings]
 experimental = true
+
+# --- Machine provisioning (migrated from chezmoi run_once/run_onchange scripts) ---
+# `mise bootstrap` runs the `setup-all` task in phase 8, after tools and dotfiles
+# are in place. Each task is idempotent and safe to repeat.
+
+[tasks.setup-homebrew]
+description = "Install Homebrew if missing"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+if command -v brew &>/dev/null; then
+    echo "Homebrew already installed at: $(which brew)"
+    exit 0
+fi
+echo "Installing Homebrew..."
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+case "$(uname -m)" in
+    arm64)
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+        ;;
+    x86_64)
+        echo 'eval "$(/usr/local/bin/brew shellenv)"' >> ~/.zprofile
+        eval "$(/usr/local/bin/brew shellenv)"
+        ;;
+esac
+echo "Homebrew installed successfully!"
+'''
+
+[tasks.setup-packages]
+description = "Install packages from ~/.Brewfile"
+depends = ["setup-homebrew"]
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+if ! command -v brew &>/dev/null; then
+    echo "Error: Homebrew is not installed"
+    exit 1
+fi
+if [ ! -f "$HOME/.Brewfile" ]; then
+    echo "No ~/.Brewfile found, skipping package installation"
+    exit 0
+fi
+brew bundle --global
+echo "Homebrew packages installed successfully!"
+'''
+
+[tasks.setup-macos]
+description = "Configure macOS defaults"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+if [ "$(uname)" != "Darwin" ]; then
+    echo "Skipping macOS configuration (non-macOS)"
+    exit 0
+fi
+if [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
+    echo "Skipping macOS configuration in CI environment"
+    exit 0
+fi
+
+echo "Configuring macOS settings..."
+os_version=$(sw_vers -productVersion)
+echo "Detected macOS version: $os_version"
+
+mkdir -p "$HOME/Documents/workspace"
+mkdir -p "$HOME/.packages"
+
+echo "Configuring System UI..."
+defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
+defaults write com.apple.universalaccess reduceTransparency -bool true 2>/dev/null || true
+defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
+defaults write com.apple.LaunchServices LSQuarantine -bool false
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
+
+echo "Configuring Terminal..."
+defaults write com.apple.terminal StringEncodings -array 4
+
+echo "Configuring Safari..."
+echo "Note: Safari configuration skipped due to macOS security restrictions"
+
+echo "Configuring Finder..."
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+defaults write com.apple.Finder AppleShowAllFiles -bool false
+chflags nohidden ~/Library
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+defaults write com.apple.finder ShowPathbar -bool true
+defaults write com.apple.finder ShowStatusBar -bool true
+defaults write com.apple.finder NewWindowTarget -string "PfDe"
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+sudo chflags nohidden /Volumes 2>/dev/null || true
+defaults write com.apple.finder WarnOnEmptyTrash -bool false
+
+echo "Configuring Dock..."
+defaults write com.apple.dock orientation bottom
+defaults write com.apple.dock mineffect -string "genie"
+defaults write com.apple.dock tilesize -int 48
+defaults write com.apple.dock largesize -float 94
+defaults write com.apple.dock magnification -bool true
+defaults write com.apple.dock autohide -bool true
+defaults write com.apple.dock show-recents -bool false
+defaults write com.apple.dock show-process-indicators -bool false
+defaults write com.apple.dock expose-animation-duration -float 0.1
+defaults write com.apple.dock mru-spaces -bool false
+defaults write com.apple.dock autohide-delay -float 0
+defaults write com.apple.dock autohide-time-modifier -float 0.2
+
+echo "Configuring Screenshot settings..."
+defaults write com.apple.screencapture location -string "$HOME/Desktop"
+defaults write com.apple.screencapture type -string "png"
+defaults write com.apple.screencapture disable-shadow -bool true
+
+echo "Configuring Keyboard..."
+defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
+defaults write NSGlobalDomain AppleFontSmoothing -int 2
+defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+defaults write NSGlobalDomain KeyRepeat -int 2
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
+defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+
+echo "Configuring Keyboard Shortcuts..."
+SHK_PLIST="$HOME/Library/Preferences/com.apple.symbolichotkeys.plist"
+shk_set_enabled() {
+    local id="$1"
+    local flag="$2"
+    /usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:${id}:enabled ${flag}" "$SHK_PLIST" 2>/dev/null \
+        || /usr/libexec/PlistBuddy -c "Add :AppleSymbolicHotKeys:${id}:enabled bool ${flag}" "$SHK_PLIST" 2>/dev/null \
+        || true
+}
+shk_disable_ids=(
+    7 8 9 10 11 12 13
+    15 16 17 18 19
+    27 28 29 31
+    32 33 34 35 36
+    52 53
+    57
+    62 63
+    64 65
+    79 80 81 82
+    118 119 120 121
+    159 160 162 163
+    175 179
+    190 191
+    222 223
+)
+shk_enable_ids=(30 60 61 184)
+for id in "${shk_disable_ids[@]}"; do
+    shk_set_enabled "$id" false
+done
+for id in "${shk_enable_ids[@]}"; do
+    shk_set_enabled "$id" true
+done
+killall cfprefsd 2>/dev/null || true
+
+echo "Configuring Trackpad..."
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+
+echo "Configuring Security settings..."
+defaults write com.apple.screensaver askForPassword -bool true
+defaults write com.apple.screensaver askForPasswordDelay -int 0
+
+echo "Configuring other settings..."
+defaults write com.apple.menuextra.clock 'DateFormat' -string 'EEE d MMM HH:mm' 2>/dev/null || true
+defaults write com.apple.NetworkBrowser BrowseAllInterfaces 1
+defaults write com.apple.ActivityMonitor OpenMainWindow -bool true
+defaults write com.apple.ActivityMonitor IconType -int 5
+defaults write com.apple.ActivityMonitor ShowCategory -int 0
+defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
+defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
+
+echo "Restarting affected applications..."
+for app in Safari Finder Dock SystemUIServer ActivityMonitor; do
+    killall "$app" >/dev/null 2>&1 || true
+done
+echo "macOS configuration completed!"
+'''
+
+[tasks.setup-docker]
+description = "Set up Docker with Colima (requires colima/lima via mise)"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+if [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
+    echo "Skipping Docker setup in CI environment"
+    exit 0
+fi
+echo "Setting up Docker with Colima..."
+if ! command -v colima &>/dev/null; then
+    echo "Colima not found. Ensure mise tools are installed (mise install)."
+    exit 1
+fi
+if ! command -v limactl &>/dev/null; then
+    echo "Lima (limactl) not found. Colima requires Lima."
+    exit 1
+fi
+if ! colima status &>/dev/null; then
+    echo "Starting Colima..."
+    colima start || {
+        echo "Failed to start Colima. Check 'colima logs'."
+        exit 1
+    }
+fi
+echo "Setting docker context to colima..."
+docker context use colima || echo "Set it manually with 'docker context use colima'"
+echo "Docker setup completed!"
+'''
+
+[tasks.setup-mcp]
+description = "Configure Claude MCP servers (GitHub Remote MCP)"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+if [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
+    echo "Skipping MCP setup in CI environment"
+    exit 0
+fi
+echo "Setting up Claude MCP Servers..."
+if ! command -v claude &>/dev/null; then
+    echo "Claude CLI not found. Ensure mise tools are installed."
+    exit 1
+fi
+if claude mcp list 2>/dev/null | grep -q "github"; then
+    echo "GitHub Remote MCP server already configured"
+else
+    if command -v gh &>/dev/null; then
+        github_token=$(gh auth token 2>/dev/null || echo "")
+        if [ -z "$github_token" ]; then
+            echo "Warning: GitHub CLI not authenticated, skipping GitHub MCP setup"
+        else
+            claude mcp add --transport http github https://api.githubcopilot.com/mcp \
+                -H "Authorization: Bearer $github_token" \
+                || echo "Warning: Failed to add GitHub Remote MCP server"
+        fi
+    else
+        echo "Warning: GitHub CLI not found, skipping GitHub MCP setup"
+    fi
+fi
+echo "MCP setup completed!"
+'''
+
+[tasks.setup-ghostty]
+description = "Build Ghostty-Nvim.app from the tracked AppleScript"
+sources = ["~/.local/share/ghostty-nvim/Ghostty-Nvim.applescript", "~/.local/share/ghostty-nvim/build-ghostty-nvim-app.sh"]
+outputs = ["~/Applications/Ghostty-Nvim.app/Contents/Info.plist"]
+run = "bash ~/.local/share/ghostty-nvim/build-ghostty-nvim-app.sh ~/.local/share/ghostty-nvim/Ghostty-Nvim.applescript"
+
+# Named `bootstrap` so `mise bootstrap` runs it automatically in the final phase.
+[tasks.bootstrap]
+description = "Full machine setup (Homebrew, packages, macOS, Docker, MCP, Ghostty-Nvim)"
+depends = ["setup-homebrew", "setup-packages", "setup-macos", "setup-docker", "setup-mcp", "setup-ghostty"]
+
+# --- Bootstrap services: keep dotfile history saved automatically ---
+[bootstrap.services.mise-history]
+builtin = "history-watch"
+
+[dotfiles]
+"~/.Brewfile" = { mode = "track" }
+"~/.claude/CLAUDE.md" = { mode = "track" }
+"~/.claude/README.md" = { mode = "track" }
+"~/.claude/agents" = { mode = "track" }
+"~/.claude/docs" = { mode = "track" }
+"~/.claude/hooks" = { mode = "track" }
+"~/.claude/rules" = { mode = "track" }
+"~/.claude/settings.json" = { mode = "track" }
+"~/.claude/skills" = { mode = "track" }
+"~/.claude/statusline.sh" = { mode = "track" }
+"~/.config/bat/config" = { mode = "track" }
+"~/.config/ghostty/config" = { mode = "track" }
+"~/.config/git/config" = { mode = "template", source = "~/.dotfiles/git-config.tera" }
+"~/.dotfiles/git-config.tera" = { mode = "track" }
+"~/.config/git/ignore" = { mode = "track" }
+"~/.config/mise/config.toml" = { mode = "track" }
+"~/.config/nvim" = { mode = "track" }
+"~/.config/sheldon/plugins.toml" = { mode = "track" }
+"~/.config/starship/starship.toml" = { mode = "track" }
+"~/.config/zsh/.zsh_aliases" = { mode = "track" }
+"~/.config/zsh/.zsh_completions" = { mode = "track" }
+"~/.config/zsh/.zshrc" = { mode = "track" }
+"~/.config/zsh/scripts" = { mode = "track" }
+"~/.editorconfig" = { mode = "track" }
+"~/.hammerspoon/init.lua" = { mode = "track" }
+# mmcp: the token is supplied by the shell environment (~/.env), not written in
+# the file, so the file carries no secret and can be tracked directly.
+"~/.mmcp.json" = { mode = "track" }
+"~/.local/share/ghostty-nvim/Ghostty-Nvim.applescript" = { mode = "track" }
+"~/.local/share/ghostty-nvim/build-ghostty-nvim-app.sh" = { mode = "track" }
+"~/.serena/serena_config.yml" = { mode = "track" }
+"~/.zshenv" = { mode = "track" }

@@ -33,19 +33,11 @@ repos:
             \.chezmoi\.toml\.tmpl
           )$
 
-  # Lua formatting (for config files)
-  - repo: https://github.com/JohnnyMorganz/StyLua
-    rev: v0.20.0
-    hooks:
-      - id: stylua
-        files: '\.lua$'
-
-  # Additional checks for dotfiles
+  # Lua formatting (mise-provided stylua binary; avoids cargo source build)
   - repo: local
     hooks:
-      - id: chezmoi-format-check
-        name: Check chezmoi file formatting
-        entry: bash -c 'if command -v chezmoi &> /dev/null; then chezmoi doctor; fi'
+      - id: stylua
+        name: stylua
+        entry: stylua
         language: system
-        pass_filenames: false
-        always_run: true
+        files: '\.lua$'
