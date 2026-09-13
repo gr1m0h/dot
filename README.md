@@ -17,6 +17,8 @@ symlinks or a separate generated tree; you just edit your real dotfiles.
 |------|-------|
 | Source of truth | `~/.config/mise/config.toml` (`[tools]` / `[tasks]` / `[bootstrap]` / `[dotfiles]`) |
 | Machine-local secrets (never tracked) | `~/.env` (sourced from `~/.zshenv`) |
+| Machine-local overrides (never tracked) | `*.local` files sourced by their base file |
+| Template sources (value-level diffs) | `~/.dotfiles/` (`dotfiles.root`) |
 | History store | `~/.local/state/mise/history/repo.git` (bare) |
 | Remote | `github.com/gr1m0h/dot` branch `mise-sync` |
 
@@ -112,6 +114,66 @@ environment.
 
 Because the token is never written into a tracked file, `~/.mmcp.json` is safe
 to publish as-is.
+
+## Per-machine differences
+
+When settings differ between machines (personal vs work, different usernames,
+etc.), pick one of three approaches by the shape of the difference.
+
+### 1. Separable settings -> machine-local file (default, simplest)
+
+An independent block (a Datadog stanza, machine-specific aliases) is split out
+of the tracked file into a non-tracked `*.local` file that the base file sources.
+
+- Common: `~/.config/zsh/.zshrc` (tracked)
+- Machine-local: `~/.config/zsh/.zshrc.local` (NOT tracked)
+- Wire-up at the end of `.zshrc`:
+  `[ -f "${ZDOTDIR}/.zshrc.local" ] && source "${ZDOTDIR}/.zshrc.local"`
+
+This uses only track plus the shell's own `source`; no `~/.dotfiles` needed.
+Use it whenever the difference can live in its own file.
+
+### 2. Value-level diffs that can't be split -> template
+
+When only a value inside a file differs (username, email, a path containing
+`$USER`), use template mode. The template source is tracked so edits sync, and
+each machine renders its own value from `env`/`vars`.
+
+```toml
+[dotfiles]
+"~/.gitconfig" = { mode = "template", source = "~/.dotfiles/gitconfig.tera" }
+"~/.dotfiles/gitconfig.tera" = { mode = "track" }
+```
+
+```tera
+[user]
+    email = {{ env.GIT_EMAIL }}
+```
+
+The value (e.g. `GIT_EMAIL`) comes from the machine's environment (`~/.env`) or
+mise `vars`. This is the closest to chezmoi's templating.
+
+### 3. Whole-file differences -> variants
+
+When a file has no common part and differs entirely by OS or environment, use
+variants. Each variant is a separate history stream for the same path.
+
+```toml
+[dotfiles]
+"~/.config/foo/config" = { mode = "track", variants = [
+  { profile = "work" },
+  { default = true },
+] }
+```
+
+The profile is selected with `-E <name>` or `MISE_ENV=<name>`, so personal and
+work machines can differ even when both run macOS.
+
+### Which to use
+
+- The difference lives in its own block -> **1. machine-local file** (start here)
+- Only a value inside a shared file differs -> **2. template**
+- The whole file differs with no common part -> **3. variants**
 
 ## Machine provisioning
 
