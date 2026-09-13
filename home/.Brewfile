@@ -1,0 +1,63 @@
+tap "theboredteam/boring-notch", "https://github.com/TheBoredTeam/homebrew-boring-notch"
+# Get a file from an HTTP, HTTPS or FTP server
+brew "curl"
+# Distributed revision control system
+brew "git"
+# Validating, recursive, caching DNS resolver
+brew "unbound"
+# GNU Transport Layer Security (TLS) Library
+brew "gnutls"
+# Assuan IPC Library
+brew "libassuan"
+# GNU Privacy Guard (OpenPGP)
+brew "gnupg"
+# YAML Parser
+brew "libyaml"
+# Mac App Store command-line interface
+brew "mas"
+# Polyglot runtime manager (asdf rust clone)
+brew "mise"
+# Generic machine emulator and virtualizer
+brew "qemu"
+# Fast, configurable, shell plugin manager
+brew "sheldon"
+# Password manager that keeps all passwords secure behind one password
+cask "1password"
+# Not so boring notch That Rocks 🎸🎶
+cask "theboredteam/boring-notch/boring-notch"
+# Web browser focusing on privacy
+cask "brave-browser"
+# Open links in any browser
+cask "choosy"
+# Anthropic's official Claude AI desktop app
+cask "claude"
+# Voice and text chat software cask "discord"
+cask "font-hackgen"
+cask "font-hackgen-nerd"
+# Terminal emulator that uses platform-native UI and GPU acceleration
+cask "ghostty"
+# Client for the Google Drive storage service
+cask "google-drive"
+# Desktop automation application
+cask "hammerspoon"
+# Professional webcam software for the Opal C1
+cask "opal-composer"
+# AI note-taking for online meetings, phone calls, and in-person conversations
+cask "plaud"
+# Control your tools with a few keystrokes
+cask "raycast"
+# Plugin for AWS CLI to start and end sessions that connect to managed instances
+cask "session-manager-plugin"
+# Team communication and collaboration software
+cask "slack"
+# Music streaming service
+cask "spotify"
+# Video game digital distribution service
+cask "steam"
+# Video communication and virtual meeting platform
+cask "zoom"
+mas "Hidden Bar", id: 1452453066
+mas "LINE", id: 539883307
+mas "Numbers", id: 409203825
+mas "Skitch", id: 425955336
+# mas "Xcode", id: 497799835  # Commented out for CI - install manually if needed

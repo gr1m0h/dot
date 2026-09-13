@@ -3,12 +3,12 @@ name: vimpin
 on:
   pull_request:
     paths:
-      - "home/dot_config/nvim/**"
+      - "home/.config/nvim/**"
       - ".github/workflows/vimpin.yml"
   push:
     branches: [main]
     paths:
-      - "home/dot_config/nvim/**"
+      - "home/.config/nvim/**"
       - ".github/workflows/vimpin.yml"
 
 permissions:
@@ -28,9 +28,9 @@ jobs:
         run: go install github.com/gr1m0h/vimpin/cmd/vimpin@v0.1.0
 
       - name: Offline structural check (every spec is in canonical form)
-        working-directory: home/dot_config/nvim
+        working-directory: home/.config/nvim
         run: vimpin run --no-api --check
 
       - name: Annotation drift verification (tag annotations match commit)
-        working-directory: home/dot_config/nvim
+        working-directory: home/.config/nvim
         run: vimpin run --verify --check
