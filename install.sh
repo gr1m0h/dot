@@ -30,10 +30,10 @@ echo "mise is installed at: $(command -v mise)"
 echo ""
 
 # NOTE: provide per-PC secrets BEFORE adopting (see README "Secrets"):
-#   ~/.config/mise/config.local.toml  ->  [env] NOTION_TOKEN = "..."
+#   ~/.env  ->  export NOTION_TOKEN="..."   (sourced by ~/.zshenv)
 
-# Adopt dotfiles from the mise branch, then run full machine setup.
-echo "Adopting dotfiles from gr1m0h/dot (mise branch)..."
+# Adopt dotfiles from the mise-sync branch, then run full machine setup.
+echo "Adopting dotfiles from gr1m0h/dot (mise-sync branch)..."
 mise bootstrap --adopt ssh://git@github.com/gr1m0h/dot.git
 
 echo "Running machine setup (Homebrew, packages, macOS, Docker, MCP)..."
