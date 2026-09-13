@@ -12,7 +12,7 @@ repos:
       - id: check-executables-have-shebangs
       - id: check-shebang-scripts-are-executable
       - id: mixed-line-ending
-        args: ['--fix=lf']
+        args: ["--fix=lf"]
 
   # Shell script linting
   - repo: https://github.com/shellcheck-py/shellcheck-py
@@ -20,6 +20,14 @@ repos:
     hooks:
       - id: shellcheck
         args: [--severity=warning]
+        # shellcheck does not support zsh syntax; these are zsh, not sh/bash.
+        exclude: |
+          (?x)^(
+            home/\.zshenv|
+            home/\.config/zsh/\.zshrc|
+            home/\.config/zsh/\.zsh_aliases|
+            home/\.config/zsh/\.zsh_completions
+          )$
 
   # Formatting
   - repo: https://github.com/pre-commit/mirrors-prettier
@@ -27,11 +35,6 @@ repos:
     hooks:
       - id: prettier
         types_or: [yaml, json, markdown]
-        exclude: |
-          (?x)^(
-            \.chezmoiexternal\.toml|
-            \.chezmoi\.toml\.tmpl
-          )$
 
   # Lua formatting (mise-provided stylua binary; avoids cargo source build)
   - repo: local

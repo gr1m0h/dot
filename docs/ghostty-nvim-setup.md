@@ -15,13 +15,14 @@ does not carry shell-level activations such as `mise activate zsh`).
 
 ## Setup Method
 
-### Automatic Setup with chezmoi
+### Automatic Setup with mise
 
 ```bash
-chezmoi apply
+mise run setup-ghostty
 ```
 
-The setup script automatically:
+The setup task automatically:
+
 - Creates the AppleScript application "Ghostty-Nvim.app"
 - Installs it in `~/Applications/`
 - Configures file extension associations
@@ -47,12 +48,9 @@ The following extensions are supported by default:
 
 ### Adding Extensions
 
-Add extensions to the `extra_extensions` array in `.chezmoi.toml`:
-
-```toml
-[data]
-    extra_extensions = ["log", "conf", "cfg"]
-```
+Add extensions to the `EXTENSIONS` array in
+`scripts/applescript/ghostty-nvim/build-ghostty-nvim-app.sh`, then rerun
+`mise run setup-ghostty`.
 
 ## Troubleshooting
 
@@ -86,5 +84,5 @@ If you've changed settings or encounter issues:
 
 ```bash
 # Rebuild the app
-chezmoi apply --force-refresh-externals
+mise run setup-ghostty
 ```

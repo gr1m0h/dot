@@ -18,7 +18,7 @@
     },
     {
       "matchManagers": ["custom.regex"],
-      "matchFileNames": ["home/dot_config/nvim/**/*.lua"],
+      "matchFileNames": ["home/.config/nvim/**/*.lua"],
       "groupName": "vimpin-pinned",
       "addLabels": ["vimpin", "neovim"]
     }

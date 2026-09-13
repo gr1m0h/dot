@@ -13,14 +13,28 @@ symlinks or a separate generated tree; you just edit your real dotfiles.
 
 ## Layout
 
-| What | Where |
-|------|-------|
-| Source of truth | `~/.config/mise/config.toml` (`[tools]` / `[tasks]` / `[bootstrap]` / `[dotfiles]`) |
-| Machine-local secrets (never tracked) | `~/.env` (sourced from `~/.zshenv`) |
-| Machine-local overrides (never tracked) | `*.local` files sourced by their base file |
-| Template sources (value-level diffs) | `~/.dotfiles/` (`dotfiles.root`) |
-| History store | `~/.local/state/mise/history/repo.git` (bare) |
-| Remote | `github.com/gr1m0h/dot` branch `mise-sync` |
+| What                                    | Where                                                                               |
+| --------------------------------------- | ----------------------------------------------------------------------------------- |
+| Source of truth                         | `~/.config/mise/config.toml` (`[tools]` / `[tasks]` / `[bootstrap]` / `[dotfiles]`) |
+| Machine-local secrets (never tracked)   | `~/.env` (sourced from `~/.zshenv`)                                                 |
+| Machine-local overrides (never tracked) | `*.local` files sourced by their base file                                          |
+| Template sources (value-level diffs)    | `~/.dotfiles/` (`dotfiles.root`)                                                    |
+| History store (real sync target)        | `~/.local/state/mise/history/repo.git` (bare), pushed to branch `mise-sync`         |
+| This repo's `home/` tree                | human-readable review mirror only (see below) — not read by mise                    |
+
+### This repository's `home/` tree
+
+`home/` mirrors real `$HOME` paths 1:1 (`home/.config/nvim/init.lua` ==
+`~/.config/nvim/init.lua`), with no chezmoi-style `dot_`/`executable_`/
+`private_` name encoding — mise needs none of that, since it manages files in
+place rather than rendering them from an encoded source tree.
+
+mise never reads this tree: the actual tracked content and its history live
+in the `mise-sync` branch (pushed by `mise bootstrap dotfiles sync`) and on
+each live machine. `home/` exists purely so changes are reviewable as a normal
+git diff/PR on the default branch. It is refreshed by copying from the live
+files (see `scripts/sync-claude.sh` for the `~/.claude` example) and is not
+guaranteed to be byte-identical to the live files between refreshes.
 
 ## Install on a new machine
 
@@ -44,14 +58,14 @@ mise bootstrap
 
 ### Coming from chezmoi
 
-| chezmoi | mise |
-|---------|------|
-| `chezmoi apply` (repo → this PC) | `mise bootstrap dotfiles sync && mise bootstrap dotfiles pull` |
-| `chezmoi add <file>` (this PC → repo) | just edit (auto-saved), then `mise bootstrap dotfiles sync` |
-| `chezmoi update` | `mise bootstrap dotfiles sync && mise bootstrap dotfiles pull` |
-| `chezmoi diff` | `mise bootstrap dotfiles diff` |
-| `chezmoi edit <file>` | edit directly (auto-saved) or `mise bootstrap dotfiles edit <file>` |
-| `chezmoi managed` | `mise bootstrap dotfiles status` |
+| chezmoi                               | mise                                                                |
+| ------------------------------------- | ------------------------------------------------------------------- |
+| `chezmoi apply` (repo → this PC)      | `mise bootstrap dotfiles sync && mise bootstrap dotfiles pull`      |
+| `chezmoi add <file>` (this PC → repo) | just edit (auto-saved), then `mise bootstrap dotfiles sync`         |
+| `chezmoi update`                      | `mise bootstrap dotfiles sync && mise bootstrap dotfiles pull`      |
+| `chezmoi diff`                        | `mise bootstrap dotfiles diff`                                      |
+| `chezmoi edit <file>`                 | edit directly (auto-saved) or `mise bootstrap dotfiles edit <file>` |
+| `chezmoi managed`                     | `mise bootstrap dotfiles status`                                    |
 
 ### Apply repo → this PC (like `chezmoi apply` / `update`)
 

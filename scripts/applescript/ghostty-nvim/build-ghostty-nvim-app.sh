@@ -4,18 +4,17 @@
 # Usage:
 #   build-ghostty-nvim-app.sh [APPLESCRIPT]
 #
-# APPLESCRIPT defaults to the chezmoi-managed copy at
-# ~/.local/share/chezmoi-scripts/Ghostty-Nvim.applescript (deployed by
-# `chezmoi apply`). The script is also invoked by
-# home/.chezmoiscripts/run_onchange_07-setup-ghostty-nvim-app.sh.tmpl.
+# APPLESCRIPT defaults to the mise-tracked copy at
+# ~/.local/share/ghostty-nvim/Ghostty-Nvim.applescript. The script is also
+# invoked by the `setup-ghostty` mise task (see mise run setup-ghostty).
 
 set -euo pipefail
 
-APPLESCRIPT="${1:-${HOME}/.local/share/chezmoi-scripts/Ghostty-Nvim.applescript}"
+APPLESCRIPT="${1:-${HOME}/.local/share/ghostty-nvim/Ghostty-Nvim.applescript}"
 
 if [ ! -f "$APPLESCRIPT" ]; then
     echo "❌ AppleScript not found: $APPLESCRIPT" >&2
-    echo "   Run 'chezmoi apply' first, or pass an explicit path." >&2
+    echo "   Run 'mise bootstrap dotfiles pull' first, or pass an explicit path." >&2
     exit 1
 fi
 

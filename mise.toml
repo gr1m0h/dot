@@ -5,10 +5,10 @@
 #   mise bootstrap dotfiles sync   # publish/fetch
 #   mise bootstrap dotfiles pull   # apply incoming changes to live files
 
-# Reflect the live ~/.claude config back into this repo's home/dot_claude/.
+# Reflect the live ~/.claude config back into this repo's home/.claude/.
 # Does not commit — review with `git diff` afterwards.
 [tasks.sync-claude]
-description = "reflect live ~/.claude config into home/dot_claude/"
+description = "reflect live ~/.claude config into home/.claude/"
 run = "bash scripts/sync-claude.sh"
 
 [tasks.sync-claude-dry]
