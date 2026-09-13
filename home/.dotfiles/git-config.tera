@@ -3,7 +3,7 @@
   email = {{ env.GIT_EMAIL }}
   signingkey = {{ env.GIT_SIGNINGKEY }}
 [core]
-  editor = nvim -c "set fenc=utf-8"
+  editor = nvim -c \"set fenc=utf-8\"
   diff = auto
   status = auto
   branch = auto
