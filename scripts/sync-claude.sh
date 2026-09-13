@@ -2,13 +2,14 @@
 #
 # sync-claude.sh — reflect the live ~/.claude config back into this dotfiles repo.
 #
-# Copies only the tracked, shareable subset of ~/.claude into home/dot_claude/.
+# Copies only the tracked, shareable subset of ~/.claude into home/.claude/.
 # Runtime data (projects/, sessions/, history.jsonl, backups/, cache/ ...) and
 # machine-local files (settings.local.json) are never touched.
 #
 # This does NOT commit anything — review the result with `git diff` and commit
-# yourself. After committing & pushing, the chezmoi source still needs the usual
-# `chezmoi update` / `chezmoi apply` to propagate to other machines.
+# yourself. This repo copy is a human-readable mirror for review; the live
+# ~/.claude files are already tracked in place and reach other machines via
+# `mise bootstrap dotfiles sync` / `mise bootstrap dotfiles pull`.
 #
 # Usage:
 #   scripts/sync-claude.sh         # sync (with --delete to mirror removals)
@@ -31,7 +32,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 SRC="${HOME}/.claude"
-DST="${REPO_ROOT}/home/dot_claude"
+DST="${REPO_ROOT}/home/.claude"
 
 if [[ ! -d "$SRC" ]]; then
   echo "error: source not found: $SRC" >&2
@@ -42,7 +43,7 @@ if [[ ! -d "$DST" ]]; then
   exit 1
 fi
 
-# Tracked top-level entries — must mirror what lives in home/dot_claude/.
+# Tracked top-level entries — must mirror what lives in home/.claude/.
 # settings.local.json is intentionally absent (machine-local; never synced).
 ITEMS=(
   agents
@@ -90,5 +91,5 @@ done
 
 echo
 echo "Done. Review changes:"
-echo "  git -C \"$REPO_ROOT\" status home/dot_claude"
-echo "  git -C \"$REPO_ROOT\" diff home/dot_claude"
+echo "  git -C \"$REPO_ROOT\" status home/.claude"
+echo "  git -C \"$REPO_ROOT\" diff home/.claude"

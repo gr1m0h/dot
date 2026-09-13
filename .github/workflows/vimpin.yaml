@@ -3,7 +3,7 @@ name: vimpin
 on:
   pull_request:
     paths:
-      - "home/dot_config/nvim/**/*.lua"
+      - "home/.config/nvim/**/*.lua"
   workflow_dispatch:
 
 permissions:
@@ -17,15 +17,15 @@ jobs:
       - uses: gr1m0h/vimpin-action@main
         with:
           mode: check
-          paths: home/dot_config/nvim/lua/plugins
+          paths: home/.config/nvim/lua/plugins
       - uses: gr1m0h/vimpin-action@main
         with:
           mode: no-api
-          paths: home/dot_config/nvim/lua/plugins
+          paths: home/.config/nvim/lua/plugins
       - uses: gr1m0h/vimpin-action@main
         with:
           mode: verify-check
-          paths: home/dot_config/nvim/lua/plugins
+          paths: home/.config/nvim/lua/plugins
 
   update:
     if: github.event_name == 'workflow_dispatch'
@@ -39,7 +39,7 @@ jobs:
         id: vimpin
         with:
           mode: update
-          paths: home/dot_config/nvim/lua/plugins
+          paths: home/.config/nvim/lua/plugins
       - if: steps.vimpin.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
