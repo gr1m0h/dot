@@ -304,7 +304,7 @@ echo "MCP setup completed!"
 '''
 
 [tasks.setup-ghostty]
-description = "Build Ghostty-Nvim.app from the rendered AppleScript"
+description = "Build Ghostty-Nvim.app from the tracked AppleScript"
 sources = ["~/.local/share/ghostty-nvim/Ghostty-Nvim.applescript", "~/.local/share/ghostty-nvim/build-ghostty-nvim-app.sh"]
 outputs = ["~/Applications/Ghostty-Nvim.app/Contents/Info.plist"]
 run = "bash ~/.local/share/ghostty-nvim/build-ghostty-nvim-app.sh ~/.local/share/ghostty-nvim/Ghostty-Nvim.applescript"
@@ -343,9 +343,10 @@ builtin = "history-watch"
 "~/.config/zsh/scripts" = { mode = "track" }
 "~/.editorconfig" = { mode = "track" }
 "~/.hammerspoon/init.lua" = { mode = "track" }
-# mmcp: render from a placeholder template; real token comes from env
-# (config.local.toml, machine-local). The template source is tracked (safe to
-# publish); the rendered ~/.mmcp.json with the real token is NOT tracked.
-"~/.mmcp.json" = { mode = "template", source = "~/.dotfiles/.mmcp.json" }
+# mmcp: the token is supplied by the shell environment (~/.env), not written in
+# the file, so the file carries no secret and can be tracked directly.
+"~/.mmcp.json" = { mode = "track" }
+"~/.local/share/ghostty-nvim/Ghostty-Nvim.applescript" = { mode = "track" }
+"~/.local/share/ghostty-nvim/build-ghostty-nvim-app.sh" = { mode = "track" }
 "~/.serena/serena_config.yml" = { mode = "track" }
 "~/.zshenv" = { mode = "track" }

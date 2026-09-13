@@ -146,6 +146,24 @@
       "variants": []
     },
     {
+      "path": "home/.local/share/ghostty-nvim/Ghostty-Nvim.applescript",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
+      "path": "home/.local/share/ghostty-nvim/build-ghostty-nvim-app.sh",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
+      "path": "home/.mmcp.json",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
       "path": "home/.serena/serena_config.yml",
       "autosave": true,
       "encrypt": false,

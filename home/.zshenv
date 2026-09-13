@@ -18,3 +18,6 @@ export UV_CACHE_DIR=$PACKAGES/uv/cache
 export UV_TOOL_DIR=$PACKAGES/uv/tools
 export UV_PYTHON_INSTALL_DIR=$PACKAGES/uv/python
 export GEM_HOME=$PACKAGES/ruby
+
+# Load machine-local secrets (not tracked) for MCP servers, etc.
+[ -f "$HOME/.env" ] && source "$HOME/.env"
