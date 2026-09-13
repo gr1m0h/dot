@@ -80,12 +80,6 @@
       "variants": []
     },
     {
-      "path": "home/.config/git/config",
-      "autosave": true,
-      "encrypt": false,
-      "variants": []
-    },
-    {
       "path": "home/.config/git/ignore",
       "autosave": true,
       "encrypt": false,
@@ -129,6 +123,12 @@
     },
     {
       "path": "home/.config/zsh/scripts",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
+      "path": "home/.dotfiles/git-config.tera",
       "autosave": true,
       "encrypt": false,
       "variants": []

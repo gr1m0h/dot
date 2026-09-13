@@ -1,9 +1,9 @@
 [user]
-  name = d4rj3311n6
-  email = dev@grimoh.net
-  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDhKI4Vl3+Vp/T/edqCcmHbRjn0eQoL6d2nGn77o/Efb
+  name = {{ env.GIT_NAME }}
+  email = {{ env.GIT_EMAIL }}
+  signingkey = {{ env.GIT_SIGNINGKEY }}
 [core]
-  editor = nvim -c \"set fenc=utf-8\"
+  editor = nvim -c "set fenc=utf-8"
   diff = auto
   status = auto
   branch = auto
@@ -35,7 +35,7 @@
 [commit]
   gpgsign = true
 [ghq]
-  root = /Users/d4rj3311n6/Documents/workspace
+  root = {{ env.HOME }}/Documents/workspace
 [gpg]
   format = ssh
 [gpg "ssh"]
