@@ -331,7 +331,8 @@ builtin = "history-watch"
 "~/.claude/statusline.sh" = { mode = "track" }
 "~/.config/bat/config" = { mode = "track" }
 "~/.config/ghostty/config" = { mode = "track" }
-"~/.config/git/config" = { mode = "track" }
+"~/.config/git/config" = { mode = "template", source = "~/.dotfiles/git-config.tera" }
+"~/.dotfiles/git-config.tera" = { mode = "track" }
 "~/.config/git/ignore" = { mode = "track" }
 "~/.config/mise/config.toml" = { mode = "track" }
 "~/.config/nvim" = { mode = "track" }
