@@ -37,4 +37,4 @@ If build fails:
 - Use `worktree.symlinkDirectories` for node_modules/vendor
 - Work in one package at a time
 - Use subagents for cross-package exploration
-- Nested CLAUDE.md: root = global, package = specific
+- Nested CLAUDE.md / AGENTS.md: root = global, package = specific (a package `AGENTS.md` loads on demand when Claude reads a file there)

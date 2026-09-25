@@ -422,6 +422,11 @@
     "type": "command",
     "command": "\"$HOME\"/.claude/statusline.sh"
   },
+  "pluginConfigs": {
+    "agents-md@builtin": {
+      "options": { "instructionFiles": "claude-md-and-agents-md" }
+    }
+  },
   "enabledPlugins": {
     "sreaas@topotal": true,
     "case-reflect@topotal": true,

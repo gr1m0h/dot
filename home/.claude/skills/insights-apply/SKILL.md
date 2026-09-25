@@ -64,7 +64,7 @@ Translate the located insights report into a self-contained **Japanese** HTML fi
   **target file(s)** under `~/.claude/`, and the **concrete change** (diff-level if possible).
 - Cross-check against the CURRENT config: if a recommendation is already satisfied, mark it
   **already-covered** (recommend skip); if it is project-specific, mark it **project-scoped**
-  (recommend it go in the project's `.claude/CLAUDE.md`, not global).
+  (recommend it go in the project's `AGENTS.md` — or `.claude/CLAUDE.md` if Claude-only — not global).
 - Mark anything ambiguous or unverifiable — prefer asking over guessing (the user's
   "Verification Before Claims" rule).
 

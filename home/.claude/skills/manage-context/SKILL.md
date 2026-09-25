@@ -12,7 +12,7 @@ Analyze and optimize the current session's context usage and project memory.
 ## Dynamic Context
 
 - Memory files: !`find .claude/memory -type f 2>/dev/null | head -20 || echo "No memory files found"`
-- CLAUDE.md size: !`wc -l .claude/CLAUDE.md 2>/dev/null || echo "Not found"`
+- Instruction files size: !`ls CLAUDE.md .claude/CLAUDE.md CLAUDE.local.md AGENTS.md .claude/AGENTS.md 2>/dev/null | xargs -r wc -l`
 - Rules files: !`find .claude/rules -type f -name '*.md' 2>/dev/null | head -10 || echo "No rules found"`
 - Skills count: !`ls -d .claude/skills/*/ 2>/dev/null | wc -l || echo "0"`
 - Hooks: !`ls .claude/hooks/ 2>/dev/null | head -10 || echo "No hooks"`
@@ -36,7 +36,7 @@ Verify CLAUDE.md efficiency:
 - Verify all @file references resolve correctly
 - Identify inline content that should be moved to @references
 - Ensure IMPORTANT: directives are current and necessary
-- Check for duplicated information between CLAUDE.md and rules/
+- Check for duplicated information between CLAUDE.md, AGENTS.md and rules/ (with `claude-md-and-agents-md`, both files load — content copied between them is paid twice; prefer an `@AGENTS.md` import)
 
 ### 3. Memory Optimization
 

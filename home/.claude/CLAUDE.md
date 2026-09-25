@@ -63,6 +63,12 @@ On-demand skills trigger from their own descriptions; non-obvious routing only:
 - SREaaS ops → `/deepwork` (大きめ案件タスクの直列プル: intake grill→prefetch→深堀り, WIP=1), `/batch` (🟢機械/ラバースタンプの水平投入), `/investigation-report` (調査→報告書); 夜間ドラフトは Desktop ルーチンのプロンプトで `/sreaas:task` `/sreaas:monthly` を draft-only 実行
 - `/audit-supply-chain` は license compliance 込み · Agents → `~/.claude/agents/`
 
+## Project Instructions (AGENTS.md)
+
+- Claude Code reads project `AGENTS.md` natively; `settings.json` sets `instructionFiles: claude-md-and-agents-md`, so a repo's `CLAUDE.md` and `AGENTS.md` both load (imports are de-duplicated).
+- New project instructions → write `AGENTS.md` (shared with Codex etc.). Add a `CLAUDE.md` only for Claude-specific extras, starting with `@AGENTS.md`; never copy content between the two.
+- Global instructions stay in `~/.claude/CLAUDE.md` — there is no user-level `AGENTS.md` for Claude Code.
+
 ## Delegation & Parallelism
 
 - **並列は機械に、直列は人間に (WIP=1 for deep work).** The human holds ONE deep task at a time; machine parallelism is confined to _warming that single task_, never spread across tasks the human must juggle. Deep work (read→understand→hands-on) can't be rubber-stamped or truly parallelised in one head — context-switch tax + attention residue erase the gain. Parallelism is a property of the machine, seriality a property of the human.

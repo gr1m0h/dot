@@ -29,6 +29,7 @@
 - `CLAUDE_CODE_SUBAGENT_MODEL: sonnet` — subagent は調査・実装・レビューの実務を担うため
 - 権限: allow 70（開発ツールチェーン）/ deny 57（破壊的操作・secrets・PR/Issue 自動コメント禁止 — `gh api` のコメント POST はフラグ順序・`-f body=` 形式まで網羅）/ ask 32（push・デプロイ・依存追加・`npx` = 任意リモートパッケージ実行のため）
 - hooks は 14 種のイベントに配線（[Hooks](#hooks) 参照）
+- `pluginConfigs["agents-md@builtin"].instructionFiles: claude-md-and-agents-md` — プロジェクトの `CLAUDE.md` と `AGENTS.md` を両方ロード（デフォルトは「`CLAUDE.md` があれば `AGENTS.md` は読まない」）。user settings でのみ有効。Claude Code v2.1.277+、テレメトリ無効環境では v2.1.281+ が必要
 - プラグイン（topotal marketplace）: `sreaas` · `case-reflect` · `proposal-review` · `brainstorming`
 
 ## Rules
