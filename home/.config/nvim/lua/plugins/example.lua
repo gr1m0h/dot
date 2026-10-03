@@ -43,7 +43,7 @@ return {
   -- change some telescope options and a keymap to browse plugin files
   {
     "nvim-telescope/telescope.nvim",
-    commit = "3333a52ff548ba0a68af6d8da1e54f9cd96e9179", -- tag: v0.2.1
+    commit = "5255aa27c422de944791318024167ad5d40aad20", -- tag: v0.2.2
     keys = {
       -- add a keymap to browse plugin files
       -- stylua: ignore
@@ -67,7 +67,7 @@ return {
   -- add pyright to lspconfig
   {
     "neovim/nvim-lspconfig",
-    commit = "f6738ef65dabade340b473d4ff2a1ad3352c10e7", -- tag: v2.9.0
+    commit = "4d363f93c3581b9212a24f7a830d7590b3f050af", -- tag: v2.12.0
     ---@class PluginLspOpts
     opts = {
       ---@type lspconfig.options
@@ -81,7 +81,7 @@ return {
   -- add tsserver and setup with typescript.nvim instead of lspconfig
   {
     "neovim/nvim-lspconfig",
-    commit = "f6738ef65dabade340b473d4ff2a1ad3352c10e7", -- tag: v2.9.0
+    commit = "4d363f93c3581b9212a24f7a830d7590b3f050af", -- tag: v2.12.0
     dependencies = {
       "jose-elias-alvarez/typescript.nvim",
       init = function()
