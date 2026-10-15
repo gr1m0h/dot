@@ -1,12 +1,21 @@
 #!/bin/sh
 #
-# Minimal installer for gr1m0h/dot using mise dotfiles
+# Minimal installer for gr1m0h/dot — one command on a new machine:
+#
+#   curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/install.sh | sh
+#
+# main's home/ tree is the single source of truth: this script installs mise,
+# clones the repository, materialises home/ onto $HOME (apply-main), then runs
+# the full machine setup (mise bootstrap).
 #
 set -e
 
+REPO_HTTPS="https://github.com/gr1m0h/dot.git"
+REPO_DIR="$HOME/Documents/workspace/github.com/gr1m0h/dot"
+
 echo ""
 echo "====================================="
-echo "    gr1m0h/dot mise installer"
+echo "    gr1m0h/dot installer"
 echo "====================================="
 echo ""
 
@@ -25,18 +34,28 @@ if ! command -v mise >/dev/null 2>&1; then
     echo "Error: mise installation failed"
     exit 1
 fi
-
 echo "mise is installed at: $(command -v mise)"
 echo ""
 
-# NOTE: provide per-PC secrets BEFORE adopting (see README "Secrets"):
-#   ~/.env  ->  export NOTION_TOKEN="..."   (sourced by ~/.zshenv)
+# Clone (or update) the repository
+if [ ! -d "$REPO_DIR/.git" ]; then
+    echo "Cloning gr1m0h/dot..."
+    mkdir -p "$(dirname "$REPO_DIR")"
+    git clone "$REPO_HTTPS" "$REPO_DIR"
+else
+    echo "Repository already present; fetching main..."
+    git -C "$REPO_DIR" fetch origin main
+fi
 
-# Adopt dotfiles from the mise-sync transport branch, then run full machine setup.
-echo "Adopting dotfiles from gr1m0h/dot (mise-sync branch)..."
-mise bootstrap --adopt 'ssh://git@github.com/gr1m0h/dot.git?ref=mise-sync'
+# NOTE: template rendering (git config, mmcp) reads per-PC secrets from
+# ~/.env (sourced by ~/.zshenv) — see README "Secrets". Create it before or
+# after this script and rerun `mise bootstrap`:
+#   export NOTION_TOKEN=... GIT_NAME=... GIT_EMAIL=... GIT_SIGNINGKEY=...
 
-echo "Running machine setup (Homebrew, packages, macOS, Docker, MCP)..."
+echo "Applying main's home/ tree onto \$HOME..."
+python3 -B "$REPO_DIR/scripts/apply-main.py"
+
+echo "Running machine setup (Homebrew, packages, macOS, templates, tools)..."
 mise bootstrap
 
 echo ""
@@ -45,4 +64,4 @@ echo "    Installation completed!"
 echo "====================================="
 echo ""
 echo "Restart your terminal for all changes to take effect."
-echo "To apply changes merged on main later:   mise dot sync && mise dot pull"
+echo "Daily loop:  mise run propose  (share via PR)  /  mise run apply-main  (take in)"

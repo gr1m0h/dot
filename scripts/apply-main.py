@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
 """apply-main.py — apply origin/main's home/ tree onto this machine's live files.
 
-The repo -> live direction (reverse of sync-agent-configs). mise only syncs the
-mise-sync transport branch, so a change merged on main reaches machines by
-being applied to one machine's live files and published. This script is that
-bridge:
+The repo -> live direction (reverse of propose). main's home/ tree is the
+single source of truth; every machine takes merged changes in with:
 
   mise run apply-main      # fetch origin/main, apply tracked paths to $HOME
-  mise dot sync            # publish the new state to mise-sync
+  mise bootstrap           # if [tools]/[dotfiles]/templates changed
 
-Run it only to take in a change that was just merged on main — daily edits
-travel through mise directly and can be AHEAD of the home/ mirror, so a
-"just in case" run could regress live files to an older mirrored state.
+A local edit that was never proposed (see propose.py) differs from main and
+would be overwritten — propose it first, or recover with `mise dot rollback`.
 
 Scope and safety:
 - Only paths declared with mode = "track" in [dotfiles] of the MERGED
@@ -93,7 +90,6 @@ def main() -> int:
                 total += updated
     if total:
         print(f"\n{total} file(s) updated from origin/main.")
-        print("Publish with: mise dot sync")
         print("Run `mise bootstrap` if [tools]/[dotfiles]/templates changed.")
     else:
         print("live files already match origin/main.")

@@ -49,8 +49,8 @@ The following extensions are supported by default:
 ### Adding Extensions
 
 Add extensions to the `EXTENSIONS` array in
-`scripts/applescript/ghostty-nvim/build-ghostty-nvim-app.sh`, then rerun
-`mise run setup-ghostty`.
+`home/.local/share/ghostty-nvim/build-ghostty-nvim-app.sh` (the live copy is
+`~/.local/share/ghostty-nvim/`), then rerun `mise run setup-ghostty`.
 
 ## Troubleshooting
 

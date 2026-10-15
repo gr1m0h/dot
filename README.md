@@ -7,20 +7,13 @@ Files are managed **in place** — mise tracks the live files and saves history
 automatically. There are no symlinks or a separate generated tree; you just
 edit your real dotfiles.
 
-Two branches play different roles:
-
-- **`mise-sync`** — the machine transport branch, created and owned by mise
-  (it carries mise's enrollment metadata; mise can only sync a branch it
-  created itself — an existing content branch like `main` cannot be
-  connected). This is the primary route: daily edits travel live → mise-sync
-  → live, with no PR involved.
-- **`main`** — the reviewed repository. Its `home/` tree is a
-  showcase/review mirror of the live files, and the entry point for
-  repo-side changes (Renovate, reviewed edits); those enter the mise world
-  once via `mise run apply-main`. mise never reads or writes `main`.
-
-Nothing is published or applied automatically — every network-touching step
-is a command you run (see [Sync is manual](#sync-is-manual-policy)).
+**`main`'s `home/` tree is the single source of truth.** mise is not
+connected to any origin: its history stays on each machine (autosave,
+rollback, undo), and all sharing between machines goes through this
+repository with two tasks — `mise run propose` (live → `home/`, then PR) and
+`mise run apply-main` (merged `home/` → live). Nothing moves over the
+network except git operations you run yourself
+(see [No remote sync](#no-remote-sync-policy)).
 
 - Live tracking + auto-save history: `[dotfiles]` in `~/.config/mise/config.toml`
 - Machine setup (Homebrew, packages, macOS defaults, Docker, MCP): `[tasks]` + the `bootstrap` task
@@ -28,42 +21,31 @@ is a command you run (see [Sync is manual](#sync-is-manual-policy)).
 
 ## Cheat sheet
 
-Three rules cover the whole operation.
+Two commands cover the whole operation.
 
-**Rule 1 — daily dotfile edits travel through mise only (no PR).**
+**Share a change** (edited live files on this machine):
 
 ```sh
-# on the machine where you edited (the watcher already checkpointed it):
-mise dot status                    # optional: review what will be published
-mise dot sync                      # publish to mise-sync
-# on every other machine, whenever you next use it:
-mise dot sync && mise dot pull
+mise run propose                   # mirror live tracked files into home/
+git diff                           # review (gitignored files never get copied)
+git switch -c <branch> && git add -A && git commit && gh pr create
+# merge the PR
 ```
 
-**Rule 2 — repo-side merges (Renovate bumps, reviewed `home/` changes) are
-taken in once, on any ONE machine.**
+**Take in merged changes** (on every machine, including after Renovate):
 
 ```sh
 mise run apply-main                # fetch origin/main, apply home/ -> live
-mise dot sync                      # publish to mise-sync
 mise bootstrap                     # if [tools]/[dotfiles]/templates changed
-# other machines: mise dot sync && mise dot pull
 ```
 
-**Rule 3 — `home/` on main is a showcase/review mirror, not an apply
-source.** Refresh it when you want a change reviewed or visible
-(`mise run sync-claude` / `sync-agent-configs`, or a plain `cp`), then PR.
-Because Rule 1 skips main, the mirror can lag behind live — so run
-`apply-main` only to take in a change that was **just merged**, never
-"just in case" (a stale mirror would roll live files back).
+One rule of order: **propose local edits before running apply-main** — an
+un-proposed edit differs from `main` and would be overwritten (recoverable
+with `mise dot rollback`; the watcher checkpointed it).
 
-Machine setup, by situation:
-
-| Situation | What to run |
-| --- | --- |
-| Brand-new machine | `sh install.sh` ([details](#install-on-a-new-machine)) |
-| Existing machine whose local history is unrelated to `mise-sync` | `mise bootstrap --adopt 'ssh://git@github.com/gr1m0h/dot.git?ref=mise-sync' --replace-history --take-remote-all --yes`, then `mise bootstrap` |
-| First machine ever (no `mise-sync` yet) | [Connect an existing machine](#connect-an-existing-machine) |
+Machine setup: `sh install.sh` on a brand-new machine
+([details](#install-on-a-new-machine)); an existing machine just needs the
+repo cloned and the same two commands.
 
 ## Layout
 
@@ -73,9 +55,9 @@ Machine setup, by situation:
 | Machine-local secrets (never tracked)   | `~/.env` (sourced from `~/.zshenv`)                                                 |
 | Machine-local overrides (never tracked) | `*.local` files sourced by their base file                                          |
 | Template sources (value-level diffs)    | `~/.dotfiles/` (`dotfiles.root`)                                                    |
-| Local history store                     | `~/.local/state/mise/history/repo.git` — autosave checkpoints, never auto-pushed    |
-| Reviewed source of truth                | this repo's `main` branch, `home/` tree (see below)                                 |
-| Machine transport (what mise syncs)     | this repo's `mise-sync` branch (mise-created; enrollment metadata)                  |
+| Local history store                     | `~/.local/state/mise/history/repo.git` — autosave checkpoints, local only           |
+| Single source of truth                  | this repo's `main` branch, `home/` tree (see below)                                 |
+| Sharing between machines                | `mise run propose` (live → `home/`, PR) / `mise run apply-main` (`home/` → live)    |
 
 ### This repository's `home/` tree
 
@@ -84,13 +66,12 @@ Machine setup, by situation:
 `private_` name encoding — mise needs none of that, since it manages files in
 place rather than rendering them from an encoded source tree.
 
-This tree on `main` is the reviewed canonical state: every change to it is a
-PR diff someone approved. mise itself does not read it — merged changes reach
-machines by being applied to one machine's live files and published to
-`mise-sync` (see "Propagate changes merged on main" below). To propose a
-change from a machine's live files, mirror them into `home/`
-(`scripts/sync-agent-configs.sh`, or the `sync-agent-configs` / `sync-claude`
-tasks in the repo-root `mise.toml`, or a plain `cp`) and open a PR.
+This tree on `main` is the single source of truth: every change to it is a
+PR diff someone approved, and every machine materialises it onto the live
+files with `mise run apply-main`. The reverse direction is
+`mise run propose`, which mirrors the live tracked files into `home/` for a
+PR — skipping anything the repo's `.gitignore` excludes, so machine-only
+content never reaches the public tree.
 
 ### Agent configuration mirror
 
@@ -129,145 +110,84 @@ are maintained in this repository and are not overwritten by live imports.
 
 ## Install on a new machine
 
-`sh install.sh` runs steps 1, 3 and 4 below in one go (falling back to
-`curl https://mise.run | sh` when Homebrew is absent) — provide the secrets of
-step 2 yourself first. Manually:
+One command (plus the secrets you must provide yourself):
 
 ```sh
-# 1. Install mise (Homebrew)
-brew install mise
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/install.sh | sh
+```
 
-# 2. Provide per-PC secrets in ~/.env (sourced by ~/.zshenv)
+It installs mise (Homebrew, or `curl https://mise.run | sh` when Homebrew is
+absent), clones this repository, runs `apply-main` to materialise `home/`
+onto `$HOME`, and finishes with `mise bootstrap`. Template rendering (git
+config, mmcp) needs `~/.env` — create it before or right after and rerun
+`mise bootstrap`:
+
+```sh
 cat > ~/.env <<'EOF'
-export NOTION_TOKEN="ntn_xxx"   # your real token
+export NOTION_TOKEN="ntn_xxx"
+export GIT_NAME="..."
+export GIT_EMAIL="..."
+export GIT_SIGNINGKEY="..."
 EOF
-
-# 3. Adopt this repository (restores files from the mise-sync transport branch;
-#    ?ref= is required — plain --adopt would target the default branch `main`,
-#    which is not a setup repository)
-mise bootstrap --adopt 'ssh://git@github.com/gr1m0h/dot.git?ref=mise-sync'
-
-# 4. Run full machine setup (Homebrew packages, macOS defaults, Docker, MCP)
-mise bootstrap
 ```
 
-## Connect an existing machine
-
-A machine whose live dotfiles are already in place (so a plain `--adopt`
-restore is not wanted) connects to the `mise-sync` transport branch once.
-Without a connection, sync fails with `no setup repository is connected`.
-
-Make the live files current **first** (copy merged state from `main`'s
-`home/` onto the live paths), because `mise dot origin set` immediately
-captures an initial checkpoint of the live tracked files:
+The equivalent manual steps:
 
 ```sh
-mise dot save                    # checkpoint the current live state
-mise dot origin set ssh://git@github.com/gr1m0h/dot.git --branch mise-sync
-#  -> answer **No** to "Automatically publish ... AND apply ...?"
-#     (manual sharing; local autosave continues — see "Sync is manual")
-mise dot status                  # confirm the tracked set and sync state
+brew install mise
+git clone ssh://git@github.com/gr1m0h/dot.git ~/Documents/workspace/github.com/gr1m0h/dot
+cd ~/Documents/workspace/github.com/gr1m0h/dot
+python3 -B scripts/apply-main.py   # home/ -> $HOME (config.toml included)
+mise bootstrap                     # packages, defaults, templates, services, tools
 ```
 
-Branch rules (observed on mise 2026.10):
-
-- `--branch` only connects to a branch that **already exists** on the remote.
-  Bootstrapping `mise-sync` from scratch is done with plain git: push the
-  local history store's `main` as the new branch, then connect —
-
-  ```sh
-  mise dot save
-  git -C ~/.local/state/mise/history/repo.git \
-    push ssh://git@github.com/gr1m0h/dot.git refs/heads/main:refs/heads/mise-sync
-  mise dot origin set ssh://git@github.com/gr1m0h/dot.git --branch mise-sync
-  ```
-- An existing **content** branch (like `main`) can never be connected: it has
-  no enrollment metadata and mise cannot add it, so the connect dies with
-  `local and origin histories are unrelated`.
-- A later machine joining an existing `mise-sync` whose local checkpoints are
-  unrelated runs
-  `mise bootstrap --adopt 'ssh://git@github.com/gr1m0h/dot.git?ref=mise-sync' --replace-history --take-remote-all --yes`
-  — this discards its local checkpoints and takes the branch's version of
-  every differing live file (the replaced versions are saved first;
-  `mise dot undo` restores them). Untracked machine-local files like `~/.env`
-  and `*.local` are unaffected.
-
-Note: applying never runs `mise bootstrap` and never renders templates — when
-a pull brings in `[dotfiles]`/`[tools]` changes or template sources, run
-`mise bootstrap` (or `mise install`) afterwards.
+An existing machine needs no enrollment of any kind: clone the repo and use
+the same two tasks (`propose` / `apply-main`).
 
 ## Daily usage
 
-Two routes, by where the change originates:
+One loop, whichever side the change originates on:
 
 ```text
-machine-side edit (Rule 1):
-  live edit -> watcher checkpoint -> mise dot sync -> mise-sync
-            -> other machines: mise dot sync && mise dot pull
-
-repo-side merge (Rule 2):
-  PR -> merge to main -> ONE machine: mise run apply-main && mise dot sync
-            -> other machines: mise dot sync && mise dot pull
+live edit ──(mise run propose)──> home/ ──PR──> main
+main ──(mise run apply-main, every machine)──> live
 ```
 
-### Rule 1: share an edit made on this machine
+### Share an edit made on this machine
 
 Edit the live file as usual — the history watcher auto-checkpoints it locally
-(that gives you rollback). Publishing is one command:
+(that gives you rollback, not publication). To share it:
 
 ```sh
 nvim ~/.config/zsh/.zshrc              # edit; auto-saved to local history
-mise dot status                        # optional: review before publishing
-mise dot sync                          # publish to mise-sync
-```
-
-No PR is involved. Reviewing your own publication is `mise dot status`
-before `sync` — that is what manual mode is for.
-
-### Rule 2: take in a change merged on main
-
-Renovate bumps and reviewed `home/` edits live on `main`, which mise cannot
-read. One machine bridges them into the mise world right after the merge:
-
-```sh
-mise run apply-main            # fetch origin/main, apply tracked home/ paths
-mise dot sync                  # publish checkpoints to mise-sync
-mise bootstrap                 # if [tools]/[dotfiles]/templates changed
-```
-
-Every other machine then applies it:
-
-```sh
-mise dot sync                  # fetch
-mise dot pull                  # write into live files
-```
-
-`pull` runs as one recoverable transaction (reverse with `mise dot undo`).
-On conflicts — a local edit collides with an incoming change — inspect with
-`mise dot conflicts`, then decide per path with `--take-remote <path>` or
-`--keep-local <path>` and `pull` again. Applying never renders templates or
-runs tasks: follow up with `mise bootstrap` when the pull changed
-`[dotfiles]`/`[tools]` or template sources.
-
-### Rule 3: showcase changes on main when worth reviewing
-
-`home/` is refreshed from live, not the other way around. When a change
-deserves review or public visibility, mirror it and open a PR:
-
-```sh
 cd <this repo>
-mise run sync-claude                   # ~/.claude changes, or:
-cp ~/<path> home/<path>                # any other tracked file
+mise run propose                       # mirror live tracked files into home/
+git diff                               # review what would be shared
 git switch -c <branch> && git add -A && git commit && gh pr create
 ```
 
-The mirror lagging behind live is fine — it is not an apply source except
-right after a merge (Rule 2).
+`propose` copies additions and updates only and skips everything the repo's
+`.gitignore` excludes, so machine-only content (slide-deck assets,
+lazy-lock.json, runtime artifacts) never reaches the public tree. Intentional
+deletions are done with `git rm` in the same PR.
+
+### Take in changes merged on main
+
+On every machine, whenever you next use it:
+
+```sh
+mise run apply-main            # fetch origin/main, apply tracked home/ paths
+mise bootstrap                 # if [tools]/[dotfiles]/templates changed
+```
+
+`apply-main` copies additions and updates only (live-only files survive) and
+never touches the repo working tree. If it overwrote a local edit you had
+not proposed yet, the watcher's checkpoint has it: `mise dot rollback <path>`.
 
 ### Start tracking a new file
 
-Add it to `[dotfiles]` in `~/.config/mise/config.toml` on any machine — the
-config file is itself tracked, so the change propagates via Rule 1.
+Add it to `[dotfiles]` in `~/.config/mise/config.toml` (the file is itself
+tracked, so the change travels through propose/apply like any other edit).
 
 ## Command reference
 
@@ -275,53 +195,53 @@ What each command touches — live files, the network, or neither:
 
 | Command | What it does | Touches live | Network |
 | --- | --- | --- | --- |
-| `mise dot sync` | push saved checkpoints to `mise-sync`, fetch incoming ones (transport only — applies nothing) | no | yes |
-| `mise dot pull` | write fetched changes into live files (one transaction; `undo` reverses it) | yes | no |
+| `mise run propose` | mirror live tracked files into `home/` for a PR (gitignored files skipped; nothing staged) | no | no |
 | `mise run apply-main` | fetch `origin/main`, copy its tracked `home/` paths onto live (additions/updates only, never deletes) | yes | git only |
 | `mise bootstrap` | machine assembly: render templates (mmcp, git config), install `[tools]`, apply services/defaults/tasks | yes | yes |
-| watcher (`mise-history` service) | auto-checkpoint tracked files on edit — local save only, never publishes | no | no |
+| watcher (`mise-history` service) | auto-checkpoint tracked files on edit — local save only, never leaves the machine | no | no |
 
-Inspection and recovery:
+Inspection and recovery (all local):
 
 | Command | What it does |
 | --- | --- |
-| `mise dot status` | connected branch, sync mode, pending/unpublished changes, conflicts, watcher health |
-| `mise dot conflicts` | show both sides of each sync conflict |
-| `mise dot pull --take-remote <path>` / `--keep-local <path>` | resolve a conflict per path, then apply |
+| `mise dot status` | tracked set, pending changes, watcher health |
+| `mise dot history --path <path>` | browse saved versions of a file |
 | `mise dot rollback <path>` | revert one file to a checkpointed version |
-| `mise dot undo` | reverse the last pull/apply as a whole |
-| `mise dot save` | checkpoint now (the watcher normally does this; useful right before `sync`) |
+| `mise dot undo` | reverse the last apply operation as a whole |
+| `mise dot save` | checkpoint now (the watcher normally does this) |
 | `mise dot paths` | list tracked paths and capture-omitted files (e.g. credential-store false positives) |
 
-Mirroring live → repo for PRs (Rule 3):
+Narrower live→repo mirrors (subsets of `propose`):
 
 | Command | What it does |
 | --- | --- |
 | `mise run sync-claude` | copy live `~/.claude` into `home/.claude` (no commit) |
 | `mise run sync-agent-configs` | same for all agent configs (Claude, Codex, `~/.agents/skills`) |
 
-Mnemonic: **sync = transport (push/fetch, touches no files), pull = apply
-(writes files), bootstrap = assemble (renders + installs)**. Anything
-destructive is reversible via `undo` / `rollback`.
+Mnemonic: **propose = live→repo, apply-main = repo→live, bootstrap =
+assemble (renders + installs)**. Anything destructive is reversible via
+`undo` / `rollback`.
 
-### Sync is manual (policy)
+### No remote sync (policy)
 
-Machines never publish automatically and never auto-apply. At
-`mise dot origin set`, answer **No** to the
-"Automatically publish saved edits AND apply incoming changes?" prompt.
+mise's origin-sync feature is deliberately **not connected**: `mise dot
+status` should show no repository, and the `mise dot sync` / `pull` /
+`origin` commands are unused. The repository's `main` branch is the only
+remote, and only git commands you run yourself touch it.
 
-Two reasons, both grounded in this being a public repository:
+Reasons, grounded in this being a public repository:
 
-- A transient edit that momentarily contains a credential would be
-  auto-pushed and remain in public git history even after deletion. With
-  manual mode, publication happens only when you run `mise dot sync` —
-  normally right after the same change was reviewed and merged as a PR.
-- Review happens *before* anything reaches `main` and the transport branch,
-  so a bad change never propagates to other machines; with auto-sync the
-  watcher would apply it everywhere first and you would review afterwards.
+- mise can only sync a branch it created itself (its enrollment format),
+  which would mean a second, divergent copy of every tracked file on a
+  public branch — including files `.gitignore` deliberately keeps out of
+  `main`. One source of truth is simpler and safer.
+- A transient edit that momentarily contains a credential must never be
+  auto-pushed; here nothing leaves the machine until you `propose` and
+  review the diff.
 
-Local autosave is unaffected: checkpoints, `rollback` and `undo` keep
-working entirely offline.
+Local autosave is unaffected: checkpoints, `rollback` and `undo` work
+entirely offline. If a machine still has an origin connected from the old
+setup, disconnect with `mise dot origin --remove`.
 
 ## Secrets
 
@@ -333,7 +253,7 @@ Secrets are kept out of every tracked file and live only on each machine.
   `~/.dotfiles/mmcp.json.tera` is tracked, and it carries the placeholder
   `{{ env.NOTION_TOKEN }}` instead of the token
 - `mise bootstrap` renders the real token from the environment into the live
-  `~/.mmcp.json`, which itself is never synced (`mise dot pull` only applies
+  `~/.mmcp.json`, which itself is never mirrored (`apply-main` only copies
   tracked files; it never renders templates)
 
 This is the same mechanism as the git config template (see
