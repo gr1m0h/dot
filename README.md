@@ -25,6 +25,41 @@ automatically — see [Sync is manual](#sync-is-manual-policy).
 - Machine setup (Homebrew, packages, macOS defaults, Docker, MCP): `[tasks]` + the `bootstrap` task
 - Per-PC secrets stay in `~/.env` (see [Secrets](#secrets))
 
+## Cheat sheet
+
+A change made **on this machine** (live file edited; the watcher checkpoints
+it automatically):
+
+```sh
+cp ~/<path> <repo>/home/<path>     # or `mise run sync-claude` for ~/.claude
+# open a PR from that diff and merge it
+mise dot sync                      # publish (live already matches main)
+```
+
+A change merged **repo-side** (Renovate, another machine's PR, direct edits
+to `home/`):
+
+```sh
+cd <repo> && git pull
+cp home/<path> ~/<path>            # on ONE machine
+mise dot sync                      # publish to mise-sync
+```
+
+Every **other** machine, afterwards:
+
+```sh
+mise dot sync && mise dot pull     # fetch + apply
+mise bootstrap                     # only if [tools]/[dotfiles]/templates changed
+```
+
+Machine setup, by situation:
+
+| Situation | What to run |
+| --- | --- |
+| Brand-new machine | `sh install.sh` ([details](#install-on-a-new-machine)) |
+| Existing machine whose local history is unrelated to `mise-sync` | `mise bootstrap --adopt 'ssh://git@github.com/gr1m0h/dot.git?ref=mise-sync' --replace-history --take-remote-all --yes`, then `mise bootstrap` |
+| First machine ever (no `mise-sync` yet) | [Connect an existing machine](#connect-an-existing-machine) |
+
 ## Layout
 
 | What                                    | Where                                                                               |
@@ -102,8 +137,10 @@ cat > ~/.env <<'EOF'
 export NOTION_TOKEN="ntn_xxx"   # your real token
 EOF
 
-# 3. Adopt this repository (restores files from the mise-sync transport branch)
-mise bootstrap --adopt ssh://git@github.com/gr1m0h/dot.git
+# 3. Adopt this repository (restores files from the mise-sync transport branch;
+#    ?ref= is required — plain --adopt would target the default branch `main`,
+#    which is not a setup repository)
+mise bootstrap --adopt 'ssh://git@github.com/gr1m0h/dot.git?ref=mise-sync'
 
 # 4. Run full machine setup (Homebrew packages, macOS defaults, Docker, MCP)
 mise bootstrap
@@ -144,10 +181,11 @@ Branch rules (observed on mise 2026.10):
   `local and origin histories are unrelated`.
 - A later machine joining an existing `mise-sync` whose local checkpoints are
   unrelated runs
-  `mise bootstrap --adopt ssh://git@github.com/gr1m0h/dot.git --replace-history --yes`
-  — this discards its local checkpoints and restores the branch state over
-  the live files (untracked machine-local files like `~/.env` and `*.local`
-  are unaffected).
+  `mise bootstrap --adopt 'ssh://git@github.com/gr1m0h/dot.git?ref=mise-sync' --replace-history --take-remote-all --yes`
+  — this discards its local checkpoints and takes the branch's version of
+  every differing live file (the replaced versions are saved first;
+  `mise dot undo` restores them). Untracked machine-local files like `~/.env`
+  and `*.local` are unaffected.
 
 Note: applying never runs `mise bootstrap` and never renders templates — when
 a pull brings in `[dotfiles]`/`[tools]` changes or template sources, run
