@@ -22,3 +22,7 @@ run = "bash scripts/sync-agent-configs.sh --apply"
 [tasks.sync-agent-configs-dry]
 description = "preview agent configuration changes without writing"
 run = "bash scripts/sync-agent-configs.sh --dry-run"
+
+[tasks.apply-main]
+description = "apply origin/main's home/ tree onto this machine's live files (then `mise dot sync`)"
+run = "python3 -B scripts/apply-main.py"

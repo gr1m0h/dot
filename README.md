@@ -9,17 +9,18 @@ edit your real dotfiles.
 
 Two branches play different roles:
 
-- **`main`** — the human source of truth. Its `home/` tree is reviewed: every
-  change lands through a PR. mise never reads or writes `main`.
 - **`mise-sync`** — the machine transport branch, created and owned by mise
-  (it carries mise's enrollment metadata, which mise only generates when it
-  creates the branch itself — an existing content branch like `main` cannot
-  be connected directly).
+  (it carries mise's enrollment metadata; mise can only sync a branch it
+  created itself — an existing content branch like `main` cannot be
+  connected). This is the primary route: daily edits travel live → mise-sync
+  → live, with no PR involved.
+- **`main`** — the reviewed repository. Its `home/` tree is a
+  showcase/review mirror of the live files, and the entry point for
+  repo-side changes (Renovate, reviewed edits); those enter the mise world
+  once via `mise run apply-main`. mise never reads or writes `main`.
 
-The loop: merge a PR on `main` → one machine copies the merged files onto its
-live paths and runs `mise dot sync` (publishing them to `mise-sync`) → every
-other machine runs `mise dot sync && mise dot pull`. Nothing is published
-automatically — see [Sync is manual](#sync-is-manual-policy).
+Nothing is published or applied automatically — every network-touching step
+is a command you run (see [Sync is manual](#sync-is-manual-policy)).
 
 - Live tracking + auto-save history: `[dotfiles]` in `~/.config/mise/config.toml`
 - Machine setup (Homebrew, packages, macOS defaults, Docker, MCP): `[tasks]` + the `bootstrap` task
@@ -27,30 +28,34 @@ automatically — see [Sync is manual](#sync-is-manual-policy).
 
 ## Cheat sheet
 
-A change made **on this machine** (live file edited; the watcher checkpoints
-it automatically):
+Three rules cover the whole operation.
+
+**Rule 1 — daily dotfile edits travel through mise only (no PR).**
 
 ```sh
-cp ~/<path> <repo>/home/<path>     # or `mise run sync-claude` for ~/.claude
-# open a PR from that diff and merge it
-mise dot sync                      # publish (live already matches main)
-```
-
-A change merged **repo-side** (Renovate, another machine's PR, direct edits
-to `home/`):
-
-```sh
-cd <repo> && git pull
-cp home/<path> ~/<path>            # on ONE machine
+# on the machine where you edited (the watcher already checkpointed it):
+mise dot status                    # optional: review what will be published
 mise dot sync                      # publish to mise-sync
+# on every other machine, whenever you next use it:
+mise dot sync && mise dot pull
 ```
 
-Every **other** machine, afterwards:
+**Rule 2 — repo-side merges (Renovate bumps, reviewed `home/` changes) are
+taken in once, on any ONE machine.**
 
 ```sh
-mise dot sync && mise dot pull     # fetch + apply
-mise bootstrap                     # only if [tools]/[dotfiles]/templates changed
+mise run apply-main                # fetch origin/main, apply home/ -> live
+mise dot sync                      # publish to mise-sync
+mise bootstrap                     # if [tools]/[dotfiles]/templates changed
+# other machines: mise dot sync && mise dot pull
 ```
+
+**Rule 3 — `home/` on main is a showcase/review mirror, not an apply
+source.** Refresh it when you want a change reviewed or visible
+(`mise run sync-claude` / `sync-agent-configs`, or a plain `cp`), then PR.
+Because Rule 1 skips main, the mirror can lag behind live — so run
+`apply-main` only to take in a change that was **just merged**, never
+"just in case" (a stale mirror would roll live files back).
 
 Machine setup, by situation:
 
@@ -193,39 +198,41 @@ a pull brings in `[dotfiles]`/`[tools]` changes or template sources, run
 
 ## Daily usage
 
-The change loop is PR-shaped, with `mise-sync` as the transport:
+Two routes, by where the change originates:
 
 ```text
-edit (any machine or the repo directly)
-  -> mirror into home/ -> PR -> review -> merge to main
-  -> editing machine: mise dot sync        (publish; its live files already match)
-  -> every other machine: mise dot sync && mise dot pull
+machine-side edit (Rule 1):
+  live edit -> watcher checkpoint -> mise dot sync -> mise-sync
+            -> other machines: mise dot sync && mise dot pull
+
+repo-side merge (Rule 2):
+  PR -> merge to main -> ONE machine: mise run apply-main && mise dot sync
+            -> other machines: mise dot sync && mise dot pull
 ```
 
-### Change something (this PC → main)
+### Rule 1: share an edit made on this machine
 
 Edit the live file as usual — the history watcher auto-checkpoints it locally
-(that gives you rollback, not publication). To share the change, put it on
-`main` through a PR:
+(that gives you rollback). Publishing is one command:
 
 ```sh
 nvim ~/.config/zsh/.zshrc              # edit; auto-saved to local history
-cd <this repo>
-mise run sync-claude                   # ~/.claude changes, or:
-cp ~/<path> home/<path>                # any other tracked file
-git switch -c <branch> && git add -A && git commit && gh pr create
+mise dot status                        # optional: review before publishing
+mise dot sync                          # publish to mise-sync
 ```
 
-### Propagate changes merged on main
+No PR is involved. Reviewing your own publication is `mise dot status`
+before `sync` — that is what manual mode is for.
 
-After the merge, the machine whose live files already carry the change (the
-one that opened the PR) publishes it to the transport branch; a change made
-directly in the repo is first copied onto one machine's live paths:
+### Rule 2: take in a change merged on main
+
+Renovate bumps and reviewed `home/` edits live on `main`, which mise cannot
+read. One machine bridges them into the mise world right after the merge:
 
 ```sh
-cd <this repo> && git pull
-cp home/<path> ~/<path>        # only when the edit was made repo-side
+mise run apply-main            # fetch origin/main, apply tracked home/ paths
 mise dot sync                  # publish checkpoints to mise-sync
+mise bootstrap                 # if [tools]/[dotfiles]/templates changed
 ```
 
 Every other machine then applies it:
@@ -236,27 +243,66 @@ mise dot pull                  # write into live files
 ```
 
 `pull` runs as one recoverable transaction (reverse with `mise dot undo`).
-On conflicts — a local edit that never went through a PR collides with an
-incoming change — inspect with `mise dot conflicts`, then decide per path
-with `--take-remote <path>` or `--keep-local <path>` and `pull` again.
-Remember that applying never renders templates or runs tasks: follow up with
-`mise bootstrap` when the pull changed `[dotfiles]`/`[tools]` or template
-sources.
+On conflicts — a local edit collides with an incoming change — inspect with
+`mise dot conflicts`, then decide per path with `--take-remote <path>` or
+`--keep-local <path>` and `pull` again. Applying never renders templates or
+runs tasks: follow up with `mise bootstrap` when the pull changed
+`[dotfiles]`/`[tools]` or template sources.
+
+### Rule 3: showcase changes on main when worth reviewing
+
+`home/` is refreshed from live, not the other way around. When a change
+deserves review or public visibility, mirror it and open a PR:
+
+```sh
+cd <this repo>
+mise run sync-claude                   # ~/.claude changes, or:
+cp ~/<path> home/<path>                # any other tracked file
+git switch -c <branch> && git add -A && git commit && gh pr create
+```
+
+The mirror lagging behind live is fine — it is not an apply source except
+right after a merge (Rule 2).
 
 ### Start tracking a new file
 
-Add it to `[dotfiles]` in `~/.config/mise/config.toml` — via a PR like any
-other change, since that file is itself tracked.
+Add it to `[dotfiles]` in `~/.config/mise/config.toml` on any machine — the
+config file is itself tracked, so the change propagates via Rule 1.
 
-### Inspect / recover
+## Command reference
 
-```sh
-mise dot status                 # tracked set, pending diffs, sync state
-mise dot paths                  # store locations and capture-omitted files
-mise dot history --path ~/.zshrc
-mise dot rollback ~/.zshrc      # revert a file to a local checkpoint
-mise dot undo                   # reverse the last pull/apply
-```
+What each command touches — live files, the network, or neither:
+
+| Command | What it does | Touches live | Network |
+| --- | --- | --- | --- |
+| `mise dot sync` | push saved checkpoints to `mise-sync`, fetch incoming ones (transport only — applies nothing) | no | yes |
+| `mise dot pull` | write fetched changes into live files (one transaction; `undo` reverses it) | yes | no |
+| `mise run apply-main` | fetch `origin/main`, copy its tracked `home/` paths onto live (additions/updates only, never deletes) | yes | git only |
+| `mise bootstrap` | machine assembly: render templates (mmcp, git config), install `[tools]`, apply services/defaults/tasks | yes | yes |
+| watcher (`mise-history` service) | auto-checkpoint tracked files on edit — local save only, never publishes | no | no |
+
+Inspection and recovery:
+
+| Command | What it does |
+| --- | --- |
+| `mise dot status` | connected branch, sync mode, pending/unpublished changes, conflicts, watcher health |
+| `mise dot conflicts` | show both sides of each sync conflict |
+| `mise dot pull --take-remote <path>` / `--keep-local <path>` | resolve a conflict per path, then apply |
+| `mise dot rollback <path>` | revert one file to a checkpointed version |
+| `mise dot undo` | reverse the last pull/apply as a whole |
+| `mise dot save` | checkpoint now (the watcher normally does this; useful right before `sync`) |
+| `mise dot paths` | list tracked paths and capture-omitted files (e.g. credential-store false positives) |
+
+Mirroring live → repo for PRs (Rule 3):
+
+| Command | What it does |
+| --- | --- |
+| `mise run sync-claude` | copy live `~/.claude` into `home/.claude` (no commit) |
+| `mise run sync-agent-configs` | same for all agent configs (Claude, Codex, `~/.agents/skills`) |
+
+Mnemonic: **sync = transport (push/fetch, touches no files), pull = apply
+(writes files), bootstrap = assemble (renders + installs)**. Anything
+destructive is reversible via `undo` / `rollback`.
 
 ### Sync is manual (policy)
 
