@@ -33,10 +33,15 @@ mise never reads this tree: the actual tracked content and its history live
 in the `mise-sync` branch (pushed by `mise bootstrap dotfiles sync`) and on
 each live machine. `home/` exists purely so changes are reviewable as a normal
 git diff/PR on the default branch. It is refreshed by copying from the live
-files (see `scripts/sync-claude.sh` for the `~/.claude` example) and is not
-guaranteed to be byte-identical to the live files between refreshes.
+files (`mise run sync-claude` refreshes the `~/.claude` part; see the tasks in
+the repo-root `mise.toml`) and is not guaranteed to be byte-identical to the
+live files between refreshes.
 
 ## Install on a new machine
+
+`sh install.sh` runs steps 1, 3 and 4 below in one go (falling back to
+`curl https://mise.run | sh` when Homebrew is absent) — provide the secrets of
+step 2 yourself first. Manually:
 
 ```sh
 # 1. Install mise (Homebrew)
@@ -118,16 +123,20 @@ sync = "sync"
 
 ## Secrets
 
-Secrets are kept out of the tracked files entirely and supplied by the shell
-environment.
+Secrets are kept out of every tracked file and live only on each machine.
 
-- `~/.mmcp.json` is tracked but carries **no token**; its `env` block is empty
-- The real token lives in `~/.env` (never tracked), exported via `~/.zshenv`
+- The real tokens live in `~/.env` (never tracked), sourced by `~/.zshenv`
   (`[ -f "$HOME/.env" ] && source "$HOME/.env"`)
-- MCP servers started by the client inherit `NOTION_TOKEN` from the environment
+- `~/.mmcp.json` is a **template target**: only its source
+  `~/.dotfiles/mmcp.json.tera` is tracked, and it carries the placeholder
+  `{{ env.NOTION_TOKEN }}` instead of the token
+- `mise bootstrap dotfiles pull` renders the real token from the environment
+  into the live `~/.mmcp.json`, which itself is never synced
 
-Because the token is never written into a tracked file, `~/.mmcp.json` is safe
-to publish as-is.
+This is the same mechanism as the git config template (see
+[Per-machine differences](#per-machine-differences) §2). Keeping the rendered
+token in the live file — rather than relying on env inheritance — also works
+for MCP clients launched from the GUI, which never see shell exports.
 
 ## Per-machine differences
 
@@ -151,20 +160,23 @@ Use it whenever the difference can live in its own file.
 
 When only a value inside a file differs (username, email, a path containing
 `$USER`), use template mode. The template source is tracked so edits sync, and
-each machine renders its own value from `env`/`vars`.
+each machine renders its own value from `env`/`vars`. The live example in this
+repo is the git config:
 
 ```toml
 [dotfiles]
-"~/.gitconfig" = { mode = "template", source = "~/.dotfiles/gitconfig.tera" }
-"~/.dotfiles/gitconfig.tera" = { mode = "track" }
+"~/.config/git/config" = { mode = "template", source = "~/.dotfiles/git-config.tera" }
+"~/.dotfiles/git-config.tera" = { mode = "track" }
 ```
 
 ```tera
 [user]
+    name = {{ env.GIT_NAME }}
     email = {{ env.GIT_EMAIL }}
+    signingkey = {{ env.GIT_SIGNINGKEY }}
 ```
 
-The value (e.g. `GIT_EMAIL`) comes from the machine's environment (`~/.env`) or
+The values (`GIT_NAME`, `GIT_EMAIL`, …) come from the machine's environment or
 mise `vars`. This is the closest to chezmoi's templating.
 
 ### 3. Whole-file differences -> variants
