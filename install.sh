@@ -76,9 +76,21 @@ fi
 echo "Applying main's home/ tree onto \$HOME..."
 python3 -B "$REPO_DIR/scripts/apply-main.py"
 
+# gcloud's install script requires python >= 3.10, but a fresh mac only has
+# the CLT 3.9 until mise's python lands — and the parallel tools phase lets
+# gcloud race ahead of it, killing the whole bootstrap. Install python first
+# and point gcloud's installer at it (CLOUDSDK_PYTHON is honored by the
+# script; PATH makes plain python3 resolve to it as well).
+echo "Installing python first (gcloud's installer needs >= 3.10)..."
+mise install python
+MISE_PY_BIN="$(mise where python)/bin"
+PATH="$MISE_PY_BIN:$PATH"
+CLOUDSDK_PYTHON="$MISE_PY_BIN/python3"
+export PATH CLOUDSDK_PYTHON
+
 echo "Running machine setup (Homebrew, packages, macOS, templates, tools)..."
-# --yes: under `curl | sh` stdin is the script itself, so an interactive
-# prompt would consume script text as its answer and abort.
+# --yes: when this script is piped into a shell, stdin is the script itself,
+# so an interactive prompt would consume script text as its answer and abort.
 mise bootstrap --yes
 
 echo ""
