@@ -88,11 +88,28 @@ PATH="$MISE_PY_BIN:$PATH"
 CLOUDSDK_PYTHON="$MISE_PY_BIN/python3"
 export PATH CLOUDSDK_PYTHON
 
-echo "Running machine setup (Homebrew, packages, macOS, templates, tools)..."
+# Install Homebrew here, not inside bootstrap: mise runs tasks in parallel
+# with stdin detached, so the Homebrew installer's sudo can never prompt
+# there (observed: setup-homebrew died on "stdin is not a TTY"). From this
+# script we can hand it the real terminal; the setup-homebrew task then sees
+# brew installed and skips.
+if ! command -v brew >/dev/null 2>&1; then
+    echo "Installing Homebrew (sudo will ask for your password)..."
+    if [ -r /dev/tty ]; then
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" </dev/tty
+    else
+        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+fi
+if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+echo "Running machine setup (packages, macOS, templates, tools)..."
 # --yes: when this script is piped into a shell, stdin is the script itself,
 # so an interactive mise prompt would consume script text as its answer.
-# </dev/tty: the Homebrew installer runs sudo, which needs a terminal to ask
-# for the password — piped stdin isn't one, and setup-homebrew died on it.
 if [ -r /dev/tty ]; then
     mise bootstrap --yes </dev/tty
 else
