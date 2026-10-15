@@ -19,6 +19,26 @@ echo "    gr1m0h/dot installer"
 echo "====================================="
 echo ""
 
+# Template rendering (git config, mmcp) reads per-PC secrets from ~/.env.
+# A zsh session gets it via ~/.zshenv, but this script runs under sh — source
+# it explicitly. Without it `mise bootstrap` dies at the dotfiles phase,
+# before any package is installed, so check up front.
+if [ ! -f "$HOME/.env" ]; then
+    cat <<'MSG'
+Error: ~/.env not found — create it first, then rerun this script:
+
+  cat > ~/.env <<'EOF'
+export NOTION_TOKEN="ntn_xxx"
+export GIT_NAME="..."
+export GIT_EMAIL="..."
+export GIT_SIGNINGKEY="ssh-ed25519 ..."
+EOF
+MSG
+    exit 1
+fi
+# shellcheck disable=SC1091
+. "$HOME/.env"
+
 # Install mise if missing
 if ! command -v mise >/dev/null 2>&1; then
     echo "Installing mise..."
@@ -52,11 +72,6 @@ else
         echo "Warning: local main has diverged from origin/main; using it as-is"
     fi
 fi
-
-# NOTE: template rendering (git config, mmcp) reads per-PC secrets from
-# ~/.env (sourced by ~/.zshenv) — see README "Secrets". Create it before or
-# after this script and rerun `mise bootstrap`:
-#   export NOTION_TOKEN=... GIT_NAME=... GIT_EMAIL=... GIT_SIGNINGKEY=...
 
 echo "Applying main's home/ tree onto \$HOME..."
 python3 -B "$REPO_DIR/scripts/apply-main.py"
