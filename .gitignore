@@ -62,3 +62,27 @@ typings/
 
 # claude
 home/.claude/skills/slide-deck/
+
+# serena: config carries machine state (project list with client org paths,
+# auth_secret) — never publish in this public mirror
+home/.serena/
+
+# Agent review mirrors: only deliberate Codex assets belong in Git.
+home/.codex/*
+!home/.codex/AGENTS.md
+!home/.codex/agents/
+!home/.codex/hooks/
+!home/.codex/config.example.toml
+home/.agents/*
+!home/.agents/skills/
+
+# Runtime artifacts beneath otherwise shareable agent directories.
+home/.codex/**/auth.json
+home/.codex/**/*.jsonl
+home/.codex/**/*.sqlite*
+home/.agents/**/.env*
+home/.agents/**/auth.json
+home/.agents/**/*.jsonl
+home/.agents/**/*.sqlite*
+home/.agents/**/__pycache__/
+home/.agents/**/node_modules/

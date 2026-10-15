@@ -3,22 +3,20 @@
 ## API Response Format
 
 ### TypeScript
-
 ```typescript
 interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
+  success: boolean
+  data?: T
+  error?: string
   meta?: {
-    total: number;
-    page: number;
-    limit: number;
-  };
+    total: number
+    page: number
+    limit: number
+  }
 }
 ```
 
 ### Ruby
-
 ```ruby
 class ApiResponse
   attr_reader :success, :data, :error, :meta
@@ -33,7 +31,6 @@ end
 ```
 
 ### PHP
-
 ```php
 class ApiResponse {
     public function __construct(
@@ -46,7 +43,6 @@ class ApiResponse {
 ```
 
 ### Go
-
 ```go
 type ApiResponse[T any] struct {
     Success bool   `json:"success"`
@@ -66,33 +62,31 @@ type Meta struct {
 
 ```typescript
 export function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+  const [debouncedValue, setDebouncedValue] = useState<T>(value)
 
   useEffect(() => {
-    const handler = setTimeout(() => setDebouncedValue(value), delay);
-    return () => clearTimeout(handler);
-  }, [value, delay]);
+    const handler = setTimeout(() => setDebouncedValue(value), delay)
+    return () => clearTimeout(handler)
+  }, [value, delay])
 
-  return debouncedValue;
+  return debouncedValue
 }
 ```
 
 ## Repository Pattern
 
 ### TypeScript
-
 ```typescript
 interface Repository<T> {
-  findAll(filters?: Filters): Promise<T[]>;
-  findById(id: string): Promise<T | null>;
-  create(data: CreateDto): Promise<T>;
-  update(id: string, data: UpdateDto): Promise<T>;
-  delete(id: string): Promise<void>;
+  findAll(filters?: Filters): Promise<T[]>
+  findById(id: string): Promise<T | null>
+  create(data: CreateDto): Promise<T>
+  update(id: string, data: UpdateDto): Promise<T>
+  delete(id: string): Promise<void>
 }
 ```
 
 ### Ruby
-
 ```ruby
 module Repository
   def find_all(filters: {}) = raise NotImplementedError
@@ -104,7 +98,6 @@ end
 ```
 
 ### PHP
-
 ```php
 interface Repository {
     public function findAll(array $filters = []): array;
@@ -116,7 +109,6 @@ interface Repository {
 ```
 
 ### Go
-
 ```go
 type Repository[T any] interface {
     FindAll(ctx context.Context, filters Filters) ([]T, error)
@@ -130,7 +122,6 @@ type Repository[T any] interface {
 ## Skeleton Projects
 
 When implementing new functionality:
-
 1. Search for battle-tested skeleton projects
 2. Use parallel agents to evaluate options:
    - Security assessment

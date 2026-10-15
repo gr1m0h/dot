@@ -33,7 +33,6 @@ Before starting, collect the following from the user (or extract from the provid
 5. **Known actions taken** (failovers, restarts, rollbacks)
 
 If a GitHub issue URL is provided, fetch it first:
-
 ```
 gh issue view <number> --repo <owner/repo> --json title,body,labels,state
 gh api repos/<owner/repo>/issues/<number>/comments --jq '.[].body'
@@ -50,7 +49,6 @@ Collect hard metrics to establish the infrastructure-level timeline.
 #### 1.1 Compute Resources
 
 **RDS/Aurora Instance Specs:**
-
 ```sh
 aws rds describe-db-instances \
   --db-instance-identifier <INSTANCE_ID> \
@@ -59,7 +57,6 @@ aws rds describe-db-instances \
 ```
 
 **CPU Utilization (1-minute granularity for incident window):**
-
 ```sh
 aws cloudwatch get-metric-data \
   --metric-data-queries '[{"Id":"cpu","MetricStat":{"Metric":{"Namespace":"AWS/RDS","MetricName":"CPUUtilization","Dimensions":[{"Name":"DBInstanceIdentifier","Value":"<INSTANCE_ID>"}]},"Period":60,"Stat":"Average"}}]' \
@@ -67,8 +64,7 @@ aws cloudwatch get-metric-data \
   --region <REGION> --profile <PROFILE>
 ```
 
-_*CPU Credit Balance (for burstable instances db.t*):_*
-
+**CPU Credit Balance (for burstable instances db.t*):**
 ```sh
 # Only for db.t* instance classes
 pup metrics query \
@@ -85,7 +81,6 @@ pup metrics query \
 ```
 
 **Database Connections:**
-
 ```sh
 aws cloudwatch get-metric-data \
   --metric-data-queries '[{"Id":"conn","MetricStat":{"Metric":{"Namespace":"AWS/RDS","MetricName":"DatabaseConnections","Dimensions":[{"Name":"DBInstanceIdentifier","Value":"<INSTANCE_ID>"}]},"Period":300,"Stat":"Average"}}]' \
@@ -96,7 +91,6 @@ aws cloudwatch get-metric-data \
 #### 1.2 Load Balancer Metrics
 
 **ALB Response Time (Average + p95):**
-
 ```sh
 aws cloudwatch get-metric-data \
   --metric-data-queries '[
@@ -108,7 +102,6 @@ aws cloudwatch get-metric-data \
 ```
 
 **ALB Request Count + 5XX Errors:**
-
 ```sh
 aws cloudwatch get-metric-data \
   --metric-data-queries '[
@@ -122,7 +115,6 @@ aws cloudwatch get-metric-data \
 #### 1.3 ECS Metrics
 
 **Task Count + Resource Utilization:**
-
 ```sh
 aws cloudwatch get-metric-data \
   --metric-data-queries '[
@@ -137,7 +129,6 @@ aws cloudwatch get-metric-data \
 #### 1.4 RDS Events
 
 **Cluster and Instance Events (failovers, restarts, modifications):**
-
 ```sh
 aws rds describe-events --source-type db-cluster \
   --start-time <START_UTC> --end-time <END_UTC> \
@@ -151,7 +142,6 @@ aws rds describe-events --source-type db-instance \
 #### 1.5 Performance Insights
 
 **DB Load (1-minute granularity):**
-
 ```sh
 # First get DbiResourceId
 aws rds describe-db-instances \
@@ -169,7 +159,6 @@ aws pi get-resource-metrics \
 ```
 
 **Wait Events (5-minute granularity):**
-
 ```sh
 aws pi get-resource-metrics \
   --service-type RDS \
@@ -181,7 +170,6 @@ aws pi get-resource-metrics \
 ```
 
 **Top SQL:**
-
 ```sh
 aws pi get-resource-metrics \
   --service-type RDS \
@@ -199,7 +187,6 @@ Collect log-level evidence to correlate with infrastructure metrics.
 #### 2.1 Error Aggregation
 
 **By service:**
-
 ```sh
 pup logs aggregate \
   --query 'status:error' \
@@ -208,7 +195,6 @@ pup logs aggregate \
 ```
 
 **By error kind:**
-
 ```sh
 pup logs aggregate \
   --query 'status:error' \
@@ -219,7 +205,6 @@ pup logs aggregate \
 #### 2.2 Error Timeline
 
 **First errors (to pinpoint onset):**
-
 ```sh
 pup logs search \
   --query 'status:error -service:realtime -"nginx"' \
@@ -227,7 +212,6 @@ pup logs search \
 ```
 
 **Specific error patterns:**
-
 ```sh
 # Transaction timeouts
 pup logs search \
@@ -243,7 +227,6 @@ pup logs search \
 #### 2.3 Day-over-Day Comparison
 
 Compare error counts against a normal day to confirm incident specificity:
-
 ```sh
 # Incident day
 pup logs aggregate \
@@ -259,7 +242,6 @@ pup logs aggregate \
 #### 2.4 Datadog Metrics
 
 **Database-level metrics:**
-
 ```sh
 pup metrics query --query 'avg:aws.rds.queries{*}' \
   --from $((EPOCH_START * 1000)) --to $((EPOCH_END * 1000))
@@ -284,7 +266,6 @@ Identify contributing code patterns by searching local repositories.
 #### 3.1 Endpoint Identification
 
 Search for affected endpoints in the codebase:
-
 ```sh
 # Find route definitions
 grep -rn "router\.\(get\|post\|put\|delete\)" --include="*.ts" --include="*.js" | grep "<ENDPOINT_PATH>"
@@ -296,7 +277,6 @@ grep -rn "<HANDLER_NAME>" --include="*.ts" --include="*.js"
 #### 3.2 Query Analysis
 
 Identify heavy queries and ORM patterns:
-
 ```sh
 # Find raw queries
 grep -rn "queryRawUnsafe\|queryRaw\|\$queryRaw" --include="*.ts" --include="*.js"
@@ -311,7 +291,6 @@ grep -rn "<METHOD_NAME>" --include="*.ts" --include="*.js"
 #### 3.3 Client-Side Amplification
 
 Check for client-side patterns that amplify load:
-
 ```sh
 # React Query / TanStack Query settings
 grep -rn "invalidateQueries\|staleTime\|refetchOnWindowFocus\|QueryClient" --include="*.ts" --include="*.tsx"
@@ -335,7 +314,6 @@ grep -rn "connectionLimit\|min:\|max:\|idleTimeout" --include="*.ts" --include="
 Compare incident day against normal days to isolate the trigger.
 
 **3-Day CPU Comparison:**
-
 ```sh
 aws cloudwatch get-metric-data \
   --metric-data-queries '[{"Id":"cpu","MetricStat":{"Metric":{"Namespace":"AWS/RDS","MetricName":"CPUUtilization","Dimensions":[{"Name":"DBInstanceIdentifier","Value":"<INSTANCE_ID>"}]},"Period":300,"Stat":"Average"}}]' \
@@ -368,7 +346,6 @@ After data collection, structure the analysis as follows:
 ### 1. Timeline Construction
 
 Build a minute-by-minute timeline correlating:
-
 - Infrastructure metrics (CPU, connections, response time)
 - Application events (first error, error escalation)
 - Human actions (failover, scaling, restarts)
@@ -377,7 +354,6 @@ Build a minute-by-minute timeline correlating:
 ### 2. Root Cause Identification
 
 Apply the "5 Whys" method:
-
 - What was the immediate trigger?
 - What was the underlying vulnerability?
 - Why wasn't it caught earlier?
@@ -387,7 +363,6 @@ Apply the "5 Whys" method:
 ### 3. Contributing Factors
 
 Categorize into:
-
 - **Infrastructure**: Instance sizing, credit depletion, scaling limits
 - **Application**: Query patterns, connection management, retry behavior
 - **Client**: Request amplification, missing backoff/throttle
@@ -397,7 +372,6 @@ Categorize into:
 ### 4. Cascade Analysis
 
 For cascade failures, document each stage:
-
 ```
 [Trigger] → [Primary failure] → [Secondary failure] → [Amplification] → [Recovery blocker]
 ```
@@ -410,60 +384,45 @@ Generate a structured incident report:
 # Incident Report: [Title]
 
 ## Summary
-
 - **Duration**: [start] ~ [end] ([N] minutes)
 - **Impact**: [user-facing impact description]
 - **Root Cause**: [one-sentence root cause]
 - **Severity**: [P1/P2/P3/P4]
 
 ## Timeline
-
-| Time (JST) | Event | Evidence                          |
-| ---------- | ----- | --------------------------------- |
-| HH:MM      | ...   | CloudWatch / Datadog / RDS Events |
+| Time (JST) | Event | Evidence |
+|---|---|---|
+| HH:MM | ... | CloudWatch / Datadog / RDS Events |
 
 ## Root Cause Analysis
-
 [Detailed analysis with data evidence]
 
 ### Why did it happen on this specific day?
-
 [Comparative analysis against normal days]
 
 ### Cascade Failure Chain
-
 [Stage-by-stage breakdown]
 
 ## Contributing Factors
-
 ### Infrastructure
-
 ### Application
-
 ### Client
-
 ### Monitoring Gaps
 
 ## Metrics Summary
-
-| Metric | Normal | Incident Peak | Source               |
-| ------ | ------ | ------------- | -------------------- |
-| ...    | ...    | ...           | CloudWatch / Datadog |
+| Metric | Normal | Incident Peak | Source |
+|---|---|---|---|
+| ... | ... | ... | CloudWatch / Datadog |
 
 ## Remediation Recommendations
-
 ### Immediate (P0)
-
 ### Short-term (1-2 weeks)
-
 ### Medium-term (1-3 months)
 
 ## Monitoring Improvements
-
 [What to add to prevent recurrence]
 
 ## Appendix: Raw Data
-
 [Collapsed sections with full command outputs]
 ```
 

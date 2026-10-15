@@ -9,21 +9,19 @@ tags: mysql, partitioning, range, list, hash, maintenance, data-retention
 All columns used in the partitioning expression must be part of every UNIQUE/PRIMARY KEY.
 
 ## Partition Pruning
-
 The optimizer can eliminate partitions that cannot contain matching rows based on the WHERE clause ("partition pruning"). Partitioning helps most when queries frequently filter by the partition key/expression:
-
 - Equality: `WHERE partition_key = ?` (HASH/KEY)
 - Ranges: `WHERE partition_key BETWEEN ? AND ?` (RANGE)
 - IN lists: `WHERE partition_key IN (...)` (LIST)
 
 ## Types
 
-| Need                          | Type             |
-| ----------------------------- | ---------------- |
-| Time-ordered / data retention | RANGE            |
-| Discrete categories           | LIST             |
-| Even distribution             | HASH / KEY       |
-| Two access patterns           | RANGE + HASH sub |
+| Need | Type |
+|---|---|
+| Time-ordered / data retention | RANGE |
+| Discrete categories | LIST |
+| Even distribution | HASH / KEY |
+| Two access patterns | RANGE + HASH sub |
 
 ```sql
 -- RANGE COLUMNS (direct date comparisons; avoids function wrapper)
@@ -47,25 +45,20 @@ PARTITION BY HASH (user_id) PARTITIONS 8;
 ```
 
 ## Foreign Key Restrictions (InnoDB)
-
 Partitioned InnoDB tables do not support foreign keys:
-
 - A partitioned table cannot define foreign key constraints to other tables.
 - Other tables cannot reference a partitioned table with a foreign key.
 
 If you need foreign keys, partitioning may not be an option.
 
 ## When Partitioning Helps vs Hurts
-
 **Helps:**
-
 - Very large tables (millions+ rows) with time-ordered access patterns
 - Data retention workflows (drop old partitions vs DELETE)
 - Queries that filter by the partition key/expression (enables pruning)
 - Maintenance on subsets of data (operate on partitions vs whole table)
 
 **Hurts:**
-
 - Small tables (overhead without benefit)
 - Queries that don't filter by the partition key (no pruning)
 - Workloads that require foreign keys
@@ -92,7 +85,6 @@ ALTER TABLE events EXCHANGE PARTITION p2025_q1 WITH TABLE events_archive;
 ```
 
 Notes:
-
 - `REORGANIZE PARTITION` rebuilds the affected partition(s).
 - `EXCHANGE PARTITION` requires an exact structure match (including indexes) and the target table must not be partitioned.
 - `DROP PARTITION` is DDL (fast) vs `DELETE` (DML; slow on large datasets).

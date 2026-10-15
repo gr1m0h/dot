@@ -1,0 +1,49 @@
+on open theFiles
+    repeat with aFile in theFiles
+        set filePath to POSIX path of aFile
+        set fileDir to do shell script "dirname " & quoted form of filePath
+
+        tell application "Ghostty" to activate
+
+        try
+            launchGhostty(filePath, fileDir)
+        on error errorMessage
+            display dialog "Error opening file in Ghostty:" & return & return & ¬
+                "File: " & filePath & return & ¬
+                "Error: " & errorMessage buttons {"OK"} default button 1 with icon stop
+        end try
+    end repeat
+end open
+
+on run
+    tell application "Ghostty" to activate
+
+    try
+        launchGhostty("", "")
+    on error errorMessage
+        display dialog "Error opening Ghostty:" & return & return & ¬
+            "Error: " & errorMessage buttons {"OK"} default button 1 with icon stop
+    end try
+end run
+
+on launchGhostty(filePath, fileDir)
+    -- Resolve HOME at runtime so the compiled app is not tied to one machine's path.
+    set nvimPath to (system attribute "HOME") & "/.local/share/mise/shims/nvim"
+
+    -- Ghostty (macOS) wraps `-e` commands in `/usr/bin/login -flp <user>`,
+    -- so we must pass a single shell command via `zsh -lc '<cmd>'` instead of
+    -- passing the program + args as separate tokens (which login(1) misparses).
+    if filePath is "" then
+        set innerCmd to quoted form of nvimPath
+    else
+        set innerCmd to (quoted form of nvimPath) & " " & (quoted form of filePath)
+    end if
+
+    set cmd to "open -na Ghostty.app --args"
+    if fileDir is not "" then
+        set cmd to cmd & " --working-directory=" & quoted form of fileDir
+    end if
+    set cmd to cmd & " -e zsh -lc " & quoted form of innerCmd
+
+    do shell script cmd
+end launchGhostty

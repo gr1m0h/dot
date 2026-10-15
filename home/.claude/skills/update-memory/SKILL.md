@@ -24,21 +24,21 @@ Input: $ARGUMENTS (knowledge to persist, or "auto" to extract from current sessi
 
 Files in `.claude/memory/local/`:
 
-| File                    | Purpose                       | Format                 |
-| ----------------------- | ----------------------------- | ---------------------- |
-| `learnings.md`          | Reusable patterns and lessons | Markdown (categorized) |
-| `session-state.json`    | Current session context       | JSON                   |
-| `current-task.md`       | Active task description       | Markdown               |
-| `error-log.txt`         | Error history                 | Plain text             |
-| `session-metrics.jsonl` | Session performance data      | JSONL                  |
-| `edit-audit.jsonl`      | File edit history             | JSONL                  |
+| File | Purpose | Format |
+|---|---|---|
+| `learnings.md` | Reusable patterns and lessons | Markdown (categorized) |
+| `session-state.json` | Current session context | JSON |
+| `current-task.md` | Active task description | Markdown |
+| `error-log.txt` | Error history | Plain text |
+| `session-metrics.jsonl` | Session performance data | JSONL |
+| `edit-audit.jsonl` | File edit history | JSONL |
 
 ### 2. Project Memory (cross-session)
 
 Files in `.claude/memory/project/`:
 
-| File              | Purpose                      | Format   |
-| ----------------- | ---------------------------- | -------- |
+| File | Purpose | Format |
+|---|---|---|
 | `architecture.md` | System architecture overview | Markdown |
 
 ## Update Operations
@@ -59,7 +59,6 @@ Append a new learning to `.claude/memory/local/learnings.md`:
 Categories: `architecture`, `debugging`, `testing`, `tooling`, `performance`, `security`, `patterns`, `workflow`
 
 Before appending:
-
 - Search existing entries for duplicates (Grep for key terms)
 - If duplicate found: update confidence level and merge context
 - If contradicted: replace old entry with new evidence
@@ -68,7 +67,6 @@ Before appending:
 ### 2. Update Architecture
 
 Modify `.claude/memory/project/architecture.md` when:
-
 - New system components are discovered
 - Architectural decisions are made
 - Integration patterns change
@@ -102,7 +100,6 @@ Append to `.claude/memory/local/error-log.txt`:
 ### 5. Auto-Extract (when $ARGUMENTS = "auto")
 
 Analyze the current session and automatically:
-
 1. Extract learnings from completed work
 2. Update session state with current context
 3. Log any errors encountered
@@ -123,10 +120,10 @@ Analyze the current session and automatically:
 
 ### Updates Applied
 
-| Layer   | File            | Action  | Details               |
-| ------- | --------------- | ------- | --------------------- |
-| local   | learnings.md    | Added   | [Category]: [summary] |
-| project | architecture.md | Updated | [section]: [change]   |
+| Layer | File | Action | Details |
+|---|---|---|---|
+| local | learnings.md | Added | [Category]: [summary] |
+| project | architecture.md | Updated | [section]: [change] |
 
 ### Deduplication
 

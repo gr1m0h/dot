@@ -33,6 +33,9 @@ k6 = "latest"
 trivy = "latest"
 infracost = "latest"
 opentofu = "latest"
+stylua = "latest"
+mkcert = "latest"
+op = "latest"
 "npm:neovim" = "latest"
 "npm:eclint" = "latest"
 "npm:typescript" = "latest"
@@ -41,14 +44,15 @@ opentofu = "latest"
 "npm:mmcp" = "latest"
 "npm:difit" = "latest"
 "npm:@sentry/cli" = "latest"
+"npm:@openai/codex" = "latest"
 "aqua:docker/cli" = "latest"
 "aqua:docker/compose" = "latest"
 "aqua:xxxserxxx/gotop" = "latest"
 "aqua:dduan/tre" = "latest"
-"aqua:newrelic/newrelic-cli" = "latest"
 "go:github.com/go-delve/delve/cmd/dlv" = "latest"
+"ubi:gr1m0h/mdv" = "latest"
+"aqua:newrelic/newrelic-cli" = "latest"
 "github:datadog-labs/pup" = "latest"
-stylua = "latest"
 
 [settings]
 experimental = true
@@ -224,12 +228,18 @@ echo "Configuring Security settings..."
 defaults write com.apple.screensaver askForPassword -bool true
 defaults write com.apple.screensaver askForPasswordDelay -int 0
 
+echo "Configuring Language & Region..."
+defaults write NSGlobalDomain AppleLocale -string "ja_JP"
+defaults write NSGlobalDomain AppleLanguages -array "ja-JP"
+
 echo "Configuring other settings..."
-defaults write com.apple.menuextra.clock 'DateFormat' -string 'EEE d MMM HH:mm' 2>/dev/null || true
+defaults write com.apple.menuextra.clock Show24Hour -bool true
+defaults write com.apple.menuextra.clock ShowDate -bool true
+defaults write com.apple.menuextra.clock ShowDayOfWeek -bool true
 defaults write com.apple.NetworkBrowser BrowseAllInterfaces 1
 defaults write com.apple.ActivityMonitor OpenMainWindow -bool true
 defaults write com.apple.ActivityMonitor IconType -int 5
-defaults write com.apple.ActivityMonitor ShowCategory -int 0
+defaults write com.apple.ActivityMonitor ShowCategory -int 100
 defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
 defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
 
@@ -329,6 +339,14 @@ builtin = "history-watch"
 "~/.claude/settings.json" = { mode = "track" }
 "~/.claude/skills" = { mode = "track" }
 "~/.claude/statusline.sh" = { mode = "track" }
+# Agent mirror targets are read directly from this [dotfiles] table by
+# scripts/sync-agent-configs.py. Never track the entire runtime directories.
+# Raw Codex config.toml, hooks.json and accumulated default.rules stay local
+# until portable, credential-free representations have been reviewed.
+"~/.codex/AGENTS.md" = { mode = "track" }
+"~/.codex/agents" = { mode = "track" }
+"~/.codex/hooks" = { mode = "track" }
+"~/.agents/skills" = { mode = "track" }
 "~/.config/bat/config" = { mode = "track" }
 "~/.config/ghostty/config" = { mode = "track" }
 "~/.config/git/config" = { mode = "template", source = "~/.dotfiles/git-config.tera" }
@@ -344,10 +362,11 @@ builtin = "history-watch"
 "~/.config/zsh/scripts" = { mode = "track" }
 "~/.editorconfig" = { mode = "track" }
 "~/.hammerspoon/init.lua" = { mode = "track" }
-# mmcp: the token is supplied by the shell environment (~/.env), not written in
-# the file, so the file carries no secret and can be tracked directly.
-"~/.mmcp.json" = { mode = "track" }
+# mmcp: the live file carries the real token (so GUI-launched clients work),
+# therefore only the template source is tracked; the token is rendered per
+# machine from ~/.env.
+"~/.mmcp.json" = { mode = "template", source = "~/.dotfiles/mmcp.json.tera" }
+"~/.dotfiles/mmcp.json.tera" = { mode = "track" }
 "~/.local/share/ghostty-nvim/Ghostty-Nvim.applescript" = { mode = "track" }
 "~/.local/share/ghostty-nvim/build-ghostty-nvim-app.sh" = { mode = "track" }
-"~/.serena/serena_config.yml" = { mode = "track" }
 "~/.zshenv" = { mode = "track" }

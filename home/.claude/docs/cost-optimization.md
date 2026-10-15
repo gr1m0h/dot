@@ -4,17 +4,17 @@ Efficient resource usage for Claude Code sessions.
 
 ## Model Selection
 
-| Task Type                  | Model        | Rationale                                    |
-| -------------------------- | ------------ | -------------------------------------------- |
-| File exploration, lookups  | haiku        | Cheapest; strong for short-context retrieval |
-| Typo fixes, simple renames | haiku        | Minimal complexity                           |
-| Code explanation, Q&A      | haiku/sonnet | Reading-focused                              |
-| Feature implementation     | sonnet       | Balance of capability/cost                   |
-| Code review, tests         | sonnet       | Standard complexity                          |
-| Architecture design        | opus         | Complex reasoning needed                     |
-| Security audits            | opus         | Thoroughness required                        |
-| Multi-file refactoring     | opus         | Cross-file reasoning                         |
-| Subagent workers           | haiku        | `CLAUDE_CODE_SUBAGENT_MODEL=haiku`           |
+| Task Type | Model | Rationale |
+|-----------|-------|-----------|
+| File exploration, lookups | haiku | Cheapest; strong for short-context retrieval |
+| Typo fixes, simple renames | haiku | Minimal complexity |
+| Code explanation, Q&A | haiku/sonnet | Reading-focused |
+| Feature implementation | sonnet | Balance of capability/cost |
+| Code review, tests | sonnet | Standard complexity |
+| Architecture design | opus | Complex reasoning needed |
+| Security audits | opus | Thoroughness required |
+| Multi-file refactoring | opus | Cross-file reasoning |
+| Subagent workers | haiku | `CLAUDE_CODE_SUBAGENT_MODEL=haiku` |
 
 Haiku 4.5 is credible for short-context coding tasks — not just fallback.
 Re-evaluate the tier table on each model upgrade; capability/price ratios shift.
@@ -22,7 +22,6 @@ Re-evaluate the tier table on each model upgrade; capability/price ratios shift.
 ## Token Conservation
 
 ### DO
-
 - Use `/clear` after completing major tasks
 - Prefer `Glob`/`Grep` over reading entire files
 - Request specific line ranges when reading large files
@@ -33,7 +32,6 @@ Re-evaluate the tier table on each model upgrade; capability/price ratios shift.
 - `/btw` for side questions without polluting conversation history
 
 ### DON'T
-
 - Read entire codebases "just in case"
 - Keep stale context across unrelated tasks
 - Request verbose explanations for simple operations
@@ -48,7 +46,6 @@ subagent delegation are covered in `~/.claude/docs/performance.md` and the
 `/manage-context` skill — not repeated here to keep always-loaded budget lean.
 
 ### MCP Server Budget
-
 - Fewer than 10 enabled servers per project
 - Prefer CLI tools (gh, aws) over MCP equivalents when possible
 - Disable unused servers to reduce context overhead
@@ -64,13 +61,11 @@ subagent delegation are covered in `~/.claude/docs/performance.md` and the
 ## Tool Usage Efficiency
 
 ### Search Strategy
-
 - Start with `Glob` for known file patterns
 - Use `Grep` with specific patterns, not broad searches
 - Use `Task(Explore)` for open-ended exploration
 
 ### Parallel Execution
-
 - Run independent operations in parallel
 - Combine related file reads in single request
 - Batch git operations where possible
@@ -90,13 +85,13 @@ subagent delegation are covered in `~/.claude/docs/performance.md` and the
 
 ## Anti-Patterns
 
-| Anti-Pattern                          | Better Approach                                    |
-| ------------------------------------- | -------------------------------------------------- |
-| "Read all files in src/"              | "Find files matching X pattern"                    |
-| Repeated similar searches             | Cache results mentally, reference once             |
-| Exploratory reads without purpose     | State goal, let agent optimize path                |
-| Large file writes for small changes   | Use Edit tool for targeted changes                 |
-| Agent Teams for sequential tasks      | Use subagents instead                              |
-| Reading entire files "just in case"   | Grep/Glob for specific patterns                    |
+| Anti-Pattern | Better Approach |
+|--------------|-----------------|
+| "Read all files in src/" | "Find files matching X pattern" |
+| Repeated similar searches | Cache results mentally, reference once |
+| Exploratory reads without purpose | State goal, let agent optimize path |
+| Large file writes for small changes | Use Edit tool for targeted changes |
+| Agent Teams for sequential tasks | Use subagents instead |
+| Reading entire files "just in case" | Grep/Glob for specific patterns |
 | Fighting the thinking budget manually | Tune `effortLevel` (low/medium/high/xhigh) instead |
-| Bloated CLAUDE.md (>200 lines)        | Progressive disclosure via skills                  |
+| Bloated CLAUDE.md (>200 lines) | Progressive disclosure via skills |

@@ -105,22 +105,14 @@ GROUP BY hour, market_id;
 
 ```typescript
 async function bulkInsertTrades(trades: Trade[]) {
-  const values = trades
-    .map(
-      (trade) => `(
+  const values = trades.map(trade => `(
     '${trade.id}', '${trade.market_id}', '${trade.user_id}',
     ${trade.amount}, '${trade.timestamp.toISOString()}'
-  )`,
-    )
-    .join(",");
+  )`).join(',')
 
-  await clickhouse
-    .query(
-      `
+  await clickhouse.query(`
     INSERT INTO trades (id, market_id, user_id, amount, timestamp) VALUES ${values}
-  `,
-    )
-    .toPromise();
+  `).toPromise()
 }
 ```
 

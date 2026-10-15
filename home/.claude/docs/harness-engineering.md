@@ -5,7 +5,6 @@ Agent = Model + Harness. The bottleneck is never the agent's ability, but the en
 ## Session Lifecycle Protocol
 
 Every session follows this protocol:
-
 1. **Orient**: Read session-state.json, task list, git log (session-start hook handles this)
 2. **Verify baseline**: Run tests on existing code before making changes
 3. **Select ONE task**: Focus prevents context exhaustion and maintains recoverability
@@ -18,7 +17,6 @@ Every session follows this protocol:
 ## Evaluation-Driven Development
 
 Generation and evaluation are SEPARATE concerns:
-
 - Never self-assess quality — use evaluator agent or mechanical checks (linters, tests, CI)
 - Define success criteria BEFORE implementation (sprint contract with planner)
 - Weight evaluation toward agent weaknesses: design completeness, edge cases, feature fidelity
@@ -35,7 +33,6 @@ if it can be a hook, make it a hook.
 ## Mechanical Enforcement Priority
 
 Prefer enforcement that doesn't consume LLM tokens (highest to lowest reliability):
-
 1. **Linter/formatter** — fastest feedback, zero LLM tokens, deterministic
 2. **Hook guard** — pre/post tool use, structured error messages with self-correction hints
 3. **Agent evaluation** — skeptical reviewer, costs tokens but catches more nuanced issues
@@ -60,10 +57,10 @@ If a rule can be a linter check, make it a linter check. If a rule can be a hook
 
 ## Anti-Patterns
 
-| Anti-Pattern                        | Why It Fails                                                          |
-| ----------------------------------- | --------------------------------------------------------------------- |
-| Giant CLAUDE.md (>150 lines)        | Model falls back to pattern matching, ignores specific rules          |
-| Self-assessment of quality          | Agents consistently rate their own work too generously                |
-| Compaction as sole context strategy | "Context anxiety" — agents wrap up prematurely as context fills       |
-| Documentation without enforcement   | Rules without mechanical enforcement are suggestions, not constraints |
-| Overloading single agent            | Specialized agents outperform generalists on bounded tasks            |
+| Anti-Pattern | Why It Fails |
+|--------------|-------------|
+| Giant CLAUDE.md (>150 lines) | Model falls back to pattern matching, ignores specific rules |
+| Self-assessment of quality | Agents consistently rate their own work too generously |
+| Compaction as sole context strategy | "Context anxiety" — agents wrap up prematurely as context fills |
+| Documentation without enforcement | Rules without mechanical enforcement are suggestions, not constraints |
+| Overloading single agent | Specialized agents outperform generalists on bounded tasks |

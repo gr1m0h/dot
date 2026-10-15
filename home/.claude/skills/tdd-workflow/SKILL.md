@@ -34,7 +34,6 @@ Ensures all code development follows TDD principles with comprehensive test cove
 ## Testing Patterns
 
 ### Unit Test (Jest/Vitest)
-
 ```typescript
 describe('Button Component', () => {
   it('renders with correct text', () => {
@@ -52,37 +51,33 @@ describe('Button Component', () => {
 ```
 
 ### API Integration Test
-
 ```typescript
-describe("GET /api/markets", () => {
-  it("returns markets successfully", async () => {
-    const request = new NextRequest("http://localhost/api/markets");
-    const response = await GET(request);
-    expect(response.status).toBe(200);
-  });
+describe('GET /api/markets', () => {
+  it('returns markets successfully', async () => {
+    const request = new NextRequest('http://localhost/api/markets')
+    const response = await GET(request)
+    expect(response.status).toBe(200)
+  })
 
-  it("validates query parameters", async () => {
-    const request = new NextRequest(
-      "http://localhost/api/markets?limit=invalid",
-    );
-    const response = await GET(request);
-    expect(response.status).toBe(400);
-  });
-});
+  it('validates query parameters', async () => {
+    const request = new NextRequest('http://localhost/api/markets?limit=invalid')
+    const response = await GET(request)
+    expect(response.status).toBe(400)
+  })
+})
 ```
 
 ### E2E Test (Playwright)
-
 ```typescript
-test("user can search and filter markets", async ({ page }) => {
-  await page.goto("/");
-  await page.click('a[href="/markets"]');
-  await expect(page.locator("h1")).toContainText("Markets");
-  await page.fill('input[placeholder="Search markets"]', "election");
-  await page.waitForTimeout(600);
-  const results = page.locator('[data-testid="market-card"]');
-  await expect(results).toHaveCount(5, { timeout: 5000 });
-});
+test('user can search and filter markets', async ({ page }) => {
+  await page.goto('/')
+  await page.click('a[href="/markets"]')
+  await expect(page.locator('h1')).toContainText('Markets')
+  await page.fill('input[placeholder="Search markets"]', 'election')
+  await page.waitForTimeout(600)
+  const results = page.locator('[data-testid="market-card"]')
+  await expect(results).toHaveCount(5, { timeout: 5000 })
+})
 ```
 
 ## Test File Organization

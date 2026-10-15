@@ -14,7 +14,7 @@ Turns the working day into "invest 15 min in the morning, review at noon and eve
 
 batch is the **horizontal fan-out engine for tasks whose review is a rubber-stamp** — mechanical changes, prepared-diff-then-approve, drafted-message-then-send. Its whole model (dispatch N, come back, review a pile) only holds when each review is shallow.
 
-**Deep-engagement tasks do NOT belong here.** If a task requires the human to _read → investigate → understand → hands-on_ (review is itself deep work that can't be rubber-stamped), route it to **`/deepwork`** (serial pull, WIP=1). Rationale: fanning deep tasks out horizontally forces the human to hold N deep contexts at once — context-switch tax + attention residue kill the throughput the fan-out was supposed to buy. Parallelism belongs to the machine; seriality belongs to the human. See `skills/deepwork/SKILL.md`.
+**Deep-engagement tasks do NOT belong here.** If a task requires the human to *read → investigate → understand → hands-on* (review is itself deep work that can't be rubber-stamped), route it to **`/deepwork`** (serial pull, WIP=1). Rationale: fanning deep tasks out horizontally forces the human to hold N deep contexts at once — context-switch tax + attention residue kill the throughput the fan-out was supposed to buy. Parallelism belongs to the machine; seriality belongs to the human. See `skills/deepwork/SKILL.md`.
 
 The routing axis is **review depth, not task size**: a large-but-mechanical task stays here; a small-but-judgement-heavy one goes to deepwork.
 
@@ -22,19 +22,19 @@ The routing axis is **review depth, not task size**: a large-but-mechanical task
 
 The goal is **"dispatch → go do other work → come back to a decision-ready package"**, NOT "come back to something half-done that keeps interrupting you". To make that real:
 
-- **Background agents prepare up to a decision point; they never publish.** A deliverable is a _reviewable package_ (branch + diff + verification + recommendation + the explicit human calls), not a merged change. Writes (push / PR / comment / apply) happen only through the human-gated `publish` verb.
-- **Surface every judgment call in the deliverable, never mid-run.** If a task forks (approach A vs B, ambiguous requirement, irreversible/business/customer decision), the agent explores _all_ branches and presents them with a recommendation — it does not stall waiting for a human. Interrupting the human belongs at the single review gate, not scattered through the run.
+- **Background agents prepare up to a decision point; they never publish.** A deliverable is a *reviewable package* (branch + diff + verification + recommendation + the explicit human calls), not a merged change. Writes (push / PR / comment / apply) happen only through the human-gated `publish` verb.
+- **Surface every judgment call in the deliverable, never mid-run.** If a task forks (approach A vs B, ambiguous requirement, irreversible/business/customer decision), the agent explores *all* branches and presents them with a recommendation — it does not stall waiting for a human. Interrupting the human belongs at the single review gate, not scattered through the run.
 - **Security boundary = writes.** Read and verify are granted broadly (so agents self-serve facts and run checks); writes are denied to agents and gated behind human approval. See `~/.claude/docs/batch-permissions.md`.
 
 ### Task triage (decide BEFORE queuing)
 
 - 🟢 **Fully autonomous** — mechanical / well-specified (dep bump, lint/fmt fix, lockfile regen, inventory scan, investigation report). Fire-and-forget; review is a rubber stamp.
 - 🟡 **Prep + one approval** — code change that needs a human `go` before publishing (config fix, targeted refactor). Agent prepares branch+diff+verification locally; human approves; `publish` opens the PR.
-- 🔴 **Not for autonomous completion** — the _essence_ is a human/customer/irreversible decision (delete infra, force a breaking migration, close someone's PR). **Still automate everything up to the decision**: investigate → analyze → lay out options with trade-offs → **draft the client/stakeholder confirmation message**. Hand the human a ready-to-send message + a recommendation, not a blank page.
+- 🔴 **Not for autonomous completion** — the *essence* is a human/customer/irreversible decision (delete infra, force a breaking migration, close someone's PR). **Still automate everything up to the decision**: investigate → analyze → lay out options with trade-offs → **draft the client/stakeholder confirmation message**. Hand the human a ready-to-send message + a recommendation, not a blank page.
 
 The mistake is loading 🔴/🟡 tasks and expecting 🟢 hands-off behavior. Triage first; most friction is a mis-triaged task.
 
-**But the deeper mis-triage is routing a deep-engagement task into batch at all.** 🟡/🔴 here means "review is a rubber-stamp of a prepared package" (glance at the diff and approve; send the drafted message). If the human must genuinely _understand and get hands-on_ before they can judge it, that is a deepwork task, not a batch task — hand it to `/deepwork`. When unsure: can the review be a rubber-stamp? yes → batch. no → deepwork.
+**But the deeper mis-triage is routing a deep-engagement task into batch at all.** 🟡/🔴 here means "review is a rubber-stamp of a prepared package" (glance at the diff and approve; send the drafted message). If the human must genuinely *understand and get hands-on* before they can judge it, that is a deepwork task, not a batch task — hand it to `/deepwork`. When unsure: can the review be a rubber-stamp? yes → batch. no → deepwork.
 
 ## Deliverable contract (mandatory)
 
@@ -43,14 +43,14 @@ Every dispatched task writes ONE Markdown file to `~/.claude/batch/out/YYYY-MM-D
 1. **要約** — what was done, in 2-3 sentences.
 2. **調査/根拠** — findings with evidence (paths, logs, doc links); mark unverified points "未確認仮説".
 3. **成果物** — for code: branch name + diff summary (prepared locally, NOT pushed). For investigation: the report body.
-4. **機械検証** — commands run + output. A deliverable without verification output is **incomplete**. Use the checks the agent _can_ run autonomously (test / lint / `tofu fmt`/`validate` / `tofu plan` via the read-only plan role / config validators). State explicitly what could not be verified and why.
+4. **機械検証** — commands run + output. A deliverable without verification output is **incomplete**. Use the checks the agent *can* run autonomously (test / lint / `tofu fmt`/`validate` / `tofu plan` via the read-only plan role / config validators). State explicitly what could not be verified and why.
 5. **判断が要る点（人間の関門）** — every open decision, each with: options, trade-offs, and a **推奨 (recommendation)**. This is where 🟡/🔴 decisions live. Empty for clean 🟢 tasks.
 6. **公開手順（あれば）** — the exact `publish` action proposed (branch, PR title — never a PR body, draft?), phrased so the human can approve at a glance.
 
 ## Verb: `dispatch` (default)
 
 1. Read `~/.claude/batch/inbox.md`. If empty, say so and stop (do not invent work).
-   **Review-WIP gate (dispatch throttle)**: the real throughput limit is the human's review bandwidth, not agent execution — so cap dispatch by _unreviewed_ artifacts, not just concurrency. `out/` now holds only 🟢 rubber-stamp artifacts (deep tasks live in deepwork, not here), so this gate paces shallow-review throughput. Count files in `~/.claude/batch/out/` (= `BATCH_REVIEW` residual). Dispatch at most `6 − residual` tasks this run. If residual ≥ 6, dispatch nothing and say "レビューが N 件溜まっています。まず `status`（ダイジェスト）で消化を" — a full out/ means today's job is review, not more dispatch. Queue-adding (`add`) is never throttled; only dispatch is.
+   **Review-WIP gate (dispatch throttle)**: the real throughput limit is the human's review bandwidth, not agent execution — so cap dispatch by *unreviewed* artifacts, not just concurrency. `out/` now holds only 🟢 rubber-stamp artifacts (deep tasks live in deepwork, not here), so this gate paces shallow-review throughput. Count files in `~/.claude/batch/out/` (= `BATCH_REVIEW` residual). Dispatch at most `6 − residual` tasks this run. If residual ≥ 6, dispatch nothing and say "レビューが N 件溜まっています。まず `status`（ダイジェスト）で消化を" — a full out/ means today's job is review, not more dispatch. Queue-adding (`add`) is never throttled; only dispatch is.
 2. **Contract + triage check**: fill missing 成果物/完了条件 when obvious; assign a triage color. Collect ALL genuinely-blocking open questions into ONE AskUserQuestion round (batched — never one per task). Do NOT ask about things the agent can investigate itself — those become deliverable sections.
 3. **Dispatch**: spawn a background subagent (`run_in_background: true`) per task. Prefer the restricted `batch-worker` agent type when available (see permissions doc); else `general-purpose` / `Explore`.
    - Prompt = task + full deliverable contract (the 6 sections above) + artifact path.

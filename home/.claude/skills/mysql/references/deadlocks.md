@@ -9,7 +9,6 @@ tags: mysql, deadlocks, innodb, transactions, locking, concurrency
 InnoDB auto-detects deadlocks and rolls back one transaction (the "victim").
 
 ## Common Causes
-
 1. **Opposite row ordering** — Transactions accessing the same rows in different order can deadlock. Fix: always access rows in a consistent order (typically by primary key or a common index) so locks are acquired in the same sequence.
 2. **Next-key lock conflicts** (REPEATABLE READ) — InnoDB uses next-key locks (row + gap) to prevent phantoms. Fix: use READ COMMITTED (reduces gap locking) or narrow lock scope.
 3. **Missing index on WHERE column** — UPDATE/DELETE without an index may require a full table scan, locking many rows unnecessarily and increasing deadlock risk.
@@ -42,7 +41,6 @@ JOIN performance_schema.data_locks l ON w.requested_lock_id = l.lock_id;
 ```
 
 ## Prevention
-
 - Keep transactions short. Do I/O outside transactions.
 - Ensure WHERE columns in UPDATE/DELETE are indexed.
 - Use `SELECT ... FOR UPDATE` sparingly. Batch large updates with `LIMIT`.
@@ -68,7 +66,6 @@ def execute_with_retry(db, fn, max_retries=3):
 ```
 
 ## Common Misconceptions
-
 - **"Deadlocks are bugs"** — deadlocks are a normal part of concurrent systems. The goal is to minimize frequency, not eliminate them entirely.
 - **"READ COMMITTED eliminates deadlocks"** — it reduces gap/next-key lock deadlocks, but deadlocks still happen from opposite ordering, missing indexes, and lock contention.
 - **"All deadlocks are from gap locks"** — many are caused by opposite row ordering even without gap locks.

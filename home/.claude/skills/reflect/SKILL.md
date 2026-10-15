@@ -67,7 +67,6 @@ Categories: `architecture`, `debugging`, `testing`, `tooling`, `performance`, `s
 ### 5. Persist Learnings
 
 Append new learnings to `.claude/memory/local/learnings.md`, merging with existing entries:
-
 - Deduplicate similar learnings (update confidence if repeated)
 - Remove learnings contradicted by new evidence
 - Keep the file under 100 entries (archive oldest LOW confidence items)
@@ -85,19 +84,15 @@ additionally create a skill file at `~/.claude/skills/learned/[pattern-name].md`
 **Context:** [Brief description of when this applies]
 
 ## Problem
-
 [What problem this solves - be specific]
 
 ## Solution
-
 [The pattern/technique/workaround]
 
 ## Example
-
 [Code example if applicable]
 
 ## When to Use
-
 [Trigger conditions - what should activate this skill]
 ```
 

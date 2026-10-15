@@ -14,8 +14,8 @@ The enforcement is layered (most reliable first):
    Truly-never ops: `git push --force*`, `git reset --hard`, `git clean -fd`,
    PR/Issue comment POSTs (`gh pr comment`, `gh pr review`, `gh api .../comments|replies -X POST`),
    reading `**/.aws/*`.
-2. **Human gate via `ask` (all sessions)** — writes that a _present human_ may approve but a
-   _headless background agent cannot_ (no approver ⇒ effectively blocked):
+2. **Human gate via `ask` (all sessions)** — writes that a *present human* may approve but a
+   *headless background agent cannot* (no approver ⇒ effectively blocked):
    `git push`, `gh pr create`, `tofu|terraform apply|destroy|state|import`,
    `kubectl apply|delete`. This is the key mechanism: the same rule that prompts you in the
    main session auto-blocks background workers.

@@ -23,12 +23,12 @@ Mandatory checks for dependency management.
 
 ### Installation Rules
 
-| Severity | Action                            |
-| -------- | --------------------------------- |
-| Critical | BLOCK - Do not install            |
-| High     | BLOCK - Require explicit approval |
-| Medium   | WARN - Document risk              |
-| Low      | ALLOW - Monitor                   |
+| Severity | Action |
+|----------|--------|
+| Critical | BLOCK - Do not install |
+| High | BLOCK - Require explicit approval |
+| Medium | WARN - Document risk |
+| Low | ALLOW - Monitor |
 
 ## Lockfile Protection
 
@@ -39,26 +39,22 @@ Mandatory checks for dependency management.
 ## Dependency Update Policy
 
 ### Safe Updates
-
 - Patch versions: Auto-approve with passing tests
 - Minor versions: Review changelog, run full test suite
 
 ### Risky Updates
-
 - Major versions: Full impact analysis required
 - Breaking changes: Document migration plan first
 
 ## Suspicious Patterns
 
 ### Red Flags
-
 - Install scripts (`preinstall`, `postinstall`) in new packages
 - Packages requesting filesystem/network access unexpectedly
 - Sudden ownership transfers on popular packages
 - Typosquatted names (e.g., `lodahs` instead of `lodash`)
 
 ### Required Checks
-
 Before installing an unfamiliar package, inspect install scripts, package
 contents, and provenance signatures. The `/audit-supply-chain` skill runs the
 full per-ecosystem check sequence (npm/gem/composer/go) on demand.
@@ -76,7 +72,6 @@ full per-ecosystem check sequence (npm/gem/composer/go) on demand.
 ## Incident Response
 
 If a compromised dependency is detected:
-
 1. Immediately pin to last known safe version
 2. Audit git history for when vulnerable version was introduced
 3. Check for unexpected file changes or network calls

@@ -1,13 +1,13 @@
 ---
 paths:
-  - "src/api/**/*.ts"
-  - "src/routes/**/*.ts"
-  - "src/server/**/*.ts"
-  - "app/api/**/*.ts"
-  - "app/controllers/**/*.rb"
-  - "app/Http/Controllers/**/*.php"
-  - "internal/handler/**/*.go"
-  - "cmd/**/*.go"
+    - "src/api/**/*.ts"
+    - "src/routes/**/*.ts"
+    - "src/server/**/*.ts"
+    - "app/api/**/*.ts"
+    - "app/controllers/**/*.rb"
+    - "app/Http/Controllers/**/*.php"
+    - "internal/handler/**/*.go"
+    - "cmd/**/*.go"
 ---
 
 # API Development Rules
@@ -42,7 +42,9 @@ All error responses must follow a consistent structure:
   "error": {
     "code": "VALIDATION_ERROR",
     "message": "Human-readable description",
-    "details": [{ "field": "email", "message": "Invalid email format" }]
+    "details": [
+      { "field": "email", "message": "Invalid email format" }
+    ]
   }
 }
 ```

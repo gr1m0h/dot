@@ -18,7 +18,6 @@ This command invokes the **e2e-runner** agent to generate, maintain, and execute
 ## When to Use
 
 Use `/e2e` when:
-
 - Testing critical user journeys (login, trading, payments)
 - Verifying multi-step flows work end-to-end
 - Testing UI interactions and navigation
@@ -41,12 +40,10 @@ The e2e-runner agent will:
 When tests run, the following artifacts are captured:
 
 **On All Tests:**
-
 - HTML Report with timeline and results
 - JUnit XML for CI integration
 
 **On Failure Only:**
-
 - Screenshot of the failing state
 - Video recording of the test
 - Trace file for debugging (step-by-step replay)
@@ -96,7 +93,6 @@ npx playwright show-report
 ## Best Practices
 
 **DO:**
-
 - Use Page Object Model for maintainability
 - Use data-testid attributes for selectors
 - Wait for API responses, not arbitrary timeouts
@@ -105,7 +101,6 @@ npx playwright show-report
 - Review artifacts when tests fail
 
 **DON'T:**
-
 - Use brittle selectors (CSS classes can change)
 - Test implementation details
 - Run tests against production
