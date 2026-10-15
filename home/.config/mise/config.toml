@@ -347,9 +347,11 @@ builtin = "history-watch"
 "~/.config/zsh/scripts" = { mode = "track" }
 "~/.editorconfig" = { mode = "track" }
 "~/.hammerspoon/init.lua" = { mode = "track" }
-# mmcp: the token is supplied by the shell environment (~/.env), not written in
-# the file, so the file carries no secret and can be tracked directly.
-"~/.mmcp.json" = { mode = "track" }
+# mmcp: the live file carries the real token (so GUI-launched clients work),
+# therefore only the template source is tracked; the token is rendered per
+# machine from ~/.env.
+"~/.mmcp.json" = { mode = "template", source = "~/.dotfiles/mmcp.json.tera" }
+"~/.dotfiles/mmcp.json.tera" = { mode = "track" }
 "~/.local/share/ghostty-nvim/Ghostty-Nvim.applescript" = { mode = "track" }
 "~/.local/share/ghostty-nvim/build-ghostty-nvim-app.sh" = { mode = "track" }
 "~/.serena/serena_config.yml" = { mode = "track" }
