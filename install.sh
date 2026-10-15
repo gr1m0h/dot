@@ -77,7 +77,9 @@ echo "Applying main's home/ tree onto \$HOME..."
 python3 -B "$REPO_DIR/scripts/apply-main.py"
 
 echo "Running machine setup (Homebrew, packages, macOS, templates, tools)..."
-mise bootstrap
+# --yes: under `curl | sh` stdin is the script itself, so an interactive
+# prompt would consume script text as its answer and abort.
+mise bootstrap --yes
 
 echo ""
 echo "====================================="
