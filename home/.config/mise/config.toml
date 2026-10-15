@@ -47,8 +47,11 @@ opentofu = "latest"
 "aqua:dduan/tre" = "latest"
 "aqua:newrelic/newrelic-cli" = "latest"
 "go:github.com/go-delve/delve/cmd/dlv" = "latest"
+"go:github.com/gr1m0h/mdv" = "0.1.5"
 "github:datadog-labs/pup" = "latest"
 stylua = "latest"
+mkcert = "latest"
+op = "latest"
 
 [settings]
 experimental = true

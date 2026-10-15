@@ -62,3 +62,7 @@ typings/
 
 # claude
 home/.claude/skills/slide-deck/
+
+# serena: config carries machine state (project list with client org paths,
+# auth_secret) — never publish in this public mirror
+home/.serena/

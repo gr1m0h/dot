@@ -14,7 +14,10 @@
     "MAX_MCP_OUTPUT_TOKENS": "25000",
     "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
   },
-  "includeCoAuthoredBy": false,
+  "attribution": {
+    "commit": "hidden",
+    "pr": "hidden"
+  },
   "permissions": {
     "allow": [
       "Bash(npm run *)",
@@ -191,7 +194,7 @@
     ],
     "defaultMode": "default"
   },
-  "model": "opus[1m]",
+  "model": "fable",
   "enableAllProjectMcpServers": false,
   "hooks": {
     "SessionStart": [
@@ -416,7 +419,11 @@
     ]
   },
   "worktree": {
-    "symlinkDirectories": ["node_modules", ".pnpm", "vendor"]
+    "symlinkDirectories": [
+      "node_modules",
+      ".pnpm",
+      "vendor"
+    ]
   },
   "statusLine": {
     "type": "command",
@@ -445,9 +452,16 @@
       "allowLocalBinding": true
     },
     "filesystem": {
-      "allowWrite": ["/tmp/build", "/tmp/claude-*"]
+      "allowWrite": [
+        "/tmp/build",
+        "/tmp/claude-*"
+      ]
     },
-    "excludedCommands": ["git", "gh", "docker"]
+    "excludedCommands": [
+      "git",
+      "gh",
+      "docker"
+    ]
   },
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",

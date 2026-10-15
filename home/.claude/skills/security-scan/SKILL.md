@@ -74,16 +74,16 @@ DFD notation/report template, architecture-specific focus areas).
 
 ## References
 
-| Topic                 | Reference                                                                                                  | Use for                                                                  |
-| --------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| OWASP Checklist       | [references/owasp-checklist.md](references/owasp-checklist.md)                                             | Full A01-A10 audit checklists with vulnerable/fixed code patterns        |
-| Secret Detection      | [references/secret-detection.md](references/secret-detection.md)                                           | Regex patterns for detecting hardcoded secrets and credentials           |
-| Output Format         | [references/output-format.md](references/output-format.md)                                                 | Report template, severity classification (CVSS 3.1)                      |
-| Scanning Tools        | [references/scanning-tools.md](references/scanning-tools.md)                                               | Automated tool commands and selection guide                              |
-| STRIDE Framework      | [references/threat-modeling/stride-framework.md](references/threat-modeling/stride-framework.md)           | S/T/R/I/D/E categories with attack vectors, mitigations, audit questions |
-| DREAD Assessment      | [references/threat-modeling/dread-assessment.md](references/threat-modeling/dread-assessment.md)           | Risk scoring methodology, score guides, example calculations             |
-| Threat Report Format  | [references/threat-modeling/output-format.md](references/threat-modeling/output-format.md)                 | DFD notation, threat report template, attack trees                       |
-| Architecture Patterns | [references/threat-modeling/architecture-patterns.md](references/threat-modeling/architecture-patterns.md) | Microservices, serverless, SPA threat focus areas                        |
+| Topic | Reference | Use for |
+| --- | --- | --- |
+| OWASP Checklist | [references/owasp-checklist.md](references/owasp-checklist.md) | Full A01-A10 audit checklists with vulnerable/fixed code patterns |
+| Secret Detection | [references/secret-detection.md](references/secret-detection.md) | Regex patterns for detecting hardcoded secrets and credentials |
+| Output Format | [references/output-format.md](references/output-format.md) | Report template, severity classification (CVSS 3.1) |
+| Scanning Tools | [references/scanning-tools.md](references/scanning-tools.md) | Automated tool commands and selection guide |
+| STRIDE Framework | [references/threat-modeling/stride-framework.md](references/threat-modeling/stride-framework.md) | S/T/R/I/D/E categories with attack vectors, mitigations, audit questions |
+| DREAD Assessment | [references/threat-modeling/dread-assessment.md](references/threat-modeling/dread-assessment.md) | Risk scoring methodology, score guides, example calculations |
+| Threat Report Format | [references/threat-modeling/output-format.md](references/threat-modeling/output-format.md) | DFD notation, threat report template, attack trees |
+| Architecture Patterns | [references/threat-modeling/architecture-patterns.md](references/threat-modeling/architecture-patterns.md) | Microservices, serverless, SPA threat focus areas |
 
 ## Related Skills
 
@@ -100,6 +100,5 @@ DFD notation/report template, architecture-specific focus areas).
 - [MITRE ATT&CK](https://attack.mitre.org/)
 
 ## Guardrails
-
 - Prefer measured evidence over blanket rules of thumb.
 - Ask for explicit human approval before destructive data operations (drops/deletes/truncates).

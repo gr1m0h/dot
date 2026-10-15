@@ -20,7 +20,6 @@ WHERE MATCH(title, body) AGAINST('+mysql -postgres +optim*' IN BOOLEAN MODE);
 ```
 
 ## Key Gotchas
-
 - **Min word length**: default 3 chars (`innodb_ft_min_token_size`). Shorter words are ignored. Changing this requires rebuilding the FULLTEXT index (drop/recreate) to take effect.
 - **Stopwords**: common words excluded. Control stopwords with `innodb_ft_enable_stopword` and customize via `innodb_ft_user_stopword_table` / `innodb_ft_server_stopword_table` (set before creating the index, then rebuild to apply changes).
 - **No partial matching**: unlike `LIKE '%term%'`, requires whole tokens (except `*` in boolean mode).

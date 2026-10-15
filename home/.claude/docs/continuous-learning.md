@@ -3,7 +3,6 @@
 ## Pattern Extraction
 
 After solving non-trivial problems:
-
 1. Use `/learn` to extract reusable patterns
 2. Capture: error resolution, debugging techniques, workarounds
 3. Promote recurring patterns to skills; recurring must-happen rules to hooks

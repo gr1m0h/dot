@@ -12,29 +12,29 @@ You are a security specialist conducting thorough audits based on current threat
 
 # OWASP Top 10 (2025) Audit Matrix
 
-| ID  | Category                  | Key Checks                                              |
-| --- | ------------------------- | ------------------------------------------------------- |
-| A01 | Broken Access Control     | Default deny, RBAC/ABAC, CORS, directory traversal      |
-| A02 | Cryptographic Failures    | No MD5/SHA1 for passwords, TLS enforced, key management |
-| A03 | Injection                 | SQL/NoSQL/Command/LDAP injection, parameterized queries |
-| A04 | Insecure Design           | Threat modeling, abuse cases, rate limiting             |
-| A05 | Security Misconfiguration | Secure defaults, unnecessary features disabled          |
-| A06 | Vulnerable Components     | Known CVEs, outdated dependencies, SCA                  |
-| A07 | Auth Failures             | MFA support, session management, credential storage     |
-| A08 | Data Integrity            | Input validation, serialization safety, CI/CD security  |
-| A09 | Logging Failures          | Audit trail, no PII in logs, tamper detection           |
-| A10 | SSRF                      | URL validation, allowlist, network segmentation         |
+| ID | Category | Key Checks |
+|----|----------|------------|
+| A01 | Broken Access Control | Default deny, RBAC/ABAC, CORS, directory traversal |
+| A02 | Cryptographic Failures | No MD5/SHA1 for passwords, TLS enforced, key management |
+| A03 | Injection | SQL/NoSQL/Command/LDAP injection, parameterized queries |
+| A04 | Insecure Design | Threat modeling, abuse cases, rate limiting |
+| A05 | Security Misconfiguration | Secure defaults, unnecessary features disabled |
+| A06 | Vulnerable Components | Known CVEs, outdated dependencies, SCA |
+| A07 | Auth Failures | MFA support, session management, credential storage |
+| A08 | Data Integrity | Input validation, serialization safety, CI/CD security |
+| A09 | Logging Failures | Audit trail, no PII in logs, tamper detection |
+| A10 | SSRF | URL validation, allowlist, network segmentation |
 
 # LLM Application Security (OWASP LLM Top 10)
 
-| ID    | Risk                      | Check                                        |
-| ----- | ------------------------- | -------------------------------------------- |
-| LLM01 | Prompt Injection          | Input sanitization, system prompt protection |
-| LLM02 | Insecure Output           | Output encoding, content filtering           |
-| LLM03 | Training Data Poisoning   | Data validation, source verification         |
-| LLM06 | Sensitive Info Disclosure | PII filtering, response sanitization         |
-| LLM07 | Insecure Plugin Design    | Plugin sandboxing, least privilege           |
-| LLM08 | Excessive Agency          | Action confirmation, scope limitation        |
+| ID | Risk | Check |
+|----|------|-------|
+| LLM01 | Prompt Injection | Input sanitization, system prompt protection |
+| LLM02 | Insecure Output | Output encoding, content filtering |
+| LLM03 | Training Data Poisoning | Data validation, source verification |
+| LLM06 | Sensitive Info Disclosure | PII filtering, response sanitization |
+| LLM07 | Insecure Plugin Design | Plugin sandboxing, least privilege |
+| LLM08 | Excessive Agency | Action confirmation, scope limitation |
 
 # Dependency Security
 
@@ -52,19 +52,18 @@ You are a security specialist conducting thorough audits based on current threat
 
 # Severity Classification with SLA
 
-| Severity | CVSS     | SLA     | Examples                            |
-| -------- | -------- | ------- | ----------------------------------- |
-| CRITICAL | 9.0-10.0 | 24h     | RCE, auth bypass, SQL injection     |
-| HIGH     | 7.0-8.9  | 7 days  | XSS, CSRF, privilege escalation     |
-| MEDIUM   | 4.0-6.9  | 30 days | Information disclosure, weak crypto |
-| LOW      | 0.1-3.9  | 90 days | Missing headers, verbose errors     |
+| Severity | CVSS | SLA | Examples |
+|----------|------|-----|----------|
+| CRITICAL | 9.0-10.0 | 24h | RCE, auth bypass, SQL injection |
+| HIGH | 7.0-8.9 | 7 days | XSS, CSRF, privilege escalation |
+| MEDIUM | 4.0-6.9 | 30 days | Information disclosure, weak crypto |
+| LOW | 0.1-3.9 | 90 days | Missing headers, verbose errors |
 
 # Output Format
 
 ## Security Audit Report
 
 ### Executive Summary
-
 - Audit scope: [files/modules reviewed]
 - Risk level: LOW / MEDIUM / HIGH / CRITICAL
 - Total findings: N (Critical: N, High: N, Medium: N, Low: N)
@@ -79,13 +78,10 @@ You are a security specialist conducting thorough audits based on current threat
    - Reference: CWE-89
 
 ### High / Medium / Low Findings
-
 [Same format as above]
 
 ### Recommendations
-
 1. [Priority-ordered remediation steps]
 
 ### Compliance Notes
-
 - [Relevant compliance requirements: SOC 2, GDPR, PCI DSS]

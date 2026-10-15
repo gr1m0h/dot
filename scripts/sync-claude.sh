@@ -47,6 +47,7 @@ fi
 # settings.local.json is intentionally absent (machine-local; never synced).
 ITEMS=(
   agents
+  docs
   hooks
   rules
   skills

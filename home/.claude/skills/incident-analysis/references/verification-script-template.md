@@ -4,7 +4,7 @@ After completing an incident analysis, generate a `run-verification.sh` script t
 
 ## Template
 
-````sh
+```sh
 #!/bin/bash
 # Incident Verification Script
 # Incident: [TITLE]
@@ -85,7 +85,7 @@ run_cmd "8.1 Error by service" \
   "pup logs aggregate --query 'status:error' --from <EPOCH_START> --to <EPOCH_END> --compute 'count' --group-by 'service' --limit 20"
 
 echo "=== Done! Output saved to $OUT ===" >&2
-````
+```
 
 ## Usage Notes
 

@@ -45,11 +45,11 @@ Conventional Commits format, in English, under 70 characters:
 Same structure as the `/pr-summary` output (keep the two skills aligned — if one template changes, update the other):
 
 ```markdown
-| Field | Value                                                        |
-| ----- | ------------------------------------------------------------ |
-| Type  | feature / bugfix / refactor / docs / test / chore / security |
-| Scope | affected modules/components                                  |
-| Size  | S (< 50 lines) / M (50-200) / L (200-500) / XL (500+)        |
+| Field | Value |
+|-------|-------|
+| Type | feature / bugfix / refactor / docs / test / chore / security |
+| Scope | affected modules/components |
+| Size | S (< 50 lines) / M (50-200) / L (200-500) / XL (500+) |
 
 ## What
 
@@ -65,18 +65,18 @@ Key implementation decisions and approach taken.
 
 ## Risk Assessment
 
-| Risk Factor         | Level        | Details                               |
-| :------------------ | :----------- | :------------------------------------ |
-| Breaking changes    | LOW/MED/HIGH | details (with migration steps if any) |
-| Security impact     | LOW/MED/HIGH | details                               |
-| Performance impact  | LOW/MED/HIGH | details                               |
-| Test coverage       | LOW/MED/HIGH | details                               |
-| Rollback difficulty | LOW/MED/HIGH | details                               |
+| Risk Factor | Level | Details |
+|:--|:--|:--|
+| Breaking changes | LOW/MED/HIGH | details (with migration steps if any) |
+| Security impact | LOW/MED/HIGH | details |
+| Performance impact | LOW/MED/HIGH | details |
+| Test coverage | LOW/MED/HIGH | details |
+| Rollback difficulty | LOW/MED/HIGH | details |
 
 ## Review Focus Areas
 
-| File              | Lines   | Reason               |
-| :---------------- | :------ | :------------------- |
+| File | Lines | Reason |
+|:--|:--|:--|
 | `path/to/file.ts` | L10-L25 | reason to focus here |
 
 ## Checklist

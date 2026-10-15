@@ -13,25 +13,23 @@ paths:
 ALWAYS create new objects, NEVER mutate:
 
 ### JavaScript / TypeScript
-
 ```javascript
 // WRONG: Mutation
 function updateUser(user, name) {
-  user.name = name; // MUTATION!
-  return user;
+  user.name = name  // MUTATION!
+  return user
 }
 
 // CORRECT: Immutability
 function updateUser(user, name) {
   return {
     ...user,
-    name,
-  };
+    name
+  }
 }
 ```
 
 ### Ruby
-
 ```ruby
 # WRONG: Mutation
 def update_user(user, name)
@@ -46,7 +44,6 @@ end
 ```
 
 ### PHP
-
 ```php
 // WRONG: Mutation
 function updateUser(array &$user, string $name): array {
@@ -61,7 +58,6 @@ function updateUser(array $user, string $name): array {
 ```
 
 ### Go
-
 ```go
 // WRONG: Mutation
 func UpdateUser(user *User, name string) {
@@ -78,7 +74,6 @@ func UpdateUser(user User, name string) User {
 ## File Organization
 
 MANY SMALL FILES > FEW LARGE FILES:
-
 - High cohesion, low coupling
 - 200-400 lines typical, 800 max
 - Extract utilities from large components
@@ -89,19 +84,17 @@ MANY SMALL FILES > FEW LARGE FILES:
 ALWAYS handle errors comprehensively:
 
 ### TypeScript
-
 ```typescript
 try {
-  const result = await riskyOperation();
-  return result;
+  const result = await riskyOperation()
+  return result
 } catch (error) {
-  console.error("Operation failed:", error);
-  throw new Error("Detailed user-friendly message");
+  console.error('Operation failed:', error)
+  throw new Error('Detailed user-friendly message')
 }
 ```
 
 ### Ruby
-
 ```ruby
 begin
   result = risky_operation
@@ -112,7 +105,6 @@ end
 ```
 
 ### Go
-
 ```go
 result, err := riskyOperation()
 if err != nil {
@@ -127,14 +119,14 @@ ALWAYS validate user input. Use schema validation libraries:
 
 ```typescript
 // TypeScript (Zod)
-import { z } from "zod";
+import { z } from 'zod'
 
 const schema = z.object({
   email: z.string().email(),
-  age: z.number().int().min(0).max(150),
-});
+  age: z.number().int().min(0).max(150)
+})
 
-const validated = schema.parse(input);
+const validated = schema.parse(input)
 ```
 
 See `rules/backend/api-guidelines.md` for framework-specific validation (Ruby: dry-validation, PHP: Laravel, Go: validator).

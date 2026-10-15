@@ -19,7 +19,6 @@ argument-hint: "[pr-number]"
 ### 1. Change Classification
 
 Categorize this PR:
-
 - **Type**: feature / bugfix / refactor / docs / test / chore / security
 - **Scope**: Which modules/components are affected
 - **Size**: S (< 50 lines) / M (50-200) / L (200-500) / XL (500+)
@@ -36,12 +35,12 @@ Generate a concise, descriptive PR title in English (under 70 characters). Follo
 
 ### 4. Risk Assessment
 
-| Risk Factor         | Level        | Details   |
-| ------------------- | ------------ | --------- |
-| Breaking changes    | LOW/MED/HIGH | [details] |
-| Security impact     | LOW/MED/HIGH | [details] |
-| Performance impact  | LOW/MED/HIGH | [details] |
-| Test coverage       | LOW/MED/HIGH | [details] |
+| Risk Factor | Level | Details |
+|------------|-------|---------|
+| Breaking changes | LOW/MED/HIGH | [details] |
+| Security impact | LOW/MED/HIGH | [details] |
+| Performance impact | LOW/MED/HIGH | [details] |
+| Test coverage | LOW/MED/HIGH | [details] |
 | Rollback difficulty | LOW/MED/HIGH | [details] |
 
 ### 5. Review Focus Areas
@@ -66,11 +65,11 @@ Output the summary directly as rendered markdown (NOT inside a code block). Use 
 
 **Suggested Title**: `<type>: <English description under 70 chars>`
 
-| Field | Value                                                        |
-| ----- | ------------------------------------------------------------ |
-| Type  | feature / bugfix / refactor / docs / test / chore / security |
-| Scope | affected modules/components                                  |
-| Size  | S / M / L / XL                                               |
+| Field | Value |
+|-------|-------|
+| Type | feature / bugfix / refactor / docs / test / chore / security |
+| Scope | affected modules/components |
+| Size | S / M / L / XL |
 
 ### What
 
@@ -86,20 +85,20 @@ Key implementation decisions and approach taken.
 
 ### Risk Assessment
 
-| Risk Factor         | Level        | Details |
-| :------------------ | :----------- | :------ |
-| Breaking changes    | LOW/MED/HIGH | details |
-| Security impact     | LOW/MED/HIGH | details |
-| Performance impact  | LOW/MED/HIGH | details |
-| Test coverage       | LOW/MED/HIGH | details |
+| Risk Factor | Level | Details |
+|:--|:--|:--|
+| Breaking changes | LOW/MED/HIGH | details |
+| Security impact | LOW/MED/HIGH | details |
+| Performance impact | LOW/MED/HIGH | details |
+| Test coverage | LOW/MED/HIGH | details |
 | Rollback difficulty | LOW/MED/HIGH | details |
 
 ### Review Focus Areas
 
-| File              | Lines   | Reason               |
-| :---------------- | :------ | :------------------- |
+| File | Lines | Reason |
+|:--|:--|:--|
 | `path/to/file.ts` | L10-L25 | reason to focus here |
-| `path/to/file.ts` | L42     | reason to focus here |
+| `path/to/file.ts` | L42 | reason to focus here |
 
 ### Checklist
 

@@ -3,7 +3,6 @@
 ## CloudWatch Metrics
 
 ### CPU Utilization (1-minute granularity)
-
 ```sh
 aws cloudwatch get-metric-data \
   --metric-data-queries '[{"Id":"cpu","MetricStat":{"Metric":{"Namespace":"AWS/RDS","MetricName":"CPUUtilization","Dimensions":[{"Name":"DBInstanceIdentifier","Value":"<INSTANCE_ID>"}]},"Period":60,"Stat":"Average"}}]' \
@@ -12,7 +11,6 @@ aws cloudwatch get-metric-data \
 ```
 
 ### ALB Response Time (Average + p95)
-
 ```sh
 aws cloudwatch get-metric-data \
   --metric-data-queries '[
@@ -24,7 +22,6 @@ aws cloudwatch get-metric-data \
 ```
 
 ### ALB Request Count + 5XX
-
 ```sh
 aws cloudwatch get-metric-data \
   --metric-data-queries '[
@@ -36,7 +33,6 @@ aws cloudwatch get-metric-data \
 ```
 
 ### Database Connections
-
 ```sh
 aws cloudwatch get-metric-data \
   --metric-data-queries '[{"Id":"conn","MetricStat":{"Metric":{"Namespace":"AWS/RDS","MetricName":"DatabaseConnections","Dimensions":[{"Name":"DBInstanceIdentifier","Value":"<INSTANCE_ID>"}]},"Period":300,"Stat":"Average"}}]' \
@@ -45,7 +41,6 @@ aws cloudwatch get-metric-data \
 ```
 
 ### ECS Task Count + CPU/Memory
-
 ```sh
 aws cloudwatch get-metric-data \
   --metric-data-queries '[
@@ -60,7 +55,6 @@ aws cloudwatch get-metric-data \
 ## RDS
 
 ### Instance Info
-
 ```sh
 aws rds describe-db-instances \
   --db-instance-identifier <INSTANCE_ID> \
@@ -69,7 +63,6 @@ aws rds describe-db-instances \
 ```
 
 ### RDS Events
-
 ```sh
 aws rds describe-events --source-type db-cluster \
   --start-time <START_UTC> --end-time <END_UTC> \
@@ -83,7 +76,6 @@ aws rds describe-events --source-type db-instance \
 ## Performance Insights
 
 ### DB Load (1-minute)
-
 ```sh
 aws pi get-resource-metrics \
   --service-type RDS \
@@ -95,7 +87,6 @@ aws pi get-resource-metrics \
 ```
 
 ### Wait Events
-
 ```sh
 aws pi get-resource-metrics \
   --service-type RDS \
@@ -107,7 +98,6 @@ aws pi get-resource-metrics \
 ```
 
 ### Top SQL
-
 ```sh
 aws pi get-resource-metrics \
   --service-type RDS \
@@ -120,13 +110,13 @@ aws pi get-resource-metrics \
 
 ## Data Retention Notes
 
-| Data Source                      | Retention           | Note                                |
-| -------------------------------- | ------------------- | ----------------------------------- |
-| CloudWatch (1-min)               | 15 days             | Use 60s period within 15 days       |
-| CloudWatch (5-min)               | 63 days             | Use 300s period within 63 days      |
-| CloudWatch (1-hour)              | 455 days            | Use 3600s period for older data     |
-| Performance Insights (free)      | 7 days              | Capture early or data is lost       |
-| Performance Insights (paid)      | 2 years             | Check if retention is configured    |
-| RDS Events                       | 14 days             | Export immediately after incident   |
-| Datadog Logs                     | Varies by plan      | Check org retention settings        |
+| Data Source | Retention | Note |
+|---|---|---|
+| CloudWatch (1-min) | 15 days | Use 60s period within 15 days |
+| CloudWatch (5-min) | 63 days | Use 300s period within 63 days |
+| CloudWatch (1-hour) | 455 days | Use 3600s period for older data |
+| Performance Insights (free) | 7 days | Capture early or data is lost |
+| Performance Insights (paid) | 2 years | Check if retention is configured |
+| RDS Events | 14 days | Export immediately after incident |
+| Datadog Logs | Varies by plan | Check org retention settings |
 | Slow Query Log (small instances) | May be auto-deleted | db.t* instances have storage limits |

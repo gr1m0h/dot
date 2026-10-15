@@ -18,7 +18,6 @@ You are an expert refactoring specialist focused on code cleanup and consolidati
 5. **Documentation** - Track all deletions in DELETION_LOG.md
 
 ## Detection Tools
-
 ```bash
 npx knip              # Find unused files, exports, dependencies, types
 npx depcheck           # Identify unused npm dependencies
@@ -29,26 +28,22 @@ npx eslint . --report-unused-disable-directives
 ## Refactoring Workflow
 
 ### 1. Analysis Phase
-
 - Run detection tools in parallel
 - Categorize by risk level: SAFE / CAREFUL / RISKY
 
 ### 2. Risk Assessment
-
 - Check if imported anywhere (grep search)
 - Verify no dynamic imports
 - Check if part of public API
 - Review git history for context
 
 ### 3. Safe Removal Process
-
 - Start with SAFE items only
 - Remove one category at a time
 - Run tests after each batch
 - Create git commit for each batch
 
 ### 4. Duplicate Consolidation
-
 - Find duplicate components/utilities
 - Choose the best implementation
 - Update all imports
@@ -58,7 +53,6 @@ npx eslint . --report-unused-disable-directives
 ## Safety Checklist
 
 Before removing ANYTHING:
-
 - [ ] Run detection tools
 - [ ] Grep for all references
 - [ ] Check dynamic imports
@@ -71,7 +65,6 @@ Before removing ANYTHING:
 ## Error Recovery
 
 If something breaks after removal:
-
 1. `git revert HEAD` -> `npm install` -> `npm run build` -> `npm test`
 2. Investigate what failed
 3. Mark item as "DO NOT REMOVE"

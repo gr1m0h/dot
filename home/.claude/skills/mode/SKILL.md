@@ -9,10 +9,10 @@ argument-hint: "[learning]"
 
 Two positions only. The switching criterion is **time and place, not task type**:
 
-| Context                                              | Mode                                               |
-| ---------------------------------------------------- | -------------------------------------------------- |
-| Work (client repos, deliverables)                    | **Speed** — default, no skill needed, max velocity |
-| Study time (personal repos, `~/learn/`, night study) | **learning** — this skill                          |
+| Context | Mode |
+|---|---|
+| Work (client repos, deliverables) | **Speed** — default, no skill needed, max velocity |
+| Study time (personal repos, `~/learn/`, night study) | **learning** — this skill |
 
 There is no in-between mode. If the user wants a collaborative style during work
 ("I'll write the skeleton, you fill in details", "show me options first"), treat it as an
@@ -33,12 +33,12 @@ The user learns by doing; your job is orientation, not answers. **Never write th
 
 ## Routing — which learning tool when
 
-| Situation                                   | Use                                                                                                                                     |
-| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Study session in a personal repo            | `/mode learning` (this skill)                                                                                                           |
-| Starting a new technology from scratch      | `/learn-map` (generates GUIDE.md + exercises + STRUGGLE_LOG.md), then work under `/mode learning`                                       |
-| Stuck on a `/learn-map` exercise            | `/learn-coach` — its L1-L4 hint ladder and STRUGGLE_LOG recording **supersede** the generic hint behavior above while working exercises |
-| Session produced something worth persisting | `/reflect` (retrospective) or `/learn` (pattern → skill)                                                                                |
+| Situation | Use |
+|---|---|
+| Study session in a personal repo | `/mode learning` (this skill) |
+| Starting a new technology from scratch | `/learn-map` (generates GUIDE.md + exercises + STRUGGLE_LOG.md), then work under `/mode learning` |
+| Stuck on a `/learn-map` exercise | `/learn-coach` — its L1-L4 hint ladder and STRUGGLE_LOG recording **supersede** the generic hint behavior above while working exercises |
+| Session produced something worth persisting | `/reflect` (retrospective) or `/learn` (pattern → skill) |
 
 Relationship in one line: `/mode learning` is the session **stance**, `learn-map` is the material
 **generator**, `learn-coach` is the specialized **in-exercise coach**.

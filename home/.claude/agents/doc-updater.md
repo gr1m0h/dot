@@ -20,21 +20,18 @@ You are a documentation specialist focused on keeping codemaps and documentation
 ## Codemap Generation Workflow
 
 ### 1. Repository Structure Analysis
-
 - Identify all workspaces/packages
 - Map directory structure
 - Find entry points
 - Detect framework patterns
 
 ### 2. Module Analysis
-
 - Extract exports (public API)
 - Map imports (dependencies)
 - Identify routes
 - Find database models
 
 ### 3. Generate Codemaps
-
 ```
 docs/CODEMAPS/
 ├── INDEX.md              # Overview of all areas

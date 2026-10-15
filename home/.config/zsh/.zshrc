@@ -27,6 +27,11 @@ export GPG_TTY=$(tty)
 # browser
 export CHROME_PATH="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
 
+# marp: Brave crashes puppeteer (CDP), so force Google Chrome for rendering/preview
+marp() {
+  CHROME_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" command marp "$@"
+}
+
 # ssh using 1password
 export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 
