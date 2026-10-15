@@ -32,8 +32,8 @@ echo ""
 # NOTE: provide per-PC secrets BEFORE adopting (see README "Secrets"):
 #   ~/.env  ->  export NOTION_TOKEN="..."   (sourced by ~/.zshenv)
 
-# Adopt dotfiles from the main branch's home/ tree, then run full machine setup.
-echo "Adopting dotfiles from gr1m0h/dot (main branch)..."
+# Adopt dotfiles from the mise-sync transport branch, then run full machine setup.
+echo "Adopting dotfiles from gr1m0h/dot (mise-sync branch)..."
 mise bootstrap --adopt ssh://git@github.com/gr1m0h/dot.git
 
 echo "Running machine setup (Homebrew, packages, macOS, Docker, MCP)..."
@@ -45,4 +45,4 @@ echo "    Installation completed!"
 echo "====================================="
 echo ""
 echo "Restart your terminal for all changes to take effect."
-echo "To apply changes merged on main later:   mise dot pull"
+echo "To apply changes merged on main later:   mise dot sync && mise dot pull"
