@@ -83,16 +83,9 @@ The config file is itself tracked, so this travels via propose/apply too.
 
 ## New machine
 
-One command (plus the secrets only you can provide):
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/install.sh | sh
-```
-
-It installs mise (Homebrew, or `curl https://mise.run | sh`), clones this
-repository, runs `apply-main`, and finishes with `mise bootstrap`. Template
-rendering (git config, mmcp) reads `~/.env` — create it before, or right
-after and rerun `mise bootstrap`:
+First create `~/.env` (the secrets only you can provide — the installer
+checks for it and stops early when missing, since template rendering needs
+it):
 
 ```sh
 cat > ~/.env <<'EOF'
@@ -102,6 +95,19 @@ export GIT_EMAIL="..."
 export GIT_SIGNINGKEY="..."
 EOF
 ```
+
+Then one command:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/install.sh | sh
+```
+
+It installs mise (Homebrew, or `curl https://mise.run | sh`), clones this
+repository, runs `apply-main`, and finishes with `mise bootstrap` (Homebrew
+itself, `~/.Brewfile` packages and apps, mise `[tools]`, macOS defaults,
+templates, services). The first run of a fresh mac's `git` pops the Xcode
+Command Line Tools dialog — accept it and rerun the same command; every step
+is safe to repeat.
 
 <details>
 <summary>Equivalent manual steps</summary>
