@@ -23,15 +23,42 @@ Scope and safety:
 """
 
 import io
+import re
 import subprocess
 import sys
 import tarfile
 import tempfile
-import tomllib
 from pathlib import Path
+
+try:  # stdlib since 3.11; a fresh mac's CLT python is 3.9
+    import tomllib
+except ModuleNotFoundError:
+    tomllib = None
 
 REPO = Path(__file__).resolve().parent.parent
 HOME = Path.home()
+
+
+def parse_tracked(text: str) -> list[str]:
+    """Targets with mode = "track" in [dotfiles]; line-based fallback parser."""
+    if tomllib is not None:
+        config = tomllib.loads(text)
+        return [
+            target
+            for target, spec in config.get("dotfiles", {}).items()
+            if isinstance(spec, dict) and spec.get("mode") == "track"
+        ]
+    paths = []
+    in_section = False
+    for line in text.splitlines():
+        s = line.strip()
+        if s.startswith("["):
+            in_section = s == "[dotfiles]"
+            continue
+        m = re.match(r'"([^"]+)"\s*=\s*\{(.*)\}\s*$', s) if in_section else None
+        if m and re.search(r'mode\s*=\s*"track"', m.group(2)):
+            paths.append(m.group(1))
+    return paths
 
 
 def extract_main_home(tmp: Path) -> Path:
@@ -43,17 +70,15 @@ def extract_main_home(tmp: Path) -> Path:
         stdout=subprocess.PIPE,
     )
     with tarfile.open(fileobj=io.BytesIO(archive.stdout)) as tf:
-        tf.extractall(tmp, filter="data")
+        try:
+            tf.extractall(tmp, filter="data")
+        except TypeError:  # filter= needs 3.12; the archive is our own repo
+            tf.extractall(tmp)
     return tmp / "home"
 
 
 def tracked_paths(mirror: Path) -> list[str]:
-    config = tomllib.loads((mirror / ".config/mise/config.toml").read_text())
-    paths = []
-    for target, spec in config.get("dotfiles", {}).items():
-        if isinstance(spec, dict) and spec.get("mode") == "track":
-            paths.append(target)
-    return paths
+    return parse_tracked((mirror / ".config/mise/config.toml").read_text())
 
 
 def apply_file(src: Path, dst: Path) -> bool:
