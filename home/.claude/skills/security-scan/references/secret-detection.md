@@ -2,16 +2,16 @@
 
 Scan for these regex patterns in source code:
 
-| Pattern Type      | Description                                            |
-| ----------------- | ------------------------------------------------------ |
-| AWS Access Key    | Starts with `AKIA` followed by 16 alphanumeric chars   |
-| AWS Secret Key    | 40 character base64-like string                        |
-| GitHub Token      | Starts with `ghp_`, `gho_`, `ghu_`, `ghs_`, or `ghr_`  |
-| Generic API Key   | Variable named `api_key` or `apikey` with string value |
-| Private Key       | PEM formatted private key block                        |
-| JWT Token         | Base64 encoded header.payload format                   |
-| Connection String | Database URLs with credentials                         |
-| Generic Secret    | Variables named password/secret/token with values      |
+| Pattern Type | Description |
+|-------------|-------------|
+| AWS Access Key | Starts with `AKIA` followed by 16 alphanumeric chars |
+| AWS Secret Key | 40 character base64-like string |
+| GitHub Token | Starts with `ghp_`, `gho_`, `ghu_`, `ghs_`, or `ghr_` |
+| Generic API Key | Variable named `api_key` or `apikey` with string value |
+| Private Key | PEM formatted private key block |
+| JWT Token | Base64 encoded header.payload format |
+| Connection String | Database URLs with credentials |
+| Generic Secret | Variables named password/secret/token with values |
 
 ## Regex Reference
 

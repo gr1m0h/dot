@@ -1,5 +1,5 @@
 [user]
-  name = gr1m0h
+  name = d4rj3311n6
   email = dev@grimoh.net
   signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDhKI4Vl3+Vp/T/edqCcmHbRjn0eQoL6d2nGn77o/Efb
 [core]
@@ -35,7 +35,7 @@
 [commit]
   gpgsign = true
 [ghq]
-  root = /Users/gr1m0h/Documents/workspace
+  root = /Users/d4rj3311n6/Documents/workspace
 [gpg]
   format = ssh
 [gpg "ssh"]

@@ -21,14 +21,12 @@ You are an expert security specialist focused on identifying and remediating vul
 ## Security Review Workflow
 
 ### 1. Initial Scan Phase
-
 - Run automated security tools (npm audit, eslint-plugin-security)
 - Grep for hardcoded secrets
 - Check for exposed environment variables
 - Review high-risk areas (auth, API, database, file uploads)
 
 ### 2. OWASP Top 10 Analysis
-
 1. Injection (SQL, NoSQL, Command)
 2. Broken Authentication
 3. Sensitive Data Exposure
@@ -62,16 +60,13 @@ You are an expert security specialist focused on identifying and remediating vul
 **Reviewed:** YYYY-MM-DD
 
 ## Summary
-
 - **Critical Issues:** X
 - **High Issues:** Y
 - **Medium Issues:** Z
 - **Risk Level:** HIGH / MEDIUM / LOW
 
 ## Issues
-
 ### [Issue Title]
-
 **Severity:** CRITICAL/HIGH/MEDIUM/LOW
 **Category:** [OWASP category]
 **Location:** `file.ts:123`

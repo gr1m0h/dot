@@ -61,7 +61,6 @@ apply, the personal post is the small fresh angle; the full case asset goes to `
 参照材料として使う。素材から AI が本文を丸ごと起こすこと（AIL 3 以上）はしない。
 
 **Reference material — use if the user points to it:**
-
 - A `/learn-map` map + `~/learn/<topic-slug>/STRUGGLE_LOG.md` → 人間が STRUGGLE_LOG の
   誤った仮説と 転機（一人称の語り）を核に叩き台を書く。map は用語と文脈の参照に使う。
   map だけから書けてしまう内容は却下シグナルであり、struggle log の記述を求める。
@@ -70,7 +69,6 @@ apply, the personal post is the small fresh angle; the full case asset goes to `
 - A `/insights` finding, the current session, or rough notes the user pastes
 
 **Quick-capture mode (個人ブログの主用途):**
-
 - Trigger when the user gives a short rough draft / a fragment mid-case, or says 「軽く」「メモから」「小ネタ」.
 - この場合は多くが **AIL 2**（人間の短い叩き台を補強）になる。人間の散文が最低限あることを前提にし、
   加筆で不足を埋める。単なる箇条書きメモしかないときは散文の叩き台を先に書いてもらう。

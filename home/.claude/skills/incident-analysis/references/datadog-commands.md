@@ -3,7 +3,6 @@
 ## Metrics Queries
 
 ### RDS Metrics
-
 ```sh
 # CPU Credit Balance (burstable instances only)
 pup metrics query \
@@ -52,7 +51,6 @@ pup metrics query \
 ```
 
 ### Aurora-Specific Metrics
-
 ```sh
 # Memory Health State
 pup metrics query \
@@ -81,7 +79,6 @@ pup metrics query \
 ```
 
 ### Metrics Discovery
-
 ```sh
 # List available metrics matching a pattern
 pup metrics list --filter "<METRIC_PREFIX>.*" --from 7d
@@ -93,7 +90,6 @@ pup metrics search --query "metrics:<SEARCH_TERM>"
 ## Log Queries
 
 ### Search
-
 ```sh
 # Error logs by service
 pup logs search \
@@ -112,7 +108,6 @@ pup logs search \
 ```
 
 ### Aggregation
-
 ```sh
 # Count by service
 pup logs aggregate \
@@ -135,17 +130,16 @@ pup logs aggregate \
 
 ### Common Error Patterns to Search
 
-| Pattern                | Query                                                             |
-| ---------------------- | ----------------------------------------------------------------- |
-| Transaction timeout    | `"Transaction already closed" OR "Unable to start a transaction"` |
-| Prepared stmt overflow | `"max_prepared_stmt_count"`                                       |
-| Connection errors      | `"ECONNREFUSED" OR "ECONNRESET" OR "ETIMEDOUT"`                   |
-| Lock/deadlock          | `"deadlock" OR "lock wait timeout"`                               |
-| OOM                    | `"out of memory" OR "OOM"`                                        |
-| 504 gateway timeout    | `"504" OR "gateway timeout"`                                      |
+| Pattern | Query |
+|---|---|
+| Transaction timeout | `"Transaction already closed" OR "Unable to start a transaction"` |
+| Prepared stmt overflow | `"max_prepared_stmt_count"` |
+| Connection errors | `"ECONNREFUSED" OR "ECONNRESET" OR "ETIMEDOUT"` |
+| Lock/deadlock | `"deadlock" OR "lock wait timeout"` |
+| OOM | `"out of memory" OR "OOM"` |
+| 504 gateway timeout | `"504" OR "gateway timeout"` |
 
 ## Dashboards and Events
-
 ```sh
 # List dashboards
 pup dashboards list
@@ -163,7 +157,6 @@ pup events list \
 - Always verify timezone alignment (JST = UTC+9)
 
 ### Epoch Conversion Helpers
-
 ```sh
 # JST datetime to epoch seconds
 date -j -f "%Y-%m-%d %H:%M:%S" "2026-03-26 17:00:00" "+%s"

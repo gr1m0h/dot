@@ -27,12 +27,12 @@ Analyzes and visualizes collected telemetry and cost data for $ARGUMENTS (defaul
 
 ## Report Periods
 
-| Period       | Description                    |
-| ------------ | ------------------------------ |
-| `session`    | Current session only (default) |
-| `today`      | All sessions from today        |
-| `week`       | Last 7 days                    |
-| `YYYY-MM-DD` | Specific date                  |
+| Period | Description |
+|--------|-------------|
+| `session` | Current session only (default) |
+| `today` | All sessions from today |
+| `week` | Last 7 days |
+| `YYYY-MM-DD` | Specific date |
 
 ## Analysis Items
 

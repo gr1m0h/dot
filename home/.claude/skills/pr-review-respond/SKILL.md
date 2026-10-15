@@ -38,15 +38,15 @@ Aggregate all comments into a single decision table. Sources:
 
 For each comment, extract:
 
-| Field         | Source                                                             |
-| ------------- | ------------------------------------------------------------------ |
-| `id`          | comment id (for reply threading)                                   |
-| `author`      | reviewer login (skip resolved bot noise? — see Filter Rules below) |
-| `path`        | file path (inline only)                                            |
-| `line`        | line number in the diff (inline only)                              |
-| `body`        | full comment body (do not truncate for evaluation)                 |
-| `in_reply_to` | thread parent id (skip replies in first pass)                      |
-| `resolved`    | GraphQL `isResolved` if fetched; otherwise `unknown`               |
+| Field | Source |
+|---|---|
+| `id` | comment id (for reply threading) |
+| `author` | reviewer login (skip resolved bot noise? — see Filter Rules below) |
+| `path` | file path (inline only) |
+| `line` | line number in the diff (inline only) |
+| `body` | full comment body (do not truncate for evaluation) |
+| `in_reply_to` | thread parent id (skip replies in first pass) |
+| `resolved` | GraphQL `isResolved` if fetched; otherwise `unknown` |
 
 ### Filter Rules
 
@@ -84,13 +84,13 @@ Output per comment:
 
 ### Confidence Calibration
 
-| Signal                                                 | Confidence delta |
-| ------------------------------------------------------ | ---------------- |
-| Verified via `Read` + `Grep`                           | +0.3             |
-| Cross-checked against `.claude/rules/*` or CLAUDE.md   | +0.2             |
-| Reviewer is a domain owner (from CODEOWNERS)           | +0.1             |
-| Reviewer is a bot (Copilot, etc.) without file context | −0.2             |
-| Concern requires runtime verification (not done here)  | −0.3             |
+| Signal | Confidence delta |
+|---|---|
+| Verified via `Read` + `Grep` | +0.3 |
+| Cross-checked against `.claude/rules/*` or CLAUDE.md | +0.2 |
+| Reviewer is a domain owner (from CODEOWNERS) | +0.1 |
+| Reviewer is a bot (Copilot, etc.) without file context | −0.2 |
+| Concern requires runtime verification (not done here) | −0.3 |
 
 Report confidence honestly per `.claude/rules/cognitive/uncertainty-expression.md`.
 
@@ -131,11 +131,11 @@ At the end, print two sections to the user:
 
 ### A. Decision Table
 
-| #   | File:Line     | Reviewer | 判定     | 信頼度 | Action                     |
-| --- | ------------- | -------- | -------- | ------ | -------------------------- |
-| C1  | `src/x.ts:42` | @foo     | 対応する | 0.85   | Edit applied to L42        |
-| C2  | `src/y.ts:10` | @bar     | 対応不要 | 0.7    | Explanation in draft reply |
-| C3  | — (thread)    | @baz     | 要議論   | 0.4    | Question drafted           |
+| # | File:Line | Reviewer | 判定 | 信頼度 | Action |
+|---|---|---|---|---|---|
+| C1 | `src/x.ts:42` | @foo | 対応する | 0.85 | Edit applied to L42 |
+| C2 | `src/y.ts:10` | @bar | 対応不要 | 0.7 | Explanation in draft reply |
+| C3 | — (thread) | @baz | 要議論 | 0.4 | Question drafted |
 
 ### B. Draft Replies (Manual Post)
 

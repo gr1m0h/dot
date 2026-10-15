@@ -5,7 +5,6 @@
 Most common vulnerability category.
 
 **Audit Checklist:**
-
 - [ ] Default deny for all protected resources
 - [ ] RBAC/ABAC consistently applied
 - [ ] CORS configuration restrictive (not `*`)
@@ -17,20 +16,20 @@ Most common vulnerability category.
 
 ```javascript
 // Bad - Vulnerable to path traversal
-app.get("/files/:name", (req, res) => {
+app.get('/files/:name', (req, res) => {
   const filePath = `./uploads/${req.params.name}`;
   res.sendFile(filePath);
 });
 
 // Good - Sanitized path
-const path = require("path");
-app.get("/files/:name", (req, res) => {
+const path = require('path');
+app.get('/files/:name', (req, res) => {
   const fileName = path.basename(req.params.name);
-  const safePath = path.join(__dirname, "uploads", fileName);
+  const safePath = path.join(__dirname, 'uploads', fileName);
 
   // Verify path is within allowed directory
-  if (!safePath.startsWith(path.join(__dirname, "uploads"))) {
-    return res.status(403).send("Forbidden");
+  if (!safePath.startsWith(path.join(__dirname, 'uploads'))) {
+    return res.status(403).send('Forbidden');
   }
   res.sendFile(safePath);
 });
@@ -39,7 +38,6 @@ app.get("/files/:name", (req, res) => {
 ## A02: Cryptographic Failures
 
 **Audit Checklist:**
-
 - [ ] No MD5/SHA1 for password hashing (use bcrypt/argon2/scrypt)
 - [ ] TLS enforced for all external communication
 - [ ] No hardcoded encryption keys or salts
@@ -61,7 +59,6 @@ password_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt(rounds=12))
 ## A03: Injection
 
 **Audit Checklist:**
-
 - [ ] Parameterized queries for all database operations
 - [ ] No string concatenation in SQL/NoSQL queries
 - [ ] Command injection prevention (no shell=True with user input)
@@ -99,7 +96,6 @@ subprocess.run(["ping", "-c", "1", user_input])
 ## A04: Insecure Design
 
 **Audit Checklist:**
-
 - [ ] Threat modeling performed for critical flows
 - [ ] Business logic validated (not just technical)
 - [ ] Defense in depth applied
@@ -108,7 +104,6 @@ subprocess.run(["ping", "-c", "1", user_input])
 ## A05: Security Misconfiguration
 
 **Audit Checklist:**
-
 - [ ] Debug mode disabled in production configs
 - [ ] Default credentials removed
 - [ ] Unnecessary features/endpoints disabled
@@ -120,19 +115,18 @@ subprocess.run(["ping", "-c", "1", user_input])
 ```javascript
 // Required headers for production
 const securityHeaders = {
-  "Content-Security-Policy": "default-src 'self'; script-src 'self'",
-  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
-  "X-Frame-Options": "DENY",
-  "X-Content-Type-Options": "nosniff",
-  "X-XSS-Protection": "1; mode=block",
-  "Referrer-Policy": "strict-origin-when-cross-origin",
+  'Content-Security-Policy': "default-src 'self'; script-src 'self'",
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+  'X-Frame-Options': 'DENY',
+  'X-Content-Type-Options': 'nosniff',
+  'X-XSS-Protection': '1; mode=block',
+  'Referrer-Policy': 'strict-origin-when-cross-origin'
 };
 ```
 
 ## A06: Vulnerable and Outdated Components
 
 **Audit Checklist:**
-
 - [ ] All dependencies up to date
 - [ ] No known CVEs in dependency tree
 - [ ] Transitive dependencies audited
@@ -140,18 +134,17 @@ const securityHeaders = {
 
 ### Dependency Audit Commands
 
-| Ecosystem | Command                       |
-| --------- | ----------------------------- |
-| npm       | `npm audit`                   |
-| Python    | `pip-audit`                   |
-| Go        | `govulncheck ./...`           |
-| Rust      | `cargo audit`                 |
-| Ruby      | `bundle-audit check --update` |
+| Ecosystem | Command |
+|-----------|---------|
+| npm | `npm audit` |
+| Python | `pip-audit` |
+| Go | `govulncheck ./...` |
+| Rust | `cargo audit` |
+| Ruby | `bundle-audit check --update` |
 
 ## A07: Authentication Failures
 
 **Audit Checklist:**
-
 - [ ] Strong password policies enforced
 - [ ] Session management secure (httpOnly, secure, sameSite)
 - [ ] No credentials in URLs or logs
@@ -162,25 +155,22 @@ const securityHeaders = {
 
 ```javascript
 // Express.js secure session config
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 3600000, // 1 hour
-    },
-    resave: false,
-    saveUninitialized: false,
-  }),
-);
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 3600000 // 1 hour
+  },
+  resave: false,
+  saveUninitialized: false
+}));
 ```
 
 ## A08: Software and Data Integrity Failures
 
 **Audit Checklist:**
-
 - [ ] Input validation on all trust boundaries
 - [ ] Deserialization safety (no eval, no pickle.loads on untrusted data)
 - [ ] CI/CD pipeline integrity
@@ -189,7 +179,6 @@ app.use(
 ## A09: Security Logging and Monitoring Failures
 
 **Audit Checklist:**
-
 - [ ] No PII/secrets in log output
 - [ ] Security events logged (auth failures, access denied)
 - [ ] Log injection prevention
@@ -198,7 +187,6 @@ app.use(
 ## A10: Server-Side Request Forgery (SSRF)
 
 **Audit Checklist:**
-
 - [ ] URL validation for user-supplied URLs
 - [ ] Allowlist for external service calls
 - [ ] No internal network access from user input

@@ -20,17 +20,17 @@ Universal coding standards applicable across all projects.
 
 ```typescript
 // Descriptive names with verb-noun pattern
-async function fetchMarketData(marketId: string) {}
-function calculateSimilarity(a: number[], b: number[]) {}
-function isValidEmail(email: string): boolean {}
+async function fetchMarketData(marketId: string) { }
+function calculateSimilarity(a: number[], b: number[]) { }
+function isValidEmail(email: string): boolean { }
 ```
 
 ### Immutability (CRITICAL)
 
 ```typescript
 // ALWAYS use spread operator
-const updatedUser = { ...user, name: "New Name" };
-const updatedArray = [...items, newItem];
+const updatedUser = { ...user, name: 'New Name' }
+const updatedArray = [...items, newItem]
 
 // NEVER mutate directly
 // user.name = 'New Name'  // BAD
@@ -42,14 +42,14 @@ const updatedArray = [...items, newItem];
 ```typescript
 async function fetchData(url: string) {
   try {
-    const response = await fetch(url);
+    const response = await fetch(url)
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
     }
-    return await response.json();
+    return await response.json()
   } catch (error) {
-    console.error("Fetch failed:", error);
-    throw new Error("Failed to fetch data");
+    console.error('Fetch failed:', error)
+    throw new Error('Failed to fetch data')
   }
 }
 ```
@@ -59,20 +59,18 @@ async function fetchData(url: string) {
 ```typescript
 // Parallel execution when possible
 const [users, markets, stats] = await Promise.all([
-  fetchUsers(),
-  fetchMarkets(),
-  fetchStats(),
-]);
+  fetchUsers(), fetchMarkets(), fetchStats()
+])
 ```
 
 ### Type Safety
 
 ```typescript
 interface Market {
-  id: string;
-  name: string;
-  status: "active" | "resolved" | "closed";
-  created_at: Date;
+  id: string
+  name: string
+  status: 'active' | 'resolved' | 'closed'
+  created_at: Date
 }
 // No 'any' - use explicit types
 ```
@@ -94,14 +92,14 @@ interface Market {
 ## Testing (AAA Pattern)
 
 ```typescript
-test("calculates similarity correctly", () => {
+test('calculates similarity correctly', () => {
   // Arrange
-  const vector1 = [1, 0, 0];
+  const vector1 = [1, 0, 0]
   // Act
-  const similarity = calculateCosineSimilarity(vector1, vector2);
+  const similarity = calculateCosineSimilarity(vector1, vector2)
   // Assert
-  expect(similarity).toBe(0);
-});
+  expect(similarity).toBe(0)
+})
 ```
 
 ## Code Smells to Avoid

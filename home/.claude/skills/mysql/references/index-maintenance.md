@@ -57,7 +57,6 @@ ORDER BY stat_value DESC;
 ```
 
 ## Index Write Overhead
-
 Each index must be updated on INSERT, UPDATE, and DELETE operations. More indexes = slower writes.
 
 - **INSERT**: each secondary index adds a write
@@ -67,7 +66,6 @@ Each index must be updated on INSERT, UPDATE, and DELETE operations. More indexe
 InnoDB can defer some secondary index updates via the change buffer, but excessive indexing still reduces write throughput.
 
 ## Update Statistics (ANALYZE TABLE)
-
 The optimizer relies on index cardinality and distribution statistics. After large data changes, refresh statistics:
 
 ```sql
@@ -77,7 +75,6 @@ ANALYZE TABLE orders;
 This updates statistics (does not rebuild the table).
 
 ## Rebuild / Reclaim Space (OPTIMIZE TABLE)
-
 `OPTIMIZE TABLE` can reclaim space and rebuild indexes:
 
 ```sql
@@ -87,7 +84,6 @@ OPTIMIZE TABLE orders;
 For InnoDB this effectively rebuilds the table and indexes and can be slow on large tables.
 
 ## Invisible Indexes (MySQL 8.0+)
-
 Test removing an index without dropping it:
 
 ```sql
@@ -100,7 +96,6 @@ Invisible indexes are still maintained on writes (overhead remains), but the opt
 ## Index Maintenance Tools
 
 ### Online DDL (Built-in)
-
 Most add/drop index operations are online-ish but still take brief metadata locks:
 
 ```sql
@@ -108,10 +103,8 @@ ALTER TABLE orders ADD INDEX idx_status (status), ALGORITHM=INPLACE, LOCK=NONE;
 ```
 
 ### pt-online-schema-change / gh-ost
-
 For very large tables or high-write workloads, online schema change tools can reduce blocking by using a shadow table and a controlled cutover (tradeoffs: operational complexity, privileges, triggers/binlog requirements).
 
 ## Guidelines
-
 - 1–5 indexes per table is normal. 6+: audit for redundancy.
 - Combine `performance_schema` data with `EXPLAIN` of frequent queries monthly.

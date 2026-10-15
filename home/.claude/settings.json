@@ -191,7 +191,7 @@
     ],
     "defaultMode": "default"
   },
-  "model": "opus[1m]",
+  "model": "sonnet",
   "enableAllProjectMcpServers": false,
   "hooks": {
     "SessionStart": [
@@ -416,7 +416,11 @@
     ]
   },
   "worktree": {
-    "symlinkDirectories": ["node_modules", ".pnpm", "vendor"]
+    "symlinkDirectories": [
+      "node_modules",
+      ".pnpm",
+      "vendor"
+    ]
   },
   "statusLine": {
     "type": "command",
@@ -445,9 +449,16 @@
       "allowLocalBinding": true
     },
     "filesystem": {
-      "allowWrite": ["/tmp/build", "/tmp/claude-*"]
+      "allowWrite": [
+        "/tmp/build",
+        "/tmp/claude-*"
+      ]
     },
-    "excludedCommands": ["git", "gh", "docker"]
+    "excludedCommands": [
+      "git",
+      "gh",
+      "docker"
+    ]
   },
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
@@ -461,5 +472,6 @@
   "showTurnDuration": true,
   "terminalProgressBarEnabled": true,
   "teammateMode": "in-process",
-  "remoteControlAtStartup": true
+  "remoteControlAtStartup": true,
+  "preferredNotifChannel": "terminal_bell"
 }

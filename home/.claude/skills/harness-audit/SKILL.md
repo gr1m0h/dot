@@ -1,17 +1,7 @@
 ---
 name: harness-audit
 description: Audit Claude Code harness configuration for optimization opportunities, including system-prompt/token efficiency of CLAUDE.md and rules (absorbed the former prompt-optimize skill)
-triggers:
-  [
-    "harness audit",
-    "audit harness",
-    "check setup",
-    "optimize harness",
-    "prompt optimize",
-    "optimize prompt",
-    "slim prompt",
-    "reduce tokens",
-  ]
+triggers: ["harness audit", "audit harness", "check setup", "optimize harness", "prompt optimize", "optimize prompt", "slim prompt", "reduce tokens"]
 ---
 
 # Harness Audit
@@ -19,7 +9,6 @@ triggers:
 Comprehensive audit of Claude Code configuration quality.
 
 ## When to Use
-
 - After initial setup or major configuration changes
 - Periodically (monthly) to identify optimization opportunities
 - When experiencing slow sessions or high costs

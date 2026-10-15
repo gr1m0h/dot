@@ -20,31 +20,30 @@ Hooks (mechanical, zero LLM tokens) ← PREFER
 ```
 
 When to promote:
-
 - Rule in CLAUDE.md that only applies to specific domains → Skill
 - Skill that must happen every time without exception → Hook
 - Hook that blocks with unhelpful error → Add self-correction hint
 
 ## Context Window Budget
 
-| Layer              | Budget     | Purpose                |
-| ------------------ | ---------- | ---------------------- |
-| CLAUDE.md + @rules | <2k tokens | Universal navigation   |
-| Active skills      | <5k tokens | Current domain context |
-| Working memory     | Remainder  | Task-specific content  |
+| Layer | Budget | Purpose |
+|-------|--------|---------|
+| CLAUDE.md + @rules | <2k tokens | Universal navigation |
+| Active skills | <5k tokens | Current domain context |
+| Working memory | Remainder | Task-specific content |
 
 ## Context Rot Prevention
 
 Performance degrades at ~300k-400k tokens even with 1M available.
 
-| Strategy           | When             | Mechanism                         |
-| ------------------ | ---------------- | --------------------------------- |
-| `/rewind`          | Failed attempt   | Drops failure, preserves learning |
-| `/btw`             | Side question    | Overlay, no history impact        |
-| `/compact <hints>` | Task milestone   | Distills to dense brief           |
-| `/clear`           | Task switch      | Full reset                        |
-| Subagent           | Investigation    | Fresh context per child           |
-| Checkpoints        | Multi-phase work | Persist across sessions           |
+| Strategy | When | Mechanism |
+|----------|------|-----------|
+| `/rewind` | Failed attempt | Drops failure, preserves learning |
+| `/btw` | Side question | Overlay, no history impact |
+| `/compact <hints>` | Task milestone | Distills to dense brief |
+| `/clear` | Task switch | Full reset |
+| Subagent | Investigation | Fresh context per child |
+| Checkpoints | Multi-phase work | Persist across sessions |
 
 ## Structured Context Design
 
@@ -55,10 +54,10 @@ Performance degrades at ~300k-400k tokens even with 1M available.
 
 ## Anti-Patterns
 
-| Anti-Pattern                   | Fix                         |
-| ------------------------------ | --------------------------- |
-| Bloated CLAUDE.md (>200 lines) | Promote to skills           |
-| Domain rules always loaded     | Progressive disclosure      |
-| Manual checks in CLAUDE.md     | Promote to hooks            |
-| Full file reads "just in case" | Glob/Grep first             |
-| Context as dump                | Context as curated briefing |
+| Anti-Pattern | Fix |
+|--------------|-----|
+| Bloated CLAUDE.md (>200 lines) | Promote to skills |
+| Domain rules always loaded | Progressive disclosure |
+| Manual checks in CLAUDE.md | Promote to hooks |
+| Full file reads "just in case" | Glob/Grep first |
+| Context as dump | Context as curated briefing |

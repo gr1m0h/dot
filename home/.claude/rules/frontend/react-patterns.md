@@ -1,9 +1,9 @@
 ---
 paths:
-  - "src/components/**/*.{tsx,jsx}"
-  - "src/pages/**/*.{tsx,jsx}"
-  - "src/app/**/*.{tsx,jsx}"
-  - "src/features/**/*.{tsx,jsx}"
+    - "src/components/**/*.{tsx,jsx}"
+    - "src/pages/**/*.{tsx,jsx}"
+    - "src/app/**/*.{tsx,jsx}"
+    - "src/features/**/*.{tsx,jsx}"
 ---
 
 # React Component Rules

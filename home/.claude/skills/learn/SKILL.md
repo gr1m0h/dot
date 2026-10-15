@@ -6,7 +6,7 @@ argument-hint: "[<none> status · add <topic> · review · start [topic] · done
 
 # /learn — Human Learning Lifecycle Owner
 
-This skill owns the _human_ learning loop: `~/learn/BACKLOG.md` (topic backlog +
+This skill owns the *human* learning loop: `~/learn/BACKLOG.md` (topic backlog +
 `last-retro:` freshness field) and the procedures around it. Every verb maps to a
 lifecycle stage:
 
@@ -56,7 +56,7 @@ these files by hand.
    - ① append picked topics to `## Topics` in `~/learn/BACKLOG.md` (format above)
    - ② set `last-retro:` in that file to today (resets the 7-day auto-queue timer)
    - ③ delete the report from `~/.claude/batch/out/`
-     Review is incomplete until ①〜③ all happen — the session-start hook keeps nagging otherwise.
+   Review is incomplete until ①〜③ all happen — the session-start hook keeps nagging otherwise.
 4. Rejected topics are simply dropped; a future retro re-surfaces them only if they recur.
 
 ## Verb: `start [topic]` — 変換 (begin a study session)

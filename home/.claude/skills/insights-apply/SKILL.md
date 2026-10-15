@@ -1,16 +1,7 @@
 ---
 name: insights-apply
 description: From a Claude Code /insights report, generate a Japanese-translated HTML report AND reflect its actionable recommendations into the config (~/.claude/), confirming EACH item one-by-one (apply or skip). Skipped items are left untouched. Use when the user says "insights apply", "insightを設定に反映", "insightを日本語HTML", "apply insights to config".
-triggers:
-  [
-    "insights apply",
-    "insight apply",
-    "insightを設定に反映",
-    "insights 反映",
-    "apply insights",
-    "insightを日本語HTML",
-    "insights html",
-  ]
+triggers: ["insights apply", "insight apply", "insightを設定に反映", "insights 反映", "apply insights", "insightを日本語HTML", "insights html"]
 user-invocable: true
 allowed-tools: Read, Edit, Write, Bash, Grep, Glob, AskUserQuestion
 ---
@@ -18,16 +9,13 @@ allowed-tools: Read, Edit, Write, Bash, Grep, Glob, AskUserQuestion
 # /insights-apply — Japanese HTML + apply /insights recommendations (one-by-one)
 
 Two jobs from one `/insights` report:
-
 1. Produce a **Japanese-translated HTML** report of the insights.
 2. Reflect the report's actionable recommendations into the Claude Code config under
    `~/.claude/`, confirming EACH item individually (approved → applied, rejected → skipped).
 
 ## 1. Locate the insights report (try in this order)
-
 The built-in `/insights` skill is the source. It emits a full structured JSON payload
 in-conversation and writes an HTML report under `~/.claude/usage-data/`.
-
 1. If `/insights` was just run in this conversation → use that in-conversation JSON
    directly (richest source; contains `suggestions.claude_md_additions`, `features_to_try`,
    `friction_analysis`, etc.).
@@ -35,12 +23,10 @@ in-conversation and writes an HTML report under `~/.claude/usage-data/`.
 3. Recent reports — run: `ls -t ~/.claude/usage-data/report*.html 2>/dev/null | head -3`
    (latest is also `~/.claude/usage-data/report.html`; facet data in `~/.claude/usage-data/facets`).
 4. Otherwise ASK the user to run `/insights` first, or to provide the report/path.
-   Never invent content that is not in the report.
+Never invent content that is not in the report.
 
 ## 2. Generate the Japanese HTML report
-
 Translate the located insights report into a self-contained **Japanese** HTML file.
-
 - Translate ALL sections faithfully (project areas / interaction patterns / friction points /
   suggestions / on-the-horizon). It is a translation, not a rewrite — do not add, drop,
   reorder, or editorialize. Match orthography (correct kana/kanji, no ASCII substitution).
@@ -57,7 +43,6 @@ Translate the located insights report into a self-contained **Japanese** HTML fi
   without saying so.
 
 ## 3. Extract actionable items
-
 - Parse the report into concrete, actionable items (friction points with a fix, suggested
   settings, missing skills/agents, rule/hook changes, etc.). Drop pure observations.
 - For each item, determine: **title**, **rationale** (quoted/derived from the report),
@@ -69,7 +54,6 @@ Translate the located insights report into a self-contained **Japanese** HTML fi
   "Verification Before Claims" rule).
 
 ## 4. Safety first (before ANY config edit)
-
 - Create a backup dir: `TS=$(date +%Y%m%d-%H%M%S); mkdir -p ~/.claude/backups/insights-apply-$TS`
   Copy each target file into it immediately before editing that file.
 - Re-read each target file right before editing it (no stale snapshots).
@@ -79,9 +63,7 @@ Translate the located insights report into a self-contained **Japanese** HTML fi
   over ~2k tokens; prefer on-demand `rules/*` files over always-loaded for tactical tips.
 
 ## 5. Per-item confirmation loop (the core behavior)
-
 For EACH extracted item, in order:
-
 1. Present a compact card: **What** (change), **Why** (rationale), **Where** (target file),
    **Diff** (before → after when feasible), and any **already-covered / project-scoped** flag.
 2. Ask the user to choose **Apply** or **Skip** with the AskUserQuestion tool, one item at a
@@ -91,7 +73,6 @@ For EACH extracted item, in order:
    - **Skip** → make NO change; record as skipped; continue.
 
 ## 6. Summary
-
 - Print a table: `item | decision (applied/skipped) | file(s) touched`.
 - State the saved HTML path, the backup directory, and the rollback command
   (`cp -r <backup>/* ~/.claude/`).
@@ -100,7 +81,6 @@ For EACH extracted item, in order:
   explicit approval).
 
 ## Notes
-
 - This skill MODIFIES config. Default to caution: when unsure, skip and tell the user.
 - HTML output is Japanese; this instruction file stays English; speak to the user in their
   configured language.

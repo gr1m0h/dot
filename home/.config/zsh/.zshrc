@@ -19,13 +19,13 @@ setopt hist_no_store
 setopt hist_reduce_blanks
 
 # Set PATH, MANPATH, etc., for Homebrew
-eval "$(/opt/homebrew/bin/brew shellenv)"
+eval "$(cd /opt/homebrew && /opt/homebrew/bin/brew shellenv)"
 
 # gpg
 export GPG_TTY=$(tty)
 
 # browser
-export CHROME_PATH="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+export CHROME_PATH="$HOME/.local/share/chrome-for-testing/chrome/mac_arm-151.0.7922.34/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"
 
 # ssh using 1password
 export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
@@ -57,9 +57,6 @@ zstyle ":completion:*:commands" rehash 1
 export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
 mkdir -p ~/.docker/cli-plugins
 ln -sfn "$(mise where aqua:docker/compose)/docker-cli-plugin-docker-compose" ~/.docker/cli-plugins/docker-compose
-
-# Datadog
-export DD_SITE="ap1.datadoghq.com"
 
 # Programming languages
 export PATH=$GOPATH/bin:$PATH

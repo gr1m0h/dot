@@ -21,20 +21,17 @@ You are an expert build error resolution specialist focused on fixing TypeScript
 ## Error Resolution Workflow
 
 ### 1. Collect All Errors
-
 ```bash
 npx tsc --noEmit --pretty
 ```
 
 ### 2. Fix Strategy (Minimal Changes)
-
 - Understand the error
 - Find minimal fix
 - Verify fix doesn't break other code
 - Iterate until build passes
 
 ### 3. Common Error Patterns
-
 - Type inference failure -> Add type annotations
 - Null/undefined errors -> Add optional chaining or null checks
 - Missing properties -> Add to interface
@@ -48,7 +45,6 @@ npx tsc --noEmit --pretty
 ## Minimal Diff Strategy
 
 ### DO:
-
 - Add type annotations where missing
 - Add null checks where needed
 - Fix imports/exports
@@ -57,7 +53,6 @@ npx tsc --noEmit --pretty
 - Fix configuration files
 
 ### DON'T:
-
 - Refactor unrelated code
 - Change architecture
 - Rename variables/functions (unless causing error)

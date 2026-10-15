@@ -11,7 +11,7 @@ colima = "latest"
 gcloud = "latest"
 bat = "latest"
 yamlfmt = "latest"
-node = "24.21.0"
+node = "22.13.0"
 go = "1.24.1"
 python = "3.13.2"
 terraform = "1.11.1"
@@ -21,19 +21,18 @@ rust = "1"
 fd = "latest"
 gh = "2.68.1"
 kubectl = "1.30.7"
-firebase = "13.34.0"
 marp-cli = "latest"
 pre-commit = "latest"
 uv = "0.8.14"
-redis = "8.10.1"
+redis = "8.4.0"
 mysql = "8.0.33"
-ecspresso = "2.8.6"
-ruby = "4.0.6"
+ecspresso = "2.6.3"
+ruby = "4.0.0"
 k6 = "latest"
 trivy = "latest"
 infracost = "latest"
 opentofu = "latest"
-"npm:neovim" = "latest"
+stylua = "latest"
 "npm:eclint" = "latest"
 "npm:typescript" = "latest"
 "npm:@vercel/ncc" = "latest"
@@ -41,14 +40,13 @@ opentofu = "latest"
 "npm:mmcp" = "latest"
 "npm:difit" = "latest"
 "npm:@sentry/cli" = "latest"
+"npm:@openai/codex" = "latest"
 "aqua:docker/cli" = "latest"
 "aqua:docker/compose" = "latest"
 "aqua:xxxserxxx/gotop" = "latest"
 "aqua:dduan/tre" = "latest"
-"aqua:newrelic/newrelic-cli" = "latest"
 "go:github.com/go-delve/delve/cmd/dlv" = "latest"
-"github:datadog-labs/pup" = "latest"
-stylua = "latest"
+"ubi:gr1m0h/mdv" = "latest"
 
 [settings]
 experimental = true
@@ -329,13 +327,20 @@ builtin = "history-watch"
 "~/.claude/settings.json" = { mode = "track" }
 "~/.claude/skills" = { mode = "track" }
 "~/.claude/statusline.sh" = { mode = "track" }
+# Agent mirror targets are read directly from this [dotfiles] table by
+# scripts/sync-agent-configs.py. Never track the entire runtime directories.
+# Raw Codex config.toml, hooks.json and accumulated default.rules stay local
+# until portable, credential-free representations have been reviewed.
+"~/.codex/AGENTS.md" = { mode = "track" }
+"~/.codex/agents" = { mode = "track" }
+"~/.codex/hooks" = { mode = "track" }
+"~/.agents/skills" = { mode = "track" }
 "~/.config/bat/config" = { mode = "track" }
 "~/.config/ghostty/config" = { mode = "track" }
 "~/.config/git/config" = { mode = "template", source = "~/.dotfiles/git-config.tera" }
 "~/.dotfiles/git-config.tera" = { mode = "track" }
 "~/.config/git/ignore" = { mode = "track" }
 "~/.config/mise/config.toml" = { mode = "track" }
-"~/.config/nvim" = { mode = "track" }
 "~/.config/sheldon/plugins.toml" = { mode = "track" }
 "~/.config/starship/starship.toml" = { mode = "track" }
 "~/.config/zsh/.zsh_aliases" = { mode = "track" }

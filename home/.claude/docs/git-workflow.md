@@ -15,7 +15,6 @@ Note: Attribution disabled globally via ~/.claude/settings.json.
 ## Pull Request Workflow
 
 When creating PRs:
-
 1. Analyze full commit history (not just latest commit)
 2. Use `git diff [base-branch]...HEAD` to see all changes
 3. Draft comprehensive PR summary
@@ -23,7 +22,6 @@ When creating PRs:
 5. Push with `-u` flag if new branch
 
 ### Editing / updating PRs
-
 - Prefer `gh api` (REST) for PR edits/updates. `gh pr edit` often fails due to the
   GraphQL projects-classic deprecation — use the REST API as the primary method.
   e.g. `gh api -X PATCH repos/{owner}/{repo}/pulls/{number} -f body=@body.md`

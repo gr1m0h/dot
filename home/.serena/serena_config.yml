@@ -1,3 +1,4 @@
+
 # whether to open a graphical window with Serena's logs.
 # This is mainly supported on Windows and (partly) on Linux; not available on macOS.
 # If you prefer a browser-based tool, use the `web_dashboard` option instead.
@@ -67,10 +68,8 @@ record_tool_usage_stats: false
 token_count_estimator: TIKTOKEN_GPT4O
 
 # the list of registered project paths (updated automatically).
-projects:
-  - /Users/gr1m0h/Documents/workspace/github.com/gr1m0h/k6-ec2
-  - /Users/gr1m0h/Documents/workspace/github.com/jepco-system/opentofu
-  - /Users/gr1m0h/Documents/workspace/github.com/lifecoach-inc/rds-audit-logs-s3-lambda
+projects: []
+default_modes:
 
 # list of mode names to that are always to be included in the set of active modes.
 # The full set of modes to be activated is base_modes + default_modes + added_modes,
@@ -78,36 +77,12 @@ projects:
 # If this is undefined/empty, no base modes are included.
 # See https://oraios.github.io/serena/02-usage/050_configuration.html#modes
 base_modes:
-default_modes:
-  - interactive
-  - editing
+- interactive
+- editing
 
 # fixed set of tools to use as the base tool set (if non-empty), replacing Serena's default set of tools.
 # This cannot be combined with non-empty excluded_tools or included_optional_tools.
 fixed_tools: []
-
-# the address the web dashboard will listen on (bind address).
-web_dashboard_listen_address: 127.0.0.1
-jetbrains_plugin_server_address: 127.0.0.1
-
-# advanced configuration option allowing to configure language server-specific options.
-# Maps the language key to the options.
-# Have a look at the docstring of the constructors of the LS implementations within solidlsp (e.g., for C# or PHP) to see which options are available.
-# No documentation on options means no options are available.
-ls_specific_settings: {}
-# the language backend to use for code understanding and manipulation.
-# Possible values are:
-#  * LSP: Use the language server protocol (LSP), spawning freely available language servers
-#      via the SolidLSP library that is part of Serena.
-#  * JetBrains: Use the Serena plugin in your JetBrains IDE.
-#      (requires the plugin to be installed and the project being worked on to be open
-#      in your IDE).
-language_backend: LSP
-
-# list of paths to ignore across all projects.
-# Same syntax as gitignore, so you can use * and **.
-# These patterns are merged additively with each project's own ignored_paths.
-ignored_paths: []
 
 # time budget (seconds) per tool call for the retrieval of additional symbol information
 # such as docstrings or parameter information.
@@ -121,24 +96,10 @@ ignored_paths: []
 # Can be overridden in project.yml.
 symbol_info_budget: 10.0
 
-# template for the location of the per-project .serena data folder (memories, caches, etc.).
-# Supports the following placeholders:
-#   $projectDir         - the absolute path to the project root directory
-#   $projectFolderName  - the name of the project directory
-# Default: "$projectDir/.serena" (data stored inside the project directory)
-# Example for a central location: "/projects-metadata/$projectFolderName/.serena"
-project_serena_folder_location: $projectDir/.serena
-
 # list of regex patterns which, when matched, mark a memory entry as read‑only.
 # For example, "global/.*" will mark all global memories as read-only.
 # You can extend the list on a per-project basis in the project.yml configuration file.
 read_only_memory_patterns: []
-
-# line ending convention to use when writing source files.
-# Possible values: "lf" (Unix), "crlf" (Windows), "native" (platform default).
-# Note that Serena's own files (e.g. memories and configuration files) always use native line endings.
-# This setting can be overridden on a per-project basis in project.yml files.
-line_ending: native
 
 # list of regex patterns for memories to completely ignore.
 # Matching memories will not appear in list_memories or activate_project output
@@ -149,9 +110,15 @@ line_ending: native
 # Example: ["_archive/.*", "_episodes/.*"]
 ignored_memory_patterns: []
 
+# advanced configuration option allowing to configure language server-specific options.
+# Maps the language key to the options.
+# Have a look at the docstring of the constructors of the LS implementations within solidlsp (e.g., for C# or PHP) to see which options are available.
+# No documentation on options means no options are available.
+ls_specific_settings: {}
+
 # defines the interface (application mode) used for the web dashboard (if enabled).
 # If empty/null, use platform-dependent default. Otherwise, possible values:
-#  * browser: the dashboard is opened in the default browser (if `web_dashboard_open_on_launch` is true)
+#  * browser: the dashboard is opened in the default browser (if `web_dashboard_open_on_launch` is true).
 #      This is supported on all platforms.
 #  * app: the dashboard is opened in a separate native-like app window with accompanying tray icon, whose
 #      lifecycle is tied to the Serena process.
@@ -160,20 +127,24 @@ ignored_memory_patterns: []
 #      this may result in too many icons being displayed when using multi-agent setups.
 #  * tray_manager: use a global tray icon to provide access to the dashboards of all running Serena instances,
 #      opening the dashboard in browser tabs when selected from the tray menu.
-#      This is EXPERIMENTAL. It is tested on Windows only. We will establish macOS support, but it is yet untested.
-#      On Linux, this cannot be universally supported, but it may work in some desktop environments.
+#      This is fully supported on Windows and macOS. On Linux, this cannot be universally supported, but it may
+#      work in some desktop environments.
 #      On NixOS, when using the package from flake.nix, both modern AppIndicator trays as well as
 #      older Xorg-/XEmbed-based trays should be supported.
 # See https://oraios.github.io/serena/02-usage/060_dashboard.html
 web_dashboard_interface:
+
+# the address the web dashboard will listen on (bind address).
+web_dashboard_listen_address: 127.0.0.1
 
 # trusted hosts used to access the web dashboard.
 # By default, only allow access via local addresses for security reasons.
 # If you want to allow access from remote machines, add the hostname used to access the dashboard to this list.
 # If the list is empty/undefined, all hosts are trusted.
 web_dashboard_trusted_hosts:
-  - 127.0.0.1
-  - localhost
+- 127.0.0.1
+- localhost
+jetbrains_plugin_server_address: 127.0.0.1
 
 # command used to launch a JetBrains IDE on demand (only relevant when using the JetBrains language backend)
 # If this is non-empty and, at project activation, the Serena JetBrains Plugin server instance corresponding
@@ -181,3 +152,92 @@ web_dashboard_trusted_hosts:
 # Specifically, if this is <cmd>, then `<cmd> <projectDir>` is launched.
 # Provide the full path to the executable/script (e.g., "/usr/bin/idea" or "C:/Users/bob/AppData/Local/JetBrains/Toolbox/scripts/idea.cmd").
 jetbrains_launch_command:
+
+# list of paths to ignore across all projects.
+# Same syntax as gitignore, so you can use * and **.
+# These patterns are merged additively with each project's own ignored_paths.
+# Quote patterns that start with `*`, e.g. `"**/bin/**"`.
+ignored_paths: []
+
+# template for the location of the per-project .serena data folder (memories, caches, etc.).
+# Supports the following placeholders:
+#   $projectDir         - the absolute path to the project root directory
+#   $projectFolderName  - the name of the project directory
+# Default: "$projectDir/.serena" (data stored inside the project directory)
+# Example for a central location: "/projects-metadata/$projectFolderName/.serena"
+project_serena_folder_location: $projectDir/.serena
+# the language backend to use for code understanding and manipulation.
+# Possible values are:
+#  * LSP: Use the language server protocol (LSP), spawning freely available language servers
+#      via the SolidLSP library that is part of Serena.
+#  * JetBrains: Use the Serena plugin in your JetBrains IDE.
+#      (requires the plugin to be installed and the project being worked on to be open
+#      in your IDE).
+language_backend: LSP
+
+# line ending convention to use when writing source files.
+# Possible values: "lf" (Unix), "crlf" (Windows), "native" (platform default).
+# Note that Serena's own files (e.g. memories and configuration files) always use native line endings.
+# This setting can be overridden on a per-project basis in project.yml files.
+line_ending: native
+
+# list of glob patterns for project root directories that are considered trusted.
+# Some project settings will only be applied if the project is trusted.
+# A glob pattern can contain the following:
+#       *  matches any sequence of characters except path separators
+#      **  matches any sequence of characters including path separators
+#       ?  matches any single character except path separators
+#   [abc]  matches any single character in the set (here: a, b, or c)
+# Path separators are normalised internally, so on Windows, both / and \ can be used in the patterns.
+# A pattern is matched against the project's root path itself. To trust one specific project, therefore
+# give its root path as-is: appending "/**" to it matches only paths *below* the root and consequently
+# matches no project root at all.
+# Example:
+#   trusted_project_path_patterns:
+#     - /opt/dev/projects/my_trusted_project   # trusts exactly this project
+#     - /home/user/projects/**                 # trusts every project located below this directory
+#     - C:\Users\Anna\Dev\work\**
+# The pattern "**" matches any project path, so it can be used to trust all projects.
+trusted_project_path_patterns:
+- '**'
+
+# mapping from language server keys to integer priority values (higher = more preferred), which determine
+# language server selection during automatic project creation and are used to break ties when multiple
+# language servers match an equal number of source files.
+# The priority values override Serena's default priorities:
+#   * 0 = experimental or secondary language servers, which are never auto-detected
+#         (e.g. `python_*` and `php_*` are "secondary"; also applies to non-programming languages like `json`)
+#   * 1 = supersets of other languages, which shall be preferred only if they match more files
+#         (e.g. `vue` and `svelte`, which are supersets of `typescript`)
+#   * 2 = default priority
+# Example:
+#   ls_priorities:
+#     python: 0
+#     python_basedpyright: 3
+# This example would achieve that `python_basedpyright` becomes the preferred language server for Python,
+# giving it a high priority of 3, while the default Python language server is fully excluded from
+# auto-detection with priority 0.
+ls_priorities:
+
+# list of APIs (facades or facade methods, e.g. "lsp.get_diagnostics_for_symbol") to be included in the REPL
+# (particularly optional methods, which are disabled by default)
+included_apis: []
+
+# list of APIs (facades or facade methods, e.g. "lsp" or "lsp.find_symbol") to be globally excluded from the REPL
+excluded_apis: []
+
+# shared secret for authenticating communication between Serena components and services.
+# Keep this value private. When missing, null, or empty, a random UUID is generated and saved on load.
+auth_secret: c08c6380-2838-472c-8142-2c5cafb57225
+
+# The interface through which the agent (LLM) accesses Serena's functionality:
+#  * tools: the classic tool interface, in which each operation is a separate tool.
+#      The set of tools is configurable via the tool inclusion/exclusion settings (excluded_tools etc.)
+#      of the configuration, the context, modes and the project.
+#  * REPL: operations are accessed programmatically via the serena_repl tool, which executes Python code.
+#      The set of tools is fixed (the REPL tool and the tools required for session management), and the tool
+#      inclusion/exclusion settings do not apply; instead, the operations available in the REPL are configured
+#      via the API inclusion/exclusion settings (excluded_apis etc.).
+# The interface is fixed at startup; it can be overridden by the project activated at startup.
+# IMPORTANT: The REPL interface is a BETA feature. Please provide feedback; if you encounter issues, report them.
+agent_interface: tools

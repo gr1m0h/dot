@@ -21,21 +21,17 @@ Create a new eval definition:
 
 ```markdown
 ## EVAL: feature-name
-
 Created: $(date)
 
 ### Capability Evals
-
 - [ ] [Description of capability 1]
 - [ ] [Description of capability 2]
 
 ### Regression Evals
-
 - [ ] [Existing behavior 1 still works]
 - [ ] [Existing behavior 2 still works]
 
 ### Success Criteria
-
 - pass@3 > 90% for capability evals
 - pass^3 = 100% for regression evals
 ```
@@ -122,7 +118,6 @@ feature-export    [0/4 passing] NOT STARTED
 ## Arguments
 
 $ARGUMENTS:
-
 - `define <name>` - Create new eval definition
 - `check <name>` - Run and check evals
 - `report <name>` - Generate full report
