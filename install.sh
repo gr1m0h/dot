@@ -34,7 +34,7 @@ echo ""
 
 # Adopt dotfiles from the mise-sync transport branch, then run full machine setup.
 echo "Adopting dotfiles from gr1m0h/dot (mise-sync branch)..."
-mise bootstrap --adopt ssh://git@github.com/gr1m0h/dot.git
+mise bootstrap --adopt 'ssh://git@github.com/gr1m0h/dot.git?ref=mise-sync'
 
 echo "Running machine setup (Homebrew, packages, macOS, Docker, MCP)..."
 mise bootstrap
