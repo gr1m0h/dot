@@ -5,6 +5,12 @@ Personal dotfiles managed with [mise](https://mise.jdx.dev/)'s track mode
 generated tree — you edit your real dotfiles, and mise checkpoints every
 change locally so any file can be rolled back.
 
+Set up a new machine with one command ([details](#new-machine)):
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/gr1m0h/dot/main/install.sh | sh
+```
+
 ## How it works
 
 ```text
