@@ -475,5 +475,6 @@
   "showTurnDuration": true,
   "terminalProgressBarEnabled": true,
   "teammateMode": "in-process",
-  "remoteControlAtStartup": true
+  "remoteControlAtStartup": true,
+  "preferredNotifChannel": "terminal_bell"
 }

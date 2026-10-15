@@ -33,9 +33,44 @@ mise never reads this tree: the actual tracked content and its history live
 in the `mise-sync` branch (pushed by `mise bootstrap dotfiles sync`) and on
 each live machine. `home/` exists purely so changes are reviewable as a normal
 git diff/PR on the default branch. It is refreshed by copying from the live
-files (`mise run sync-claude` refreshes the `~/.claude` part; see the tasks in
-the repo-root `mise.toml`) and is not guaranteed to be byte-identical to the
-live files between refreshes.
+files (`scripts/sync-agent-configs.sh`, or the `sync-agent-configs` /
+`sync-claude` tasks in the repo-root `mise.toml`) and is not guaranteed to be
+byte-identical to the live files between refreshes.
+
+### Agent configuration mirror
+
+Preview Claude, Codex and personal skills together (Python 3.11+):
+
+```sh
+bash scripts/sync-agent-configs.sh                 # preview only
+bash scripts/sync-agent-configs.sh --apply         # additions and updates
+bash scripts/sync-agent-configs.sh --apply --delete # also remove reviewed stale files
+mise run sync-agent-configs-dry                    # equivalent preview task
+mise run sync-agent-configs                        # equivalent apply task
+python3 -B -m unittest discover -s scripts -p 'test_sync_agent_configs.py'
+```
+
+The agent entries in `home/.config/mise/config.toml` are the shared target list.
+The mirror command reads this repository file; it does not update the live mise
+configuration, publish, or commit. Activate newly added tracking entries in the
+live mise configuration separately before relying on cross-machine restoration.
+
+Runtime files are excluded from the mirror and symlinks are rejected. Missing
+source entries preserve the existing mirror. Deletions are always displayed and
+require `--delete` to apply. Directory tracking in mise is separate: mirror
+exclusions do not automatically configure mise's history watcher.
+
+Raw Claude `settings.json`, Codex `config.toml`, `hooks.json` and accumulated
+`rules/default.rules` require manual review and are never copied by this command,
+even if tracked. Keep credentials, project trust entries and machine-specific
+paths local; prepare portable settings separately. Installed plugin caches are
+excluded; record installation sources/instructions instead. `sync-claude.sh`
+delegates to the same implementation with `--only claude`. Its no-argument form
+still applies additions/updates, but no longer deletes stale files implicitly.
+
+See [agent configuration setup](docs/agent-config-setup.md) for the portable
+Codex example, local credentials, hooks and plugin restoration. Example files
+are maintained in this repository and are not overwritten by live imports.
 
 ## Install on a new machine
 

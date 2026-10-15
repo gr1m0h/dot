@@ -4,9 +4,10 @@
 # Usage:
 #   build-ghostty-nvim-app.sh [APPLESCRIPT]
 #
-# APPLESCRIPT defaults to the mise-tracked copy at
-# ~/.local/share/ghostty-nvim/Ghostty-Nvim.applescript. The script is also
-# invoked by the `setup-ghostty` mise task (see mise run setup-ghostty).
+# APPLESCRIPT defaults to the mise-deployed copy at
+# ~/.local/share/ghostty-nvim/Ghostty-Nvim.applescript (rendered by
+# `mise bootstrap dotfiles apply`). It is normally invoked by the
+# `setup-ghostty` task in ~/.config/mise/config.toml.
 
 set -euo pipefail
 
@@ -14,7 +15,7 @@ APPLESCRIPT="${1:-${HOME}/.local/share/ghostty-nvim/Ghostty-Nvim.applescript}"
 
 if [ ! -f "$APPLESCRIPT" ]; then
     echo "❌ AppleScript not found: $APPLESCRIPT" >&2
-    echo "   Run 'mise bootstrap dotfiles pull' first, or pass an explicit path." >&2
+    echo "   Run 'mise bootstrap dotfiles apply' first, or pass an explicit path." >&2
     exit 1
 fi
 

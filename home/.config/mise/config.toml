@@ -33,6 +33,9 @@ k6 = "latest"
 trivy = "latest"
 infracost = "latest"
 opentofu = "latest"
+stylua = "latest"
+mkcert = "latest"
+op = "latest"
 "npm:neovim" = "latest"
 "npm:eclint" = "latest"
 "npm:typescript" = "latest"
@@ -41,17 +44,15 @@ opentofu = "latest"
 "npm:mmcp" = "latest"
 "npm:difit" = "latest"
 "npm:@sentry/cli" = "latest"
+"npm:@openai/codex" = "latest"
 "aqua:docker/cli" = "latest"
 "aqua:docker/compose" = "latest"
 "aqua:xxxserxxx/gotop" = "latest"
 "aqua:dduan/tre" = "latest"
-"aqua:newrelic/newrelic-cli" = "latest"
 "go:github.com/go-delve/delve/cmd/dlv" = "latest"
-"go:github.com/gr1m0h/mdv" = "0.1.5"
+"ubi:gr1m0h/mdv" = "latest"
+"aqua:newrelic/newrelic-cli" = "latest"
 "github:datadog-labs/pup" = "latest"
-stylua = "latest"
-mkcert = "latest"
-op = "latest"
 
 [settings]
 experimental = true
@@ -338,6 +339,14 @@ builtin = "history-watch"
 "~/.claude/settings.json" = { mode = "track" }
 "~/.claude/skills" = { mode = "track" }
 "~/.claude/statusline.sh" = { mode = "track" }
+# Agent mirror targets are read directly from this [dotfiles] table by
+# scripts/sync-agent-configs.py. Never track the entire runtime directories.
+# Raw Codex config.toml, hooks.json and accumulated default.rules stay local
+# until portable, credential-free representations have been reviewed.
+"~/.codex/AGENTS.md" = { mode = "track" }
+"~/.codex/agents" = { mode = "track" }
+"~/.codex/hooks" = { mode = "track" }
+"~/.agents/skills" = { mode = "track" }
 "~/.config/bat/config" = { mode = "track" }
 "~/.config/ghostty/config" = { mode = "track" }
 "~/.config/git/config" = { mode = "template", source = "~/.dotfiles/git-config.tera" }

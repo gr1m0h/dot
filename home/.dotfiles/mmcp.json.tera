@@ -3,12 +3,12 @@
   "agents": ["claude-code"],
   "mcpServers": {
     "context7": {
-      "command": "/Users/gr1m0h/.local/share/mise/shims/npx",
+      "command": "npx",
       "args": ["-y", "@upstash/context7-mcp@latest"],
       "env": {}
     },
     "serena": {
-      "command": "/Users/gr1m0h/.local/share/mise/shims/uvx",
+      "command": "uvx",
       "args": [
         "--from",
         "git+https://github.com/oraios/serena",
@@ -19,20 +19,30 @@
       ],
       "env": {}
     },
+{% if env.MMCP_PLAYWRIGHT is defined %}
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--executable-path",
+        "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+      ]
+    },
+{% endif %}
     "notion": {
-      "command": "/Users/gr1m0h/.local/share/mise/shims/npx",
+      "command": "npx",
       "args": ["-y", "@notionhq/notion-mcp-server"],
       "env": {
         "NOTION_TOKEN": "{{ env.NOTION_TOKEN }}"
       }
     },
     "gcloud": {
-      "command": "/Users/gr1m0h/.local/share/mise/shims/npx",
+      "command": "npx",
       "args": ["-y", "@google-cloud/gcloud-mcp"],
       "env": {}
     },
     "aws-mcp": {
-      "command": "/Users/gr1m0h/.local/share/mise/shims/uvx",
+      "command": "uvx",
       "args": [
         "mcp-proxy-for-aws@latest",
         "https://aws-mcp.us-east-1.api.aws/mcp",

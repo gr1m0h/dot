@@ -14,3 +14,11 @@ run = "bash scripts/sync-claude.sh"
 [tasks.sync-claude-dry]
 description = "dry run of sync-claude (show changes, write nothing)"
 run = "bash scripts/sync-claude.sh -n"
+
+[tasks.sync-agent-configs]
+description = "mirror Claude, Codex and personal skills (preserve stale files)"
+run = "bash scripts/sync-agent-configs.sh --apply"
+
+[tasks.sync-agent-configs-dry]
+description = "preview agent configuration changes without writing"
+run = "bash scripts/sync-agent-configs.sh --dry-run"
