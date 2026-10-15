@@ -1,8 +1,9 @@
 # Agent configuration setup
 
-Live files are the source of truth. The repository's `home/` tree is a review
-mirror; the existing mise workflow handles machine restoration separately.
-The shared mirror target list is `home/.config/mise/config.toml`.
+`main`'s `home/` tree is the single source of truth (see the README); these
+commands mirror the live agent configs into it for a PR — a scoped subset of
+`mise run propose`. The shared mirror target list is
+`home/.config/mise/config.toml`.
 
 ## Refresh the mirror
 
