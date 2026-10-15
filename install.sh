@@ -90,8 +90,14 @@ export PATH CLOUDSDK_PYTHON
 
 echo "Running machine setup (Homebrew, packages, macOS, templates, tools)..."
 # --yes: when this script is piped into a shell, stdin is the script itself,
-# so an interactive prompt would consume script text as its answer and abort.
-mise bootstrap --yes
+# so an interactive mise prompt would consume script text as its answer.
+# </dev/tty: the Homebrew installer runs sudo, which needs a terminal to ask
+# for the password — piped stdin isn't one, and setup-homebrew died on it.
+if [ -r /dev/tty ]; then
+    mise bootstrap --yes </dev/tty
+else
+    mise bootstrap --yes
+fi
 
 echo ""
 echo "====================================="
