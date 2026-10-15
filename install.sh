@@ -43,8 +43,14 @@ if [ ! -d "$REPO_DIR/.git" ]; then
     mkdir -p "$(dirname "$REPO_DIR")"
     git clone "$REPO_HTTPS" "$REPO_DIR"
 else
-    echo "Repository already present; fetching main..."
+    echo "Repository already present; updating to origin/main..."
     git -C "$REPO_DIR" fetch origin main
+    # Fast-forward the working tree too — apply-main.py runs from it, so a
+    # fetch alone would keep executing the stale checkout.
+    git -C "$REPO_DIR" checkout main
+    if ! git -C "$REPO_DIR" merge --ff-only origin/main; then
+        echo "Warning: local main has diverged from origin/main; using it as-is"
+    fi
 fi
 
 # NOTE: template rendering (git config, mmcp) reads per-PC secrets from
