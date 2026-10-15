@@ -291,8 +291,10 @@ if [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
 fi
 echo "Setting up Claude MCP Servers..."
 if ! command -v claude &>/dev/null; then
-    echo "Claude CLI not found. Ensure mise tools are installed."
-    exit 1
+    # Claude Code is installed by its own installer, not by this repo —
+    # on a machine without it this task has nothing to do.
+    echo "Warning: Claude CLI not found, skipping MCP setup (install Claude Code, then rerun: mise run setup-mcp)"
+    exit 0
 fi
 if claude mcp list 2>/dev/null | grep -q "github"; then
     echo "GitHub Remote MCP server already configured"
