@@ -86,7 +86,7 @@ echo "Homebrew installed successfully!"
 '''
 
 [tasks.setup-packages]
-description = "Install packages from ~/.Brewfile"
+description = "Install common and machine-local Homebrew packages"
 depends = ["setup-homebrew"]
 run = '''
 #!/usr/bin/env bash
@@ -95,11 +95,12 @@ if ! command -v brew &>/dev/null; then
     echo "Error: Homebrew is not installed"
     exit 1
 fi
-if [ ! -f "$HOME/.Brewfile" ]; then
-    echo "No ~/.Brewfile found, skipping package installation"
-    exit 0
+if [ -f "$HOME/.Brewfile" ]; then
+    brew bundle --global
 fi
-brew bundle --global
+if [ -f "$HOME/.Brewfile.local" ]; then
+    brew bundle --file="$HOME/.Brewfile.local"
+fi
 echo "Homebrew packages installed successfully!"
 '''
 
@@ -126,7 +127,10 @@ mkdir -p "$HOME/.packages"
 
 echo "Configuring System UI..."
 defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
-defaults write com.apple.universalaccess reduceTransparency -bool true 2>/dev/null || true
+defaults write NSGlobalDomain AppleAccentColor -int 5
+defaults write NSGlobalDomain AppleAquaColorVariant -int 1
+defaults write NSGlobalDomain NSGlassDiffusionSetting -bool false
+# reduceTransparency is not stored/readable on the reference Mac; do not force it.
 defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
 defaults write com.apple.LaunchServices LSQuarantine -bool false
 defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
@@ -167,6 +171,14 @@ defaults write com.apple.dock mru-spaces -bool false
 defaults write com.apple.dock autohide-delay -float 0
 defaults write com.apple.dock autohide-time-modifier -float 0.2
 
+# Explicit preferences captured from the reference Mac (2026-10-17).
+defaults write com.apple.dock wvous-br-corner -int 14
+defaults write NSGlobalDomain AppleMiniaturizeOnDoubleClick -bool false
+
+echo "Configuring Window Management..."
+defaults write com.apple.WindowManager EnableTilingByEdgeDrag -bool false
+defaults write com.apple.WindowManager EnableTopTilingByEdgeDrag -bool false
+
 echo "Configuring Screenshot settings..."
 defaults write com.apple.screencapture location -string "$HOME/Desktop"
 defaults write com.apple.screencapture type -string "png"
@@ -184,6 +196,8 @@ defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
 defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 
+defaults write com.apple.HIToolbox AppleFnUsageType -int 0
+
 echo "Configuring Keyboard Shortcuts..."
 SHK_PLIST="$HOME/Library/Preferences/com.apple.symbolichotkeys.plist"
 shk_set_enabled() {
@@ -194,22 +208,17 @@ shk_set_enabled() {
         || true
 }
 shk_disable_ids=(
-    7 8 9 10 11 12 13
-    15 16 17 18 19
-    27 28 29 31
-    32 33 34 35 36
-    52 53
-    57
-    62 63
-    64 65
-    79 80 81 82
-    118 119 120 121
-    159 160 162 163
-    175 179
-    190 191
-    222 223
+    7 8 9 10 11 12 13 15 16 17
+    18 19 20 21 22 23 24 25 26 27
+    28 29 31 32 33 34 35 36 52 53
+    54 57 59 62 63 64 65 75 76 79
+    81 118 119 120 121 159 160 162 163 164
+    175 179 190 191 222 223 224 225 226 227
+    228 229 230 231 232 233 235 237 238 239
+    240 241 242 243 244 245 246 247 248 249
+    250 251 256 257 258 260
 )
-shk_enable_ids=(30 60 61 184)
+shk_enable_ids=(30 37 51 55 56 60 61 70 73 80 82 98 156 184)
 for id in "${shk_disable_ids[@]}"; do
     shk_set_enabled "$id" false
 done
@@ -220,9 +229,54 @@ killall cfprefsd 2>/dev/null || true
 
 echo "Configuring Trackpad..."
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad DragLock -int 0
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Dragging -int 0
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadCornerSecondaryClick -int 0
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool true
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool false
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerTapGesture -int 0
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerHorizSwipeGesture -int 2
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerVertSwipeGesture -int 2
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadFourFingerHorizSwipeGesture -int 2
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadFourFingerVertSwipeGesture -int 2
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadFourFingerPinchGesture -int 2
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadFiveFingerPinchGesture -int 2
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadTwoFingerDoubleTapGesture -int 1
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadTwoFingerFromRightEdgeSwipeGesture -int 3
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadPinch -int 1
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRotate -int 1
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadScroll -bool true
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadHorizScroll -int 1
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadMomentumScroll -bool true
 defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+defaults write com.apple.AppleMultitouchTrackpad DragLock -int 0
+defaults write com.apple.AppleMultitouchTrackpad Dragging -int 0
+defaults write com.apple.AppleMultitouchTrackpad TrackpadCornerSecondaryClick -int 0
+defaults write com.apple.AppleMultitouchTrackpad TrackpadRightClick -bool true
+defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool false
+defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerTapGesture -int 0
+defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerHorizSwipeGesture -int 2
+defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerVertSwipeGesture -int 2
+defaults write com.apple.AppleMultitouchTrackpad TrackpadFourFingerHorizSwipeGesture -int 2
+defaults write com.apple.AppleMultitouchTrackpad TrackpadFourFingerVertSwipeGesture -int 2
+defaults write com.apple.AppleMultitouchTrackpad TrackpadFourFingerPinchGesture -int 2
+defaults write com.apple.AppleMultitouchTrackpad TrackpadFiveFingerPinchGesture -int 2
+defaults write com.apple.AppleMultitouchTrackpad TrackpadTwoFingerDoubleTapGesture -int 1
+defaults write com.apple.AppleMultitouchTrackpad TrackpadTwoFingerFromRightEdgeSwipeGesture -int 3
+defaults write com.apple.AppleMultitouchTrackpad TrackpadPinch -int 1
+defaults write com.apple.AppleMultitouchTrackpad TrackpadRotate -int 1
+defaults write com.apple.AppleMultitouchTrackpad TrackpadScroll -bool true
+defaults write com.apple.AppleMultitouchTrackpad TrackpadHorizScroll -int 1
+defaults write com.apple.AppleMultitouchTrackpad TrackpadMomentumScroll -bool true
+defaults write com.apple.AppleMultitouchTrackpad FirstClickThreshold -int 1
+defaults write com.apple.AppleMultitouchTrackpad SecondClickThreshold -int 1
+defaults write com.apple.AppleMultitouchTrackpad ForceSuppressed -bool false
+defaults write com.apple.AppleMultitouchTrackpad ActuateDetents -int 1
 defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+
+defaults write NSGlobalDomain com.apple.trackpad.scaling -float 3.0
+defaults write NSGlobalDomain com.apple.trackpad.forceClick -bool false
 
 echo "Configuring Security settings..."
 defaults write com.apple.screensaver askForPassword -bool true
@@ -242,6 +296,12 @@ defaults write com.apple.ActivityMonitor IconType -int 5
 defaults write com.apple.ActivityMonitor ShowCategory -int 100
 defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
 defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
+
+local_macos="${XDG_CONFIG_HOME:-$HOME/.config}/macos.local.sh"
+if [ -f "$local_macos" ]; then
+    echo "Applying machine-local macOS settings..."
+    bash -euo pipefail "$local_macos"
+fi
 
 echo "Restarting affected applications..."
 for app in Safari Finder Dock SystemUIServer ActivityMonitor; do

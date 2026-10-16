@@ -86,3 +86,8 @@ home/.agents/**/*.jsonl
 home/.agents/**/*.sqlite*
 home/.agents/**/__pycache__/
 home/.agents/**/node_modules/
+
+# Machine-local content must not enter the public home/ mirror.
+home/.Brewfile.local
+home/.config/mise/conf.d/local.toml
+home/.config/macos.local.sh

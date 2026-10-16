@@ -76,6 +76,9 @@ fi
 echo "Applying main's home/ tree onto \$HOME..."
 python3 -B "$REPO_DIR/scripts/apply-main.py"
 
+echo "Preparing machine-local configuration (preserving existing files)..."
+sh "$REPO_DIR/scripts/init-machine-local.sh"
+
 # gcloud's install script requires python >= 3.10, but a fresh mac only has
 # the CLT 3.9 until mise's python lands — and the parallel tools phase lets
 # gcloud race ahead of it, killing the whole bootstrap. Install python first

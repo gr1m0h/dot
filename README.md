@@ -177,6 +177,31 @@ tracked file sources:
   `[ -f "${ZDOTDIR}/.zshrc.local" ] && source "${ZDOTDIR}/.zshrc.local"`
 - Not tracked: `~/.config/zsh/.zshrc.local` (CHROME_PATH, Datadog, …)
 
+`install.sh` also creates these empty files from tracked templates in
+`templates/machine-local/`, before installing tools and running bootstrap:
+
+| Local file (never tracked) | Purpose |
+| --- | --- |
+| `~/.config/mise/conf.d/local.toml` | Additional mise `[tools]`; loaded by mise |
+| `~/.Brewfile.local` | Additional Homebrew packages; installed after the common Brewfile |
+| `~/.config/macos.local.sh` | macOS overrides; run with Bash after common defaults and before restarting apps |
+
+Existing files and symlinks are preserved on reruns. The `.config` paths respect
+`XDG_CONFIG_HOME` when set. Templates stay outside `home/` so applying common
+dotfiles cannot overwrite local content. Keep these files out of `[dotfiles]`.
+Packages needed only on one machine belong in its local list, not the common list.
+Avoid declaring the same tool in both lists: the installed mise version gives
+the common `config.toml` entry precedence over `conf.d/local.toml`.
+
+To prepare these files on an already configured machine:
+
+```sh
+mise run init-machine-local
+```
+
+Edit the generated files, then run `mise install`, `mise run setup-packages`,
+or `mise run setup-macos` to apply the corresponding changes.
+
 ### 2. Template
 
 The tracked source renders per machine from environment variables (Tera).

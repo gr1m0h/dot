@@ -27,6 +27,10 @@ run = "bash scripts/sync-agent-configs.sh --dry-run"
 description = "apply origin/main's home/ tree onto this machine's live files (then `mise dot sync`)"
 run = "python3 -B scripts/apply-main.py"
 
+[tasks.init-machine-local]
+description = "create machine-local configuration files without overwriting existing files"
+run = "sh scripts/init-machine-local.sh"
+
 [tasks.propose]
 description = "mirror live tracked files into home/ for a PR (then review `git diff`)"
 run = "python3 -B scripts/propose.py"
