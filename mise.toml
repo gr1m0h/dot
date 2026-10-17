@@ -16,7 +16,7 @@ description = "dry run of sync-claude (show changes, write nothing)"
 run = "bash scripts/sync-claude.sh -n"
 
 [tasks.sync-agent-configs]
-description = "mirror Claude, Codex and personal skills (preserve stale files)"
+description = "mirror explicitly tracked legacy agent files; excludes personal Codex assets"
 run = "bash scripts/sync-agent-configs.sh --apply"
 
 [tasks.sync-agent-configs-dry]

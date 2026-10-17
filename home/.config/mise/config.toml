@@ -399,16 +399,11 @@ builtin = "history-watch"
 "~/.claude/hooks" = { mode = "track" }
 "~/.claude/rules" = { mode = "track" }
 "~/.claude/settings.json" = { mode = "track" }
-"~/.claude/skills" = { mode = "track" }
 "~/.claude/statusline.sh" = { mode = "track" }
 # Agent mirror targets are read directly from this [dotfiles] table by
 # scripts/sync-agent-configs.py. Never track the entire runtime directories.
 # Raw Codex config.toml, hooks.json and accumulated default.rules stay local
 # until portable, credential-free representations have been reviewed.
-"~/.codex/AGENTS.md" = { mode = "track" }
-"~/.codex/agents" = { mode = "track" }
-"~/.codex/hooks" = { mode = "track" }
-"~/.agents/skills" = { mode = "track" }
 "~/.config/bat/config" = { mode = "track" }
 "~/.config/ghostty/config" = { mode = "track" }
 "~/.config/git/config" = { mode = "template", source = "~/.dotfiles/git-config.tera" }
