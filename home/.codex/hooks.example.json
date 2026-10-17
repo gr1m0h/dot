@@ -1,0 +1,29 @@
+{
+  "description": "Bounded local workspace context and compaction reminder.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact|fork",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.codex/hooks/context.cjs\"",
+            "timeout": 3,
+            "additionalContextLimit": 512
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.codex/hooks/context.cjs\"",
+            "timeout": 3
+          }
+        ]
+      }
+    ]
+  }
+}

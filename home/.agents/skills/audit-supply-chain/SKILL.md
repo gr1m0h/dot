@@ -1,48 +1,37 @@
 ---
 name: audit-supply-chain
-description: Analyze the software supply chain for security risks AND license compliance. Use when user says "audit supply chain", "dependency security", "check for typosquatting", "audit licenses", "check license compliance", "dependency licenses", before adding new dependencies, or before releasing open source software. Checks provenance, signatures, known vulnerabilities, and classifies licenses by risk level.
-user-invocable: true
-allowed-tools: Read, Grep, Glob, Bash
-context: fork
-agent: supply-chain-auditor
-argument-hint: "[--deep] [--ci] [--licenses-only] [--strict]"
+description: Audit dependency vulnerabilities, provenance, and license obligations. Use for dependency checks and OSS release preparation.
 ---
 
-Run a supply chain audit on this project: security risks and, when relevant or requested,
-license compliance. `--licenses-only` skips the security half; `--strict` tightens license
-classification.
+# Dependency and License Audit
 
-## Context
+## Establish scope
 
-Lockfile status:
-!`ls package-lock.json yarn.lock pnpm-lock.yaml Cargo.lock go.sum poetry.lock 2>/dev/null || echo "No lockfile found"`
+Identify the manifests, lockfiles, package managers, project license, distributed artifact, and requested security/license scope. Distinguish runtime, development, build, and vendored dependencies. This is a dependency audit, not a full application or infrastructure security audit.
 
-Known vulnerability scan:
-!`npm audit --json 2>/dev/null | head -50 || pip-audit 2>/dev/null | head -30 || echo "No native audit tool available"`
+## Inspect dependencies
 
-Project license:
-!`cat LICENSE 2>/dev/null | head -5 || echo "No LICENSE file found"`
+- Prefer the ecosystem's existing audit and inventory tools. Record tool/database freshness and scan scope. Do not install dependencies or execute package-controlled hooks merely to inspect them.
+- Check resolved versions, source registries, integrity metadata, suspicious naming or source changes, and install-script behavior where relevant.
+- For vulnerability results, distinguish database matches from demonstrated application exploitability. Explain reachability evidence and unresolved conditions without dismissing a match merely because exploitation was not demonstrated.
+- Missing scan access, unsupported ecosystems, or stale databases are coverage gaps, not clean results.
 
-## Security audit
+## Inspect licenses when requested or preparing distribution
 
-1. Verify lockfile integrity and freshness
-2. Scan for known CVEs in all dependencies
-3. Check for typosquatting risks
-4. Audit install scripts for suspicious behavior
-5. Evaluate dependency maintainer activity
+Inventory direct and transitive license expressions and inspect actual license files for missing or ambiguous metadata. Evaluate obligations against how the project uses and distributes the dependency; a license category alone does not establish compatibility or a violation.
 
-## License compliance (when releasing OSS, `--licenses-only`, or license issues surface)
+Cite applicable license text for conclusions. Flag unresolved interpretation rather than inventing a definitive legal conclusion. Keep copyright, notices, source obligations, and distribution conditions visible in recommendations.
 
-1. Identify all direct and transitive dependencies
-2. Extract license information for each dependency
-3. Classify by risk level (Permissive / Weak Copyleft / Strong Copyleft / Unknown)
-4. Check compatibility with the project license
-5. Flag any violations or missing licenses
+## Report and boundaries
 
-## Output
+Deliver the dependency/version, evidence, affected artifact or usage, uncertainty, and recommended action. Keep vulnerability severity, exploitability confidence, and license concerns separate.
 
-One risk-scored audit report covering both halves (omit whichever was skipped),
-with severity → action per `rules/_core.md` (Critical/High = BLOCK, Medium = warn+document,
-Low = allow+monitor).
+Do not alter lockfiles, upgrade packages, or publish artifacts as part of an audit unless authorized. Do not claim CI authorization, signing-chain, or application vulnerability coverage. If a dedicated security-audit skill is installed and that deeper review is requested, hand that scope to it rather than running duplicate audits. When the user wants to understand a finding, explain the evidence and tradeoffs.
 
-$ARGUMENTS
+## Reproducible dependency findings
+
+Record the advisory URL/identifier, affected and fixed ranges, database/update/check date when available, resolved version, runtime/build/dev usage, and evidence of reachability. Verify AI-suggested package names and provenance against the actual registry or upstream repository before proposing installation. Do not run automatic audit-fix commands during an audit.
+
+For licenses, cite actual upstream license/notice text and the distributed artifact or usage that creates an obligation. SPDX metadata supports identification; it does not alone prove legal compatibility. Report unknowns and needed interpretation.
+
+Sources: [npm audit](https://docs.npmjs.com/cli/v11/commands/npm-audit/), [Go vulnerability management](https://go.dev/doc/security/vuln/), and [SPDX license texts](https://spdx.org/licenses/). Use the target ecosystem's current primary documentation for other tools.

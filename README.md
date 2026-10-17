@@ -116,7 +116,7 @@ is safe to repeat.
 brew install mise
 git clone ssh://git@github.com/gr1m0h/dot.git ~/Documents/workspace/github.com/gr1m0h/dot
 cd ~/Documents/workspace/github.com/gr1m0h/dot
-python3 -B scripts/apply-main.py   # home/ -> $HOME (config.toml included)
+bash scripts/apply-main.sh --agents codex  # or claude / both
 mise bootstrap                     # packages, defaults, templates, services, tools
 ```
 
@@ -151,8 +151,51 @@ Narrower live→repo mirrors (subsets of `propose`, used by it historically):
 
 | Command | What it does |
 | --- | --- |
-| `mise run sync-claude` | copy live `~/.claude` into `home/.claude` (no commit) |
-| `mise run sync-agent-configs` | same for all agent configs (Claude, Codex, `~/.agents/skills`); details in [docs/agent-config-setup.md](docs/agent-config-setup.md) |
+| `mise run sync-claude` | mirror selected Claude files (no commit; skips raw settings) |
+| `mise run sync-agent-configs` | mirror selected agent files, excluding runtime and raw client settings |
+
+### Select Codex, Claude, or both
+
+`install.sh` asks which agent configuration to apply. For non-interactive use:
+
+```sh
+sh install.sh --agents codex  # or claude / both
+```
+
+On an existing machine, run from this checkout:
+
+```sh
+mise run configure-agents codex  # personal PC; use claude on the work PC
+mise install                    # install the selected CLI(s), if needed
+```
+
+The task applies the selected agent files from this checkout and migrates legacy
+agent declarations in the live mise config. It preserves unrelated common-file
+edits and inactive agents' files. Selected files are overwritten: review local
+agent edits first. Switching does not uninstall existing applications.
+
+The choice is stored locally in `~/.config/dotfiles/agents`; generated
+`~/.config/mise/conf.d/agents.toml` registers the selected tools and tracked files.
+Both paths respect `XDG_CONFIG_HOME` and stay outside the shared mirror.
+`apply-main`, `propose`, and the narrower sync tasks follow the saved choice;
+without a choice they stop and ask you to configure one explicitly.
+
+Codex instructions, custom agents, shared skills, portable rules, and hook/config
+examples are managed in `home/.codex` and `home/.agents/skills`. Authentication,
+raw Codex `config.toml`, active `hooks.json`, and accumulated `default.rules`
+remain local. Copying examples does not activate hooks or change models.
+Claude's desktop Homebrew cask and MCP setup run only when Claude is selected.
+
+Apply, propose, sync, and their tests use macOS's Bash 3.2 and standard command-line
+tools. TOML is parsed by the existing mise installation. These scripts do not
+require Python; Python remains installed for tools such as gcloud.
+
+Run isolated regression checks without changing live files:
+
+```sh
+bash scripts/test-dotfiles.sh
+# or: mise run test-dotfiles
+```
 
 Mnemonic: **propose = live→repo, apply-main = repo→live, bootstrap =
 assemble.** Anything destructive is reversible via `undo` / `rollback`.
@@ -176,6 +219,31 @@ tracked file sources:
 - Tracked: `~/.config/zsh/.zshrc`, ending with
   `[ -f "${ZDOTDIR}/.zshrc.local" ] && source "${ZDOTDIR}/.zshrc.local"`
 - Not tracked: `~/.config/zsh/.zshrc.local` (CHROME_PATH, Datadog, …)
+
+`install.sh` also creates these empty files from tracked templates in
+`templates/machine-local/`, before installing tools and running bootstrap:
+
+| Local file (never tracked) | Purpose |
+| --- | --- |
+| `~/.config/mise/conf.d/local.toml` | Additional mise `[tools]`; loaded by mise |
+| `~/.Brewfile.local` | Additional Homebrew packages; installed after the common Brewfile |
+| `~/.config/macos.local.sh` | macOS overrides; run with Bash after common defaults and before restarting apps |
+
+Existing files and symlinks are preserved on reruns. The `.config` paths respect
+`XDG_CONFIG_HOME` when set. Templates stay outside `home/` so applying common
+dotfiles cannot overwrite local content. Keep these files out of `[dotfiles]`.
+Packages needed only on one machine belong in its local list, not the common list.
+Avoid declaring the same tool in both lists: the installed mise version gives
+the common `config.toml` entry precedence over `conf.d/local.toml`.
+
+To prepare these files on an already configured machine:
+
+```sh
+mise run init-machine-local
+```
+
+Edit the generated files, then run `mise install`, `mise run setup-packages`,
+or `mise run setup-macos` to apply the corresponding changes.
 
 ### 2. Template
 

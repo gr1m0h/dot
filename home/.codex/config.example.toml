@@ -1,16 +1,8 @@
-# Public, manually maintained preferences; not loaded automatically.
-# Merge selected keys into ~/.codex/config.toml. Do not replace the live file.
-# Model availability depends on the account and installed client.
-model = "gpt-6-astra"
-model_reasoning_effort = "medium"
-
-# Optional existing Notion stdio integration. Enable only when needed and after
-# installing Node.js/npx. Supply NOTION_TOKEN to the launching process through
-# the local environment or a secret manager; never put its value in this file.
-# [mcp_servers.notion]
-# command = "npx"
-# args = ["-y", "@notionhq/notion-mcp-server"]
-# env_vars = ["NOTION_TOKEN"]
-
-# Keep project trust, permissions, hook trust, generated MCP entries, plugin
-# installation paths and credentials local. See docs/agent-config-setup.md.
+# Optional preferences, maintained by hand; not an automatically loaded layer.
+# Merge only explicitly chosen settings into ~/.codex/config.toml.
+# Keep the destination account/client defaults unless changing models is intended.
+# Do not copy authentication, hook trust, project trust, MCP env values,
+# plugin installation state, or generated configuration into this repository.
+# Custom agents are standalone TOML files in ~/.codex/agents/.
+# Lifecycle registrations: hooks.example.json (review and configure locally).
+# Setup and primary references: ../../docs/agent-config-setup.md (repo docs).
