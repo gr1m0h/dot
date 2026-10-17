@@ -38,7 +38,7 @@ cask "brave-browser"
 # Open links in any browser
 cask "choosy"
 # Anthropic's official Claude AI desktop app
-cask "claude"
+cask "claude" if ENV["DOTFILES_CLAUDE"] == "1"
 # Voice and text chat software
 cask "discord"
 # Assign keys, and then decorate and label them

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Learning Coach"
+  short_description: "ブログ・コーディング・技術調査で、本人の判断と実践を支えるコーチ"
+  default_prompt: "Use $learning-coach to help me reason through this task and create the work myself, with staged hints and feedback."

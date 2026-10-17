@@ -72,6 +72,8 @@ home/.codex/*
 !home/.codex/AGENTS.md
 !home/.codex/agents/
 !home/.codex/hooks/
+!home/.codex/hooks.example.json
+!home/.codex/rules/
 !home/.codex/config.example.toml
 home/.agents/*
 !home/.agents/skills/
@@ -86,3 +88,8 @@ home/.agents/**/*.jsonl
 home/.agents/**/*.sqlite*
 home/.agents/**/__pycache__/
 home/.agents/**/node_modules/
+
+# Machine-local content must not enter the public home/ mirror.
+home/.Brewfile.local
+home/.config/mise/conf.d/local.toml
+home/.config/macos.local.sh
