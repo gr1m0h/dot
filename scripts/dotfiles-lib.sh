@@ -1,0 +1,189 @@
+#!/usr/bin/env bash
+# Shared Bash 3.2 helpers. TOML is parsed by mise, never by eval/source.
+
+dot_error() { printf 'Error: %s\n' "$*" >&2; exit 1; }
+
+dot_init() {
+    DOT_REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
+    DOT_HOME="$(cd "$HOME" && pwd -P)"
+    DOT_CONFIG="${XDG_CONFIG_HOME:-$DOT_HOME/.config}"
+    DOT_WORK="$(mktemp -d "${TMPDIR:-/tmp}/dotfiles.XXXXXX")"
+    DOT_WORK="$(cd "$DOT_WORK" && pwd -P)"
+    trap 'rm -rf -- "$DOT_WORK"' EXIT
+}
+
+dot_select() {
+    DOT_AGENT="${1:-}"
+    if [[ -z "$DOT_AGENT" ]]; then
+        [[ -f "$DOT_CONFIG/dotfiles/agents" ]] || dot_error 'Choose agents: mise run configure-agents codex|claude|both'
+        DOT_AGENT="$(cat "$DOT_CONFIG/dotfiles/agents")"
+    fi
+    case "$DOT_AGENT" in codex|claude|both) ;; *) dot_error 'Choose codex, claude, or both' ;; esac
+}
+
+dot_has() { [[ "$DOT_AGENT" == "$1" || "$DOT_AGENT" == both ]]; }
+
+dot_agent_targets() {
+    if dot_has codex; then
+        printf '%s\n' '.codex/AGENTS.md' '.codex/agents' '.agents/skills' \
+            '.codex/hooks/context.cjs' '.codex/hooks.example.json' \
+            '.codex/config.example.toml' '.codex/rules/personal-operations.rules'
+    fi
+    if dot_has claude; then
+        printf '%s\n' '.claude/CLAUDE.md' '.claude/README.md' '.claude/agents' \
+            '.claude/docs' '.claude/hooks' '.claude/rules' '.claude/settings.json' \
+            '.claude/statusline.sh' '.claude/skills'
+    fi
+}
+
+dot_enabled() {
+    case "$1" in
+        .config/dotfiles/agents|.config/mise/conf.d/agents.toml) return 1 ;;
+        .codex/*|.agents/*) dot_has codex ;;
+        .claude/*) dot_has claude ;;
+        *) return 0 ;;
+    esac
+}
+
+dot_validate() {
+    case "$1" in ''|/*|..|../*|*/../*|*/..|*\\*|*'"'*|*$'\n'*|*$'\t'*) dot_error "Unsafe path: $1" ;; esac
+}
+
+dot_no_symlinks() {
+    local path="$1"
+    while [[ -n "$path" && "$path" != / ]]; do
+        [[ ! -L "$path" ]] || dot_error "Symlink path is not supported: $1"
+        if [[ "$path" != "$1" && -e "$path" && ! -d "$path" ]]; then dot_error "Parent is not a directory: $path"; fi
+        path="${path%/*}"
+    done
+}
+
+dot_portable() {
+    local relative="$1" part rest
+    case "$relative" in .codex/*|.agents/*|.claude/*) ;; *) [[ "${relative##*/}" != .DS_Store ]]; return ;; esac
+    rest="${relative#*/}"
+    while [[ -n "$rest" ]]; do
+        part="${rest%%/*}"
+        case "$part" in
+            .env|.env.*|auth.json|*.jsonl|*.sqlite*|*.db|*.log|*.bak|*.local.*|.git|.hg|.svn|.claude|.codex|node_modules|__pycache__|sessions|projects|memory|memories|cache|backups|.system|plugins|slide-deck|.DS_Store) return 1 ;;
+        esac
+        [[ "$rest" == */* ]] || break
+        rest="${rest#*/}"
+    done
+}
+
+dot_manual() {
+    case "$1" in .claude/settings.json|.codex/config.toml|.codex/hooks.json|.codex/rules/default.rules) return 0 ;; *) return 1 ;; esac
+}
+
+dot_tracked() {
+    # mise normalizes inline/multiline TOML to one table per target. Reject
+    # escaped keys rather than silently interpreting a different filesystem path.
+    mise config get --file "$1" dotfiles > "$DOT_WORK/tracked.toml"
+    awk '
+        /^\["/ { target=$0; sub(/^\["/, "", target); sub(/"\]$/, "", target) }
+        /^mode = "track"$/ { print target }
+    ' "$DOT_WORK/tracked.toml" > "$DOT_WORK/tracked.paths"
+    local target relative
+    while IFS= read -r target; do
+        [[ "$target" == '~/'* ]] || dot_error "Only home-relative targets are supported: $target"
+        relative="${target:2}"
+        dot_validate "$relative"
+        printf '%s\n' "$relative"
+    done < "$DOT_WORK/tracked.paths"
+}
+
+dot_files() {
+    local base="$1" relative="$2" path file rel
+    path="$base/$relative"
+    dot_no_symlinks "$path"
+    [[ -e "$path" ]] || return 0
+    if [[ -f "$path" ]]; then
+        dot_portable "$relative" && printf '%s\0' "$relative"
+        return 0
+    fi
+    [[ -d "$path" ]] || dot_error "Unsupported file type: $path"
+    find "$path" \( -type f -o -type l \) -print0 > "$DOT_WORK/found"
+    while IFS= read -r -d '' file; do
+        rel="${file#"$base/"}"
+        dot_validate "$rel"
+        dot_portable "$rel" || continue
+        dot_no_symlinks "$file"
+        printf '%s\0' "$rel"
+    done < "$DOT_WORK/found"
+}
+
+dot_mode() {
+    local mode
+    if mode="$(stat -f '%Lp' "$1" 2>/dev/null)"; then printf '%s\n' "$mode"; else stat -c '%a' "$1"; fi
+}
+
+dot_same() {
+    [[ -f "$2" ]] && cmp -s "$1" "$2" && [[ "$(dot_mode "$1")" == "$(dot_mode "$2")" ]]
+}
+
+dot_copy() {
+    local source="$1" target="$2"
+    dot_no_symlinks "$source"
+    dot_no_symlinks "$target"
+    [[ ! -e "$target" || -f "$target" ]] || dot_error "Destination type conflict: $target"
+    if dot_same "$source" "$target"; then return 1; fi
+    mkdir -p "$(dirname "$target")" || dot_error "Cannot create parent: $target"
+    cp -p "$source" "$target" || dot_error "Cannot copy to: $target"
+}
+
+dot_generate() {
+    local claude=0 relative
+    dot_has claude && claude=1
+    printf '# Generated by dotfiles; change with mise run configure-agents.\n[env]\nDOTFILES_CLAUDE = "%s"\n\n[tools]\n' "$claude"
+    if dot_has codex; then printf '"npm:@openai/codex" = "latest"\n'; fi
+    if dot_has claude; then printf '"npm:@anthropic-ai/claude-code" = "latest"\n'; fi
+    printf '\n[dotfiles]\n'
+    while IFS= read -r relative; do printf '"~/%s" = { mode = "track" }\n' "$relative"; done < <(dot_agent_targets)
+}
+
+dot_write() {
+    local source="$1" target="$2"
+    dot_no_symlinks "$target"
+    [[ ! -e "$target" || -f "$target" ]] || dot_error "Destination type conflict: $target"
+    if [[ -f "$target" ]] && cmp -s "$source" "$target"; then return 0; fi
+    mkdir -p "$(dirname "$target")"
+    cat "$source" > "$target"
+}
+
+dot_save() {
+    dot_generate > "$DOT_WORK/profile"
+    printf '%s\n' "$DOT_AGENT" > "$DOT_WORK/selection"
+    dot_no_symlinks "$DOT_CONFIG/mise/conf.d/agents.toml"
+    dot_no_symlinks "$DOT_CONFIG/dotfiles/agents"
+    dot_write "$DOT_WORK/profile" "$DOT_CONFIG/mise/conf.d/agents.toml"
+    dot_write "$DOT_WORK/selection" "$DOT_CONFIG/dotfiles/agents"
+}
+
+dot_migrate() {
+    local file="$DOT_CONFIG/mise/config.toml"
+    if [[ -f "$file" ]]; then
+        dot_no_symlinks "$file"
+        awk '
+            function flush() {
+                if (section == "[tasks.setup-mcp]" && !index(block, "DOTFILES_CLAUDE")) {
+                    sub(/set -euo pipefail\n/, "set -euo pipefail\nif [ \"${DOTFILES_CLAUDE:-0}\" != \"1\" ]; then\n    echo \"Skipping Claude MCP setup (Claude is not selected)\"\n    exit 0\nfi\n", block)
+                }
+                printf "%s", block; block=""
+            }
+            /^[[:space:]]*\[/ { flush(); section=$0 }
+            section == "[tools]" && /^[[:space:]]*"npm:@(openai\/codex|anthropic-ai\/claude-code)"[[:space:]]*=/ { next }
+            section == "[dotfiles]" && /^[[:space:]]*"~\/\.(claude|codex|agents)\// { next }
+            /^[[:space:]]*#/ { gsub(/sync-agent-configs[.]py/, "sync-agent-configs.sh"); gsub(/agent_profiles[.]py/, "dotfiles-lib.sh") }
+            { block=block $0 "\n" }
+            END { flush() }
+        ' "$file" > "$DOT_WORK/migrated"
+        dot_write "$DOT_WORK/migrated" "$file"
+    fi
+    file="$DOT_HOME/.Brewfile"
+    if [[ -f "$file" ]]; then
+        dot_no_symlinks "$file"
+        awk '{ if ($0 ~ /^cask "claude"[[:space:]]*$/) print "cask \"claude\" if ENV[\"DOTFILES_CLAUDE\"] == \"1\""; else print }' "$file" > "$DOT_WORK/brew"
+        dot_write "$DOT_WORK/brew" "$file"
+    fi
+}

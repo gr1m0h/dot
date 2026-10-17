@@ -19,6 +19,34 @@ echo "    gr1m0h/dot installer"
 echo "====================================="
 echo ""
 
+# Read the choice from /dev/tty, never from a piped install script's stdin.
+# Non-interactive: sh install.sh --agents codex|claude|both
+AGENT_SELECTION=""
+case "$#" in
+    0) ;;
+    2)
+        if [ "$1" != "--agents" ]; then
+            echo "Usage: sh install.sh [--agents codex|claude|both]" >&2
+            exit 1
+        fi
+        AGENT_SELECTION="$2"
+        ;;
+    *) echo "Usage: sh install.sh [--agents codex|claude|both]" >&2; exit 1 ;;
+esac
+if [ -z "$AGENT_SELECTION" ]; then
+    if [ -r /dev/tty ] && ( : </dev/tty ) 2>/dev/null; then
+        printf 'Agents to configure [codex/claude/both]: ' >/dev/tty
+        read -r AGENT_SELECTION </dev/tty
+    else
+        echo "No terminal: pass --agents codex|claude|both" >&2
+        exit 1
+    fi
+fi
+case "$AGENT_SELECTION" in
+    codex|claude|both) ;;
+    *) echo "Choose codex, claude, or both" >&2; exit 1 ;;
+esac
+
 # Template rendering (git config, mmcp) reads per-PC secrets from ~/.env.
 # A zsh session gets it via ~/.zshenv, but this script runs under sh — source
 # it explicitly. Without it `mise bootstrap` dies at the dotfiles phase,
@@ -65,7 +93,7 @@ if [ ! -d "$REPO_DIR/.git" ]; then
 else
     echo "Repository already present; updating to origin/main..."
     git -C "$REPO_DIR" fetch origin main
-    # Fast-forward the working tree too — apply-main.py runs from it, so a
+    # Fast-forward the working tree too — apply-main.sh runs from it, so a
     # fetch alone would keep executing the stale checkout.
     git -C "$REPO_DIR" checkout main
     if ! git -C "$REPO_DIR" merge --ff-only origin/main; then
@@ -74,7 +102,7 @@ else
 fi
 
 echo "Applying main's home/ tree onto \$HOME..."
-python3 -B "$REPO_DIR/scripts/apply-main.py"
+bash "$REPO_DIR/scripts/apply-main.sh" --agents "$AGENT_SELECTION"
 
 echo "Preparing machine-local configuration (preserving existing files)..."
 sh "$REPO_DIR/scripts/init-machine-local.sh"

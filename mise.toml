@@ -16,7 +16,7 @@ description = "dry run of sync-claude (show changes, write nothing)"
 run = "bash scripts/sync-claude.sh -n"
 
 [tasks.sync-agent-configs]
-description = "mirror explicitly tracked legacy agent files; excludes personal Codex assets"
+description = "mirror selected portable agent files; preserve raw client settings"
 run = "bash scripts/sync-agent-configs.sh --apply"
 
 [tasks.sync-agent-configs-dry]
@@ -24,8 +24,8 @@ description = "preview agent configuration changes without writing"
 run = "bash scripts/sync-agent-configs.sh --dry-run"
 
 [tasks.apply-main]
-description = "apply origin/main's home/ tree onto this machine's live files (then `mise dot sync`)"
-run = "python3 -B scripts/apply-main.py"
+description = "apply origin/main's tracked home/ files and selected agent config"
+run = "bash scripts/apply-main.sh"
 
 [tasks.init-machine-local]
 description = "create machine-local configuration files without overwriting existing files"
@@ -33,4 +33,15 @@ run = "sh scripts/init-machine-local.sh"
 
 [tasks.propose]
 description = "mirror live tracked files into home/ for a PR (then review `git diff`)"
-run = "python3 -B scripts/propose.py"
+run = "bash scripts/propose.sh"
+
+# Applies selected agent files: review/propose agent edits before running.
+# Then run `mise install` to install the selected CLI(s).
+[tasks.configure-agents]
+description = "apply codex/claude/both config from checkout; preserve inactive and unrelated files"
+usage = 'arg "agents" help="codex, claude, or both"'
+run = 'bash scripts/apply-main.sh --local --agents-only --agents "$usage_agents"'
+
+[tasks.test-dotfiles]
+description = "test dotfile scripts in isolated temporary homes without network access"
+run = "bash scripts/test-dotfiles.sh"

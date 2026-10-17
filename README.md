@@ -116,7 +116,7 @@ is safe to repeat.
 brew install mise
 git clone ssh://git@github.com/gr1m0h/dot.git ~/Documents/workspace/github.com/gr1m0h/dot
 cd ~/Documents/workspace/github.com/gr1m0h/dot
-python3 -B scripts/apply-main.py   # home/ -> $HOME (config.toml included)
+bash scripts/apply-main.sh --agents codex  # or claude / both
 mise bootstrap                     # packages, defaults, templates, services, tools
 ```
 
@@ -151,13 +151,51 @@ Narrower live→repo mirrors (subsets of `propose`, used by it historically):
 
 | Command | What it does |
 | --- | --- |
-| `mise run sync-claude` | copy live `~/.claude` into `home/.claude` (no commit) |
-| `mise run sync-agent-configs` | mirror only explicitly tracked legacy agent files; personal Codex configuration and skills are maintained separately |
+| `mise run sync-claude` | mirror selected Claude files (no commit; skips raw settings) |
+| `mise run sync-agent-configs` | mirror selected agent files, excluding runtime and raw client settings |
 
-Personal Codex instructions, six agents, eight skills, lifecycle-hook examples, and
-command rules are maintained directly in `home/.codex` and `home/.agents/skills`.
-They are outside automatic tracking and mirroring. See
-[Codex setup and usage](docs/agent-config-setup.md) for reviewed installation.
+### Select Codex, Claude, or both
+
+`install.sh` asks which agent configuration to apply. For non-interactive use:
+
+```sh
+sh install.sh --agents codex  # or claude / both
+```
+
+On an existing machine, run from this checkout:
+
+```sh
+mise run configure-agents codex  # personal PC; use claude on the work PC
+mise install                    # install the selected CLI(s), if needed
+```
+
+The task applies the selected agent files from this checkout and migrates legacy
+agent declarations in the live mise config. It preserves unrelated common-file
+edits and inactive agents' files. Selected files are overwritten: review local
+agent edits first. Switching does not uninstall existing applications.
+
+The choice is stored locally in `~/.config/dotfiles/agents`; generated
+`~/.config/mise/conf.d/agents.toml` registers the selected tools and tracked files.
+Both paths respect `XDG_CONFIG_HOME` and stay outside the shared mirror.
+`apply-main`, `propose`, and the narrower sync tasks follow the saved choice;
+without a choice they stop and ask you to configure one explicitly.
+
+Codex instructions, custom agents, shared skills, portable rules, and hook/config
+examples are managed in `home/.codex` and `home/.agents/skills`. Authentication,
+raw Codex `config.toml`, active `hooks.json`, and accumulated `default.rules`
+remain local. Copying examples does not activate hooks or change models.
+Claude's desktop Homebrew cask and MCP setup run only when Claude is selected.
+
+Apply, propose, sync, and their tests use macOS's Bash 3.2 and standard command-line
+tools. TOML is parsed by the existing mise installation. These scripts do not
+require Python; Python remains installed for tools such as gcloud.
+
+Run isolated regression checks without changing live files:
+
+```sh
+bash scripts/test-dotfiles.sh
+# or: mise run test-dotfiles
+```
 
 Mnemonic: **propose = live→repo, apply-main = repo→live, bootstrap =
 assemble.** Anything destructive is reversible via `undo` / `rollback`.
