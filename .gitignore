@@ -72,6 +72,8 @@ home/.codex/*
 !home/.codex/AGENTS.md
 !home/.codex/agents/
 !home/.codex/hooks/
+!home/.codex/hooks.example.json
+!home/.codex/rules/
 !home/.codex/config.example.toml
 home/.agents/*
 !home/.agents/skills/

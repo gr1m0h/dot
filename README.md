@@ -152,7 +152,12 @@ Narrower live→repo mirrors (subsets of `propose`, used by it historically):
 | Command | What it does |
 | --- | --- |
 | `mise run sync-claude` | copy live `~/.claude` into `home/.claude` (no commit) |
-| `mise run sync-agent-configs` | same for all agent configs (Claude, Codex, `~/.agents/skills`); details in [docs/agent-config-setup.md](docs/agent-config-setup.md) |
+| `mise run sync-agent-configs` | mirror only explicitly tracked legacy agent files; personal Codex configuration and skills are maintained separately |
+
+Personal Codex instructions, six agents, eight skills, lifecycle-hook examples, and
+command rules are maintained directly in `home/.codex` and `home/.agents/skills`.
+They are outside automatic tracking and mirroring. See
+[Codex setup and usage](docs/agent-config-setup.md) for reviewed installation.
 
 Mnemonic: **propose = live→repo, apply-main = repo→live, bootstrap =
 assemble.** Anything destructive is reversible via `undo` / `rollback`.
