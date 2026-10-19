@@ -51,7 +51,7 @@ Loading mechanism (verified 2026-07 against official docs): EVERY `~/.claude/rul
 On-demand skills trigger from their own descriptions; non-obvious routing only:
 - SREaaS ops → `/deepwork` (大きめ案件タスクの直列プル: intake grill→prefetch→深堀り, WIP=1), `/batch` (🟢機械/ラバースタンプの水平投入), `/investigation-report` (調査→報告書); 夜間ドラフトは Desktop ルーチンのプロンプトで `/sreaas:task` `/sreaas:monthly` を draft-only 実行
 - `/audit-supply-chain` は license compliance 込み · Agents → `~/.claude/agents/`
-- Shared skills の正本は `~/.agents/skills/`（Codex と共用）。`.claude/skills/<name>` は trigger description を持つ薄い router — 本文を直すときは正本を編集し、description を変えたら router 側も同期する
+- 統合 skill（coding-workflow / qa-testing / sre-operations 等）は `.claude/skills/` に自己完結で置く。Codex 側 `~/.agents/skills/` に同等版があるが、Claude はそれを読まない・触らない（直すときは各側を個別に編集）
 
 ## Delegation & Parallelism
 - **並列は機械に、直列は人間に (WIP=1 for deep work).** The human holds ONE deep task at a time; machine parallelism is confined to *warming that single task*, never spread across tasks the human must juggle. Deep work (read→understand→hands-on) can't be rubber-stamped or truly parallelised in one head — context-switch tax + attention residue erase the gain. Parallelism is a property of the machine, seriality a property of the human.

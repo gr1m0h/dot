@@ -1,8 +1,8 @@
 # Claude Skills — 状況別逆引きチートシート
 
-明示的に呼んで速くする。`home/.claude/skills`（26 skills — うち 8 は `~/.agents/skills` 正本への router）+ plugins を「いつ・何を・どう呼ぶか」で整理。
+明示的に呼んで速くする。`home/.claude/skills`（26 skills）+ plugins を「いつ・何を・どう呼ぶか」で整理。
 
-最終更新: 2026-10-19 · 凡例: **[標準]** Claude Code 同梱 / **[自作]** ~/.claude/skills / **[共有]** 正本は ~/.agents/skills（Codex と共用） / **[plugin]** 名前空間つき
+最終更新: 2026-10-19 · 凡例: **[標準]** Claude Code 同梱 / **[自作]** ~/.claude/skills / **[plugin]** 名前空間つき
 
 ## 0. 使い方の原則
 
@@ -51,7 +51,7 @@ statusline: 📥 BATCH_QUEUE / 🟢 BATCH_REVIEW / DEEPWORK_WIP（深堀り中�
 
 | 状況                               | 呼ぶ                           | 起きること・コツ                                                                                             |
 | ---------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| 顧客「〜について調べてほしい」     | `/investigation-report` [共有] | 成果物形式+完了条件を**先に**固定 → subagent がスキャン（離れてよい）→ 全主張の出典検証 → Issue-ready 報告書 |
+| 顧客「〜について調べてほしい」     | `/investigation-report` [自作] | 成果物形式+完了条件を**先に**固定 → subagent がスキャン（離れてよい）→ 全主張の出典検証 → Issue-ready 報告書 |
 | repo/インフラでなく Web の調べ物   | `/deep-research` [標準]        | 多源泉検索+敵対的検証つきレポート。質問が曖昧なら先に絞り込みの質問が来る                                    |
 | 急ぎでない調査依頼                 | `/batch add` → 翌朝発注        | その場で対話に付き合わず inbox へ。契約フィールドは dispatch 時に確認される                                  |
 | Claude API・モデル・料金の事実確認 | `/claude-api` [標準]           | 一次情報リファレンス。LLM 関連は記憶で答えさせず必ずこれを読ませる                                           |
@@ -66,7 +66,7 @@ statusline: 📥 BATCH_QUEUE / 🟢 BATCH_REVIEW / DEEPWORK_WIP（深堀り中�
 
 | 状況                                       | 呼ぶ                               | 起きること・コツ                                                                           |
 | ------------------------------------------ | ---------------------------------- | ------------------------------------------------------------------------------------------ |
-| 障害調査・ポストモーテム                   | `/sre-operations` [共有]           | 旧 /incident-analysis を統合。AWS CLI + Datadog コマンド集は references/ に。sre-investigator agent に委任も可 |
+| 障害調査・ポストモーテム                   | `/sre-operations` [自作]           | 旧 /incident-analysis を統合。AWS CLI + Datadog コマンド集は references/ に。sre-investigator agent に委任も可 |
 | セキュリティ起因の疑い                     | security-reviewer agent            | Error Handling 規約: **停止 → security-reviewer → 修正 → 続行**。続行を優先しない          |
 | 復旧後のデプロイ監視                       | `/loop 5m <確認プロンプト>` [標準] | 定期ポーリングに。単発確認には使わない                                                     |
 | 実行時の挙動がおかしい（Claude Code 自体） | `/debug` [標準]                    | デバッグログを有効化して調査                                                               |
@@ -84,7 +84,7 @@ statusline: 📥 BATCH_QUEUE / 🟢 BATCH_REVIEW / DEEPWORK_WIP（深堀り中�
 | 提案の穴を先に潰したい                 | `proposal-review` [plugin] | 懸念点・弱点の多角的洗い出し。**顧客提案の前に必ず**                                                                            |
 | 新機能・アーキテクチャ変更             | plan mode [標準] + architect agent | ビルトイン plan mode で計画 → 承認。重要な設計判断は architect agent（代替案比較+検証計画）。旧 /plan は廃止（2026-10）   |
 | 高リスクな技術選定                     | `proposal-review` [plugin] + architect agent | 懸念点の多角的洗い出し + 設計比較。旧 /ensemble-vote は廃止（多数決の費用対効果なし、2026-10）                  |
-| 実装本体（バグ修正・機能・リファクタ） | `/coding-workflow` [共有]  | 旧 tdd-workflow / fix-issue / refactor-clean / coding-standards を統合。regression test 先行、premise 検証、lint/型/テストは hooks が自動実行 |
+| 実装本体（バグ修正・機能・リファクタ） | `/coding-workflow` [自作]  | 旧 tdd-workflow / fix-issue / refactor-clean / coding-standards を統合。regression test 先行、premise 検証、lint/型/テストは hooks が自動実行 |
 | typo・rename・軽微修正                 | そのまま依頼（skill 不要） | Working Style 規約で単純変更は即実行。旧 /quick-fix は廃止（2026-07 統廃合）                                                    |
 | ビルドが壊れた                         | そのまま依頼（skill 不要） | メインループが最小 diff で修復。旧 build-error-resolver agent は廃止（2026-10）                                                 |
 | 動くことを目で確認したい               | `/verify` / `/run` [標準]  | アプリを実際に起動して挙動観察。「テストが通る」で止めない。起動が特殊な repo は一度 `/run-skill-generator` でレシピを skill 化 |
@@ -123,7 +123,7 @@ brainstorming（曖昧なら）→ plan mode（承認待ち）→ /coding-workfl
 | コミット前に自分の diff を見てもらう | `/code-review` [標準]       | 正当性バグ+品質の指摘。`--fix` で working tree に適用。effort 指定可（low〜max）                                                        |
 | 動くけど汚い気がする                 | `/simplify` [標準]          | 再利用・簡素化・効率のクリーンアップを適用。バグ探しはしない（それは /code-review）                                                     |
 | 他人の PR をレビューする             | `/code-review` [標準]       | 正当性バグ+品質の指摘（PR 番号指定可）。全指摘は出典検証、裏取り不能なら「unverified hypothesis」明記。旧 /pr-summary は廃止（2026-10）  |
-| 自分の PR に指摘が来た               | `/pr-review-respond` [共有] | 指摘を確信度つきで評価 → working tree に修正適用 → **返信ドラフトを画面に出す（投稿は人間）**                                           |
+| 自分の PR に指摘が来た               | `/pr-review-respond` [自作] | 指摘を確信度つきで評価 → working tree に修正適用 → **返信ドラフトを画面に出す（投稿は人間）**                                           |
 | リリースする                         | `/release` [自作]           | semver 判定 + changelog 生成 + リリース作成。事前に `/audit-supply-chain`（§8、license 込み）                                           |
 
 > **通信境界（最重要）:** PR/Issue へのコメント投稿はどの skill 経由でも自動でしない（permissions.deny で機械的に禁止済み）。`/code-review --comment` も使わない。ドラフトを受け取って人間が投稿する。
@@ -132,7 +132,7 @@ brainstorming（曖昧なら）→ plan mode（承認待ち）→ /coding-workfl
 
 | 状況                             | 呼ぶ                                 | 起きること・コツ                                                                           |
 | -------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------ |
-| テスト品質の疑問ぜんぶ           | `/qa-testing` [共有]                 | 旧 test-coverage / mutation-test / property-test / fuzz / e2e / eval を統合（2026-10）。「何を知りたいか」から手法を選ぶ（references/ に手法別の詳細）。campaign 規模なら qa-engineer agent へ委任 |
+| テスト品質の疑問ぜんぶ           | `/qa-testing` [自作]                 | 旧 test-coverage / mutation-test / property-test / fuzz / e2e / eval を統合（2026-10）。「何を知りたいか」から手法を選ぶ（references/ に手法別の詳細）。campaign 規模なら qa-engineer agent へ委任 |
 
 ## 8. セキュリティ・依存
 
@@ -141,7 +141,7 @@ brainstorming（曖昧なら）→ plan mode（承認待ち）→ /coding-workfl
 | ブランチの変更を出す前に     | `/security-review` [標準]            | pending changes のセキュリティレビュー。入力・認証・API を触ったら必須                                                                                             |
 | コードベース全体の棚卸し     | `/security-scan` [自作]              | OWASP 2025 Top 10 準拠の全体スキャン（差分でなく全体）                                                                                                             |
 | 設計段階の脅威分析           | `/security-scan threat-model` [自作] | STRIDE + DREAD スコアリングで体系的に。旧 /threat-model を統合したモード                                                                                           |
-| 依存を追加する前・OSS 公開前 | `/audit-supply-chain` [共有]         | typosquat・AI ハルシネーションパッケージ・既知脆弱性 + ライセンス互換性。Critical/High は BLOCK |
+| 依存を追加する前・OSS 公開前 | `/audit-supply-chain` [自作]         | typosquat・AI ハルシネーションパッケージ・既知脆弱性 + ライセンス互換性。Critical/High は BLOCK |
 
 > **日常の防御は hooks が常時担当:** pre-tool-guard（危険コマンド遮断）/ ssrf-guard（内部ネットワーク遮断）/ secrets 読み取り deny。skill を呼ぶのは「監査を能動的にかける」場面だけでよい。
 

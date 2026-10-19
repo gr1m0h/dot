@@ -24,13 +24,8 @@ dot_select() {
 dot_has() { [[ "$DOT_AGENT" == "$1" || "$DOT_AGENT" == both ]]; }
 
 dot_agent_targets() {
-    # .agents/skills is the cross-agent canonical skill set: Codex reads it
-    # natively; Claude Code reaches it through router skills in .claude/skills.
-    if dot_has codex || dot_has claude; then
-        printf '%s\n' '.agents/skills'
-    fi
     if dot_has codex; then
-        printf '%s\n' '.codex/AGENTS.md' '.codex/agents' \
+        printf '%s\n' '.codex/AGENTS.md' '.codex/agents' '.agents/skills' \
             '.codex/hooks/context.cjs' '.codex/hooks.example.json' \
             '.codex/config.example.toml' '.codex/rules/personal-operations.rules'
     fi

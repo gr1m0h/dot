@@ -3,7 +3,7 @@
 個人用 Claude Code ハーネス（`~/.claude/`）。`scripts/sync-claude.sh` / `scripts/apply-main.sh` で `home/.claude/` と同期する。
 設計原則: **CLAUDE.md は地図であり百科事典ではない** — 常時ロードは最小限、ドメイン知識はオンデマンド（skills / docs）、品質ゲートは機械的に強制（hooks）。2026-10 に `.codex`/`.agents` と同じ evidence-based アーキテクチャへ統合（根拠: Anthropic context-engineering / Agent Skills、arXiv:2602.11988、OpenAI Astra post）。
 
-インベントリ（2026-10）: **8 rules · 15 docs · 8 agents · 26 skills（うち 8 は `~/.agents/skills` への router）· 7 hooks**
+インベントリ（2026-10）: **8 rules · 15 docs · 8 agents · 26 skills · 7 hooks**
 
 > ユースケース別ガイド: [docs/claude-skills-by-usecase.md](../../docs/claude-skills-by-usecase.md)
 
@@ -16,7 +16,7 @@
 | `rules/**`（path-scoped） | `paths:` frontmatter 付きの言語/ドメイン別ルール | 該当ファイルを触ったとき |
 | `docs/` | オンデマンドの詳細ドクトリン（自動ロードされない） | 必要時 |
 | `agents/` | subagent 定義（委譲先） | 呼び出し時 |
-| `skills/` | スラッシュコマンド型ワークフロー（`/name`）。共有 skill は `~/.agents/skills/` が正本で、ここには trigger description を持つ薄い router を置く | 呼び出し時 |
+| `skills/` | スラッシュコマンド型ワークフロー（`/name`）。`.claude` 内で自己完結（`~/.agents` は読まない） | 呼び出し時 |
 | `hooks/` | 決定論的なガード・自動化（LLM トークン消費ゼロ） | イベント発火時 |
 | `settings.json` | モデル・effort・権限・hook 配線・sandbox・プラグイン | 起動時 |
 | `statusline.sh` | カスタムステータスライン（BATCH_QUEUE / unreported 等） | 常時 |
@@ -75,12 +75,12 @@ Agent ツールから呼び出す subagent 定義（8）。2026-10 に `.codex/a
 
 `/name` で呼び出す（説明文にマッチする発言でも自動起動する）。**説明文は常時コンテキストに載る恒常コスト**なので、本数を絞り「いつ発動するか」を狭く書く。
 
-### 共有 skill への router（正本は `~/.agents/skills/` — Codex と共用）
+### 統合 skill（2026-10 統廃合。Codex 側 `~/.agents/skills/` に同等版あり — 手動同期、Claude からは不参照）
 
 | Skill | 用途 |
 |---|---|
 | `coding-workflow` | 実装・バグ修正・リファクタ（旧 tdd-workflow / fix-issue / refactor-clean / coding-standards を統合） |
-| `qa-testing` | acceptance / E2E / property / fuzz / mutation / LLM eval（旧 e2e / property-test / fuzz / mutation-test / test-coverage / eval を統合） |
+| `qa-testing` | acceptance / E2E / property / fuzz / mutation / LLM eval（旧 e2e / property-test / fuzz / mutation-test / test-coverage / eval を統合。references/ に手法別詳細） |
 | `sre-operations` | 障害調査・SLO・運用変更。references/ に AWS CLI・Datadog コマンド集（旧 incident-analysis を統合） |
 | `investigation-report` | 技術調査 → 出典検証済みレポート |
 | `pr-review-respond` | レビュー指摘の検証・修正適用・返信ドラフト（自動投稿しない） |
