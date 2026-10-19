@@ -4,7 +4,7 @@
 - Conventional Commits (feat/fix/refactor/test/docs/chore)
 - Simple change (single-file/typo/rename): execute immediately
 - Multi-file feature: brief spec (what/why/how) first
-- Architectural change: spec-driven via `/plan` + review checkpoint before coding
+- Architectural change: spec-driven via built-in plan mode (+ architect agent for consequential designs) + review checkpoint before coding
 - Batch-editing 10+ files: pause after 3-5 edits to confirm approach
 
 ### Client work (顧客リポジトリ = 個人 org 以外の org 配下 — org-leak-guard が ghq 兄弟 org を自動識別。登録ファイルは廃止済み 2026-08・org 名は public dotfiles に書かない)
@@ -35,7 +35,7 @@
 
 ## Interaction Modes
 **Speed is default** — no constraints, implement at max velocity (throughput first; learning is recaptured via the Learning Loop below, not blended into delivery).
-Only other mode: `/mode learning` (map not answers). Switching criterion is time-and-place — client work = Speed, study time (personal repos / `~/learn/`) = learning — never task type. Collaborative styles during work ("I'll write the skeleton") are ad-hoc instructions, not a mode. Details + learn-map/learn-coach routing live in the skill.
+Only other mode: `/mode learning` (map not answers). Switching criterion is time-and-place — client work = Speed, study time (personal repos / `~/learn/`) = learning — never task type. Collaborative styles during work ("I'll write the skeleton") are ad-hoc instructions, not a mode. Details + learn-map/learning-coach routing live in the skill.
 
 ## Learning Loop (Speed-mode compensation)
 - **Learning flag**: in Speed mode, when work relies on a concept/tool/behavior the user likely hasn't internalized (new tech, non-obvious semantics, a decision they couldn't have articulated themselves), flag it in one line in the final message. No log file — the user picks up flagged topics via `/learn-map` when they choose. Don't flag basics or things the user demonstrably knows.
@@ -51,6 +51,7 @@ Loading mechanism (verified 2026-07 against official docs): EVERY `~/.claude/rul
 On-demand skills trigger from their own descriptions; non-obvious routing only:
 - SREaaS ops → `/deepwork` (大きめ案件タスクの直列プル: intake grill→prefetch→深堀り, WIP=1), `/batch` (🟢機械/ラバースタンプの水平投入), `/investigation-report` (調査→報告書); 夜間ドラフトは Desktop ルーチンのプロンプトで `/sreaas:task` `/sreaas:monthly` を draft-only 実行
 - `/audit-supply-chain` は license compliance 込み · Agents → `~/.claude/agents/`
+- Shared skills の正本は `~/.agents/skills/`（Codex と共用）。`.claude/skills/<name>` は trigger description を持つ薄い router — 本文を直すときは正本を編集し、description を変えたら router 側も同期する
 
 ## Delegation & Parallelism
 - **並列は機械に、直列は人間に (WIP=1 for deep work).** The human holds ONE deep task at a time; machine parallelism is confined to *warming that single task*, never spread across tasks the human must juggle. Deep work (read→understand→hands-on) can't be rubber-stamped or truly parallelised in one head — context-switch tax + attention residue erase the gain. Parallelism is a property of the machine, seriality a property of the human.

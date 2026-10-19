@@ -4,7 +4,7 @@ description: Comprehensive security audit based on OWASP 2025 Top 10 with automa
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash
 context: fork
-agent: security-auditor
+agent: security-reviewer
 argument-hint: "[target-dir | threat-model [component|'full']]"
 metadata:
   version: "3.0.0"

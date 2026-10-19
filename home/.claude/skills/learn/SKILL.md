@@ -12,14 +12,14 @@ lifecycle stage:
 
 ```
 捕捉 add → 収穫 (auto: hook queues retro-learn → /batch runs it) → 選別 review
-→ 変換 start (→ /learn-map) → 実践 (/learn-coach, /mode learning) → 定着 done
+→ 変換 start (→ /learn-map) → 実践 (/learning-coach, /mode learning) → 定着 done
 ```
 
 Boundaries: harness/AI memory is NOT this skill's domain — session-pattern extraction
 to `~/.claude/skills/learned/` lives in `/reflect` (absorbed 2026-08); memory persistence
-is `/update-memory`. The session-start hook owns auto-queuing (`personal: retro-learn`
+is native auto-memory (「覚えて」). The session-start hook owns auto-queuing (`personal: retro-learn`
 when 7 days past `last-retro:`) and the `LEARN_BACKLOG` / retro-state display. `/batch`
-just executes the retro task. `/learn-map` / `/learn-coach` stay separate skills (rich
+just executes the retro task. `/learn-map` / `/learning-coach` stay separate skills (rich
 generation/coaching rules + natural-language auto-trigger); `start`/`done` are the thin
 lifecycle joints around them.
 
@@ -66,7 +66,7 @@ these files by hand.
    proceed even if unlisted (and add it as a `[~]` line).
 2. Invoke the `learn-map` skill for the chosen topic (it generates `~/learn/<topic-slug>/`
    GUIDE.md + README.md + STRUGGLE_LOG.md and flips the backlog line to `[~]`).
-3. Suggest `/mode learning` if not already active; mention `/learn-coach` for when stuck.
+3. Suggest `/mode learning` if not already active; mention `/learning-coach` for when stuck.
 
 ## Verb: `done [topic]` — 定着 (close out an exercise)
 

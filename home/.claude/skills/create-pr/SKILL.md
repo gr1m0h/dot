@@ -42,7 +42,7 @@ Conventional Commits format, in English, under 70 characters:
 
 ### 3. Generate PR Body
 
-Same structure as the `/pr-summary` output (keep the two skills aligned — if one template changes, update the other):
+Body structure:
 
 ```markdown
 | Field | Value |

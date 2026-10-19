@@ -4,7 +4,6 @@ description: Automate semantic versioning, changelog generation, and release cre
 user-invocable: true
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash
 context: fork
-agent: oss-contributor
 argument-hint: "[major|minor|patch] or [version]"
 ---
 
