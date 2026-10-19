@@ -225,7 +225,7 @@ tracked file sources:
 
 | Local file (never tracked) | Purpose |
 | --- | --- |
-| `~/.config/mise/conf.d/local.toml` | Additional mise `[tools]`; loaded by mise |
+| `~/.config/mise/config.local.toml` | Machine-local mise `[tools]` and `[settings]` overrides; loaded by mise |
 | `~/.Brewfile.local` | Additional Homebrew packages; installed after the common Brewfile |
 | `~/.config/macos.local.sh` | macOS overrides; run with Bash after common defaults and before restarting apps |
 
@@ -233,8 +233,9 @@ Existing files and symlinks are preserved on reruns. The `.config` paths respect
 `XDG_CONFIG_HOME` when set. Templates stay outside `home/` so applying common
 dotfiles cannot overwrite local content. Keep these files out of `[dotfiles]`.
 Packages needed only on one machine belong in its local list, not the common list.
-Avoid declaring the same tool in both lists: the installed mise version gives
-the common `config.toml` entry precedence over `conf.d/local.toml`.
+`config.local.toml` takes precedence over the common `config.toml`, so a local
+entry for a common tool overrides its version — add tools freely, but pin a
+common tool locally only on purpose.
 
 To prepare these files on an already configured machine:
 

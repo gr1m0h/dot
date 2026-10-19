@@ -132,12 +132,12 @@ printf 'PASS: origin/main archive application, common settings, live-only preser
     unset XDG_CONFIG_HOME
     mkdir -p "$HOME"
     sh "$ROOT/scripts/init-machine-local.sh" > "$TEMP/init.log"
-    for path in "$HOME/.Brewfile.local" "$HOME/.config/mise/conf.d/local.toml" "$HOME/.config/macos.local.sh"; do
+    for path in "$HOME/.Brewfile.local" "$HOME/.config/mise/config.local.toml" "$HOME/.config/macos.local.sh"; do
         [[ -f "$path" && ! -s "$path" ]]
         printf '# keep local edits\n' > "$path"
     done
     sh "$ROOT/scripts/init-machine-local.sh" > "$TEMP/init.log"
-    for path in "$HOME/.Brewfile.local" "$HOME/.config/mise/conf.d/local.toml" "$HOME/.config/macos.local.sh"; do
+    for path in "$HOME/.Brewfile.local" "$HOME/.config/mise/config.local.toml" "$HOME/.config/macos.local.sh"; do
         [[ "$(cat "$path")" == '# keep local edits' ]]
     done
     rm "$HOME/.Brewfile.local"
@@ -145,7 +145,7 @@ printf 'PASS: origin/main archive application, common settings, live-only preser
     export XDG_CONFIG_HOME="$HOME/custom config"
     sh "$ROOT/scripts/init-machine-local.sh" > "$TEMP/init.log"
     [[ -L "$HOME/.Brewfile.local" && ! -e "$HOME/missing" ]]
-    [[ -f "$XDG_CONFIG_HOME/mise/conf.d/local.toml" && -f "$XDG_CONFIG_HOME/macos.local.sh" ]]
+    [[ -f "$XDG_CONFIG_HOME/mise/config.local.toml" && -f "$XDG_CONFIG_HOME/macos.local.sh" ]]
     mise config get --file "$ROOT/home/.config/mise/config.toml" tasks.setup-packages.run > "$TEMP/setup-packages"
     mkdir -p "$HOME/bin"
     cat > "$HOME/bin/brew" <<'BREW'

@@ -21,6 +21,6 @@ create_local_file() {
     fi
 }
 
-create_local_file local.toml "$CONFIG_DIR/mise/conf.d/local.toml"
+create_local_file config.local.toml "$CONFIG_DIR/mise/config.local.toml"
 create_local_file Brewfile.local "$HOME/.Brewfile.local"
 create_local_file macos.local.sh "$CONFIG_DIR/macos.local.sh"

@@ -51,8 +51,6 @@ op = "latest"
 "aqua:dduan/tre" = "latest"
 "go:github.com/go-delve/delve/cmd/dlv" = "latest"
 "ubi:gr1m0h/mdv" = "latest"
-"aqua:newrelic/newrelic-cli" = "latest"
-"github:datadog-labs/pup" = "latest"
 
 [settings]
 experimental = true
