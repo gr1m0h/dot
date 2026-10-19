@@ -12,6 +12,7 @@ Identify the service, environment/account/region, time window and timezone, user
 ## Diagnose with evidence
 
 - Use available telemetry and read-only tools. Verify identity and environment before infrastructure commands; do not assume AWS, Kubernetes, or Datadog is present.
+- Read a companion only when its tooling is actually in play: [AWS CLI recipes](references/aws-commands.md), [Datadog recipes](references/datadog-commands.md), [analysis patterns](references/analysis-patterns.md), [verification script template](references/verification-script-template.md).
 - Correlate symptoms, deployment/configuration changes, logs, metrics, and traces on one timeline. Preserve the distinction between event time and collection time.
 - Separate immediate trigger, underlying failure mechanism, and contributing conditions. State competing hypotheses and the check that would distinguish them; do not force five whys or a predetermined hypothesis count.
 - For performance, establish a baseline and identify the bottleneck before proposing tuning. For SLOs, define the user-facing SLI, population, window, target, and error-budget interpretation.
