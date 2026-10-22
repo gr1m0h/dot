@@ -80,7 +80,7 @@ every hint of the solution absent from the problem statement? If not, rewrite.
 
 外れた仮説も検閲せず残す。/write-article の一人称素材。
 
-<!-- entry format (appended by /learn-coach or by hand):
+<!-- entry format (appended by /learning-coach or by hand):
 ## YYYY-MM-DD — 演習N: <一言サマリ>
 - 症状:
 - 立てた仮説と結果: (外れた仮説も全部書く)
@@ -92,7 +92,7 @@ every hint of the solution absent from the problem statement? If not, rewrite.
 
 ## 6. Close the loop
 - Print the workspace path and list the exercises with their 成功条件 one-liners.
-- Remind the learner of the cycle: walk the exercises alone → when stuck, `/learn-coach`
+- Remind the learner of the cycle: walk the exercises alone → when stuck, `/learning-coach`
   (hints are staged; struggles land in `STRUGGLE_LOG.md`) → after finishing,
   `/write-article` turns GUIDE.md + STRUGGLE_LOG.md into a personal-blog post, and
   `/learn` extracts reusable debugging patterns.

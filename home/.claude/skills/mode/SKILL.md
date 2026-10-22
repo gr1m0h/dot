@@ -37,11 +37,11 @@ The user learns by doing; your job is orientation, not answers. **Never write th
 |---|---|
 | Study session in a personal repo | `/mode learning` (this skill) |
 | Starting a new technology from scratch | `/learn-map` (generates GUIDE.md + exercises + STRUGGLE_LOG.md), then work under `/mode learning` |
-| Stuck on a `/learn-map` exercise | `/learn-coach` — its L1-L4 hint ladder and STRUGGLE_LOG recording **supersede** the generic hint behavior above while working exercises |
+| Stuck on a `/learn-map` exercise | `/learning-coach` — its L1-L4 hint ladder and STRUGGLE_LOG recording **supersede** the generic hint behavior above while working exercises |
 | Session produced something worth persisting | `/reflect` (retrospective) or `/learn` (pattern → skill) |
 
 Relationship in one line: `/mode learning` is the session **stance**, `learn-map` is the material
-**generator**, `learn-coach` is the specialized **in-exercise coach**.
+**generator**, `learning-coach` is the specialized **in-exercise coach**.
 
 ## Exit
 

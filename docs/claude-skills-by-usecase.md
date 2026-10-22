@@ -1,8 +1,8 @@
 # Claude Skills — 状況別逆引きチートシート
 
-明示的に呼んで速くする。`home/.claude/skills`（39 skills）+ plugins を「いつ・何を・どう呼ぶか」で整理。
+明示的に呼んで速くする。`home/.claude/skills`（26 skills）+ plugins を「いつ・何を・どう呼ぶか」で整理。
 
-最終更新: 2026-08-24 · 凡例: **[標準]** Claude Code 同梱 / **[自作]** ~/.claude/skills / **[plugin]** 名前空間つき
+最終更新: 2026-10-19 · 凡例: **[標準]** Claude Code 同梱 / **[自作]** ~/.claude/skills / **[plugin]** 名前空間つき
 
 ## 0. 使い方の原則
 
@@ -55,7 +55,7 @@ statusline: 📥 BATCH_QUEUE / 🟢 BATCH_REVIEW / DEEPWORK_WIP（深堀り中�
 | repo/インフラでなく Web の調べ物   | `/deep-research` [標準]        | 多源泉検索+敵対的検証つきレポート。質問が曖昧なら先に絞り込みの質問が来る                                    |
 | 急ぎでない調査依頼                 | `/batch add` → 翌朝発注        | その場で対話に付き合わず inbox へ。契約フィールドは dispatch 時に確認される                                  |
 | Claude API・モデル・料金の事実確認 | `/claude-api` [標準]           | 一次情報リファレンス。LLM 関連は記憶で答えさせず必ずこれを読ませる                                           |
-| 過去に同じことを調べた気がする     | `/search-memory` [自作]        | 認知メモリから過去の学び・決定・パターンを検索してから着手                                                   |
+| 過去に同じことを調べた気がする     | native auto-memory [標準]      | 「〜について覚えてる?」と聞く。自作の認知メモリ skill は廃止（二重管理解消 2026-10）                         |
 
 ```
 調査依頼 → /investigation-report（契約固定 ← 顧客とのズレをここで潰す）
@@ -66,13 +66,13 @@ statusline: 📥 BATCH_QUEUE / 🟢 BATCH_REVIEW / DEEPWORK_WIP（深堀り中�
 
 | 状況                                       | 呼ぶ                               | 起きること・コツ                                                                           |
 | ------------------------------------------ | ---------------------------------- | ------------------------------------------------------------------------------------------ |
-| 障害調査・ポストモーテム                   | `/incident-analysis` [自作]        | AWS CLI + Datadog + repo 横断でエビデンス収集 → タイムライン・根本原因・恒久対応つき報告書 |
+| 障害調査・ポストモーテム                   | `/sre-operations` [自作]           | 旧 /incident-analysis を統合。AWS CLI + Datadog コマンド集は references/ に。sre-investigator agent に委任も可 |
 | セキュリティ起因の疑い                     | security-reviewer agent            | Error Handling 規約: **停止 → security-reviewer → 修正 → 続行**。続行を優先しない          |
 | 復旧後のデプロイ監視                       | `/loop 5m <確認プロンプト>` [標準] | 定期ポーリングに。単発確認には使わない                                                     |
 | 実行時の挙動がおかしい（Claude Code 自体） | `/debug` [標準]                    | デバッグログを有効化して調査                                                               |
 
 ```
-/incident-analysis → ポストモーテム文書化 → /sreaas:task report
+/sre-operations → ポストモーテム文書化 → /sreaas:task report
 （案件として大きければ後日: case-reflect → /company-blog で資産化 §12）
 ```
 
@@ -82,19 +82,16 @@ statusline: 📥 BATCH_QUEUE / 🟢 BATCH_REVIEW / DEEPWORK_WIP（深堀り中�
 | -------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | 要件がまだ曖昧                         | `brainstorming` [plugin]   | 対話で意図・要件・設計を探索してから作る                                                                                        |
 | 提案の穴を先に潰したい                 | `proposal-review` [plugin] | 懸念点・弱点の多角的洗い出し。**顧客提案の前に必ず**                                                                            |
-| 新機能・アーキテクチャ変更             | `/plan` [自作]             | 段階的計画+リスク評価、**承認まで待つ**。client repo では必須（spec-first）                                                     |
-| 高リスクな技術選定                     | `/ensemble-vote` [自作]    | 複数推論パスの多数決。アーキテクチャ選定・不可逆な判断に                                                                        |
-| 実装本体                               | `/tdd-workflow` [自作]     | テスト先行を強制。80%+ カバレッジ。lint/型/テストは hooks（post-tool-verify / test-runner）が編集のたびに自動実行される         |
-| 命名・型・エラー処理の規約を効かせたい | `/coding-standards` [自作] | TS/JS/React/Node の規約コンテキストを注入。新規コードを書き始める前に                                                           |
+| 新機能・アーキテクチャ変更             | plan mode [標準] + architect agent | ビルトイン plan mode で計画 → 承認。重要な設計判断は architect agent（代替案比較+検証計画）。旧 /plan は廃止（2026-10）   |
+| 高リスクな技術選定                     | `proposal-review` [plugin] + architect agent | 懸念点の多角的洗い出し + 設計比較。旧 /ensemble-vote は廃止（多数決の費用対効果なし、2026-10）                  |
+| 実装本体（バグ修正・機能・リファクタ） | `/coding-workflow` [自作]  | 旧 tdd-workflow / fix-issue / refactor-clean / coding-standards を統合。regression test 先行、premise 検証、lint/型/テストは hooks が自動実行 |
 | typo・rename・軽微修正                 | そのまま依頼（skill 不要） | Working Style 規約で単純変更は即実行。旧 /quick-fix は廃止（2026-07 統廃合）                                                    |
-| ビルドが壊れた                         | build-error-resolver agent | 最小 diff でビルド/型エラーのみ修復。旧 /build-fix は廃止、agent に一本化                                                       |
-| GitHub Issue 起点の修正                | `/fix-issue` [自作]        | 根本原因分析つきで Issue を潰す。実装修正系 skill はこれに集約                                                                  |
-| 死コード掃除                           | `/refactor-clean` [自作]   | knip/depcheck/ts-prune で検出 → テスト検証つき削除                                                                              |
+| ビルドが壊れた                         | そのまま依頼（skill 不要） | メインループが最小 diff で修復。旧 build-error-resolver agent は廃止（2026-10）                                                 |
 | 動くことを目で確認したい               | `/verify` / `/run` [標準]  | アプリを実際に起動して挙動観察。「テストが通る」で止めない。起動が特殊な repo は一度 `/run-skill-generator` でレシピを skill 化 |
 
 ```
 顧客 repo のゴールデンパス:
-brainstorming（曖昧なら）→ /plan（承認待ち）→ /tdd-workflow
+brainstorming（曖昧なら）→ plan mode（承認待ち）→ /coding-workflow
 → /code-review → /security-review（入力/認証を触ったら）
 → /verify → /create-pr → ship check（3文説明）→ /sreaas:task report
 ```
@@ -125,7 +122,7 @@ brainstorming（曖昧なら）→ /plan（承認待ち）→ /tdd-workflow
 | PR を作る                            | `/create-pr` [自作]         | 変更分析 → 要約+リスク評価+テスト計画つき PR を gh CLI で作成。事前に `gh pr list --search` で既存スコープ確認                          |
 | コミット前に自分の diff を見てもらう | `/code-review` [標準]       | 正当性バグ+品質の指摘。`--fix` で working tree に適用。effort 指定可（low〜max）                                                        |
 | 動くけど汚い気がする                 | `/simplify` [標準]          | 再利用・簡素化・効率のクリーンアップを適用。バグ探しはしない（それは /code-review）                                                     |
-| 他人の PR をレビューする             | `/review` / `/pr-summary`   | 標準 /review はレビュー実施、自作 /pr-summary は要約+リスク+レビュー観点。全指摘は出典検証、裏取り不能なら「unverified hypothesis」明記 |
+| 他人の PR をレビューする             | `/code-review` [標準]       | 正当性バグ+品質の指摘（PR 番号指定可）。全指摘は出典検証、裏取り不能なら「unverified hypothesis」明記。旧 /pr-summary は廃止（2026-10）  |
 | 自分の PR に指摘が来た               | `/pr-review-respond` [自作] | 指摘を確信度つきで評価 → working tree に修正適用 → **返信ドラフトを画面に出す（投稿は人間）**                                           |
 | リリースする                         | `/release` [自作]           | semver 判定 + changelog 生成 + リリース作成。事前に `/audit-supply-chain`（§8、license 込み）                                           |
 
@@ -135,12 +132,7 @@ brainstorming（曖昧なら）→ /plan（承認待ち）→ /tdd-workflow
 
 | 状況                             | 呼ぶ                                 | 起きること・コツ                                                                           |
 | -------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------ |
-| カバレッジが足りているか知りたい | `/test-coverage` [自作]              | 80% 閾値未満のファイルを検出し、不足テストを生成                                           |
-| テストが「強い」か疑わしい       | `/mutation-test` [自作]              | コードに変異を入れてテストが検出できるか測定（mutation score）。カバレッジ高いのに不安な時 |
-| 境界値・例外系を網羅したい       | `/property-test` [自作]              | ランダム入力に対する不変条件テスト。example-based が見逃すエッジを拾う                     |
-| 入力処理をストレステスト         | `/fuzz` [自作]                       | クラッシュ・脆弱性をランダムデータで発見                                                   |
-| ユーザーフローを通しで確認       | `/e2e` [自作]                        | Playwright で E2E 生成・実行。screenshot/video/trace 保存、flaky 検出                      |
-| eval 駆動で進めたい              | `/eval define\|check\|report` [自作] | 成功基準を先に定義し pass@k を追跡（生成と評価の分離）                                     |
+| テスト品質の疑問ぜんぶ           | `/qa-testing` [自作]                 | 旧 test-coverage / mutation-test / property-test / fuzz / e2e / eval を統合（2026-10）。「何を知りたいか」から手法を選ぶ（references/ に手法別の詳細）。campaign 規模なら qa-engineer agent へ委任 |
 
 ## 8. セキュリティ・依存
 
@@ -149,7 +141,7 @@ brainstorming（曖昧なら）→ /plan（承認待ち）→ /tdd-workflow
 | ブランチの変更を出す前に     | `/security-review` [標準]            | pending changes のセキュリティレビュー。入力・認証・API を触ったら必須                                                                                             |
 | コードベース全体の棚卸し     | `/security-scan` [自作]              | OWASP 2025 Top 10 準拠の全体スキャン（差分でなく全体）                                                                                                             |
 | 設計段階の脅威分析           | `/security-scan threat-model` [自作] | STRIDE + DREAD スコアリングで体系的に。旧 /threat-model を統合したモード                                                                                           |
-| 依存を追加する前・OSS 公開前 | `/audit-supply-chain` [自作]         | typosquat・AI ハルシネーションパッケージ・既知脆弱性 + ライセンス互換性（旧 /audit-license 統合済み、`--licenses-only` / `--strict` あり）。Critical/High は BLOCK |
+| 依存を追加する前・OSS 公開前 | `/audit-supply-chain` [自作]         | typosquat・AI ハルシネーションパッケージ・既知脆弱性 + ライセンス互換性。Critical/High は BLOCK |
 
 > **日常の防御は hooks が常時担当:** pre-tool-guard（危険コマンド遮断）/ ssrf-guard（内部ネットワーク遮断）/ secrets 読み取り deny。skill を呼ぶのは「監査を能動的にかける」場面だけでよい。
 
@@ -185,13 +177,12 @@ brainstorming（曖昧なら）→ /plan（承認待ち）→ /tdd-workflow
 | 学習ループの現在地を知りたい          | `/learn` [自作]                       | 引数なし = status。backlog 未着手/演習中、retro 鮮度、レビュー待ちを要約し次の一手を推奨                                                                                                           |
 | 学びたいことを思いついた（今すぐ）    | `/learn add <topic>` [自作]           | backlog に1行追記するだけの都度の口。週次 retro を待たない。dispatch も learn-map も走らない                                                                                                       |
 | retro-learn のレポートが届いた        | `/learn review` [自作]                | 題材候補を番号提示 → **選ぶだけ**。BACKLOG.md 追記 + `last-retro:` 更新 + レポート削除まで全部セッションがやる                                                                                     |
-| 学習時間に入る                        | `/learn start [topic]` [自作]         | backlog から番号選択（指定も可）→ learn-map を起動して演習環境を生成。learn-map/learn-coach は独立 skill のまま（教材生成・コーチング規約が大きいため）                                            |
-| 演習で詰まった                        | `/learn-coach` [自作]                 | 段階ヒント（L1 言語化 → L4 答え、1ターン1レベル）。ギブアップ宣言か30分格闘まで L4 は開かない                                                                                                      |
+| 学習時間に入る                        | `/learn start [topic]` [自作]         | backlog から番号選択（指定も可）→ learn-map を起動して演習環境を生成。learn-map/learning-coach は独立 skill のまま（教材生成・コーチング規約が大きいため）                                            |
+| 演習で詰まった                        | `/learning-coach` [自作]                 | 段階ヒント（L1 言語化 → L4 答え、1ターン1レベル）。ギブアップ宣言か30分格闘まで L4 は開かない                                                                                                      |
 | 演習が終わった                        | `/learn done` [自作]                  | STRUGGLE_LOG から弱点を要約（繰り返す弱点は add 候補に）→ backlog を `[x]` に。パターンが出たら /reflect へハンドオフ                                                                              |
 | いいパターンを再利用したい            | `/reflect` [自作]                     | **旧 /learn を統合（2026-08）**: 非自明な問題を解いた直後に呼ぶと Reflexion 振り返り + 再利用パターンを skills/learned/ に skill 化。打ち忘れても週次 retro-learn が transcript から拾う（安全網） |
 | 大きめの仕事を終えた                  | `/reflect` [自作]                     | Reflexion 框組の構造化振り返り。永続化すべき学びを抽出                                                                                                                                             |
-| 過去の知見を探す                      | `/search-memory` [自作]               | 認知メモリから検索。着手前に一度                                                                                                                                                                   |
-| 覚えさせたい                          | `/update-memory` [自作] or 「覚えて」 | 自作認知メモリへ保存。ネイティブ auto-memory と二重管理なのは既知の課題                                                                                                                            |
+| 過去の知見を探す・覚えさせたい        | native auto-memory [標準]             | 「〜覚えてる?」「覚えて」でネイティブ memory が担う。旧 /search-memory・/update-memory は廃止（二重管理解消 2026-10）                                                                               |
 | 構造変更後のアーキテクチャ文書更新    | `/update-codemaps` [自作]             | コードベース構造を解析して docs/CODEMAPS/* を diff 追跡つきで再生成                                                                                                                                |
 | README/CONTRIB が古い気がする         | `/update-docs` [自作]                 | package.json 等の source-of-truth から同期。90 日以上更新なしの陳腐化ドキュメントを検出                                                                                                            |
 
@@ -200,12 +191,12 @@ brainstorming（曖昧なら）→ /plan（承認待ち）→ /tdd-workflow
 1. 捕捉 — 業務中（Speed）の learning flag は transcript に堆積するだけ。ログ不要。**今すぐ残したいものは `/learn add <topic>`**（都度の口）
 2. 収穫 — `~/learn/BACKLOG.md` の `last-retro:` から7日経過すると session-start hook が `personal: retro-learn` を batch inbox に**自動投入** → いつもの `/batch` で走る（§1。batch にとってはただのタスクの1つ）
 3. 選別 — `/learn review` で題材候補から番号選択 → BACKLOG.md 追記 + `last-retro:` 更新 + レポート削除まで自動。**完了するまで hook が「レビュー待ち」を出し続ける**
-4. 変換・実践 — 学習時間に `/learn start`（backlog から番号選択 → learn-map が演習環境を生成）→ `/mode learning` + `/learn-coach`。入口は hook の `LEARN_BACKLOG` 表示
+4. 変換・実践 — 学習時間に `/learn start`（backlog から番号選択 → learn-map が演習環境を生成）→ `/mode learning` + `/learning-coach`。入口は hook の `LEARN_BACKLOG` 表示
 5. 定着 — `/learn done` で STRUGGLE_LOG の弱点を回収（繰り返す弱点は次の題材候補へ）+ backlog を `[x]`。パターンが出たら `/reflect` が skills/learned/ に skill 化 → 次の業務セッションで発火し、業務が次の flag を生んで 1 に還流
 
 学びのドメイン（BACKLOG.md・last-retro・レビュー手順）の**所有者は learn skill で、verb がそのままライフサイクル**（add 捕捉 / review 選別 / start 変換 / done 定着、引数なし = status）。batch は実行基盤、hook は表示と自動投入のみ、learn-map は backlog の消費者、パターンの skill 化は `/reflect`（旧 /learn の抽出動作を統合）。
 
-役割分担: `/learn` = 人間の学習ライフサイクルの関節（add/review/start/done）/ `/mode learning` = セッションの構え / `/learn-map` = 教材生成（before）/ `/learn-coach` = 演習中の専門コーチ（during、ヒント段階制が優先）/ `/reflect` = ハーネスの記憶（セッション振り返り + パターン skill 化、旧 /learn 統合）。case-reflect は別軸（案件の節目駆動、対象は仕事の判断とストーリー）。仕事中に協働スタイルにしたいときはモードでなく「骨格は自分で書く」等のその場指示で。
+役割分担: `/learn` = 人間の学習ライフサイクルの関節（add/review/start/done）/ `/mode learning` = セッションの構え / `/learn-map` = 教材生成（before）/ `/learning-coach` = 演習中の専門コーチ（during、ヒント段階制が優先）/ `/reflect` = ハーネスの記憶（セッション振り返り + パターン skill 化、旧 /learn 統合）。case-reflect は別軸（案件の節目駆動、対象は仕事の判断とストーリー）。仕事中に協働スタイルにしたいときはモードでなく「骨格は自分で書く」等のその場指示で。
 
 ## 12. コンテンツ制作
 
@@ -224,8 +215,8 @@ brainstorming（曖昧なら）→ /plan（承認待ち）→ /tdd-workflow
 | 使い方の癖を数字で見る          | `/insights` [標準] → `/insights-apply` [自作] | セッション分析レポート → 日本語 HTML 化 + 推奨を1件ずつ apply/skip                                                           |
 | settings.json・hooks を変えたい | `/update-config` [標準]                       | 「毎回 X して」系の自動化は hook でしか実現できない — 必ずこれ経由。**変更は mise dotfiles sync で dot repo へ反映まで**     |
 | permission プロンプトが多い     | `/fewer-permission-prompts` [標準]            | transcript を走査して読み取り専用 allowlist を提案                                                                           |
-| セッションが重い・遅い          | `/manage-context` [自作]                      | コンテキスト健全性の監査、/clear タイミングの提案                                                                            |
-| コスト・使用量を見たい          | `/dashboard` [自作]                           | テレメトリ+コスト統計（旧 cost-report 統合済み）。期間指定可: `/dashboard week`                                              |
+| セッションが重い・遅い          | `/context` [標準] → `/clear`                  | コンテキスト内訳を見て判断。旧 /manage-context は廃止（2026-10、監査観点は /harness-audit に）                               |
+| コスト・使用量を見たい          | `/usage` · `/insights` [標準]                 | ネイティブの使用量・セッション分析。旧 /dashboard と観測系 hooks は廃止（2026-10）                                           |
 | 環境がおかしい気がする          | `/doctor` [標準]                              | セットアップ診断（未使用設定・遅い hook の検出）                                                                             |
 | キーバインド変更                | `/keybindings-help` [標準]                    | keybindings.json の編集を案内                                                                                                |
 
@@ -249,8 +240,12 @@ skill は「手順」、agent は「新鮮なコンテキストを持つ委任�
 | --------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | 広く探して結論だけ欲しい    | `Explore`           | 読み取り専用の広域検索。自分でも同じ検索をしない（二重コスト）                                                            |
 | 実装が終わった（commit 前） | —（機械チェック）   | Fable 5/Opus 5+ は自己検証するため evaluator の常用は廃止（2026-07）。lint/テスト/CI で担保し、agent 検証は明示要求時のみ |
-| コードを変更した            | `code-reviewer`     | 変更後は毎回。skill の /code-review（diff 対象）と使い分け                                                                |
+| コードを変更した            | `code-reviewer`     | fresh context のレビューが欲しい時。標準 /code-review（diff 対象）と使い分け                                              |
 | 入力・認証・API を触った    | `security-reviewer` | 疑いがあれば停止してでも先に通す                                                                                          |
+| 重要な設計判断              | `architect`         | caller 起点のスケッチ + 代替案比較 + 検証計画を返す（opus）                                                               |
+| QA キャンペーン・E2E        | `qa-engineer`       | /qa-testing の手法選択と実行を委任。本番・課金 API には触れない                                                           |
+| 障害調査・運用エビデンス    | `sre-investigator`  | /sre-operations と対。read-only、タイムライン + 仮説弁別を返す                                                            |
+| ドキュメント・記事編集      | `doc-editor`        | codemap/doc 同期、記事は /write-article 準拠                                                                              |
 | スキーマ・マイグレーション  | `database-reviewer` | DB skill（§9）は書く時、これは見る時                                                                                      |
 | 独立タスクの並列実行        | 複数 agent 同時起動 | 1メッセージで同時に投げる。同じ working tree を触るものは worktree 分離か逐次                                             |
 

@@ -41,9 +41,9 @@ Re-evaluate the tier table on each model upgrade; capability/price ratios shift.
 
 ## Context Window Management
 
-Context-rot, recovery tooling (`/rewind`, `/btw`, `/compact`, `/clear`), and
-subagent delegation are covered in `~/.claude/docs/performance.md` and the
-`/manage-context` skill — not repeated here to keep always-loaded budget lean.
+Context-rot, recovery tooling (`/rewind`, `/btw`, `/compact`, `/clear`, `/context`), and
+subagent delegation are covered in `~/.claude/docs/performance.md` — not repeated
+here to keep always-loaded budget lean.
 
 ### MCP Server Budget
 - Fewer than 10 enabled servers per project

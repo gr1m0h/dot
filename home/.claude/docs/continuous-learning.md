@@ -13,9 +13,7 @@ After solving non-trivial problems:
 ## Session Memory
 
 - Session state persisted via hooks (SessionStart/SessionEnd)
-- Cross-session context via `.claude/memory/` files
-- Use `/search-memory` to recall previous learnings
-- Use `/update-memory` to persist new knowledge
+- Cross-session context via native auto-memory (`autoMemoryEnabled`): say 「覚えて」 to persist, ask to recall
 
 ## When to Learn
 

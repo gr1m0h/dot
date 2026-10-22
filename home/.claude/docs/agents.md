@@ -2,37 +2,35 @@
 
 ## Available Agents
 
-Located in `~/.claude/agents/`:
+Located in `~/.claude/agents/` (worker default model: sonnet via `CLAUDE_CODE_SUBAGENT_MODEL`):
 
 | Agent | Purpose | When to Use |
 |-------|---------|-------------|
-| planner | Implementation planning | Complex features, refactoring |
-| architect | System design | Architectural decisions |
-| evaluator | Skeptical evaluation | After implementation, against success criteria |
-| tdd-guide | Test-driven development | New features, bug fixes |
-| code-reviewer | Code review | After writing code |
-| security-reviewer | Security analysis | Before commits |
-| build-error-resolver | Fix build errors | When build fails |
-| e2e-runner | E2E testing | Critical user flows |
-| refactor-cleaner | Dead code cleanup | Code maintenance |
-| doc-updater | Documentation | Updating docs |
+| architect | Grounded design packages for consequential changes | New-feature design, large refactors, irreversible technical decisions |
+| code-reviewer | Evidence-based diff review | After writing code, when a fresh-context review is wanted |
+| security-reviewer | Scoped security assessment + whole-codebase audits | Input/auth/API/sensitive-data changes; OWASP/LLM Top 10 audits |
+| qa-engineer | Targeted acceptance/E2E/property/fuzz/mutation/LLM-eval campaigns | QA campaigns, test-quality questions (pairs with qa-testing skill) |
+| sre-investigator | Operational evidence, incident timelines, hypothesis discrimination | Incidents, outages, SLO/error-budget reasoning (pairs with sre-operations skill) |
+| doc-editor | Documentation and article editing | Project docs, codemaps, blog editing (pairs with write-article skill) |
+| database-reviewer | Schema/query/migration review | After writing migrations or heavy queries |
+| batch-worker | Restricted background worker for /batch | Batch dispatch only; never publishes |
 
-## Immediate Agent Usage
+Deliberately NOT agents: planning (built-in plan mode), evaluation/verification of your
+own work (Fable 5/Opus 4.5+ self-verify — mechanical checks suffice; official guidance
+since 2026-07), TDD enforcement and build fixing (main-loop work, coding-workflow skill),
+dead-code cleanup (coding-workflow + knip/depcheck/ts-prune).
 
-No user prompt needed:
-1. Complex feature requests → **planner** agent
-2. Code just written/modified → **code-reviewer** agent
-3. Implementation complete → **evaluator** agent (separate from generator)
-4. Bug fix or new feature → **tdd-guide** agent
-5. Architectural decision → **architect** agent
+## Delegation Rules
 
-## Parallel Execution
-
-ALWAYS parallelize independent operations:
-- Multiple file reads → single message, multiple Read calls
-- Independent searches → parallel Grep/Glob calls
-- Unrelated agent tasks → parallel Task calls
-- Review + security → run code-reviewer and security-reviewer in parallel
+- Delegate work that benefits from fresh context or parallelism: exploration (Explore),
+  investigation, report drafting, independent multi-file tracks, reviews.
+- Do NOT delegate: work finishable in a handful of tool calls, or verification of your
+  own output. One subagent when one suffices; keep spawn counts low.
+- Give every subagent an objective, output format, tool boundaries, and an effort budget
+  (multi-agent pays off for breadth-first parallelizable work; tightly-coupled coding
+  stays single-agent — Anthropic multi-agent research system post).
+- Parallelize independent operations in one message (multiple Reads, Greps, agent calls).
+  Agents touching the same working tree: `isolation: "worktree"` or run them serially.
 
 ## Iterative Retrieval
 
@@ -42,45 +40,8 @@ Progressive context refinement (never read entire files upfront):
 3. Deep: Read targeted file sections
 4. Verify: Cross-reference with related files
 
-## Subagent Strategy
+## Model Routing
 
-Haiku 4.5 is credible for short-context coding and notably cheaper than Sonnet/Opus.
-Confirm current capability/price ratios against official model docs before fixing a tier.
-
-| Task Type | Subagent | Model | Notes |
-|-----------|----------|-------|-------|
-| Codebase exploration | Explore | haiku | Fresh context per child |
-| Implementation plan | planner | sonnet | Balance of capability/cost |
-| Architecture review | architect | opus | Complex cross-system reasoning |
-| Code review | code-reviewer | sonnet | Standard complexity |
-| Skeptical evaluation | evaluator | sonnet | Independent from generator |
-| Security analysis | security-reviewer | opus | Thoroughness critical |
-| Build error fixing | build-error-resolver | sonnet | Incremental fixing |
-| Multi-step coordination | Workflow tool (native) | — | Deterministic fan-out/pipeline |
-| Simple lookups, Q&A | general-purpose | haiku | Cost-efficient |
-
-## Context Isolation
-
-- Use `isolation: "worktree"` for risky file modifications
-- Delegate exploratory work to subagents to preserve main context
-- Chain results between agents via Task resume (agent ID)
-
-## Cascade Pipeline
-
-Standard feature pipeline:
-1. **Plan** (planner) → implementation strategy + success criteria
-2. **Implement** (main loop) → write code with tests
-3. **Evaluate** (evaluator) → grade against success criteria
-4. **Review** (code-reviewer) → quality check
-5. **Security** (security-reviewer) → vulnerability scan
-
-Run steps 4 and 5 in parallel. Loop back to 2 if evaluator returns FAIL.
-
-## Multi-Perspective Analysis
-
-For complex problems, use split role sub-agents:
-- Factual reviewer
-- Senior engineer
-- Security expert
-- Consistency reviewer
-- Redundancy checker
+Haiku for lookups and bulk simple transforms; sonnet as default worker; opus for
+architecture and security depth. Confirm capability/price against official model docs
+before fixing a tier (see rules/_core.md Cost / Model Routing).
