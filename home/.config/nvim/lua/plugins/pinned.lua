@@ -4,21 +4,21 @@
 -- Update via Renovate (gr1m0h/vimpin-renovate-config) or `vimpin run --update`.
 return {
   { "L3MON4D3/LuaSnip", commit = "0abc8f390b278c3b4aabc4c004ac8a088b65cf24" }, -- branch: master
-  { "b0o/SchemaStore.nvim", commit = "98c0d97389a1d46d7ee442161e05e4175d3763ec" }, -- branch: main
+  { "b0o/SchemaStore.nvim", commit = "cc6302a0957806dfc0f2687f1f35ee9652686101" }, -- branch: main
   { "akinsho/bufferline.nvim", commit = "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3" }, -- branch: main
   { "catppuccin/nvim", commit = "edefef779ab08ce1a4a404713e3012b0d202bd35" }, -- branch: main
-  { "coder/claudecode.nvim", commit = "2390c6e45c4789072c293ac69de051d169668b29" }, -- branch: main
+  { "coder/claudecode.nvim", commit = "c0deb41a0c6ac74c620be0a683aa9834e535c84a" }, -- branch: main
   { "hrsh7th/cmp-buffer", commit = "b74fab3656eea9de20a9b8116afa3cfc4ec09657" }, -- branch: main
-  { "petertriho/cmp-git", commit = "229ec584561f31a6e306da45e145d9a52a5b36db" }, -- branch: main
+  { "petertriho/cmp-git", commit = "fe2c6e5c2df760c7ba1b3e2332c090c7f6ba8ee7" }, -- branch: main
   { "hrsh7th/cmp-nvim-lsp", commit = "cbc7b02bb99fae35cb42f514762b89b5126651ef" }, -- branch: main
   { "hrsh7th/cmp-path", commit = "c642487086dbd9a93160e1679a1327be111cbc25" }, -- branch: main
   { "saadparwaiz1/cmp_luasnip", commit = "98d9cb5c2c38532bd9bdb481067b20fea8f32e90" }, -- branch: master
   { "stevearc/conform.nvim", commit = "016802de402556da54c36bd7359b441266b01cdd" }, -- branch: master
   { "folke/flash.nvim", commit = "5f0f270fdc7c5b0c21d903ee85b9cb06f2ac636a" }, -- branch: main
-  { "rafamadriz/friendly-snippets", commit = "b4d01b0fdf3c9a549961c2f9ffe8dc09be166219" }, -- branch: main
-  { "ibhagwan/fzf-lua", commit = "5dca84ef44f37b960a128a43d044ee348ff86fb4" }, -- branch: main
+  { "rafamadriz/friendly-snippets", commit = "b2ea5c41a150ba72fb656eedb4ed0a86d138d945" }, -- branch: main
+  { "ibhagwan/fzf-lua", commit = "5b88d6f0af7fcb41d4a8bb340bf70d7e3824ee9d" }, -- branch: main
   { "ldelossa/gh.nvim", commit = "6f367b2ab8f9d4a0a23df2b703a3f91137618387" }, -- branch: main
-  { "lewis6991/gitsigns.nvim", commit = "683137003522aebd6948358334164a6ba2ca7cd5" }, -- branch: main
+  { "lewis6991/gitsigns.nvim", commit = "1e9d0fbfe7ff848bc402d2c2e2854fb4eff2dce7" }, -- branch: main
   { "MagicDuck/grug-far.nvim", commit = "91b7e58b6ffc6ddad5acb7a7c1df21257724449e" }, -- branch: main
   { "qvalentin/helm-ls.nvim", commit = "20df43509b02a3ce3c6b3eee254d6e2bffa9a370" }, -- branch: main
   { "lukas-reineke/indent-blankline.nvim", commit = "f1e186e44d3b7f9ae918008e2c28ce37c6023d2d" }, -- branch: master
@@ -28,11 +28,11 @@ return {
   { "ldelossa/litee.nvim", commit = "4efaf373322d9e71eaff31164abb393417cc6f6a" }, -- branch: main
   { "nvim-lualine/lualine.nvim", commit = "221ce6b2d999187044529f49da6554a92f740a96" }, -- branch: master
   { "iamcco/markdown-preview.nvim", commit = "a923f5fc5ba36a3b17e289dc35dc17f66d0548ee" }, -- branch: master
-  { "mason-org/mason-lspconfig.nvim", commit = "c4ef013d41f6db041b283eef55a63e579d76763f" }, -- branch: main
+  { "mason-org/mason-lspconfig.nvim", commit = "cd6c64d85c9871aaf759d26f2371029d6d674a48" }, -- branch: main
   { "jay-babu/mason-nvim-dap.nvim", commit = "9a10e096703966335bd5c46c8c875d5b0690dade" }, -- branch: main
   { "mason-org/mason.nvim", commit = "2a6940af80375532e5e9e7c1f2fc6319a1b7a69d" }, -- branch: main
-  { "nvim-mini/mini.ai", commit = "d0c4987a1ead2bcf4eb22cc9815c662d76677c08" }, -- branch: main
-  { "nvim-mini/mini.icons", commit = "9e4c1645ce2b78afd6191b6be2c38bc0f998dd48" }, -- branch: main
+  { "nvim-mini/mini.ai", commit = "a4f5648dedf435e6306205135d1babb563b55d28" }, -- branch: main
+  { "nvim-mini/mini.icons", commit = "eab3e692d796d78ea6ffc978d8a380ff26fcf4e3" }, -- branch: main
   { "nvim-mini/mini.pairs", commit = "03eb1f0062a2cee5314d1ac3939246e4bb21352e" }, -- branch: main
   { "folke/noice.nvim", commit = "7bfd942445fb63089b59f97ca487d605e715f155" }, -- branch: main
   { "MunifTanjim/nui.nvim", commit = "10fc361835c856ba4233ef5ea135b919bf3dce97" }, -- branch: main
@@ -42,10 +42,10 @@ return {
   { "mfussenegger/nvim-dap-python", commit = "1808458eba2b18f178f990e01376941a42c7f93b" }, -- branch: master
   { "rcarriga/nvim-dap-ui", commit = "cc9dd33aade7f20bae414d0cba163bc60d4d4b43" }, -- branch: master
   { "theHamsta/nvim-dap-virtual-text", commit = "fbdb48c2ed45f4a8293d0d483f7730d24467ccb6" }, -- branch: master
-  { "mfussenegger/nvim-lint", commit = "f6230a5c06ba59e6059c14637f1dbe29a7978b9b" }, -- branch: master
-  { "neovim/nvim-lspconfig", commit = "77b7432d4770d23b277d37923e5a08a442d8bb07" }, -- branch: master
+  { "mfussenegger/nvim-lint", commit = "52107ce2076a27a285af781248e2c59bad817cd0" }, -- branch: master
+  { "neovim/nvim-lspconfig", commit = "d8d2fda7aae57030452ce8cd6e770b1eb704514e" }, -- branch: master
   { "nvim-neotest/nvim-nio", commit = "edcc181a875301dd21840189aa2f2f9ad69fc172" }, -- branch: master
-  { "nvim-treesitter/nvim-treesitter", commit = "29212d826054bb2948fa9d3a99eca9bf6a050eb2" }, -- branch: main
+  { "nvim-treesitter/nvim-treesitter", commit = "a2f694478be07f89c2d03cc17858a8745a400c4b" }, -- branch: main
   { "nvim-treesitter/nvim-treesitter-context", commit = "8decd73460d26ef0a0befb745d022dd1fc2c38b8" }, -- branch: master
   { "nvim-treesitter/nvim-treesitter-textobjects", commit = "5c7b0263797dfd1bd6202f2b219f3b53a80b2187" }, -- branch: main
   { "windwp/nvim-ts-autotag", commit = "d7220b55e16ed3c04e88086256def5d282429493" }, -- branch: main
@@ -59,7 +59,7 @@ return {
   { "folke/ts-comments.nvim", commit = "a59d6092213447450191122c9346f309161504cb" }, -- branch: main
   { "linux-cultist/venv-selector.nvim", commit = "cc4bb3975de8835291f9bb45889e96c6b2795fc4" }, -- branch: main
   { "tpope/vim-dadbod", commit = "6d1d41da4873a445c5605f2005ad2c68c99d8770" }, -- branch: master
-  { "kristijanhusak/vim-dadbod-completion", commit = "a8dac0b3cf6132c80dc9b18bef36d4cf7a9e1fe6" }, -- branch: master
+  { "kristijanhusak/vim-dadbod-completion", commit = "8c65c6b02e8434e5360fc78097e489c05e899697" }, -- branch: master
   { "kristijanhusak/vim-dadbod-ui", commit = "afd07819d8efcefc3317205b855ad4e3513b0011" }, -- branch: master
   { "folke/which-key.nvim", commit = "3aab2147e74890957785941f0c1ad87d0a44c15a" }, -- branch: main
 }
