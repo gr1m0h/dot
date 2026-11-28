@@ -67,7 +67,7 @@ return {
   -- add pyright to lspconfig
   {
     "neovim/nvim-lspconfig",
-    commit = "4d363f93c3581b9212a24f7a830d7590b3f050af", -- tag: v2.12.0
+    commit = "4648fd8ba5c678d7e2db75ae44ffac269bb589d8", -- tag: v2.13.0
     ---@class PluginLspOpts
     opts = {
       ---@type lspconfig.options
@@ -81,7 +81,7 @@ return {
   -- add tsserver and setup with typescript.nvim instead of lspconfig
   {
     "neovim/nvim-lspconfig",
-    commit = "4d363f93c3581b9212a24f7a830d7590b3f050af", -- tag: v2.12.0
+    commit = "4648fd8ba5c678d7e2db75ae44ffac269bb589d8", -- tag: v2.13.0
     dependencies = {
       "jose-elias-alvarez/typescript.nvim",
       init = function()
